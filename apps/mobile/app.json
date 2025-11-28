@@ -3,13 +3,9 @@
     "name": "IconicEdu Mobile",
     "slug": "iconicedu-mobile",
     "version": "0.1.0",
-    "sdkVersion": "52.0.0",
+    "sdkVersion": "54.0.0",
     "orientation": "portrait",
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ],
+    "platforms": ["ios", "android", "web"],
     "updates": {
       "enabled": true
     },

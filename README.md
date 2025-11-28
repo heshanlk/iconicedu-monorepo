@@ -1,389 +1,103 @@
-# 📘 ICONIC EDU — Monorepo
+# ICONIC EDU Monorepo
 
-A communication-first education platform connecting **parents, teachers, students, advisors, and staff** through:
+A Turborepo that ships a **Next.js 16** web console with **Tailwind CSS v4**, an **Expo React Native 0.82** app styled with **NativeWind v4**, and a **NestJS 11** API. Shared UI kits, utilities, and type definitions keep the stack consistent across platforms.
 
-* Modern chat & channels
-* Scheduling & classes
-* Progress tracking
-* Homework workflows
-* Parent Advisor support
-* Multi-role dashboards
-* Web, Mobile, and API apps
+## Stack
+- Next.js 16 + React 19 (Tailwind CSS v4)
+- Expo SDK 54 + React Native 0.82 (NativeWind v4)
+- NestJS 11 + Prisma 7
+- TypeScript 5.9, pnpm 9, Turborepo 2
 
-This monorepo powers the entire ecosystem.
-
----
-
-# 🏗️ Tech Stack
-
-### **Frontend**
-
-* **Next.js 14** (App Router) — Web app
-* **Expo / React Native** — Mobile app
-* **Tailwind CSS** — Web styling
-* **NativeWind** — Mobile styling
-* **Turborepo** — Monorepo orchestration
-* **Shared UI libraries** (Web + Native)
-
-### **Backend**
-
-* **NestJS 10** — API service
-* **Prisma** — ORM
-* **Supabase Postgres** — Database
-* **Supabase Auth** — Authentication
-* **Supabase Storage** — Files / homework uploads
-* **RLS** — Row-level security
-
-### **Package Management**
-
-* **pnpm 9**
-* **TypeScript everywhere**
-* Local packages:
-
-  * `@iconicedu/ui-web`
-  * `@iconicedu/ui-native`
-  * `@iconicedu/shared-types`
-  * `@iconicedu/utils`
-
----
-
-# 📁 Monorepo Structure
-
+## Workspace layout
 ```
-iconicedu-monorepo/
-├─ apps/
-│  ├─ web/        # Next.js web app
-│  ├─ mobile/     # Expo mobile app
-│  └─ api/        # NestJS backend
-│
-├─ packages/
-│  ├─ ui-web/       # Web UI kit (Tailwind + React)
-│  ├─ ui-native/    # Native UI kit (React Native + NativeWind)
-│  ├─ shared-types/ # Shared DTOs, domain models
-│  ├─ utils/        # Shared utilities
-│  ├─ config-eslint/
-│  └─ config-tsconfig/
-│
-├─ supabase/
-│  ├─ schema.sql    # Tables + RLS
-│  └─ migrations/   # Optional
-│
-├─ turbo.json
-├─ pnpm-workspace.yaml
-├─ package.json
-├─ .nvmrc
-├─ .tool-versions
-└─ README.md
+apps/
+  api/      # NestJS service
+  mobile/   # Expo + NativeWind app
+  web/      # Next.js + Tailwind CSS v4 app
+packages/
+  config-eslint/   # Shared ESLint config
+  config-tsconfig/ # Shared TSConfig presets (base, next, react-native, nestjs)
+  jest-presets/    # Shared Jest preset
+  shared-types/    # Domain types
+  ui-native/       # Native component library
+  ui-web/          # Web component library
+  utils/           # Cross-platform helpers
 ```
 
----
+## Step-by-step bootstrap (mirrors this repo)
+1. **Create the Turborepo shell**
+   ```bash
+   pnpm dlx create-turbo@latest iconicedu-monorepo --use-pnpm
+   cd iconicedu-monorepo
+   ```
+
+2. **Add shared tooling packages**
+   ```bash
+   pnpm dlx json -I -f package.json 'this.devDependencies.turbo="^2.6.1"'
+   pnpm add -D @typescript-eslint/eslint-plugin@^8.48.0 @typescript-eslint/parser@^8.48.0 eslint@^9.39.1 prettier@^3.7.1 typescript@^5.9.3 husky@^9.1.7 lint-staged@^16.2.7
+   mkdir -p packages/config-eslint packages/config-tsconfig packages/jest-presets
+   ```
+
+3. **Seed TSConfig presets** (`packages/config-tsconfig`)
+   - Create `base.json` with strict ES2022 + bundler settings.
+   - Add `next.json`, `react-native.json`, and `nestjs.json` that extend `base.json` with framework-specific options.
+
+4. **Wire ESLint + Jest presets**
+   - `packages/config-eslint/index.cjs` exports the shared rule set (React + TypeScript + Prettier).
+   - `packages/jest-presets/jest-preset.cjs` exports the shared `ts-jest` preset and marks `jest`/`ts-jest`/`typescript` as peers.
+
+5. **Create shared libraries**
+   ```bash
+   mkdir -p packages/{ui-web,ui-native,shared-types,utils}/src
+   # add Button components, domain types, and helpers
+   ```
+   Each package uses `@iconicedu/config-tsconfig/base.json` (or `react-native.json`) and outputs to `dist/`.
+
+6. **Scaffold the web app**
+   ```bash
+   pnpm dlx create-next-app@latest apps/web --ts --app --eslint --no-tailwind --src-dir false --import-alias "@/*"
+   pnpm add -C apps/web next@^16.0.5 react@^19.2.0 react-dom@^19.2.0 @tanstack/react-query@^5.90.11 @supabase/auth-helpers-nextjs@^0.15.0 @supabase/supabase-js@^2.86.0 @iconicedu/ui-web@workspace:*
+   pnpm add -C apps/web -D tailwindcss@^4.1.17 postcss@^8.4.49 autoprefixer@^10.4.20 eslint-config-next@^16.0.5
+   ```
+   - `postcss.config.mjs` uses the Tailwind v4 plugin.
+   - `tailwind.config.ts` points at the app and `packages/ui-web` sources.
+   - `app/globals.css` uses the Tailwind v4 `@import "tailwindcss";` entrypoint plus shared design tokens.
+
+7. **Scaffold the mobile app**
+   ```bash
+   pnpm dlx create-expo-app@latest apps/mobile -t expo-template-blank-typescript
+   pnpm add -C apps/mobile expo@^54.0.25 react@^19.2.0 react-native@^0.82.1 nativewind@^4.2.1 react-native-reanimated@^4.1.5 react-native-safe-area-context@^5.6.2 react-native-screens@^4.18.0 @react-navigation/native@^7.1.22 @react-navigation/native-stack@^7.8.1 @supabase/supabase-js@^2.86.0 @tanstack/react-query@^5.90.11 @iconicedu/ui-native@workspace:*
+   pnpm add -C apps/mobile -D @babel/core@^7.28.5 typescript@^5.9.3
+   ```
+   - Enable NativeWind in `babel.config.js` and wrap `tailwind.config.js` with `nativewind()`.
+   - Add `global.d.ts` with `/// <reference types="nativewind/types" />`.
+
+8. **Scaffold the API**
+   ```bash
+   pnpm dlx @nestjs/cli new api --package-manager pnpm --directory apps/api
+   pnpm add -C apps/api @nestjs/common@^11.1.9 @nestjs/core@^11.1.9 @nestjs/platform-express@^11.1.9 @nestjs/config@^4.0.2 @nestjs/swagger@^11.2.3 @nestjs/jwt@^11.0.1 @nestjs/passport@^11.0.5 passport@^0.7.0 jsonwebtoken@^9.0.2 reflect-metadata@^0.2.2 rxjs@^7.8.2 @prisma/client@^7.0.1
+   pnpm add -C apps/api -D @nestjs/cli@^11.0.14 @nestjs/schematics@^11.0.9 @nestjs/testing@^11.1.9 prisma@^7.0.1 ts-node@^10.9.2 typescript@^5.9.3
+   ```
+   - `tsconfig.json` extends `@iconicedu/config-tsconfig/nestjs.json`.
+
+9. **Wire shared tooling**
+   - `tsconfig.base.json` extends `packages/config-tsconfig/base.json` and defines workspace `paths` for all packages.
+   - `turbo.json` defines `build`, `dev`, `lint`, and `test` pipelines.
+   - `pnpm-workspace.yaml` includes `apps/*` and `packages/*`.
+
+10. **Run the dev targets**
+    ```bash
+    pnpm dev:web    # Next.js + Tailwind v4
+    pnpm dev:mobile # Expo + NativeWind
+    pnpm dev:api    # NestJS + Prisma
+    ```
+
+## Everyday commands
+- `pnpm lint` — runs the shared ESLint config via Turborepo
+- `pnpm build` — builds packages and apps with cache-aware pipelines
+- `pnpm test` — uses the shared Jest preset (install `jest` + `ts-jest` in each package)
+
+## Styling notes
+- **Web:** Tailwind CSS v4 with design tokens defined in `apps/web/tailwind.config.ts` and shared components from `@iconicedu/ui-web`.
+- **Mobile:** NativeWind v4 + Tailwind v4 tokens via `nativewind()` wrapping the Tailwind config; className support is enabled through `nativewind/babel` and `global.d.ts`.
 
-# ⚙️ Requirements
-
-To avoid Node / pnpm / Expo issues, all devs MUST use:
-
-* **Node 20.18.1**
-* **pnpm 9.12.0**
-* macOS, Linux, or Windows via **WSL2**
-
-## Recommended OS for development
-
-| Platform             | Supported | Notes                                   |
-| -------------------- | --------- | --------------------------------------- |
-| **macOS**            | ✅ Best    | Required for iOS simulator              |
-| **Linux (Ubuntu)**   | ✅         | Fastest builds                          |
-| **Windows (native)** | ❌ NO      | Not supported due to Expo/Prisma issues |
-| **Windows (WSL2)**   | ✅         | Required for Windows devs               |
-
----
-
-# 🪟 Windows Setup (WSL2 Required)
-
-### 1. Enable WSL2
-
-```powershell
-wsl --install
-```
-
-### 2. Install build tools inside Ubuntu
-
-```bash
-sudo apt update
-sudo apt install -y build-essential curl git openssl
-```
-
-### 3. Install ASDF (recommended)
-
-```bash
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.0
-echo '. "$HOME/.asdf/asdf.sh"' >> ~/.bashrc
-source ~/.bashrc
-```
-
-Add tool plugins:
-
-```bash
-asdf plugin-add nodejs
-asdf plugin-add pnpm
-asdf plugin-add yarn
-asdf install
-```
-
----
-
-# 🐧 Linux Setup (Ubuntu / Debian)
-
-### Install dependencies
-
-```bash
-sudo apt update
-sudo apt install -y build-essential curl git libssl-dev libudev-dev pkg-config
-```
-
-Then install ASDF or NVM.
-
----
-
-# 🍎 macOS Setup
-
-### Install Homebrew
-
-```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-```
-
-### Install Node version manager (choose one)
-
-#### Option A — NVM
-
-```bash
-brew install nvm
-mkdir ~/.nvm
-```
-
-Add to `~/.zshrc`:
-
-```bash
-export NVM_DIR="$HOME/.nvm"
-source $(brew --prefix nvm)/nvm.sh
-```
-
-Install Node:
-
-```bash
-nvm install 20.18.1
-nvm use 20.18.1
-```
-
-#### Option B — ASDF
-
-```bash
-brew install asdf
-asdf plugin-add nodejs
-asdf plugin-add pnpm
-asdf plugin-add yarn
-asdf install
-```
-
----
-
-# 🧩 Node & pnpm Versions (Important)
-
-The repo includes:
-
-### `.nvmrc`
-
-```
-20.18.1
-```
-
-### `.tool-versions`
-
-```
-nodejs 20.18.1
-pnpm 9.12.0
-yarn 1.22.22
-```
-
-To ensure your environment matches, run:
-
-```bash
-nvm use
-# or
-asdf install
-```
-
----
-
-# 📦 Install Dependencies
-
-From the project root:
-
-```bash
-pnpm install
-```
-
-pnpm automatically links all workspace packages.
-
----
-
-# 🔐 Environment Variables
-
-Create `.env` files:
-
-```
-apps/web/.env.local
-apps/api/.env
-apps/mobile/.env
-```
-
-Typical variables include:
-
-```
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
-DATABASE_URL=
-```
-
----
-
-# ▶️ Running the Apps
-
-## Web App (Next.js)
-
-```bash
-pnpm dev:web
-```
-
-Runs at: [http://localhost:3000](http://localhost:3000)
-
----
-
-## Mobile App (Expo)
-
-```bash
-pnpm dev:mobile
-```
-
-Opens Expo Dev Tools:
-
-* Press **i** — iOS Simulator (macOS only)
-* Press **a** — Android Emulator
-* Scan QR — physical device
-
----
-
-## API Server (NestJS)
-
-```bash
-pnpm dev:api
-```
-
-Backend runs at:
-`http://localhost:3001`
-
-Swagger docs:
-`http://localhost:3001/docs`
-
----
-
-# 🗄️ Database Setup (Supabase)
-
-### 1. Install Supabase CLI
-
-```bash
-brew install supabase/tap/supabase
-```
-
-### 2. Link to your project
-
-```bash
-supabase login
-supabase link --project-ref <PROJECT_ID>
-```
-
-### 3. Apply the schema
-
-```bash
-supabase db push
-```
-
-or:
-
-```bash
-psql $DATABASE_URL -f supabase/schema.sql
-```
-
----
-
-# 🧰 Useful Commands
-
-Build everything:
-
-```bash
-pnpm build
-```
-
-Lint everything:
-
-```bash
-pnpm lint
-```
-
-Run tests:
-
-```bash
-pnpm test
-```
-
-Update all shared packages:
-
-```bash
-pnpm -w build
-```
-
----
-
-# 🧨 Troubleshooting
-
-### ❗ `ERR_PNPM_FETCH_404`
-
-You forgot to use `"workspace:*"` in dependencies.
-
-### ❗ Corepack signature error
-
-Use Node 20:
-
-```bash
-nvm use 20
-corepack prepare pnpm@9.12.0 --activate
-```
-
-### ❗ Expo throws Metro symlink errors
-
-Do NOT run on Windows native Node — use WSL2.
-
-### ❗ SWC errors on Next.js
-
-Means your Node version mismatched.
-Fix with:
-
-```bash
-nvm use
-```
-
----
-
-# 🤝 Contributing
-
-1. Use Node 20
-2. Use pnpm
-3. Ensure all shared packages build:
-
-```bash
-pnpm -w build
-```
-
-4. Open PR with clear scope
-5. All changes must pass lint + typecheck

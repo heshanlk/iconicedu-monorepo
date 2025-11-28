@@ -1,17 +1,14 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "@iconicedu/config-tsconfig/nestjs.json",
   "compilerOptions": {
-    "module": "commonjs",
-    "declaration": true,
-    "outDir": "./dist",
-    "strict": true,
-    "esModuleInterop": true
+    "baseUrl": "../../",
+    "paths": {
+      "@iconicedu/ui-web/*": ["packages/ui-web/src/*"],
+      "@iconicedu/ui-native/*": ["packages/ui-native/src/*"],
+      "@iconicedu/shared-types/*": ["packages/shared-types/src/*"],
+      "@iconicedu/utils/*": ["packages/utils/src/*"]
+    }
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }

@@ -1,12 +1,12 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "@iconicedu/config-tsconfig/react-native.json",
   "compilerOptions": {
-    "jsx": "react-jsx",
-    "strict": true,
-    "noEmit": true
+    "baseUrl": ".",
+    "paths": {
+      "@iconicedu/ui-native/*": ["../../packages/ui-native/src/*"],
+      "@iconicedu/shared-types/*": ["../../packages/shared-types/src/*"]
+    }
   },
-  "include": [
-    "app/**/*",
-    "src/**/*"
-  ]
+  "include": ["app/**/*", "src/**/*", "global.d.ts"],
+  "exclude": ["node_modules"]
 }
