@@ -76,6 +76,101 @@ iconicedu-monorepo/
 └─ README.md
 ```
 
+## 🚀 Build this monorepo from scratch (step-by-step)
+
+The commands below mirror the [Vercel Turborepo examples](https://github.com/vercel/turborepo/tree/main/examples) but pin everything to the latest stable releases, Tailwind CSS v4 for web, and NativeWind for mobile.
+
+1. **Create the workspace shell**
+
+   ```bash
+   pnpm dlx create-turbo@latest iconicedu-monorepo --use-pnpm --no-git
+   cd iconicedu-monorepo
+   mkdir -p apps packages supabase
+   ```
+
+2. **Scaffold the apps** (NestJS API, Next.js web, Expo RN mobile)
+
+   ```bash
+   pnpm dlx @nestjs/cli new apps/api --package-manager pnpm --skip-install
+   pnpm dlx create-next-app@latest apps/web --ts --app --eslint --no-src-dir --use-pnpm
+   pnpm dlx create-expo-app@latest apps/mobile -t blank-typescript
+   ```
+
+3. **Create shared packages**
+
+   ```bash
+   pnpm init -w
+   mkdir -p packages/ui-web/src/components packages/ui-native/src/components packages/shared-types/src packages/utils/src
+   pnpm pkg set workspaces[0]="apps/*" workspaces[1]="packages/*"
+   pnpm pkg set scripts.dev:web="turbo run dev --filter=web" scripts.dev:mobile="turbo run dev --filter=mobile" scripts.dev:api="turbo run dev --filter=api"
+   ```
+
+4. **Add configuration packages** (ESLint, TS, Jest preset)
+
+   ```bash
+   mkdir -p packages/config-eslint packages/config-tsconfig packages/jest-presets
+   # ESLint base
+   cat > packages/config-eslint/index.cjs <<'EOF'
+   module.exports = {
+     extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended', 'prettier'],
+     parser: '@typescript-eslint/parser',
+     plugins: ['@typescript-eslint'],
+   };
+   EOF
+   # TSConfig base
+   cat > packages/config-tsconfig/tsconfig.json <<'EOF'
+   { "extends": "@tsconfig/recommended/tsconfig.json" }
+   EOF
+   # Jest preset using SWC
+   cat > packages/jest-presets/preset.cjs <<'EOF'
+   module.exports = {
+     testEnvironment: 'node',
+     transform: { '^.+\\.(t|j)sx?$': ['@swc/jest'] },
+   };
+   EOF
+   ```
+
+5. **Install dependencies** (latest stable, Tailwind v4, NativeWind)
+
+   ```bash
+   pnpm add -D turbo typescript prettier eslint @typescript-eslint/{parser,eslint-plugin}
+   pnpm --filter web add next@latest react@latest react-dom@latest @tanstack/react-query @supabase/auth-helpers-nextjs @supabase/supabase-js
+   pnpm --filter web add -D tailwindcss@next eslint-config-next
+   pnpm --filter api add @nestjs/{common,core,platform-express,config,swagger,jwt,passport} reflect-metadata rxjs
+   pnpm --filter api add -D @nestjs/{cli,schematics,testing} ts-node
+   pnpm --filter mobile add expo react react-native nativewind @tanstack/react-query @react-navigation/native @react-navigation/native-stack @supabase/supabase-js
+   ```
+
+6. **Initialize Tailwind CSS v4 in Next.js**
+
+   ```bash
+   cd apps/web
+   npx tailwindcss init --ts --simple
+   # Update tailwind.config.ts content globs to include app/**/* and ../../packages/ui-web/src/**/*
+   # Replace globals.css with the v4 single-import + @theme tokens (see this repo for reference).
+   cd ../../
+   ```
+
+7. **Initialize NativeWind in Expo**
+
+   ```bash
+   cd apps/mobile
+   npx tailwindcss init --simple
+   # Set tailwind.config.js content to app/**/*.{ts,tsx} and ../../packages/ui-native/src/**/*.{ts,tsx}
+   # Enable the babel plugin in babel.config.js: plugins: ['nativewind/babel']
+   cd ../../
+   ```
+
+8. **Wire workspace tooling**
+
+   ```bash
+   pnpm install
+   pnpm turbo lint
+   pnpm turbo dev --parallel
+   ```
+
+These steps produce the same layout as this repository with up-to-date dependencies and no deprecated packages.
+
 ---
 
 # ⚙️ Requirements
