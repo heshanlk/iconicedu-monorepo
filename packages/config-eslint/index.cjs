@@ -3,7 +3,9 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 2020,
     sourceType: 'module',
-    project: ['./tsconfig.base.json'],
+    // Resolve the consuming package's tsconfig when extended from elsewhere
+    project: [require('path').join(process.cwd(), 'tsconfig.json')],
+    tsconfigRootDir: process.cwd(),
   },
   plugins: ['@typescript-eslint', 'react', 'react-hooks'],
   extends: [
@@ -20,5 +22,6 @@ module.exports = {
   rules: {
     'no-unused-vars': 'off',
     '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+    'react/react-in-jsx-scope': 'off',
   },
 };
