@@ -1,0 +1,46 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Profile {
+  id        String   @id @db.Uuid
+  fullName  String?  @map("full_name")
+  appRole   String   @map("app_role")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("profiles")
+}
+
+model Channel {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String
+  type      String
+  classId   String?  @db.Uuid @map("class_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("channels")
+}
+
+model Message {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  channelId String   @db.Uuid @map("channel_id")
+  userId    String   @db.Uuid @map("user_id")
+  content   String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("messages")
+}
+
+model Class {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String
+  subject   String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("classes")
+}

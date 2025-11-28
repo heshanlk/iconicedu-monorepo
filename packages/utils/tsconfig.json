@@ -1,0 +1,6 @@
+{
+  "extends": "@iconicedu/config-tsconfig/base.json",
+  "compilerOptions": {
+    "composite": true
+  }
+}
