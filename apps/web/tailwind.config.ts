@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss';
+import colors from 'tailwindcss/colors';
 
 const config: Config = {
   content: [
@@ -9,6 +10,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        slate: colors.slate,
         brand: {
           50: '#f5f7ff',
           100: '#e0e7ff',
