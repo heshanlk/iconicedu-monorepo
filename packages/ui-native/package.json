@@ -7,8 +7,8 @@
     "build": "tsc -p tsconfig.json"
   },
   "peerDependencies": {
-    "react": "^18.0.0",
-    "react-native": "*"
+    "react": "^19.0.0",
+    "react-native": ">=0.82.0"
   },
   "license": "MIT"
 }

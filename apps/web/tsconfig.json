@@ -1,15 +1,9 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "@iconicedu/config-tsconfig/next.json",
   "compilerOptions": {
-    "allowJs": false,
-    "jsx": "react-jsx",
-    "strict": true,
-    "noEmit": true,
-    "moduleResolution": "bundler",
+    "baseUrl": ".",
     "paths": {
-      "@iconicedu/ui-web/*": [
-        "../../packages/ui-web/src/*"
-      ]
+      "@iconicedu/ui-web/*": ["../../packages/ui-web/src/*"]
     }
   },
   "include": [
@@ -17,7 +11,5 @@
     "**/*.ts",
     "**/*.tsx"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

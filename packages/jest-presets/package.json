@@ -1,0 +1,12 @@
+{
+  "name": "@iconicedu/jest-presets",
+  "version": "0.1.0",
+  "main": "jest-preset.cjs",
+  "files": ["jest-preset.cjs"],
+  "license": "MIT",
+  "peerDependencies": {
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "typescript": "^5.9.3"
+  }
+}
