@@ -2,11 +2,7 @@ import type { Config } from 'tailwindcss';
 import colors from 'tailwindcss/colors';
 
 const config: Config = {
-  content: [
-    './app/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    '../../packages/ui-web/src/**/*.{ts,tsx}',
-  ],
+  content: ['./src/**/*.{ts,tsx,js,jsx}'],
   theme: {
     extend: {
       colors: {

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import clsx from 'clsx';
+import { cn } from '../lib/utils';
 
 type ButtonVariant = 'primary' | 'secondary' | 'ghost';
 
@@ -18,7 +18,7 @@ const variants: Record<ButtonVariant, string> = {
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ variant = 'primary', className, ...props }, ref) => (
-    <button ref={ref} className={clsx(base, variants[variant], className)} {...props} />
+    <button ref={ref} className={cn(base, variants[variant], className)} {...props} />
   ),
 );
 
