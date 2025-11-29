@@ -20,6 +20,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 12px 0;
+  gap: 10px;
 }
 
 .brand {
@@ -58,38 +59,7 @@ body {
 .page {
   display: flex;
   flex-direction: column;
-  gap: 28px;
-}
-
-.stack {
-  display: flex;
-  flex-direction: column;
-}
-
-.stack.gap-xs {
-  gap: 8px;
-}
-
-.stack.gap-sm {
-  gap: 12px;
-}
-
-.stack.gap-lg {
   gap: 18px;
-}
-
-.hero-title {
-  font-size: 1.75rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: hsl(var(--foreground));
-}
-
-.hero-text {
-  max-width: 640px;
-  font-size: 0.95rem;
-  line-height: 1.5;
-  color: hsl(var(--muted-foreground));
 }
 
 .inline-badges {
@@ -104,67 +74,41 @@ body {
   gap: 12px;
 }
 
-.login-block {
-  min-height: 70vh;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 24px;
-  align-items: center;
-}
-
-.login-copy {
+.login-screen {
+  min-height: 100vh;
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.login-heading {
-  font-size: 2.1rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: hsl(var(--background));
   color: hsl(var(--foreground));
 }
 
-.login-subheading {
-  max-width: 540px;
-  color: hsl(var(--muted-foreground));
-  line-height: 1.5;
-}
-
-.login-meta {
-  color: hsl(var(--muted-foreground));
-  font-size: 0.95rem;
-}
-
-.login-card {
-  max-width: 520px;
-}
-
-.login-form {
+.login-panel {
   width: 100%;
+  max-width: 420px;
 }
 
-.login-actions {
-  display: grid;
-  gap: 10px;
-}
+@media (max-width: 640px) {
+  .app-main {
+    padding: 16px 0 24px;
+  }
 
-.login-divider {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: 12px;
-}
+  .header-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 
-.login-divider span:first-child,
-.login-divider span:last-child {
-  height: 1px;
-  background: hsl(var(--border));
-}
+  .button-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
 
-.login-footer {
-  display: flex;
-  gap: 12px;
-  justify-content: space-between;
-  flex-wrap: wrap;
+  .page {
+    gap: 18px;
+  }
+
+  .login-screen {
+    padding: 16px;
+  }
 }
