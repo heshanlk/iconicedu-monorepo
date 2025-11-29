@@ -104,3 +104,18 @@ export function Muted({
 }: React.HTMLAttributes<HTMLParagraphElement>) {
   return <p className={cn('text-sm text-muted-foreground', className)} {...props} />;
 }
+
+export function Link({
+  className,
+  ...props
+}: React.AnchorHTMLAttributes<HTMLAnchorElement>) {
+  return (
+    <a
+      className={cn(
+        'font-medium text-primary underline-offset-4 hover:underline hover:text-primary/80',
+        className,
+      )}
+      {...props}
+    />
+  );
+}
