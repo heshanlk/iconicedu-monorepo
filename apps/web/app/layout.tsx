@@ -1,6 +1,7 @@
 import './styles.css';
 import '../styles/globals.css';
 import type { ReactNode } from 'react';
+import '@iconicedu/ui-web/dist/ui-web.css';
 
 export const metadata = {
   title: 'ICONIC EDU Console',

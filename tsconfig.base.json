@@ -19,6 +19,9 @@
       "@iconicedu/ui-web/*": [
         "packages/ui-web/src/*"
       ],
+      "@iconicedu/ui-web": [
+        "packages/ui-web/src"
+      ],
       "@iconicedu/ui-native/*": [
         "packages/ui-native/src/*"
       ],

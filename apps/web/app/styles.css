@@ -35,5 +35,147 @@ body {
 
 .app-main {
   flex: 1;
-  padding: 24px 0;
+  padding: 24px 0 32px;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+}
+
+.stack.gap-xs {
+  gap: 8px;
+}
+
+.stack.gap-sm {
+  gap: 12px;
+}
+
+.stack.gap-lg {
+  gap: 18px;
+}
+
+.hero-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #e2e8f0;
+}
+
+.hero-text {
+  max-width: 640px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #cbd5e1;
+}
+
+.inline-badges {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.card-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+.login-page {
+  min-height: 70vh;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+  align-items: center;
+}
+
+.login-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.login-title {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #e2e8f0;
+}
+
+.login-text {
+  max-width: 520px;
+  color: #cbd5e1;
+  line-height: 1.5;
+}
+
+.login-card {
+  max-width: 520px;
+}
+
+.login-footnote {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.muted {
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+.link-button {
+  padding: 0;
+  height: auto;
+}
+
+.login-hero {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.login-hero-card {
+  border: 1px solid #1f2937;
+  background: linear-gradient(160deg, #0b1224, #0f172a);
+  padding: 24px;
+  border-radius: 20px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  max-width: 480px;
+}
+
+.login-hero-card h2 {
+  color: #e2e8f0;
+  font-size: 1.35rem;
+  margin: 0 0 12px;
+}
+
+.login-hero-card p {
+  color: #cbd5e1;
+  line-height: 1.6;
+  margin: 0 0 12px;
+}
+
+.login-hero-card ul {
+  margin: 0;
+  padding-left: 18px;
+  color: #cbd5e1;
+  line-height: 1.5;
 }
