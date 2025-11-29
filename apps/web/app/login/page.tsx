@@ -52,12 +52,8 @@ export default function LoginPage() {
               Continue with SSO
             </Button>
             <div className="login-footer">
-              <Button variant="ghost" className="link-button">
-                Forgot password?
-              </Button>
-              <Button variant="ghost" className="link-button">
-                Request access
-              </Button>
+              <Button variant="ghost">Forgot password?</Button>
+              <Button variant="ghost">Request access</Button>
             </div>
           </form>
         </CardContent>
