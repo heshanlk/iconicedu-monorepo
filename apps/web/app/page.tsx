@@ -1,4 +1,4 @@
-import { Badge, Button } from '@iconicedu/ui-web';
+import { Badge, Button, H1, Lead } from '@iconicedu/ui-web';
 
 export default function HomePage() {
   return (
@@ -9,11 +9,11 @@ export default function HomePage() {
             <Badge>Shadcn-inspired</Badge>
             <Badge variant="outline">Shared UI</Badge>
           </div>
-          <h1 className="hero-title">Welcome to ICONIC EDU</h1>
-          <p className="hero-text">
+          <H1>Welcome to ICONIC EDU</H1>
+          <Lead>
             Console UI shared from <code>@iconicedu/ui-web</code>. Swap themes and
             components from a single design system.
-          </p>
+          </Lead>
         </div>
         <div className="button-row">
           <Button>Sign in as Parent</Button>

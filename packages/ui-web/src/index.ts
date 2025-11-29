@@ -6,5 +6,7 @@ export * from './components/ui/textarea';
 export * from './components/ui/label';
 export * from './components/ui/tabs';
 export * from './components/ui/dropdown';
-export * from './components/ui/theme-toggle';
+export * from './components/theme-toggle';
+export * from './components/ui/typography';
 export * from './providers/theme-provider';
+export * from './hooks/use-theme';

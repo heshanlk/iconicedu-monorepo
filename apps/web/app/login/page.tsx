@@ -6,8 +6,11 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  H1,
   Input,
   Label,
+  Lead,
+  Muted,
 } from '@iconicedu/ui-web';
 
 export default function LoginPage() {
@@ -15,11 +18,11 @@ export default function LoginPage() {
     <div className="login-block">
       <div className="login-copy">
         <Badge variant="outline">ICONIC EDU</Badge>
-        <h1 className="login-heading">Welcome back</h1>
-        <p className="login-subheading">
+        <H1>Welcome back</H1>
+        <Lead>
           Sign in to your workspace to connect with parents, teachers, and advisors.
-        </p>
-        <p className="login-meta">New here? Request an invite from your admin.</p>
+        </Lead>
+        <Muted>New here? Request an invite from your admin.</Muted>
       </div>
 
       <Card className="login-card">
@@ -39,9 +42,7 @@ export default function LoginPage() {
               <Label htmlFor="password">Password</Label>
               <Input id="password" type="password" placeholder="••••••••" />
             </div>
-            <Button variant="" className="w-full">
-              Continue
-            </Button>
+            <Button className="w-full">Continue</Button>
             <div className="login-divider">
               <span />
               <span className="muted">or</span>

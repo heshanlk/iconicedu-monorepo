@@ -4,7 +4,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc -p tsconfig.json && tailwindcss -c tailwind.config.ts -i ./src/styles/tailwind.css -o ./dist/ui-web.css --minify"
+    "build": "tsc -p tsconfig.json && tailwindcss -c tailwind.config.ts -i ./src/styles/global.css -o ./dist/ui-web.css --minify"
   },
   "peerDependencies": {
     "react": "^19.1.1",

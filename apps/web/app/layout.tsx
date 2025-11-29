@@ -1,8 +1,8 @@
-import './styles.css';
 import '../styles/globals.css';
+import './styles.css';
 import type { ReactNode } from 'react';
 import '@iconicedu/ui-web/dist/ui-web.css';
-import { ThemeProvider, ThemeToggle } from '@iconicedu/ui-web';
+import { H3, Muted, ThemeProvider, ThemeToggle } from '@iconicedu/ui-web';
 
 export const metadata = {
   title: 'ICONIC EDU Console',
@@ -16,10 +16,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <ThemeProvider>
           <header className="app-header">
             <div className="container-page header-bar">
-              <span className="brand">ICONIC EDU</span>
-              <span className="subtitle">
+              <H3 className="brand m-0">ICONIC EDU</H3>
+              <Muted className="subtitle m-0">
                 ClassSpace · Parent · Teacher · Advisor
-              </span>
+              </Muted>
               <ThemeToggle />
             </div>
           </header>
