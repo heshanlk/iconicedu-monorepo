@@ -4,8 +4,8 @@ module.exports = {
     ecmaVersion: 2020,
     sourceType: 'module',
     // Resolve the consuming package's tsconfig when extended from elsewhere
-    project: [require('path').join(process.cwd(), 'tsconfig.json')],
-    tsconfigRootDir: process.cwd(),
+    project: ['./tsconfig.json'],
+    tsconfigRootDir: __dirname,
   },
   plugins: ['@typescript-eslint', 'react', 'react-hooks'],
   extends: [
