@@ -1,8 +1,6 @@
 'use client';
-// Tabs rely on React state/context and must run on the client
-
 import * as React from 'react';
-import { cn } from '../lib/utils';
+import { cn } from '../../lib/utils';
 
 type TabsContextType = {
   value: string;
@@ -48,7 +46,7 @@ export function TabsList({ className, ...props }: TabsListProps) {
   return (
     <div
       className={cn(
-        'inline-flex items-center rounded-xl border border-slate-800/80 bg-slate-900/40 p-1',
+        'inline-flex items-center rounded-xl border border-border bg-[hsl(var(--card))] p-1',
         className,
       )}
       {...props}
@@ -71,8 +69,8 @@ export function TabsTrigger({ value, className, ...props }: TabsTriggerProps) {
       className={cn(
         'inline-flex items-center rounded-lg px-3 py-1.5 text-sm font-medium transition',
         active
-          ? 'bg-slate-800 text-slate-50 shadow-sm'
-          : 'text-slate-300 hover:text-slate-50',
+          ? 'bg-primary text-primary-foreground shadow-sm'
+          : 'text-foreground hover:text-foreground',
         className,
       )}
       {...props}
@@ -91,7 +89,7 @@ export function TabsContent({ value, className, ...props }: TabsContentProps) {
   return (
     <div
       className={cn(
-        'rounded-xl border border-slate-800/70 bg-slate-900/40 p-4',
+        'rounded-xl border border-border bg-[hsl(var(--card))] p-4',
         className,
       )}
       {...props}

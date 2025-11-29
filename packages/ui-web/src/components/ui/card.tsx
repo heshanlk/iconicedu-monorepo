@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { cn } from '../lib/utils';
+import { cn } from '../../lib/utils';
 
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -7,7 +7,7 @@ export function Card({ className, ...props }: CardProps) {
   return (
     <div
       className={cn(
-        'rounded-2xl border border-slate-800/70 bg-slate-900/40 shadow-sm backdrop-blur',
+        'rounded-2xl border border-border bg-card shadow-sm backdrop-blur',
         className,
       )}
       {...props}
@@ -27,7 +27,7 @@ export function CardTitle({
   ...props
 }: React.HTMLAttributes<HTMLHeadingElement>) {
   return (
-    <h3 className={cn('text-base font-semibold text-slate-50', className)} {...props} />
+    <h3 className={cn('text-base font-semibold text-foreground', className)} {...props} />
   );
 }
 
@@ -37,7 +37,7 @@ export function CardDescription({
 }: React.HTMLAttributes<HTMLParagraphElement>) {
   return (
     <p
-      className={cn('mt-1 text-sm leading-relaxed text-slate-300', className)}
+      className={cn('mt-1 text-sm leading-relaxed text-muted-foreground', className)}
       {...props}
     />
   );

@@ -12,52 +12,55 @@ import {
 
 export default function LoginPage() {
   return (
-    <div className="login-page">
-      <div className="login-pane">
-        <div className="stack gap-xs">
-          <Badge variant="outline">ICONIC EDU</Badge>
-          <h1 className="login-title">Sign in to your workspace</h1>
-          <p className="login-text">
-            Use your email to access messages, announcements, and class updates.
-          </p>
-        </div>
+    <div className="login-block">
+      <div className="login-copy">
+        <Badge variant="outline">ICONIC EDU</Badge>
+        <h1 className="login-heading">Welcome back</h1>
+        <p className="login-subheading">
+          Sign in to your workspace to connect with parents, teachers, and advisors.
+        </p>
+        <p className="login-meta">New here? Request an invite from your admin.</p>
+      </div>
 
-        <Card className="login-card">
-          <CardHeader>
-            <CardTitle>Continue with email</CardTitle>
-            <CardDescription>We’ll send a magic link to your inbox.</CardDescription>
-          </CardHeader>
-          <CardContent className="stack gap-sm">
+      <Card className="login-card">
+        <CardHeader className="stack gap-xs">
+          <CardTitle>Sign in to your account</CardTitle>
+          <CardDescription>
+            Welcome back. Enter your email and password to continue.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form className="stack gap-sm login-form">
             <div className="stack gap-xs">
-              <Label htmlFor="email">Work email</Label>
+              <Label htmlFor="email">Email</Label>
               <Input id="email" type="email" placeholder="you@school.edu" />
             </div>
-            <Button className="w-full">Send magic link</Button>
-          </CardContent>
-        </Card>
-
-        <div className="login-footnote">
-          <span className="muted">Don’t have access?</span>
-          <Button variant="ghost" size="sm" className="link-button">
-            Request invite
-          </Button>
-        </div>
-      </div>
-
-      <div className="login-hero">
-        <div className="login-hero-card">
-          <h2>Stay synced with your classrooms</h2>
-          <p>
-            Parents, teachers, and advisors collaborate in one space. Track updates,
-            share notes, and align on student progress.
-          </p>
-          <ul>
-            <li>Fast announcements with magic links</li>
-            <li>Role-based workspaces for staff and guardians</li>
-            <li>Secure by default with audit trails</li>
-          </ul>
-        </div>
-      </div>
+            <div className="stack gap-xs">
+              <Label htmlFor="password">Password</Label>
+              <Input id="password" type="password" placeholder="••••••••" />
+            </div>
+            <Button variant="" className="w-full">
+              Continue
+            </Button>
+            <div className="login-divider">
+              <span />
+              <span className="muted">or</span>
+              <span />
+            </div>
+            <Button variant="secondary" className="w-full">
+              Continue with SSO
+            </Button>
+            <div className="login-footer">
+              <Button variant="ghost" className="link-button">
+                Forgot password?
+              </Button>
+              <Button variant="ghost" className="link-button">
+                Request access
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }
