@@ -98,7 +98,7 @@ export function DropdownMenuContent({
     <div
       ref={ref}
       className={cn(
-        'absolute z-50 mt-2 min-w-[160px] rounded-lg border border-border bg-card p-1 shadow-lg',
+        'absolute z-50 mt-2 min-w-[160px] rounded-lg border border-border bg-card p-1 shadow-lg top-full',
         align === 'end' ? 'right-0' : 'left-0',
         className,
       )}

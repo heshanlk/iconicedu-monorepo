@@ -1,4 +1,4 @@
-import { Badge, Button, H1, Lead } from '@iconicedu/ui-web';
+import { Badge, Button, H1, H2, H3, Lead } from '@iconicedu/ui-web';
 
 export default function HomePage() {
   return (
@@ -14,6 +14,8 @@ export default function HomePage() {
             Console UI shared from <code>@iconicedu/ui-web</code>. Swap themes and
             components from a single design system.
           </Lead>
+          <H2>The People of the Kingdom</H2>
+          <H3>The Joke Tax</H3>
         </div>
         <div className="button-row">
           <Button>Sign in as Parent</Button>
