@@ -18,8 +18,8 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <div className="flex min-h-screen items-center justify-center px-4">
-        <div className="w-full max-w-md rounded-xl border border-border bg-card p-6 text-card-foreground shadow-sm">
+      <div className="flex min-h-screen items-center justify-center px-4 py-6">
+        <div className="w-full max-w-md">
           <LoginForm
             onEmailLogin={handleEmailLogin}
             onContinueWithApple={handleApple}
