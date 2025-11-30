@@ -1,3 +1,5 @@
+'use client';
+
 import * as React from 'react';
 import { GalleryVerticalEnd } from '../../icons';
 import { cn } from '../../lib/utils';
@@ -12,10 +14,38 @@ import {
 import { Input } from '../ui/input';
 import { H1 } from '../ui/typography';
 
-export function LoginForm({ className, ...props }: any) {
+export interface LoginFormProps extends React.ComponentProps<'div'> {
+  defaultEmail?: string;
+  defaultPassword?: string;
+  onEmailLogin?: (email: string, password: string) => void;
+  onForgotPassword?: () => void;
+  onSignUp?: () => void;
+  onContinueWithApple?: () => void;
+  onContinueWithGoogle?: () => void;
+}
+
+export function LoginForm({
+  className,
+  defaultEmail = '',
+  defaultPassword = '',
+  onEmailLogin,
+  onForgotPassword,
+  onSignUp,
+  onContinueWithApple,
+  onContinueWithGoogle,
+  ...props
+}: LoginFormProps) {
+  const [email, setEmail] = React.useState(defaultEmail);
+  const [password, setPassword] = React.useState(defaultPassword);
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    onEmailLogin?.(email, password);
+  };
+
   return (
     <div className={cn('flex flex-col gap-6', className)} {...props}>
-      <form>
+      <form onSubmit={handleSubmit}>
         <FieldGroup>
           <div className="flex flex-col items-center gap-2 text-center">
             <a
@@ -33,6 +63,10 @@ export function LoginForm({ className, ...props }: any) {
               <a
                 href="#"
                 className="font-medium text-primary underline-offset-4 hover:text-primary/80 hover:underline"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onSignUp?.();
+                }}
               >
                 Sign up
               </a>
@@ -40,7 +74,36 @@ export function LoginForm({ className, ...props }: any) {
           </div>
           <Field>
             <FieldLabel htmlFor="email">Email</FieldLabel>
-            <Input id="email" type="email" placeholder="m@example.com" required />
+            <Input
+              id="email"
+              type="email"
+              placeholder="m@example.com"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="password">Password</FieldLabel>
+            <Input
+              id="password"
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <div className="flex justify-end">
+              <a
+                href="#"
+                className="text-sm font-medium text-primary underline-offset-4 hover:text-primary/80 hover:underline"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onForgotPassword?.();
+                }}
+              >
+                Forgot your password?
+              </a>
+            </div>
           </Field>
           <Field>
             <Button type="submit">Login</Button>
@@ -51,6 +114,7 @@ export function LoginForm({ className, ...props }: any) {
               variant="outline"
               type="button"
               className="gap-2 w-full justify-center"
+              onClick={() => onContinueWithApple?.()}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -69,6 +133,7 @@ export function LoginForm({ className, ...props }: any) {
               variant="outline"
               type="button"
               className="gap-2 w-full justify-center"
+              onClick={() => onContinueWithGoogle?.()}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -91,6 +156,7 @@ export function LoginForm({ className, ...props }: any) {
         <a
           href="#"
           className="font-medium text-primary underline-offset-4 hover:text-primary/80 hover:underline"
+          onClick={(e) => e.preventDefault()}
         >
           Terms of Service
         </a>{' '}
@@ -98,6 +164,7 @@ export function LoginForm({ className, ...props }: any) {
         <a
           href="#"
           className="font-medium text-primary underline-offset-4 hover:text-primary/80 hover:underline"
+          onClick={(e) => e.preventDefault()}
         >
           Privacy Policy
         </a>
