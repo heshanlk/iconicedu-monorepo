@@ -59,17 +59,7 @@ export function LoginForm({
             </a>
             <H1 className="text-xl font-bold text-foreground">Welcome to ICONIC</H1>
             <FieldDescription>
-              Don&apos;t have an account?{' '}
-              <a
-                href="#"
-                className="font-medium text-primary underline-offset-4 hover:text-primary/80 hover:underline"
-                onClick={(e) => {
-                  e.preventDefault();
-                  onSignUp?.();
-                }}
-              >
-                Sign up
-              </a>
+              Enter your email and we’ll send a one-time code to continue.
             </FieldDescription>
           </div>
           <Field>
@@ -84,32 +74,10 @@ export function LoginForm({
             />
           </Field>
           <Field>
-            <FieldLabel htmlFor="password">Password</FieldLabel>
-            <Input
-              id="password"
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <div className="flex justify-end">
-              <a
-                href="#"
-                className="text-sm font-medium text-primary underline-offset-4 hover:text-primary/80 hover:underline"
-                onClick={(e) => {
-                  e.preventDefault();
-                  onForgotPassword?.();
-                }}
-              >
-                Forgot your password?
-              </a>
-            </div>
-          </Field>
-          <Field>
-            <Button type="submit">Login</Button>
+            <Button type="submit">Continue</Button>
           </Field>
           <FieldSeparator>Or</FieldSeparator>
-          <Field className="grid grid-cols-2 gap-4">
+          <Field className="flex flex-col gap-3 py-2">
             <Button
               variant="outline"
               type="button"
