@@ -17,8 +17,7 @@ import { H1 } from '../ui/typography';
 export interface LoginFormProps extends React.ComponentProps<'div'> {
   defaultEmail?: string;
   defaultPassword?: string;
-  onEmailLogin?: (email: string, password: string) => void;
-  onForgotPassword?: () => void;
+  onEmailLogin?: (email: string) => void;
   onSignUp?: () => void;
   onContinueWithApple?: () => void;
   onContinueWithGoogle?: () => void;
@@ -27,20 +26,16 @@ export interface LoginFormProps extends React.ComponentProps<'div'> {
 export function LoginForm({
   className,
   defaultEmail = '',
-  defaultPassword = '',
   onEmailLogin,
-  onForgotPassword,
-  onSignUp,
   onContinueWithApple,
   onContinueWithGoogle,
   ...props
 }: LoginFormProps) {
   const [email, setEmail] = React.useState(defaultEmail);
-  const [password, setPassword] = React.useState(defaultPassword);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    onEmailLogin?.(email, password);
+    onEmailLogin?.(email);
   };
 
   return (
