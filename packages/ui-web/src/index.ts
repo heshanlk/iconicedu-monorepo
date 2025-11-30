@@ -14,4 +14,4 @@ export * from './components/ui/typography';
 export * from './components/ui/input-otp';
 export * from './providers/theme-provider';
 export * from './hooks/use-theme';
-export * from './icons';
+export * from './components/icons/icons';

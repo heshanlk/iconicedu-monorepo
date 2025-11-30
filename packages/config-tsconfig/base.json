@@ -1,5 +1,6 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "typeRoots": ["./types", "../../shared-types/src", "./node_modules/@types"]
   }
 }

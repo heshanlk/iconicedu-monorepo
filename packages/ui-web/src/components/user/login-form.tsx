@@ -1,7 +1,6 @@
 'use client';
 
 import * as React from 'react';
-import { GalleryVerticalEnd } from '../../icons';
 import { cn } from '../../lib/utils';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
@@ -13,7 +12,7 @@ import {
   FieldSeparator,
 } from '../ui/field';
 import { Input } from '../ui/input';
-import { H1 } from '../ui/typography';
+import { Logo } from '../icons/logo';
 
 export interface LoginFormProps extends React.ComponentProps<'div'> {
   defaultEmail?: string;
@@ -43,8 +42,8 @@ export function LoginForm({
     <div className={cn('flex flex-col gap-6', className)} {...props}>
       <Card>
         <CardHeader className="text-center space-y-3">
-          <div className="mx-auto flex size-10 items-center justify-center rounded-full bg-secondary text-secondary-foreground">
-            <GalleryVerticalEnd className="size-6" aria-hidden="true" />
+          <div className="mx-auto flex items-center justify-center rounded-full p-1">
+            <Logo aria-hidden="true" className="h-12 w-auto" />
           </div>
           <CardTitle className="text-4xl lg:text-5xl font-extrabold">
             Welcome to ICONIC

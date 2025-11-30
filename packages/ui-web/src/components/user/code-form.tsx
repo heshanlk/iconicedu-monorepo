@@ -11,8 +11,9 @@ import {
   InputOTPSlot,
   InputOTPSeparator,
 } from '../ui/input-otp';
-import { GalleryVerticalEnd } from '../../icons';
+import { GalleryVerticalEnd } from '../icons/icons';
 import { H1 } from '../ui/typography';
+import { Logo } from '../icons/logo';
 
 export interface CodeFormProps extends React.ComponentProps<'div'> {
   defaultCode?: string;
@@ -39,8 +40,8 @@ export function CodeForm({
     <div className={cn('flex flex-col gap-6', className)} {...props}>
       <Card>
         <CardHeader className="text-center space-y-3">
-          <div className="mx-auto flex size-10 items-center justify-center rounded-full bg-secondary text-secondary-foreground">
-            <GalleryVerticalEnd className="size-6" aria-hidden="true" />
+          <div className="mx-auto flex items-center justify-center rounded-full p-1">
+            <Logo aria-hidden="true" className="h-12 w-auto" />
           </div>
           <CardTitle className="text-4xl lg:text-5xl font-extrabold">
             Enter verification code

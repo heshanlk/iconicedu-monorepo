@@ -7,6 +7,6 @@
     "outDir": "dist",
     "tsBuildInfoFile": "dist/.tsbuildinfo"
   },
-  "include": ["src"],
+  "include": ["src", "../shared-types/src/svg.d.ts"],
   "exclude": ["dist", "node_modules"]
 }
