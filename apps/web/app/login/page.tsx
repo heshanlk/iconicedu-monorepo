@@ -25,15 +25,17 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="login-screen">
-      <div className="login-panel">
-        <LoginForm
-          onEmailLogin={handleEmailLogin}
-          onForgotPassword={handleForgotPassword}
-          onSignUp={handleSignUp}
-          onContinueWithApple={handleApple}
-          onContinueWithGoogle={handleGoogle}
-        />
+    <div className="min-h-screen bg-background text-foreground">
+      <div className="flex min-h-screen items-center justify-center px-4">
+        <div className="w-full max-w-md rounded-xl border border-border bg-card p-6 text-card-foreground shadow-sm">
+          <LoginForm
+            onEmailLogin={handleEmailLogin}
+            onForgotPassword={handleForgotPassword}
+            onSignUp={handleSignUp}
+            onContinueWithApple={handleApple}
+            onContinueWithGoogle={handleGoogle}
+          />
+        </div>
       </div>
     </div>
   );

@@ -1,5 +1,3 @@
-import '../styles/globals.css';
-import './styles.css';
 import type { ReactNode } from 'react';
 import '@iconicedu/ui-web/dist/ui-web.css';
 import { H3, Muted, ThemeProvider, ThemeToggle } from '@iconicedu/ui-web';
@@ -12,18 +10,20 @@ export const metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="app-shell">
+      <body className="min-h-screen bg-background text-foreground">
         <ThemeProvider>
-          <header className="app-header">
-            <div className="container-page header-bar">
-              <H3 className="brand m-0">ICONIC EDU</H3>
-              <Muted className="subtitle m-0">
-                ClassSpace · Parent · Teacher · Advisor
-              </Muted>
-              <ThemeToggle />
+          <header className="border-b border-border">
+            <div className="mx-auto flex max-w-5xl flex-col gap-2 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-col gap-1">
+                <H3 className="m-0 text-base font-semibold tracking-tight">ICONIC EDU</H3>
+                <Muted className="m-0 text-sm">ClassSpace · Parent · Teacher · Advisor</Muted>
+              </div>
+              <div className="flex justify-start sm:justify-end">
+                <ThemeToggle />
+              </div>
             </div>
           </header>
-          <main className="container-page app-main">{children}</main>
+          <main className="mx-auto max-w-5xl px-6 py-8">{children}</main>
         </ThemeProvider>
       </body>
     </html>
