@@ -70,8 +70,11 @@ export function CompleteProfileForm({
     return map;
   }, [timezoneData]);
 
-  const [countryId, setCountryId] = React.useState<string>('');
-  const [timezone, setTimezone] = React.useState<string>('');
+  const [countryId, setCountryId] = React.useState<string>('US');
+  const [timezone, setTimezone] = React.useState<string>(() => {
+    const tz = primaryTzByCountry.get('US');
+    return tz ?? '';
+  });
 
   const handleCountryChange = (id: string) => {
     setCountryId(id);
@@ -103,11 +106,11 @@ export function CompleteProfileForm({
     <Card className={cn('w-full max-w-md', className)} {...props}>
       <CardHeader>
         <div className="text-center space-y-3">
-          <div className="mx-auto flex items-center justify-center rounded-full bg-secondary/60 p-1">
-            <Logo aria-hidden="true" className="h-8 w-auto text-primary" />
+          <div className="mx-auto flex items-center justify-center rounded-full p-1">
+            <Logo aria-hidden="true" className="h-12 w-auto" />
           </div>
-          <CardTitle className="text-2xl font-semibold">Complete your profile</CardTitle>
-          <CardDescription>Tell us about you to create your account.</CardDescription>
+          <CardTitle className="text-4xl font-extrabold">Complete your profile</CardTitle>
+          <CardDescription>Tell us about you to create your account</CardDescription>
         </div>
       </CardHeader>
       <CardContent>
@@ -115,21 +118,21 @@ export function CompleteProfileForm({
           <FieldGroup className="space-y-6">
             <FieldSet>
               <FieldLegend>Basic info</FieldLegend>
-              <FieldDescription>
-                Who are you? We&apos;ll use this on your profile.
-              </FieldDescription>
               <Field>
-                <FieldLabel htmlFor="fullName">Full name</FieldLabel>
-                <Input id="fullName" name="fullName" required placeholder="Jane Doe" />
-                <FieldDescription>This will appear on your account.</FieldDescription>
+                <FieldLabel htmlFor="fullName">Parent&apos;s Full name</FieldLabel>
+                <Input
+                  id="fullName"
+                  name="fullName"
+                  required
+                  placeholder="Enter your name here"
+                />
               </Field>
             </FieldSet>
 
             <FieldSeparator />
 
             <FieldSet>
-              <FieldLegend>Contact</FieldLegend>
-              <FieldDescription>How can we reach you?</FieldDescription>
+              <FieldLegend>How can we reach you?</FieldLegend>
               <Field>
                 <FieldLabel htmlFor="mobile">Mobile number</FieldLabel>
                 <Input
@@ -170,37 +173,33 @@ export function CompleteProfileForm({
             <FieldSeparator />
 
             <FieldSet>
-              <FieldLegend>Location</FieldLegend>
-              <FieldDescription>
-                Helps us schedule and find the right fit.
-              </FieldDescription>
-              <div className="grid grid-cols-2 gap-4">
-                <Field>
-                  <FieldLabel htmlFor="city">City</FieldLabel>
-                  <Input id="city" name="city" placeholder="Colombo" />
-                </Field>
-                <Field>
-                  <FieldLabel htmlFor="country">Country</FieldLabel>
-                  <Select
-                    name="country"
-                    value={countryId}
-                    onValueChange={handleCountryChange}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select country" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {countries.map((country) => {
-                        return (
-                          <SelectItem key={country.id} value={country.id}>
-                            {country.name}
-                          </SelectItem>
-                        );
-                      })}
-                    </SelectContent>
-                  </Select>
-                </Field>
-              </div>
+              <FieldLegend>Where you are from?</FieldLegend>
+              <Field>
+                <FieldLabel htmlFor="city">City</FieldLabel>
+                <Input id="city" name="city" placeholder="Colombo" />
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="country">Country</FieldLabel>
+                <Select
+                  name="country"
+                  value={countryId}
+                  onValueChange={handleCountryChange}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select country" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {countries.map((country) => {
+                      return (
+                        <SelectItem key={country.id} value={country.id}>
+                          {country.name}
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectContent>
+                </Select>
+              </Field>
+
               <Field>
                 <FieldLabel htmlFor="timezone">Timezone</FieldLabel>
                 <Select
@@ -225,14 +224,13 @@ export function CompleteProfileForm({
             <FieldSeparator />
 
             <FieldSet>
-              <FieldLegend>Discovery</FieldLegend>
-              <FieldDescription>How did you hear about us?</FieldDescription>
+              <FieldLegend>How did you hear about us?</FieldLegend>
               <Field>
                 <Textarea
                   id="heard"
                   name="heard"
-                  placeholder="Friend, social media, ad, etc."
-                  className="min-h-[96px]"
+                  placeholder="Friend (include their names), social media, ad, etc."
+                  className="min-h-[196px]"
                 />
                 <FieldDescription>Optional, but it helps us improve.</FieldDescription>
               </Field>
@@ -240,7 +238,7 @@ export function CompleteProfileForm({
 
             <Field>
               <Button type="submit" className="w-full justify-center">
-                Continue
+                Complete
               </Button>
             </Field>
           </FieldGroup>
