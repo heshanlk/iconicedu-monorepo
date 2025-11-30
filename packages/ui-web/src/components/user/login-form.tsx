@@ -13,6 +13,7 @@ import {
 } from '../ui/field';
 import { Input } from '../ui/input';
 import { Logo } from '../icons/logo';
+import { Lead } from '../ui/typography';
 
 export interface LoginFormProps extends React.ComponentProps<'div'> {
   defaultEmail?: string;
@@ -46,17 +47,17 @@ export function LoginForm({
             <Logo aria-hidden="true" className="h-12 w-auto" />
           </div>
           <CardTitle className="text-4xl lg:text-5xl font-extrabold">
-            Welcome to ICONIC
+            Welcome to Iconic
           </CardTitle>
-          <CardDescription>
-            Enter your email and we&apos;ll send a one-time code to continue.
+          <CardDescription className="text-xl">
+            Affordable private tutoring focused on real progress.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit}>
-            <FieldGroup className="space-y-5">
+            <FieldGroup>
               <Field>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
+                <FieldLabel htmlFor="email">Email address</FieldLabel>
                 <Input
                   id="email"
                   type="email"
@@ -65,6 +66,9 @@ export function LoginForm({
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
+                <FieldDescription>
+                  Enter your email and we&apos;ll send a secure one-time code to continue.
+                </FieldDescription>
               </Field>
               <Field>
                 <Button type="submit" className="w-full justify-center">

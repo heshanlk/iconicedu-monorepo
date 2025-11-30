@@ -15,7 +15,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="flex min-h-screen items-center justify-center px-4 py-6">
-        <div className="w-full max-w-lg">
+        <div className="w-full max-w-md">
           <CodeForm onVerifyCode={handleVerifyCode} onResendCode={handleResend} />
         </div>
       </div>
