@@ -43,7 +43,7 @@ export function CodeForm({
           <div className="mx-auto flex items-center justify-center rounded-full p-1">
             <Logo aria-hidden="true" className="h-12 w-auto" />
           </div>
-          <CardTitle className="text-4xl lg:text-5xl font-extrabold">
+          <CardTitle className="text-4xl font-extrabold">
             Enter verification code
           </CardTitle>
           <CardDescription>Enter the 6-digit code sent to your email.</CardDescription>

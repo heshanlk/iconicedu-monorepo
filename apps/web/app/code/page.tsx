@@ -1,11 +1,15 @@
 'use client';
 
 import { CodeForm } from '@iconicedu/ui-web';
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
+  const router = useRouter();
+
   const handleVerifyCode = (code: string) => {
     // Replace with real auth flow (e.g., call API or router action)
     console.info('Code verification requested', { code });
+    router.push('/complete-profile');
   };
 
   const handleResend = () => {

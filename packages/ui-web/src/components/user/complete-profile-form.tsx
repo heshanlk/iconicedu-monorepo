@@ -12,6 +12,7 @@ import {
   FieldLegend,
   FieldSeparator,
   FieldSet,
+  FieldError,
 } from '../ui/field';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
@@ -25,6 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select';
+import { AsYouType, isValidPhoneNumber } from 'libphonenumber-js';
 
 export interface CompleteProfileFormProps extends React.ComponentProps<typeof Card> {
   onSubmitProfile?: (data: Record<string, FormDataEntryValue>) => void;
@@ -75,6 +77,8 @@ export function CompleteProfileForm({
     const tz = primaryTzByCountry.get('US');
     return tz ?? '';
   });
+  const [mobile, setMobile] = React.useState('');
+  const [mobileError, setMobileError] = React.useState<string | null>(null);
 
   const handleCountryChange = (id: string) => {
     setCountryId(id);
@@ -89,9 +93,42 @@ export function CompleteProfileForm({
     if (c) setCountryId(c);
   };
 
+  const handleMobileChange = (value: string) => {
+    const formatter = new AsYouType();
+    const formatted = formatter.input(value);
+    const e164 = formatter.getNumberValue();
+
+    setMobile(formatted);
+
+    if (value.length === 0) {
+      setMobileError(null);
+      return;
+    }
+
+    if (!e164 || !isValidPhoneNumber(e164)) {
+      setMobileError('Enter a valid international number (e.g., +15551234567).');
+      return;
+    }
+
+    setMobileError(null);
+  };
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
+    const formatter = new AsYouType();
+    const formatted = formatter.input(mobile);
+    const e164 = formatter.getNumberValue();
+    if (!e164 || !isValidPhoneNumber(e164)) {
+      setMobileError('Enter a valid international number (e.g., +15551234567).');
+      return;
+    }
+    formData.set('mobile', e164);
+    setMobileError(null);
+    const entries = Array.from(
+      (formData as any).entries() as Iterable<[string, FormDataEntryValue]>,
+    );
+    onSubmitProfile?.(Object.fromEntries(entries));
   };
 
   const availableTimezones = React.useMemo(() => {
@@ -123,8 +160,8 @@ export function CompleteProfileForm({
                 <Input
                   id="fullName"
                   name="fullName"
-                  required
                   placeholder="Enter your name here"
+                  required
                 />
               </Field>
             </FieldSet>
@@ -133,7 +170,7 @@ export function CompleteProfileForm({
 
             <FieldSet>
               <FieldLegend>How can we reach you?</FieldLegend>
-              <Field>
+              <Field data-invalid={mobileError ? '' : undefined}>
                 <FieldLabel htmlFor="mobile">Mobile number</FieldLabel>
                 <Input
                   id="mobile"
@@ -141,7 +178,11 @@ export function CompleteProfileForm({
                   type="tel"
                   required
                   placeholder="+1 (555) 123-4567"
+                  value={mobile}
+                  onChange={(e) => handleMobileChange(e.target.value)}
+                  aria-invalid={!!mobileError}
                 />
+                {mobileError ? <FieldError>{mobileError}</FieldError> : null}
                 <label className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
                   <Checkbox
                     name="hasWhatsapp"
@@ -176,7 +217,7 @@ export function CompleteProfileForm({
               <FieldLegend>Where you are from?</FieldLegend>
               <Field>
                 <FieldLabel htmlFor="city">City</FieldLabel>
-                <Input id="city" name="city" placeholder="Colombo" />
+                <Input id="city" name="city" placeholder="Colombo" required />
               </Field>
               <Field>
                 <FieldLabel htmlFor="country">Country</FieldLabel>
@@ -184,6 +225,7 @@ export function CompleteProfileForm({
                   name="country"
                   value={countryId}
                   onValueChange={handleCountryChange}
+                  required
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select country" />
@@ -206,6 +248,7 @@ export function CompleteProfileForm({
                   name="timezone"
                   value={timezone}
                   onValueChange={handleTimezoneChange}
+                  required
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select timezone" />
@@ -231,6 +274,7 @@ export function CompleteProfileForm({
                   name="heard"
                   placeholder="Friend (include their names), social media, ad, etc."
                   className="min-h-[196px]"
+                  required={false}
                 />
                 <FieldDescription>Optional, but it helps us improve.</FieldDescription>
               </Field>
