@@ -72,9 +72,6 @@ export function CodeForm({
                     <InputOTPSlot index={5} />
                   </InputOTPGroup>
                 </InputOTP>
-                <FieldDescription className="text-center">
-                  Enter the 6-digit code sent to your email.
-                </FieldDescription>
               </Field>
               <Field>
                 <Button type="submit" className="w-full justify-center">

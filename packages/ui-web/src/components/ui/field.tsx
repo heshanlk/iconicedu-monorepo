@@ -48,3 +48,22 @@ export function FieldSeparator({
     </div>
   );
 }
+
+export function FieldSet({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
+  return <div className={cn('flex flex-col gap-4', className)} {...props} />;
+}
+
+export function FieldLegend({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLParagraphElement>) {
+  return (
+    <p
+      className={cn('text-base font-semibold text-foreground leading-tight', className)}
+      {...props}
+    />
+  );
+}
