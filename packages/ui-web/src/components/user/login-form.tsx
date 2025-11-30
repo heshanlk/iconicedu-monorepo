@@ -46,8 +46,12 @@ export function LoginForm({
           <div className="mx-auto flex size-10 items-center justify-center rounded-full bg-secondary text-secondary-foreground">
             <GalleryVerticalEnd className="size-6" aria-hidden="true" />
           </div>
-          <CardTitle className="text-xl">Welcome to ICONIC</CardTitle>
-          <CardDescription>Enter your email and we&apos;ll send a one-time code to continue.</CardDescription>
+          <CardTitle className="text-4xl lg:text-5xl font-extrabold">
+            Welcome to ICONIC
+          </CardTitle>
+          <CardDescription>
+            Enter your email and we&apos;ll send a one-time code to continue.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit}>

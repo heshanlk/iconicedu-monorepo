@@ -12,6 +12,7 @@ import {
   InputOTPSeparator,
 } from '../ui/input-otp';
 import { GalleryVerticalEnd } from '../../icons';
+import { H1 } from '../ui/typography';
 
 export interface CodeFormProps extends React.ComponentProps<'div'> {
   defaultCode?: string;
@@ -41,7 +42,9 @@ export function CodeForm({
           <div className="mx-auto flex size-10 items-center justify-center rounded-full bg-secondary text-secondary-foreground">
             <GalleryVerticalEnd className="size-6" aria-hidden="true" />
           </div>
-          <CardTitle className="text-xl">Enter verification code</CardTitle>
+          <CardTitle className="text-4xl lg:text-5xl font-extrabold">
+            Enter verification code
+          </CardTitle>
           <CardDescription>Enter the 6-digit code sent to your email.</CardDescription>
         </CardHeader>
         <CardContent>
