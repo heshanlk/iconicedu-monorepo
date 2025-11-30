@@ -55,9 +55,9 @@ export function LoginForm({
               <div className="flex size-8 items-center justify-center rounded-md bg-secondary text-secondary-foreground">
                 <GalleryVerticalEnd className="size-6" aria-hidden="true" />
               </div>
-              <span className="sr-only">Acme Inc.</span>
+              <span className="sr-only">ICONIC Academy.</span>
             </a>
-            <H1 className="text-xl font-bold text-foreground">Welcome to Acme Inc.</H1>
+            <H1 className="text-xl font-bold text-foreground">Welcome to ICONIC</H1>
             <FieldDescription>
               Don&apos;t have an account?{' '}
               <a

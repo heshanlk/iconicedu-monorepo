@@ -25,9 +25,7 @@ export function FieldDescription({
   className,
   ...props
 }: React.HTMLAttributes<HTMLParagraphElement>) {
-  return (
-    <p className={cn('text-sm text-muted-foreground', className)} {...props} />
-  );
+  return <p className={cn('text-sm text-muted-foreground', className)} {...props} />;
 }
 
 export function FieldSeparator({
