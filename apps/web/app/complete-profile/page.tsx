@@ -1,10 +1,14 @@
 'use client';
 
 import { CompleteProfileForm } from '@iconicedu/ui-web';
+import { useRouter } from 'next/navigation';
 
 export default function CompleteProfilePage() {
+  const router = useRouter();
+
   const handleSubmit = (data: Record<string, FormDataEntryValue>) => {
     console.info('Complete profile submitted', data);
+    router.push('/dashboard');
   };
 
   return (

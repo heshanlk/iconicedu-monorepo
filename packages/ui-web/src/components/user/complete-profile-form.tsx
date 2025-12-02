@@ -63,34 +63,23 @@ export function CompleteProfileForm({
     return map;
   }, [countryData]);
 
-  const countryByTimezone = React.useMemo(() => {
-    const map = new Map<string, string>();
-    timezoneData.forEach((tz) => {
-      const first = tz.countries?.[0];
-      if (first) map.set(tz.name, first);
-    });
-    return map;
-  }, [timezoneData]);
-
   const [countryId, setCountryId] = React.useState<string>('US');
-  const [timezone, setTimezone] = React.useState<string>(() => {
-    const tz = primaryTzByCountry.get('US');
-    return tz ?? '';
-  });
+  const [timezone, setTimezone] = React.useState<string>('America/New_York');
+  React.useEffect(() => {
+    const tz = primaryTzByCountry.get(countryId);
+    if (tz) setTimezone(tz);
+  }, [countryId, primaryTzByCountry]);
   const [mobile, setMobile] = React.useState('');
   const [mobileError, setMobileError] = React.useState<string | null>(null);
 
   const handleCountryChange = (id: string) => {
     setCountryId(id);
-    const tz = primaryTzByCountry.get(id);
-    if (tz) setTimezone(tz);
-    else setTimezone('');
+    const primaryTz = primaryTzByCountry.get(id);
+    if (primaryTz) setTimezone(primaryTz);
   };
 
   const handleTimezoneChange = (tzName: string) => {
     setTimezone(tzName);
-    const c = countryByTimezone.get(tzName);
-    if (c) setCountryId(c);
   };
 
   const handleMobileChange = (value: string) => {
@@ -132,12 +121,10 @@ export function CompleteProfileForm({
   };
 
   const availableTimezones = React.useMemo(() => {
-    if (countryId) {
-      const country = countryData.find((c) => c.id === countryId);
-      if (country?.timezones?.length) return country.timezones;
-    }
+    const country = countryData.find((c) => c.id === countryId);
+    if (country?.timezones?.length) return country.timezones;
     return allTimezoneNames;
-  }, [countryId, countryData, allTimezoneNames]);
+  }, [countryData, countryId, allTimezoneNames]);
 
   return (
     <Card className={cn('w-full max-w-md', className)} {...props}>
