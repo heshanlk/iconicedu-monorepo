@@ -14,10 +14,10 @@ import {
   SquareTerminal,
 } from 'lucide-react';
 
-import { NavMain } from './nav-main';
-import { NavProjects } from './nav-projects';
-import { NavSecondary } from './nav-secondary';
-import { NavUser } from './nav-user';
+import { NavMain } from 'packages/ui-web/src/components/ui/nav-main';
+import { NavProjects } from 'packages/ui-web/src/components/ui/nav-projects';
+import { NavSecondary } from 'packages/ui-web/src/components/ui/nav-secondary';
+import { NavUser } from 'packages/ui-web/src/components/ui/nav-user';
 import {
   Sidebar,
   SidebarContent,
@@ -26,7 +26,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from './sidebar';
+} from 'packages/ui-web/src/components/ui/sidebar';
 
 const data = {
   user: {
@@ -154,14 +154,11 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar
-      className="top-(--header-height) h-[calc(100svh-var(--header-height))]!"
-      {...props}
-    >
+    <Sidebar variant="inset" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild>
+            <SidebarMenuButton size="lg" asChild>
               <a href="#">
                 <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
                   <Command className="size-4" />

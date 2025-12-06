@@ -27,3 +27,8 @@ export * from './components/ui/nav-user';
 export * from './components/ui/app-sidebar';
 export * from './components/ui/site-header';
 export * from './components/ui/search-form';
+export * from './components/ui/collapsible';
+export * from './components/ui/tooltip';
+export * from './components/ui/sheet';
+export * from './components/ui/breadcrumb';
+export * from './components/ui/separator';

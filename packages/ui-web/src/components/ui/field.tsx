@@ -56,10 +56,7 @@ export function FieldSeparator({
   );
 }
 
-export function FieldSet({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
+export function FieldSet({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return <div className={cn('flex flex-col gap-4', className)} {...props} />;
 }
 

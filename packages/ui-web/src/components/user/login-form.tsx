@@ -46,9 +46,7 @@ export function LoginForm({
           <div className="mx-auto flex items-center justify-center rounded-full p-1">
             <Logo aria-hidden="true" className="h-12 w-auto" />
           </div>
-          <CardTitle className="text-4xl lg:text-5xl font-extrabold">
-            Welcome to Iconic
-          </CardTitle>
+          <CardTitle className="text-4xl font-extrabold">Welcome to Iconic</CardTitle>
           <CardDescription className="text-xl">
             Affordable private tutoring focused on real progress.
           </CardDescription>
