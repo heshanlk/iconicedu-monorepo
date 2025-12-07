@@ -5,16 +5,23 @@ import {
   BookOpen,
   Bot,
   Calendar,
+  ChefHat,
   Command,
+  Earth,
   Frame,
+  Heart,
+  HeartIcon,
   Home,
   Inbox,
+  Languages,
   LifeBuoy,
   Map,
   PieChart,
   Send,
   Settings2,
+  SquarePi,
   SquareTerminal,
+  Star,
 } from 'lucide-react';
 
 import { NavClassrooms } from './nav-classrooms';
@@ -62,7 +69,7 @@ const data = {
     {
       title: 'ELA with Ms Marina',
       url: '#',
-      icon: SquareTerminal,
+      icon: Languages,
       items: [
         {
           title: 'Chat',
@@ -81,7 +88,7 @@ const data = {
     {
       title: 'Chess with Ms Perera',
       url: '#',
-      icon: Bot,
+      icon: ChefHat,
       items: [
         {
           title: 'Chat',
@@ -100,7 +107,7 @@ const data = {
     {
       title: 'Social Studies with Mr Silva',
       url: '#',
-      icon: BookOpen,
+      icon: Earth,
       items: [
         {
           title: 'Chat',
@@ -119,7 +126,7 @@ const data = {
     {
       title: 'Maths with Ms Wikramasinghe',
       url: '#',
-      icon: Settings2,
+      icon: SquarePi,
       items: [
         {
           title: 'Chat',
@@ -152,47 +159,30 @@ const data = {
     {
       name: 'ELA with Ms Marina (Sameesha)',
       url: '#',
-      icon: Frame,
+      icon: Star,
     },
     {
       name: 'Chess with Ms Perera (Heshan)',
       url: '#',
-      icon: PieChart,
+      icon: Star,
     },
     {
       name: 'Social Studies with Mr Silva (Nisitha)',
       url: '#',
-      icon: Map,
-    },
-  ],
-  dms: [
-    {
-      name: 'Ms Marina (ELA)',
-      url: '#',
-      icon: Frame,
-    },
-    {
-      name: 'Ms Wikramasinghe (Maths)',
-      url: '#',
-      icon: PieChart,
-    },
-    {
-      name: 'Ms Fernando (Science)',
-      url: '#',
-      icon: Map,
+      icon: Star,
     },
   ],
   DIRECT_MESSAGES: [
     {
       id: 1,
-      name: 'Ms Wikramasinghe - Maths',
+      name: 'Ms Wikramasinghe',
       avatar:
         'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-alex-UoI6qSVh9rZS9DvLOmhIY8pabZfAOq.png',
       status: 'online' as const,
     },
     {
       id: 2,
-      name: 'Ms Shenaly - Maths',
+      name: 'Shenaly Prakash',
       avatar: '',
       status: 'away' as const,
     },
