@@ -1,4 +1,4 @@
-import { AppSidebar } from '@iconicedu/ui-web';
+import { AppSidebar } from '@/components/app-sidebar';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -6,9 +6,9 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@iconicedu/ui-web';
-import { Separator } from '@iconicedu/ui-web';
-import { SidebarInset, SidebarProvider, SidebarTrigger } from '@iconicedu/ui-web';
+} from '@iconicedu/ui-web/breadcrumb';
+import { Separator } from '@/components/ui/separator';
+import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 
 export default function Page() {
   return (
