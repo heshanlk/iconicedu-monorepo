@@ -2,25 +2,16 @@
 
 import * as React from 'react';
 import {
-  BookOpen,
-  Bot,
   Calendar,
   ChefHat,
   Command,
   Earth,
-  Frame,
-  Heart,
-  HeartIcon,
   Home,
   Inbox,
   Languages,
   LifeBuoy,
-  Map,
-  PieChart,
   Send,
-  Settings2,
   SquarePi,
-  SquareTerminal,
   Star,
 } from 'lucide-react';
 
