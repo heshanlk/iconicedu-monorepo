@@ -4,7 +4,7 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@iconicedu/ui-web/ui/collapsible';
+} from '../ui/collapsible';
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -15,7 +15,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from '@iconicedu/ui-web/ui/sidebar';
+} from '../ui/sidebar';
 
 export function NavClassrooms({
   classrooms,

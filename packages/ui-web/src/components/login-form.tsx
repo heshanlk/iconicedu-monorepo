@@ -1,15 +1,15 @@
 import { GalleryVerticalEnd } from 'lucide-react';
 
-import { cn } from '@iconicedu/ui-web/lib/utils';
-import { Button } from '@iconicedu/ui-web/ui/button';
+import { cn } from '../lib/utils';
+import { Button } from '../ui/button';
 import {
   Field,
   FieldDescription,
   FieldGroup,
   FieldLabel,
   FieldSeparator,
-} from '@iconicedu/ui-web/ui/field';
-import { Input } from '@iconicedu/ui-web/ui/input';
+} from '../ui/field';
+import { Input } from '../ui/input';
 
 export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) {
   return (

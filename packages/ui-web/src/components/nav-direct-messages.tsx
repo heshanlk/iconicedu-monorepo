@@ -15,7 +15,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@iconicedu/ui-web/ui/dropdown-menu';
+} from '../ui/dropdown-menu';
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -24,8 +24,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from '@iconicedu/ui-web/ui/sidebar';
-import { Avatar, AvatarFallback, AvatarImage } from '@iconicedu/ui-web/ui/avatar';
+} from '../ui/sidebar';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
 export function NavDirectMessages({
   dms,

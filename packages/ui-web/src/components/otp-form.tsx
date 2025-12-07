@@ -1,19 +1,19 @@
 import { GalleryVerticalEnd } from "lucide-react"
 
-import { cn } from "@iconicedu/ui-web/lib/utils"
-import { Button } from "@iconicedu/ui-web/ui/button"
+import { cn } from "../lib/utils"
+import { Button } from "../ui/button"
 import {
   Field,
   FieldDescription,
   FieldGroup,
   FieldLabel,
-} from "@iconicedu/ui-web/ui/field"
+} from "../ui/field"
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSeparator,
   InputOTPSlot,
-} from "@iconicedu/ui-web/ui/input-otp"
+} from "../ui/input-otp"
 
 export function OTPForm({ className, ...props }: React.ComponentProps<"div">) {
   return (

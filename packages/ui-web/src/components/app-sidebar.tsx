@@ -17,10 +17,10 @@ import {
   SquareTerminal,
 } from 'lucide-react';
 
-import { NavClassrooms } from '@iconicedu/ui-web/components/nav-classrooms';
-import { NavFavorites } from '@iconicedu/ui-web/components/nav-favorites';
-import { NavSecondary } from '@iconicedu/ui-web/components/nav-secondary';
-import { NavUser } from '@iconicedu/ui-web/components/nav-user';
+import { NavClassrooms } from './nav-classrooms';
+import { NavFavorites } from './nav-favorites';
+import { NavSecondary } from './nav-secondary';
+import { NavUser } from './nav-user';
 import {
   Sidebar,
   SidebarContent,
@@ -29,9 +29,9 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from '@iconicedu/ui-web/ui/sidebar';
-import { NavMain } from '@iconicedu/ui-web/components/nav-main';
-import { NavDirectMessages } from '@iconicedu/ui-web/components/nav-direct-messages';
+} from '../ui/sidebar';
+import { NavMain } from './nav-main';
+import { NavDirectMessages } from './nav-direct-messages';
 
 const data = {
   user: {
@@ -185,34 +185,34 @@ const data = {
   DIRECT_MESSAGES: [
     {
       id: 1,
-      name: 'Sarah Johnson',
+      name: 'Ms Wikramasinghe - Maths',
       avatar:
         'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-alex-UoI6qSVh9rZS9DvLOmhIY8pabZfAOq.png',
       status: 'online' as const,
     },
     {
       id: 2,
-      name: 'Mike Chen',
+      name: 'Ms Shenaly - Maths',
       avatar: '',
       status: 'away' as const,
     },
     {
       id: 3,
-      name: 'Emma Davis',
+      name: 'Ms Marina Perera',
       avatar:
         'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-jordan-ACflnHBYNP7M9crd5MtKL7WSpk3GiQ.jpg',
       status: 'online' as const,
     },
     {
       id: 4,
-      name: 'Alex Thompson',
+      name: 'Ms Mike Silva',
       avatar:
         'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-mike-T2UMe9BlbWWIxlq7z99cJWqwEagAuc.jpg',
       status: 'offline' as const,
     },
     {
       id: 5,
-      name: 'Jordan Blake',
+      name: 'Mr Sarah Johnson',
       avatar:
         'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-sarah-Vsp1gZWstExMvD0Qce0ogsgN6nv2pC.png',
       status: 'idle' as const,
