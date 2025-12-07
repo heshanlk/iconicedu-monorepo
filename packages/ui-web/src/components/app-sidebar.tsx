@@ -4,8 +4,11 @@ import * as React from 'react';
 import {
   BookOpen,
   Bot,
+  Calendar,
   Command,
   Frame,
+  Home,
+  Inbox,
   LifeBuoy,
   Map,
   PieChart,
@@ -14,8 +17,8 @@ import {
   SquareTerminal,
 } from 'lucide-react';
 
-import { NavMain } from '@iconicedu/ui-web/components/nav-main';
-import { NavProjects } from '@iconicedu/ui-web/components/nav-projects';
+import { NavClassrooms } from '@iconicedu/ui-web/components/nav-classrooms';
+import { NavFavorites } from '@iconicedu/ui-web/components/nav-favorites';
 import { NavSecondary } from '@iconicedu/ui-web/components/nav-secondary';
 import { NavUser } from '@iconicedu/ui-web/components/nav-user';
 import {
@@ -27,26 +30,46 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@iconicedu/ui-web/ui/sidebar';
+import { NavMain } from '@iconicedu/ui-web/components/nav-main';
+import { NavDirectMessages } from '@iconicedu/ui-web/components/nav-direct-messages';
 
 const data = {
   user: {
-    name: 'shadcn',
-    email: 'm@example.com',
+    name: 'Heshan Wanigasooriya',
+    email: 'heshanmw@gmail.com',
     avatar: '/avatars/shadcn.jpg',
   },
   navMain: [
     {
-      title: 'Playground',
+      title: 'Home',
+      url: '#',
+      icon: Home,
+      isActive: true,
+    },
+    {
+      title: 'Calendar',
+      url: '#',
+      icon: Calendar,
+    },
+    {
+      title: 'Inbox',
+      url: '#',
+      icon: Inbox,
+      badge: '10',
+    },
+  ],
+  classRooms: [
+    {
+      title: 'ELA with Ms Marina',
       url: '#',
       icon: SquareTerminal,
-      isActive: true,
       items: [
         {
-          title: 'History',
+          title: 'Chat',
           url: '#',
         },
         {
-          title: 'Starred',
+          title: 'Homework',
           url: '#',
         },
         {
@@ -56,66 +79,58 @@ const data = {
       ],
     },
     {
-      title: 'Models',
+      title: 'Chess with Ms Perera',
       url: '#',
       icon: Bot,
       items: [
         {
-          title: 'Genesis',
+          title: 'Chat',
           url: '#',
         },
         {
-          title: 'Explorer',
+          title: 'Homework',
           url: '#',
         },
         {
-          title: 'Quantum',
+          title: 'Settings',
           url: '#',
         },
       ],
     },
     {
-      title: 'Documentation',
+      title: 'Social Studies with Mr Silva',
       url: '#',
       icon: BookOpen,
       items: [
         {
-          title: 'Introduction',
+          title: 'Chat',
           url: '#',
         },
         {
-          title: 'Get Started',
+          title: 'Homework',
           url: '#',
         },
         {
-          title: 'Tutorials',
-          url: '#',
-        },
-        {
-          title: 'Changelog',
+          title: 'Settings',
           url: '#',
         },
       ],
     },
     {
-      title: 'Settings',
+      title: 'Maths with Ms Wikramasinghe',
       url: '#',
       icon: Settings2,
       items: [
         {
-          title: 'General',
+          title: 'Chat',
           url: '#',
         },
         {
-          title: 'Team',
+          title: 'Homework',
           url: '#',
         },
         {
-          title: 'Billing',
-          url: '#',
-        },
-        {
-          title: 'Limits',
+          title: 'Settings',
           url: '#',
         },
       ],
@@ -133,21 +148,74 @@ const data = {
       icon: Send,
     },
   ],
-  projects: [
+  favorites: [
     {
-      name: 'Design Engineering',
+      name: 'ELA with Ms Marina (Sameesha)',
       url: '#',
       icon: Frame,
     },
     {
-      name: 'Sales & Marketing',
+      name: 'Chess with Ms Perera (Heshan)',
       url: '#',
       icon: PieChart,
     },
     {
-      name: 'Travel',
+      name: 'Social Studies with Mr Silva (Nisitha)',
       url: '#',
       icon: Map,
+    },
+  ],
+  dms: [
+    {
+      name: 'Ms Marina (ELA)',
+      url: '#',
+      icon: Frame,
+    },
+    {
+      name: 'Ms Wikramasinghe (Maths)',
+      url: '#',
+      icon: PieChart,
+    },
+    {
+      name: 'Ms Fernando (Science)',
+      url: '#',
+      icon: Map,
+    },
+  ],
+  DIRECT_MESSAGES: [
+    {
+      id: 1,
+      name: 'Sarah Johnson',
+      avatar:
+        'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-alex-UoI6qSVh9rZS9DvLOmhIY8pabZfAOq.png',
+      status: 'online' as const,
+    },
+    {
+      id: 2,
+      name: 'Mike Chen',
+      avatar: '',
+      status: 'away' as const,
+    },
+    {
+      id: 3,
+      name: 'Emma Davis',
+      avatar:
+        'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-jordan-ACflnHBYNP7M9crd5MtKL7WSpk3GiQ.jpg',
+      status: 'online' as const,
+    },
+    {
+      id: 4,
+      name: 'Alex Thompson',
+      avatar:
+        'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-mike-T2UMe9BlbWWIxlq7z99cJWqwEagAuc.jpg',
+      status: 'offline' as const,
+    },
+    {
+      id: 5,
+      name: 'Jordan Blake',
+      avatar:
+        'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-sarah-Vsp1gZWstExMvD0Qce0ogsgN6nv2pC.png',
+      status: 'idle' as const,
     },
   ],
 };
@@ -174,7 +242,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        <NavFavorites favorites={data.favorites} />
+        <NavClassrooms classrooms={data.classRooms} />
+        <NavDirectMessages dms={data.DIRECT_MESSAGES} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
