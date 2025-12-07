@@ -15,6 +15,6 @@
     "utils": "@iconicedu/ui-web/lib/utils",
     "hooks": "@iconicedu/ui-web/hooks",
     "lib": "@iconicedu/ui-web/lib",
-    "ui": "@iconicedu/ui-web/components/ui"
+    "ui": "@iconicedu/ui-web/ui"
   }
 }
