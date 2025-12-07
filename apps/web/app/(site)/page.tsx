@@ -11,8 +11,8 @@ export default function HomePage() {
           </div>
           <H1>Welcome to ICONIC EDU</H1>
           <Lead>
-            Console UI shared from <code>@iconicedu/ui-web</code>. Swap themes and components from a single design
-            system.
+            Console UI shared from <code>@iconicedu/ui-web</code>. Swap themes and
+            components from a single design system.
           </Lead>
           <H2>The People of the Kingdom</H2>
           <H3>The Joke Tax</H3>
