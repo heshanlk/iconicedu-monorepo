@@ -1,4 +1,5 @@
-export * from './components/app-sidebar';
+export * from './components/sidebar-left';
+export * from './components/sidebar-right';
 export * from './components/login-form';
 export * from './components/nav-classrooms';
 export * from './components/nav-favorites';

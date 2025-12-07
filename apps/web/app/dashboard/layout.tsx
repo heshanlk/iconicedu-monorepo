@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import {
-  AppSidebar,
+  SidebarLeft,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
@@ -17,7 +17,7 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <SidebarProvider>
-        <AppSidebar />
+        <SidebarLeft />
         <SidebarInset>
           <header className="flex h-16 shrink-0 items-center gap-2">
             <div className="flex items-center gap-2 px-4">
