@@ -2,10 +2,7 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "commonjs",
-    "lib": [
-      "DOM",
-      "ES2020"
-    ],
+    "lib": ["DOM", "ES2020"],
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -16,21 +13,11 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@iconicedu/ui-web/*": [
-        "packages/ui-web/src/*"
-      ],
-      "@iconicedu/ui-web": [
-        "packages/ui-web/src"
-      ],
-      "@iconicedu/ui-native/*": [
-        "packages/ui-native/src/*"
-      ],
-      "@iconicedu/shared-types/*": [
-        "packages/shared-types/src/*"
-      ],
-      "@iconicedu/utils/*": [
-        "packages/utils/src/*"
-      ]
+      "@iconicedu/ui-web/*": ["packages/ui-web/src/*"],
+      "@iconicedu/ui-web": ["packages/ui-web/src"],
+      "@iconicedu/ui-native/*": ["packages/ui-native/src/*"],
+      "@iconicedu/shared-types/*": ["packages/shared-types/src/*"],
+      "@iconicedu/utils/*": ["packages/utils/src/*"]
     }
   }
 }

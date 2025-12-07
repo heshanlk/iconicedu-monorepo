@@ -23,15 +23,9 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <div className="flex min-h-screen items-center justify-center px-4 py-6">
-        <div className="w-full max-w-md">
-          <LoginForm
-            onEmailLogin={handleEmailLogin}
-            onContinueWithApple={handleApple}
-            onContinueWithGoogle={handleGoogle}
-          />
-        </div>
+    <div className="bg-background flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
+      <div className="w-full max-w-sm">
+        <LoginForm />
       </div>
     </div>
   );
