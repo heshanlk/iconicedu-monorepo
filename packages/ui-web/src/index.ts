@@ -20,3 +20,4 @@ export * from './icons/logo';
 export * from './ui/breadcrumb';
 export * from './providers/theme-provider';
 export * from './ui/badge';
+export * from './components/dashboard-header';

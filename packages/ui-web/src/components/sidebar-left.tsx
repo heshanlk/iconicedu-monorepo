@@ -4,7 +4,6 @@ import * as React from 'react';
 import {
   Calendar,
   ChefHat,
-  Command,
   Earth,
   Home,
   Inbox,
@@ -30,6 +29,7 @@ import {
 } from '../ui/sidebar';
 import { NavMain } from './nav-main';
 import { NavDirectMessages } from './nav-direct-messages';
+import { SiteLogoWithName } from './site-logo-wt-name';
 
 const data = {
   user: {
@@ -209,13 +209,7 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <a href="#">
-                <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                  <Command className="size-4" />
-                </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">ICONIC Academy</span>
-                  <span className="truncate text-xs">Education first</span>
-                </div>
+                <SiteLogoWithName />
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>

@@ -1,16 +1,9 @@
 import type { ReactNode } from 'react';
 import {
   SidebarLeft,
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-  Separator,
   SidebarInset,
   SidebarProvider,
-  SidebarTrigger,
+  DashboardHeader,
 } from '@iconicedu/ui-web';
 
 export default function SiteLayout({ children }: { children: ReactNode }) {
@@ -19,27 +12,8 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
       <SidebarProvider>
         <SidebarLeft />
         <SidebarInset>
-          <header className="flex h-16 shrink-0 items-center gap-2">
-            <div className="flex items-center gap-2 px-4">
-              <SidebarTrigger className="-ml-1" />
-              <Separator
-                orientation="vertical"
-                className="mr-2 data-[orientation=vertical]:h-4"
-              />
-              <Breadcrumb>
-                <BreadcrumbList>
-                  <BreadcrumbItem className="hidden md:block">
-                    <BreadcrumbLink href="#">Building Your Application</BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator className="hidden md:block" />
-                  <BreadcrumbItem>
-                    <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                  </BreadcrumbItem>
-                </BreadcrumbList>
-              </Breadcrumb>
-            </div>
-          </header>
-          <main className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</main>
+          <DashboardHeader />
+          <main className="flex flex-1 flex-col gap-4 p-4">{children}</main>
         </SidebarInset>
       </SidebarProvider>
     </>
