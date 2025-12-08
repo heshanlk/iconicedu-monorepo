@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { SidebarLeft, SidebarInset, SidebarProvider } from '@iconicedu/ui-web';
 
-export default function SiteLayout({ children }: { children: ReactNode }) {
+export default function Layout({ children }: { children: ReactNode }) {
   return (
     <>
       <SidebarProvider>
