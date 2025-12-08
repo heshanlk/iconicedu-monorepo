@@ -1,10 +1,5 @@
 import type { ReactNode } from 'react';
-import {
-  SidebarLeft,
-  SidebarInset,
-  SidebarProvider,
-  DashboardHeader,
-} from '@iconicedu/ui-web';
+import { SidebarLeft, SidebarInset, SidebarProvider } from '@iconicedu/ui-web';
 
 export default function SiteLayout({ children }: { children: ReactNode }) {
   return (
@@ -12,8 +7,7 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
       <SidebarProvider>
         <SidebarLeft />
         <SidebarInset>
-          <DashboardHeader />
-          <main className="flex flex-1 flex-col gap-4 p-4">{children}</main>
+          <main className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</main>
         </SidebarInset>
       </SidebarProvider>
     </>
