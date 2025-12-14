@@ -22,9 +22,7 @@ export function DashboardHeader({ className, ...props }: React.ComponentProps<'d
         </div>
         {(isMobile || !open) && (
           <div className="flex text-center gap-1">
-            <Button variant="ghost" size="sm" asChild>
-              <SiteLogo />
-            </Button>
+            <SiteLogo />
           </div>
         )}
         <div className="ml-auto flex flex-1 items-center justify-end gap-2">

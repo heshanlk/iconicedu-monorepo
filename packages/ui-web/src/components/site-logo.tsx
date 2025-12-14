@@ -4,8 +4,8 @@ export function SiteLogo({ className, ...props }: React.HTMLAttributes<HTMLDivEl
   return (
     <div
       className={cn(
-        'flex aspect-square size-8 items-center justify-center rounded-lg border border-sidebar-border bg-transparent text-sidebar-primary transition-colors dark:text-sidebar-primary',
-        className
+        'aspect-square size-9 rounded-lg border border-sidebar-border transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground dark:hover:bg-sidebar-accent dark:hover:text-sidebar-foreground',
+        className,
       )}
       {...props}
     >
@@ -13,7 +13,7 @@ export function SiteLogo({ className, ...props }: React.HTMLAttributes<HTMLDivEl
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 52.39 53.84"
         aria-hidden="true"
-        className="size-5"
+        className="p-1"
       >
         <defs>
           <linearGradient

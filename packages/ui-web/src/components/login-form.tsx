@@ -1,5 +1,3 @@
-import { GalleryVerticalEnd } from 'lucide-react';
-
 import { cn } from '../lib/utils';
 import { Button } from '../ui/button';
 import {
@@ -10,6 +8,7 @@ import {
   FieldSeparator,
 } from '../ui/field';
 import { Input } from '../ui/input';
+import { SiteLogo } from './site-logo';
 
 export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) {
   return (
@@ -19,11 +18,11 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
           <div className="flex flex-col items-center gap-2 text-center">
             <a href="#" className="flex flex-col items-center gap-2 font-medium">
               <div className="flex size-8 items-center justify-center rounded-md">
-                <GalleryVerticalEnd className="size-6" />
+                <SiteLogo />
               </div>
-              <span className="sr-only">Acme Inc.</span>
+              <span className="sr-only">ICONIC Academy LLC.</span>
             </a>
-            <h1 className="text-xl font-bold">Welcome to Acme Inc.</h1>
+            <h1 className="text-xl font-bold">Welcome to ICONIC Academy.</h1>
             <FieldDescription>
               Don&apos;t have an account? <a href="#">Sign up</a>
             </FieldDescription>
