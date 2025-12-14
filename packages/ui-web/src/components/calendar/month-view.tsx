@@ -11,8 +11,8 @@ import {
   isSameDay,
   isToday,
 } from 'date-fns';
-import { cn } from '../lib/utils';
-import type { CalendarEvent } from '../components/calendar';
+import { cn } from '../../lib/utils';
+import type { CalendarEvent } from './calendar';
 
 interface MonthViewProps {
   currentDate: Date;

@@ -1,8 +1,8 @@
 'use client';
 
 import { ChevronLeft, ChevronRight, CalendarIcon } from 'lucide-react';
-import { Button } from '../ui/button';
-import { Tabs, TabsList, TabsTrigger } from '../ui/tabs';
+import { Button } from '../../ui/button';
+import { Tabs, TabsList, TabsTrigger } from '../../ui/tabs';
 import type { CalendarView } from './calendar';
 
 interface CalendarHeaderProps {

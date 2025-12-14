@@ -10,11 +10,10 @@ import {
   startOfDay,
 } from 'date-fns';
 import { useEffect, useMemo, useRef } from 'react';
-import { cn } from '../lib/utils';
-import { FieldSeparator } from '../ui/field';
-import { ScrollArea } from './scroll-area';
-import { CurrentTimeIndicator } from './current-time-indicator';
-import type { CalendarEvent } from '../components/calendar';
+import { cn } from '../../lib/utils';
+import { ScrollArea } from '../../ui/scroll-area';
+import { CurrentTimeIndicator } from '../../ui/current-time-indicator';
+import type { CalendarEvent } from './calendar';
 
 interface DayViewProps {
   currentDate: Date;

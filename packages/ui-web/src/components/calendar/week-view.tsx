@@ -12,10 +12,10 @@ import {
   startOfDay,
 } from 'date-fns';
 import { useEffect, useMemo, useRef } from 'react';
-import { cn } from '../lib/utils';
-import { CurrentTimeIndicator } from './current-time-indicator';
-import { ScrollArea } from './scroll-area';
-import type { CalendarEvent } from '../components/calendar';
+import { cn } from '../../lib/utils';
+import { CurrentTimeIndicator } from '../../ui/current-time-indicator';
+import { ScrollArea } from '../../ui/scroll-area';
+import type { CalendarEvent } from './calendar';
 
 interface WeekViewProps {
   currentDate: Date;

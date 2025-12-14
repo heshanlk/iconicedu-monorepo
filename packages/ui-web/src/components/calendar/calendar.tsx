@@ -12,11 +12,11 @@ import {
   subWeeks,
 } from 'date-fns';
 import { CalendarHeader } from './calendar-header';
-import { MonthView } from '../ui/month-view';
-import { WeekView } from '../ui/week-view';
-import { DayView } from '../ui/day-view';
-import { AgendaView } from '../ui/agenda-view';
-import { useIsMobile } from '../hooks/use-mobile';
+import { MonthView } from './month-view';
+import { WeekView } from './week-view';
+import { DayView } from './day-view';
+import { AgendaView } from './agenda-view';
+import { useIsMobile } from '../../hooks/use-mobile';
 
 export type CalendarView = 'month' | 'week' | 'day' | 'agenda';
 

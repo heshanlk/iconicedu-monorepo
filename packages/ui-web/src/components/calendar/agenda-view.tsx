@@ -9,10 +9,10 @@ import {
   isToday,
   isPast,
 } from 'date-fns';
-import { cn } from '../lib/utils';
-import { ScrollArea } from './scroll-area';
+import { cn } from '../../lib/utils';
+import { ScrollArea } from '../../ui/scroll-area';
 import { CalendarDays, Clock } from 'lucide-react';
-import type { CalendarEvent } from '../components/calendar';
+import type { CalendarEvent } from './calendar';
 
 interface AgendaViewProps {
   currentDate: Date;
