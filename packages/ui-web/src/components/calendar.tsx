@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   addDays,
   addMonths,
@@ -92,6 +92,8 @@ export function Calendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [view, setView] = useState<CalendarView>('week');
   const [events] = useState<CalendarEvent[]>(sampleEvents);
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
 
   const navigateToday = () => {
     setCurrentDate(new Date());
@@ -151,6 +153,30 @@ export function Calendar() {
     setView('day');
   };
 
+  const onTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    const touch = e.touches[0];
+    touchStartX.current = touch.clientX;
+    touchStartY.current = touch.clientY;
+  };
+
+  const onTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (touchStartX.current === null || touchStartY.current === null) return;
+    const touch = e.changedTouches[0];
+    const dx = touch.clientX - touchStartX.current;
+    const dy = touch.clientY - touchStartY.current;
+    touchStartX.current = null;
+    touchStartY.current = null;
+
+    const threshold = 40;
+    if (Math.abs(dx) < threshold || Math.abs(dx) < Math.abs(dy)) return;
+
+    if (dx < 0) {
+      navigateNext();
+    } else {
+      navigatePrevious();
+    }
+  };
+
   return (
     <div className="flex h-screen flex-col">
       <CalendarHeader
@@ -161,7 +187,11 @@ export function Calendar() {
         onNext={navigateNext}
         onToday={navigateToday}
       />
-      <div className="flex-1 overflow-hidden">
+      <div
+        className="flex-1 overflow-hidden"
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+      >
         {view === 'month' && (
           <MonthView
             currentDate={currentDate}
