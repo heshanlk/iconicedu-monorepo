@@ -9,6 +9,7 @@ import {
   differenceInMinutes,
   startOfDay,
 } from 'date-fns';
+import { useEffect, useMemo, useRef } from 'react';
 import { cn } from '../lib/utils';
 import { ScrollArea } from './scroll-area';
 import type { CalendarEvent } from '../components/calendar';
@@ -24,6 +25,7 @@ export function DayView({ currentDate, events }: DayViewProps) {
   const dayEvents = events.filter((event) =>
     isSameDay(new Date(event.start), currentDate),
   );
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   const getEventPosition = (event: CalendarEvent) => {
     const eventStart = new Date(event.start);
@@ -37,6 +39,37 @@ export function DayView({ currentDate, events }: DayViewProps) {
   };
 
   const isDayToday = isToday(currentDate);
+  const firstEventTop = useMemo(() => {
+    if (!isDayToday || dayEvents.length === 0) return null;
+    const positions = dayEvents.map((event) => ({
+      id: event.id,
+      top: getEventPosition(event).top,
+    }));
+    return positions.sort((a, b) => a.top - b.top)[0]?.top ?? null;
+  }, [dayEvents, isDayToday]);
+
+  const currentTimeTop = useMemo(() => {
+    if (!isDayToday) return null;
+    const minutesFromStart = differenceInMinutes(new Date(), startOfDay(new Date()));
+    return minutesFromStart * (80 / 60);
+  }, [isDayToday]);
+
+  const scrollTarget = firstEventTop ?? currentTimeTop;
+
+  useEffect(() => {
+    if (scrollTarget == null) return;
+    const viewport = scrollAreaRef.current?.querySelector(
+      '[data-slot="scroll-area-viewport"]',
+    ) as HTMLElement | null;
+    if (!viewport) return;
+
+    const target = Math.max(0, scrollTarget - viewport.clientHeight / 2);
+    const scrollOnce = () => viewport.scrollTo({ top: target, behavior: 'auto' });
+    requestAnimationFrame(() => {
+      scrollOnce();
+      requestAnimationFrame(scrollOnce);
+    });
+  }, [scrollTarget]);
 
   return (
     <div className="flex h-full flex-col">
@@ -62,10 +95,10 @@ export function DayView({ currentDate, events }: DayViewProps) {
       </div>
 
       {/* Time grid */}
-      <ScrollArea className="flex-1 overflow-hidden">
-        <div className="flex">
+      <ScrollArea className="flex-1 min-h-0 overflow-hidden" ref={scrollAreaRef}>
+        <div className="relative flex">
           {/* Time column */}
-          <div className="w-20 shrink-0 border-r border-border">
+          <div className="relative w-20 shrink-0 border-r border-border">
             {HOURS.map((hour) => (
               <div key={hour} className="relative h-[80px] border-b border-border">
                 <span className="absolute -top-2.5 right-3 text-xs text-muted-foreground">
@@ -109,6 +142,17 @@ export function DayView({ currentDate, events }: DayViewProps) {
               );
             })}
           </div>
+          {isDayToday && currentTimeTop !== null && (
+            <div
+              className="pointer-events-none absolute inset-0 z-10"
+              style={{ top: `${currentTimeTop}px` }}
+            >
+              <div className="absolute left-20 right-0 top-0 h-px bg-red-300" />
+              <div className="absolute left-20 right-0 -top-2 flex justify-center text-[10px] font-medium text-red-500">
+                {format(new Date(), 'h:mm a')}
+              </div>
+            </div>
+          )}
         </div>
       </ScrollArea>
     </div>

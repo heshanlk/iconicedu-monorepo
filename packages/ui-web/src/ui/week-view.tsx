@@ -11,6 +11,7 @@ import {
   differenceInMinutes,
   startOfDay,
 } from 'date-fns';
+import { useEffect, useMemo, useRef } from 'react';
 import { cn } from '../lib/utils';
 import { ScrollArea } from './scroll-area';
 import type { CalendarEvent } from '../components/calendar';
@@ -25,6 +26,8 @@ const HOURS = Array.from({ length: 24 }, (_, i) => i);
 export function WeekView({ currentDate, events }: WeekViewProps) {
   const weekStart = startOfWeek(currentDate);
   const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const isCurrentWeek = useMemo(() => weekDays.some((day) => isToday(day)), [weekDays]);
 
   const getEventsForDay = (date: Date) => {
     return events.filter((event) => isSameDay(new Date(event.start), date));
@@ -40,6 +43,43 @@ export function WeekView({ currentDate, events }: WeekViewProps) {
 
     return { top, height: Math.max(height, 20) };
   };
+
+  const currentTimeTop = useMemo(() => {
+    if (!isCurrentWeek) return null;
+    const minutesFromStart = differenceInMinutes(new Date(), startOfDay(new Date()));
+    return minutesFromStart; // 1px per minute (60px per hour grid)
+  }, [isCurrentWeek]);
+
+  const scrollTarget = useMemo(() => {
+    if (!isCurrentWeek) return null;
+    const today = weekDays.find((day) => isToday(day));
+    if (!today) return null;
+
+    const todayEvents = getEventsForDay(today);
+    if (todayEvents.length > 0) {
+      const firstTop = todayEvents
+        .map((event) => getEventPosition(event).top)
+        .sort((a, b) => a - b)[0];
+      return firstTop;
+    }
+
+    const minutesFromStart = differenceInMinutes(new Date(), startOfDay(new Date()));
+    return minutesFromStart; // 1px per minute (60px per hour grid)
+  }, [getEventPosition, getEventsForDay, isCurrentWeek, weekDays]);
+
+  useEffect(() => {
+    if (scrollTarget == null) return;
+    const viewport = scrollAreaRef.current?.querySelector(
+      '[data-slot="scroll-area-viewport"]',
+    ) as HTMLElement | null;
+    if (!viewport) return;
+    const target = Math.max(0, scrollTarget - viewport.clientHeight / 2);
+    const scrollOnce = () => viewport.scrollTo({ top: target, behavior: 'auto' });
+    requestAnimationFrame(() => {
+      scrollOnce();
+      requestAnimationFrame(scrollOnce);
+    });
+  }, [scrollTarget]);
 
   return (
     <div className="flex h-full flex-col">
@@ -73,8 +113,8 @@ export function WeekView({ currentDate, events }: WeekViewProps) {
       </div>
 
       {/* Time grid */}
-      <ScrollArea className="flex-1 overflow-hidden">
-        <div className="grid grid-cols-[60px_repeat(7,1fr)]">
+      <ScrollArea className="flex-1 min-h-0 overflow-hidden" ref={scrollAreaRef}>
+        <div className="relative grid grid-cols-[60px_repeat(7,1fr)]">
           {/* Time column */}
           <div className="relative border-r border-border">
             {HOURS.map((hour) => (
@@ -96,12 +136,23 @@ export function WeekView({ currentDate, events }: WeekViewProps) {
                 key={dayIndex}
                 className={cn(
                   'relative border-r border-border',
-                  isDayToday && 'bg-primary/5',
+                  isDayToday && 'bg-primary/5 ring-1 ring-primary/30',
                 )}
               >
                 {HOURS.map((hour) => (
                   <div key={hour} className="h-[60px] border-b border-border" />
                 ))}
+                {isDayToday && currentTimeTop !== null && (
+                  <div
+                    className="pointer-events-none absolute inset-x-0 z-10"
+                    style={{ top: `${currentTimeTop}px` }}
+                  >
+                    <div className="h-px w-full bg-red-300" />
+                    <div className="absolute inset-x-0 -top-2 flex justify-center text-[10px] font-medium text-red-500">
+                      {format(new Date(), 'h:mm a')}
+                    </div>
+                  </div>
+                )}
                 {/* Events */}
                 {dayEvents.map((event) => {
                   const { top, height } = getEventPosition(event);

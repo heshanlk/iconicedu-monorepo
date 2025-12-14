@@ -90,7 +90,7 @@ const sampleEvents: CalendarEvent[] = [
 
 export function Calendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [view, setView] = useState<CalendarView>('month');
+  const [view, setView] = useState<CalendarView>('week');
   const [events] = useState<CalendarEvent[]>(sampleEvents);
 
   const navigateToday = () => {
