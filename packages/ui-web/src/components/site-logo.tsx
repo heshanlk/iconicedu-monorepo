@@ -4,7 +4,7 @@ export function SiteLogo({ className, ...props }: React.HTMLAttributes<HTMLDivEl
   return (
     <div
       className={cn(
-        'aspect-square size-9 rounded-lg border border-sidebar-border transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground dark:hover:bg-sidebar-accent dark:hover:text-sidebar-foreground',
+        'aspect-square size-10 dark:hover:bg-sidebar-accent dark:hover:text-sidebar-foreground',
         className,
       )}
       {...props}

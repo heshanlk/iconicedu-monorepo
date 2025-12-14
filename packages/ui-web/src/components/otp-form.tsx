@@ -1,33 +1,24 @@
-import { GalleryVerticalEnd } from "lucide-react"
+import { GalleryVerticalEnd } from 'lucide-react';
 
-import { cn } from "../lib/utils"
-import { Button } from "../ui/button"
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-} from "../ui/field"
+import { cn } from '../lib/utils';
+import { Button } from '../ui/button';
+import { Field, FieldDescription, FieldGroup, FieldLabel } from '../ui/field';
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSeparator,
   InputOTPSlot,
-} from "../ui/input-otp"
+} from '../ui/input-otp';
+import { SiteLogo } from './site-logo';
 
-export function OTPForm({ className, ...props }: React.ComponentProps<"div">) {
+export function OTPForm({ className, ...props }: React.ComponentProps<'div'>) {
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className={cn('flex flex-col gap-6', className)} {...props}>
       <form>
         <FieldGroup>
           <div className="flex flex-col items-center gap-2 text-center">
-            <a
-              href="#"
-              className="flex flex-col items-center gap-2 font-medium"
-            >
-              <div className="flex size-8 items-center justify-center rounded-md">
-                <GalleryVerticalEnd className="size-6" />
-              </div>
+            <a href="#" className="flex flex-col items-center gap-2 font-medium">
+              <SiteLogo className="size-18 border-0" />
               <span className="sr-only">Acme Inc.</span>
             </a>
             <h1 className="text-xl font-bold">Enter verification code</h1>
@@ -39,12 +30,7 @@ export function OTPForm({ className, ...props }: React.ComponentProps<"div">) {
             <FieldLabel htmlFor="otp" className="sr-only">
               Verification code
             </FieldLabel>
-            <InputOTP
-              maxLength={6}
-              id="otp"
-              required
-              containerClassName="gap-4"
-            >
+            <InputOTP maxLength={6} id="otp" required containerClassName="gap-4">
               <InputOTPGroup className="gap-2.5 *:data-[slot=input-otp-slot]:h-16 *:data-[slot=input-otp-slot]:w-12 *:data-[slot=input-otp-slot]:rounded-md *:data-[slot=input-otp-slot]:border *:data-[slot=input-otp-slot]:text-xl">
                 <InputOTPSlot index={0} />
                 <InputOTPSlot index={1} />
@@ -67,9 +53,9 @@ export function OTPForm({ className, ...props }: React.ComponentProps<"div">) {
         </FieldGroup>
       </form>
       <FieldDescription className="px-6 text-center">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
+        By clicking continue, you agree to our <a href="#">Terms of Service</a> and{' '}
+        <a href="#">Privacy Policy</a>.
       </FieldDescription>
     </div>
-  )
+  );
 }

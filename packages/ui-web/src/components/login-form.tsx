@@ -17,9 +17,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
         <FieldGroup>
           <div className="flex flex-col items-center gap-2 text-center">
             <a href="#" className="flex flex-col items-center gap-2 font-medium">
-              <div className="flex size-8 items-center justify-center rounded-md">
-                <SiteLogo />
-              </div>
+              <SiteLogo className="size-18 border-0" />
               <span className="sr-only">ICONIC Academy LLC.</span>
             </a>
             <h1 className="text-xl font-bold">Welcome to ICONIC Academy.</h1>
