@@ -11,7 +11,9 @@ import {
 } from 'date-fns';
 import { useEffect, useMemo, useRef } from 'react';
 import { cn } from '../lib/utils';
+import { FieldSeparator } from '../ui/field';
 import { ScrollArea } from './scroll-area';
+import { CurrentTimeIndicator } from './current-time-indicator';
 import type { CalendarEvent } from '../components/calendar';
 
 interface DayViewProps {
@@ -147,10 +149,7 @@ export function DayView({ currentDate, events }: DayViewProps) {
               className="pointer-events-none absolute inset-0 z-10"
               style={{ top: `${currentTimeTop}px` }}
             >
-              <div className="absolute left-20 right-0 top-0 h-px bg-red-300" />
-              <div className="absolute left-20 right-0 -top-2 flex justify-center text-[10px] font-medium text-red-500">
-                {format(new Date(), 'h:mm a')}
-              </div>
+              <CurrentTimeIndicator className="left-20 right-0" />
             </div>
           )}
         </div>

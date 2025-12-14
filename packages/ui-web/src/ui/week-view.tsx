@@ -13,6 +13,7 @@ import {
 } from 'date-fns';
 import { useEffect, useMemo, useRef } from 'react';
 import { cn } from '../lib/utils';
+import { CurrentTimeIndicator } from './current-time-indicator';
 import { ScrollArea } from './scroll-area';
 import type { CalendarEvent } from '../components/calendar';
 
@@ -147,10 +148,7 @@ export function WeekView({ currentDate, events }: WeekViewProps) {
                     className="pointer-events-none absolute inset-x-0 z-10"
                     style={{ top: `${currentTimeTop}px` }}
                   >
-                    <div className="h-px w-full bg-red-300" />
-                    <div className="absolute inset-x-0 -top-2 flex justify-center text-[10px] font-medium text-red-500">
-                      {format(new Date(), 'h:mm a')}
-                    </div>
+                    <CurrentTimeIndicator />
                   </div>
                 )}
                 {/* Events */}
