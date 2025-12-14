@@ -1,9 +1,9 @@
 'use client';
 import { useIsMobile } from '../hooks/use-mobile';
-import { Button } from '../ui/button';
 import { Separator } from '../ui/separator';
 import { SidebarTrigger, useSidebar } from '../ui/sidebar';
 import { SiteLogo } from './site-logo';
+import { ThemeToggle } from './theme-toggle';
 
 export function DashboardHeader({ className, ...props }: React.ComponentProps<'div'>) {
   const isMobile = useIsMobile();
@@ -26,16 +26,7 @@ export function DashboardHeader({ className, ...props }: React.ComponentProps<'d
           </div>
         )}
         <div className="ml-auto flex flex-1 items-center justify-end gap-2">
-          <Button variant="ghost" asChild size="sm" className="hidden sm:flex">
-            <a
-              href="https://github.com/shadcn-ui/ui/tree/main/apps/v4/app/(examples)/dashboard"
-              rel="noopener noreferrer"
-              target="_blank"
-              className="dark:text-foreground"
-            >
-              GitHub
-            </a>
-          </Button>
+          <ThemeToggle />
         </div>
       </div>
     </header>
