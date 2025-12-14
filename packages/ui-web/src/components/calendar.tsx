@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   addDays,
   addMonths,
@@ -16,6 +16,7 @@ import { MonthView } from '../ui/month-view';
 import { WeekView } from '../ui/week-view';
 import { DayView } from '../ui/day-view';
 import { AgendaView } from '../ui/agenda-view';
+import { useIsMobile } from '../hooks/use-mobile';
 
 export type CalendarView = 'month' | 'week' | 'day' | 'agenda';
 
@@ -94,6 +95,13 @@ export function Calendar() {
   const [events] = useState<CalendarEvent[]>(sampleEvents);
   const touchStartX = useRef<number | null>(null);
   const touchStartY = useRef<number | null>(null);
+  const isMobile = useIsMobile();
+
+  useEffect(() => {
+    if (isMobile) {
+      setView('day');
+    }
+  }, [isMobile]);
 
   const navigateToday = () => {
     setCurrentDate(new Date());
