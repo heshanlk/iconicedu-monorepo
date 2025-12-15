@@ -1,0 +1,135 @@
+import { memo, useCallback } from 'react';
+import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
+import { Button } from '../../../ui/button';
+import { Phone, Video, MoreVertical, Bookmark } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '../../../ui/dropdown-menu';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../../../ui/tooltip';
+
+interface User {
+  id: string;
+  name: string;
+  avatar: string;
+  isOnline: boolean;
+  status?: string;
+}
+
+interface DMHeaderProps {
+  user: User;
+  onProfileClick?: () => void;
+  onSavedMessagesClick?: () => void;
+}
+
+const HeaderButton = memo(function HeaderButton({
+  icon: Icon,
+  label,
+  onClick,
+}: {
+  icon: any;
+  label?: string;
+  onClick?: () => void;
+}) {
+  const button = (
+    <Button
+      variant="ghost"
+      size="icon"
+      className="h-8 w-8 text-muted-foreground hover:text-foreground"
+      onClick={onClick}
+    >
+      <Icon className="h-4 w-4" />
+    </Button>
+  );
+
+  if (!label) return button;
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>{button}</TooltipTrigger>
+      <TooltipContent>{label}</TooltipContent>
+    </Tooltip>
+  );
+});
+
+export const DMHeader = memo(function DMHeader({
+  user,
+  onProfileClick,
+  onSavedMessagesClick,
+}: DMHeaderProps) {
+  const handleProfileClick = useCallback(() => {
+    onProfileClick?.();
+  }, [onProfileClick]);
+
+  const handleSavedClick = useCallback(() => {
+    onSavedMessagesClick?.();
+  }, [onSavedMessagesClick]);
+
+  return (
+    <header className="flex h-14 items-center justify-between border-b border-border bg-card px-4">
+      <button
+        onClick={handleProfileClick}
+        className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+      >
+        <div className="relative">
+          <Avatar className="h-8 w-8">
+            <AvatarImage src={user.avatar || '/placeholder.svg'} alt={user.name} />
+            <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+          </Avatar>
+          {user.isOnline && (
+            <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-card bg-online" />
+          )}
+        </div>
+        <div className="flex flex-col">
+          <div className="flex items-center gap-1.5">
+            <span className="text-sm font-semibold text-foreground">{user.name}</span>
+          </div>
+          {user.status && (
+            <span className="text-xs text-muted-foreground">{user.status}</span>
+          )}
+        </div>
+      </button>
+      <TooltipProvider>
+        <div className="flex items-center gap-1">
+          <HeaderButton
+            icon={Bookmark}
+            label="Saved messages"
+            onClick={handleSavedClick}
+          />
+          <HeaderButton icon={Phone} />
+          <HeaderButton icon={Video} />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-muted-foreground hover:text-foreground"
+              >
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem onClick={handleProfileClick}>
+                View profile
+              </DropdownMenuItem>
+              <DropdownMenuItem>View meeting history</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>Mute conversation</DropdownMenuItem>
+              <DropdownMenuItem className="text-destructive">
+                Report issue
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </TooltipProvider>
+    </header>
+  );
+});

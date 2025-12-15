@@ -1,0 +1,12 @@
+export { TextMessage } from './text-message';
+export { ImageMessage } from './image-message';
+export { FileMessage } from './file-message';
+export { AudioMessage } from './audio-message';
+export { LinkPreviewMessage } from './link-preview-message';
+export { DesignFileMessage } from './design-file-message';
+export { PaymentReminderMessage } from './payment-reminder-message';
+export { EventReminderMessage } from './event-reminder-message';
+export { LessonAssignmentMessage } from './lesson-assignment-message';
+export { ProgressUpdateMessage } from './progress-update-message';
+export { SessionBookingMessage } from './session-booking-message';
+export { HomeworkSubmissionMessage } from './homework-submission-message';

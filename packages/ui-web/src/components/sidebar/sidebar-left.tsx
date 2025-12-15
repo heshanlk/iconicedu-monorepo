@@ -170,12 +170,14 @@ const data = {
       avatar:
         'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-alex-UoI6qSVh9rZS9DvLOmhIY8pabZfAOq.png',
       status: 'online' as const,
+      url: '/dashboard/dm',
     },
     {
       id: 2,
       name: 'Shenaly Prakash',
       avatar: '',
       status: 'away' as const,
+      url: '/dashboard/dm',
     },
     {
       id: 3,
@@ -183,6 +185,7 @@ const data = {
       avatar:
         'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-jordan-ACflnHBYNP7M9crd5MtKL7WSpk3GiQ.jpg',
       status: 'online' as const,
+      url: '/dashboard/dm',
     },
     {
       id: 4,
@@ -190,6 +193,7 @@ const data = {
       avatar:
         'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-mike-T2UMe9BlbWWIxlq7z99cJWqwEagAuc.jpg',
       status: 'offline' as const,
+      url: '/dashboard/dm',
     },
     {
       id: 5,
@@ -197,6 +201,7 @@ const data = {
       avatar:
         'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-sarah-Vsp1gZWstExMvD0Qce0ogsgN6nv2pC.png',
       status: 'idle' as const,
+      url: '/dashboard/dm',
     },
   ],
 };
