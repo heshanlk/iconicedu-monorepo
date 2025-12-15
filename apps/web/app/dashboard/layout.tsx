@@ -6,9 +6,7 @@ export default function Layout({ children }: { children: ReactNode }) {
     <>
       <SidebarProvider>
         <SidebarLeft />
-        <SidebarInset>
-          <main className="flex flex-1 flex-col min-h-0">{children}</main>
-        </SidebarInset>
+        <SidebarInset>{children}</SidebarInset>
       </SidebarProvider>
     </>
   );

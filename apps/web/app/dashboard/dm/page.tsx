@@ -3,8 +3,8 @@ import { DashboardHeader, DirectMessages, ErrorBoundary } from '@iconicedu/ui-we
 export default function Page() {
   return (
     <>
-      <DashboardHeader />
-      <div className="h-screen w-full bg-background">
+      <div className="h-screen w-full">
+        <DashboardHeader />
         <ErrorBoundary>
           <DirectMessages />
         </ErrorBoundary>

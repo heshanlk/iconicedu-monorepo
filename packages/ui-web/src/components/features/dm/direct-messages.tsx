@@ -239,7 +239,7 @@ export function DirectMessages() {
   );
 
   return (
-    <div className="flex h-full min-h-0">
+    <div className="flex h-full min-h-0 max-h-[93%]">
       <div className="flex flex-1 flex-col">
         <DMHeader
           user={MOCK_TEACHER}
