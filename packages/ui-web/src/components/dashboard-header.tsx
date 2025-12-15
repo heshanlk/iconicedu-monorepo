@@ -14,11 +14,15 @@ export function DashboardHeader({ className, ...props }: React.ComponentProps<'d
       <div className="flex w-full items-end px-4 lg:gap-2 lg:px-6">
         <div className="flex flex-1 items-center gap-1">
           <SidebarTrigger className="-ml-1" />
-          <Separator
-            orientation="vertical"
-            className="mx-2 data-[orientation=vertical]:h-4"
-          />
-          <h1 className="text-base font-medium">{title}</h1>
+          {title && (
+            <>
+              <Separator
+                orientation="vertical"
+                className="mx-2 data-[orientation=vertical]:h-4"
+              />
+              <h1 className="text-base font-medium">{title}</h1>
+            </>
+          )}
         </div>
         {(isMobile || !open) && (
           <div className="flex text-center gap-1">

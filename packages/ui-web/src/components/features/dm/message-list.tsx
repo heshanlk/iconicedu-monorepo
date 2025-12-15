@@ -78,7 +78,7 @@ export const MessageList = forwardRef<MessageListRef, MessageListProps>(
     }, [messages]);
 
     return (
-      <div className="flex-1 overflow-y-auto px-4 py-4">
+      <div className="flex-1 overflow-y-auto">
         {groupedMessages.map((group) => (
           <div key={group.date}>
             <div className="relative my-4 flex items-center">
