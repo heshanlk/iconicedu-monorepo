@@ -9,7 +9,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarSeparator,
-} from '../ui/sidebar';
+} from '../../ui/sidebar';
 
 // This is sample data.
 const data = {

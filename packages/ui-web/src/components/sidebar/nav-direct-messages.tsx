@@ -1,13 +1,6 @@
 'use client';
 
-import {
-  Folder,
-  MoreHorizontal,
-  Share,
-  StarOff,
-  Trash2,
-  type LucideIcon,
-} from 'lucide-react';
+import { MoreHorizontal, Share, StarOff, Trash2 } from 'lucide-react';
 
 import {
   DropdownMenu,
@@ -15,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '../ui/dropdown-menu';
+} from '../../ui/dropdown-menu';
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -24,8 +17,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from '../ui/sidebar';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+} from '../../ui/sidebar';
+import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
 
 export function NavDirectMessages({
   dms,

@@ -26,10 +26,10 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from '../ui/sidebar';
+} from '../../ui/sidebar';
 import { NavMain } from './nav-main';
 import { NavDirectMessages } from './nav-direct-messages';
-import { SiteLogoWithName } from './site-logo-wt-name';
+import { SiteLogoWithName } from '../site-logo-wt-name';
 
 const data = {
   user: {
