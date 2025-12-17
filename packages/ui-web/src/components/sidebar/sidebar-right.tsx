@@ -37,7 +37,7 @@ const data = {
 export function SidebarRight({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar
-      collapsible={'offcanvas'}
+      collapsible={'icon'}
       className="sticky top-0 hidden h-svh border-l lg:flex"
       {...props}
     >
