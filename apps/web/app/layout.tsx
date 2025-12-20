@@ -1,6 +1,6 @@
 import { Public_Sans } from 'next/font/google';
 import type { ReactNode } from 'react';
-import '@iconicedu/ui-web/dist/ui-web.css';
+import '@iconicedu/ui-web/styles.css';
 import { ThemeProvider } from '@iconicedu/ui-web';
 
 const fontSans = Public_Sans({ subsets: ['latin'], variable: '--font-sans' });
