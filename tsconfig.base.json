@@ -9,6 +9,8 @@
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true,
+    "incremental": true,
+    "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo/tsconfig.tsbuildinfo",
     "moduleResolution": "node",
     "jsx": "react-jsx",
     "baseUrl": ".",

@@ -7,12 +7,6 @@
     "noEmit": true,
     "module": "esnext",
     "moduleResolution": "bundler",
-    "paths": {
-      "@iconicedu/ui-web/*": [
-        "../../packages/ui-web/src/*"
-      ]
-    },
-    "incremental": true,
     "isolatedModules": true,
     "plugins": [
       {
@@ -20,13 +14,6 @@
       }
     ]
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
 }
