@@ -1,9 +1,17 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "jsx": "react-jsx",
     "strict": true,
-    "noEmit": true
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@iconicedu/ui-web/*": ["../../packages/ui-web/src/*"],
+      "@iconicedu/ui-web": ["../../packages/ui-web/src"],
+      "@iconicedu/ui-native/*": ["../../packages/ui-native/src/*"],
+      "@iconicedu/shared-types/*": ["../../packages/shared-types/src/*"],
+      "@iconicedu/utils/*": ["../../packages/utils/src/*"]
+    }
   },
   "include": [
     "app/**/*",

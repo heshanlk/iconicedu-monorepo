@@ -1,6 +1,8 @@
 node_modules
 .turbo
 .next
+*.turbo
+*.next
 dist
 build
 .tsbuildinfo
@@ -10,4 +12,11 @@ build
 .DS_Store
 .env
 .env.local
+*.tsbuildinfo
+*.tsbuildinfo.json
+*.expo
+*.expo-shared
+*.DS_Store
+*.env
+*.env.local
 supabase/.temp
