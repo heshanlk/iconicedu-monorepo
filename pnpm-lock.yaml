@@ -41,6 +41,9 @@ importers:
 
   apps/api:
     dependencies:
+      '@iconicedu/shared-types':
+        specifier: workspace:*
+        version: link:../../packages/shared-types
       '@nestjs/common':
         specifier: ^11.1.9
         version: 11.1.9(reflect-metadata@0.2.2)(rxjs@7.8.2)
@@ -105,6 +108,9 @@ importers:
 
   apps/mobile:
     dependencies:
+      '@iconicedu/shared-types':
+        specifier: workspace:*
+        version: link:../../packages/shared-types
       '@iconicedu/ui-native':
         specifier: workspace:*
         version: link:../../packages/ui-native
@@ -142,6 +148,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@iconicedu/shared-types':
+        specifier: workspace:*
+        version: link:../../packages/shared-types
       '@iconicedu/ui-web':
         specifier: workspace:*
         version: link:../../packages/ui-web
@@ -195,6 +204,9 @@ importers:
 
   packages/ui-native:
     dependencies:
+      '@iconicedu/shared-types':
+        specifier: workspace:*
+        version: link:../shared-types
       clsx:
         specifier: ^2.1.0
         version: 2.1.1
@@ -235,6 +247,9 @@ importers:
       '@hookform/resolvers':
         specifier: ^3.10.0
         version: 3.10.0(react-hook-form@7.68.0(react@19.2.0))
+      '@iconicedu/shared-types':
+        specifier: workspace:*
+        version: link:../shared-types
       '@radix-ui/react-accordion':
         specifier: ^1.2.12
         version: 1.2.12(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)

@@ -9,6 +9,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@iconicedu/shared-types": "workspace:*",
     "@iconicedu/ui-web": "workspace:*",
     "@supabase/auth-helpers-nextjs": "^0.15.0",
     "@supabase/supabase-js": "^2.86.0",
