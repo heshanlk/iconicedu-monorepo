@@ -12,7 +12,7 @@ export function DashboardHeader({ className, ...props }: React.ComponentProps<'d
     <header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
       <div className="flex w-full items-end px-4 lg:gap-2 lg:px-6">
         <div className="flex flex-1 items-center gap-1">
-          <SidebarTrigger className="-ml-1 size-9" />
+          <SidebarTrigger className="-ml-1 size-9 hover:text-primary" />
           {title && (
             <>
               <Separator orientation="vertical" className="m-2" />

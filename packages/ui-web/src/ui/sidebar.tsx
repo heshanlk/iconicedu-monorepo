@@ -18,7 +18,7 @@ import {
 import { Skeleton } from '@iconicedu/ui-web/ui/skeleton';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@iconicedu/ui-web/ui/tooltip';
 import { useIsMobile } from '@iconicedu/ui-web/hooks/use-mobile';
-import { PanelLeftIcon } from 'lucide-react';
+import { PanelLeftClose, PanelLeftIcon, PanelLeftOpen } from 'lucide-react';
 
 const SIDEBAR_COOKIE_NAME = 'sidebar_state';
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -248,7 +248,7 @@ function SidebarTrigger({
   onClick,
   ...props
 }: React.ComponentProps<typeof Button>) {
-  const { toggleSidebar } = useSidebar();
+  const { toggleSidebar, open, openMobile, isMobile } = useSidebar();
 
   return (
     <Button
@@ -263,7 +263,18 @@ function SidebarTrigger({
       }}
       {...props}
     >
-      <PanelLeftIcon />
+      {isMobile ? (
+        openMobile ? (
+          <PanelLeftClose />
+        ) : (
+          <PanelLeftOpen />
+        )
+      ) : open ? (
+        <PanelLeftClose />
+      ) : (
+        <PanelLeftOpen />
+      )}
+
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
   );
