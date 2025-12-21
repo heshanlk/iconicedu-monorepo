@@ -208,14 +208,12 @@ const data = {
 
 export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar variant="inset" {...props}>
+    <Sidebar variant="inset" {...props} collapsible="icon">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
-              <a href="#">
-                <SiteLogoWithName />
-              </a>
+            <SidebarMenuButton size="lg">
+              <SiteLogoWithName />
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
