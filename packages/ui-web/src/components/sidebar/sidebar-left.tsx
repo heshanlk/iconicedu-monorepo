@@ -54,6 +54,7 @@ const data = {
       url: '#',
       icon: Inbox,
       badge: '10',
+      count: 5,
     },
   ],
   classRooms: [
