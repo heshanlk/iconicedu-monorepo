@@ -1,8 +1,13 @@
 'use client';
 
 import {
+  CheckCircle,
+  CircleCheck,
+  Filter,
   Folder,
+  ListFilterPlus,
   MoreHorizontal,
+  Plus,
   Share,
   StarOff,
   Trash2,
@@ -18,6 +23,7 @@ import {
 } from '../../ui/dropdown-menu';
 import {
   SidebarGroup,
+  SidebarGroupAction,
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuAction,
@@ -39,7 +45,34 @@ export function NavFavorites({
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <SidebarGroupLabel>Favorites</SidebarGroupLabel>
+      <SidebarGroupLabel className="uppercase">Favorites</SidebarGroupLabel>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <SidebarGroupAction title="Filter by student">
+            <ListFilterPlus />
+            <span className="sr-only">Filter by student</span>
+          </SidebarGroupAction>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          className="w-56"
+          side={isMobile ? 'bottom' : 'right'}
+          align={isMobile ? 'end' : 'start'}
+        >
+          <DropdownMenuItem>
+            <CircleCheck className="text-primary" />
+            <span>View All</span>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem>
+            <CircleCheck className="text-muted-foreground" />
+            <span>Sameesha Ahamed</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <CircleCheck className="text-muted-foreground" />
+            <span>Shanum Ahamed</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
       <SidebarMenu>
         {favorites.map((item) => (
           <SidebarMenuItem key={item.name}>
@@ -64,20 +97,6 @@ export function NavFavorites({
                 <DropdownMenuItem>
                   <StarOff className="text-muted-foreground" />
                   <span>Remove from Favorites</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Folder className="text-muted-foreground" />
-                  <span>View Project</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Share className="text-muted-foreground" />
-                  <span>Share Project</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Trash2 className="text-muted-foreground" />
-                  <span>Delete Project</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
