@@ -1,13 +1,12 @@
 'use client';
 import { useIsMobile } from '../hooks/use-mobile';
 import { Separator } from '../ui/separator';
-import { SidebarTrigger, useSidebar } from '../ui/sidebar';
+import { SidebarTrigger } from '../ui/sidebar';
 import { SiteLogo } from './site-logo';
 import { ThemeToggle } from './theme-toggle';
 
 export function DashboardHeader({ className, ...props }: React.ComponentProps<'div'>) {
   const isMobile = useIsMobile();
-  const { open } = useSidebar();
   const { title } = props as { title?: string };
   return (
     <header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
@@ -16,15 +15,12 @@ export function DashboardHeader({ className, ...props }: React.ComponentProps<'d
           <SidebarTrigger className="-ml-1 size-9" />
           {title && (
             <>
-              <Separator
-                orientation="vertical"
-                className="mx-2 data-[orientation=vertical]:h-4"
-              />
+              <Separator orientation="vertical" className="m-2" />
               <h1 className="text-base font-medium">{title}</h1>
             </>
           )}
         </div>
-        {(isMobile || !open) && (
+        {isMobile && (
           <div className="flex text-center gap-1">
             <SiteLogo className="border-0" />
           </div>
