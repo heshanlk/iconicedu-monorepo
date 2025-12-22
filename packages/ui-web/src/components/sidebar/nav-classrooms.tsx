@@ -1,4 +1,10 @@
-import { ChevronRight, MoreHorizontal, type LucideIcon } from 'lucide-react';
+import {
+  ChevronRight,
+  CircleCheck,
+  ListFilterPlus,
+  MoreHorizontal,
+  type LucideIcon,
+} from 'lucide-react';
 
 import {
   Collapsible,
@@ -7,6 +13,7 @@ import {
 } from '../../ui/collapsible';
 import {
   SidebarGroup,
+  SidebarGroupAction,
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuAction,
@@ -15,7 +22,15 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  useSidebar,
 } from '../../ui/sidebar';
+import {
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenu,
+  DropdownMenuTrigger,
+} from '../../ui/dropdown-menu';
 
 export function NavClassrooms({
   classrooms,
@@ -31,9 +46,37 @@ export function NavClassrooms({
     }[];
   }[];
 }) {
+  const { isMobile } = useSidebar();
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Classrooms</SidebarGroupLabel>
+      <SidebarGroupLabel className="uppercase">Classrooms</SidebarGroupLabel>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <SidebarGroupAction title="Filter by student">
+            <ListFilterPlus />
+            <span className="sr-only">Filter by student</span>
+          </SidebarGroupAction>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          className="w-56"
+          side={isMobile ? 'bottom' : 'right'}
+          align={isMobile ? 'end' : 'start'}
+        >
+          <DropdownMenuItem>
+            <CircleCheck className="text-primary" />
+            <span>View All</span>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem>
+            <CircleCheck className="text-muted-foreground" />
+            <span>Shameesha Ahmed</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <CircleCheck className="text-muted-foreground" />
+            <span>Shanum Ahmed</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
       <SidebarMenu>
         {classrooms.map((item) => (
           <Collapsible key={item.title} asChild defaultOpen={item.isActive}>

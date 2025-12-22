@@ -1,16 +1,10 @@
 'use client';
 
 import {
-  CheckCircle,
   CircleCheck,
-  Filter,
-  Folder,
   ListFilterPlus,
   MoreHorizontal,
-  Plus,
-  Share,
   StarOff,
-  Trash2,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -65,11 +59,11 @@ export function NavFavorites({
           <DropdownMenuSeparator />
           <DropdownMenuItem>
             <CircleCheck className="text-muted-foreground" />
-            <span>Sameesha Ahamed</span>
+            <span>Shameesha Ahmed</span>
           </DropdownMenuItem>
           <DropdownMenuItem>
             <CircleCheck className="text-muted-foreground" />
-            <span>Shanum Ahamed</span>
+            <span>Shanum Ahmed</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

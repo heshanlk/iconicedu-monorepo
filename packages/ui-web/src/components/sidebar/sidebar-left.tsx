@@ -54,7 +54,24 @@ const data = {
       url: '#',
       icon: Inbox,
       badge: '10',
-      count: 5,
+      count: 8,
+    },
+  ],
+  favorites: [
+    {
+      name: 'ELA with Ms Marina (Sameesha)',
+      url: '#',
+      icon: Star,
+    },
+    {
+      name: 'Chess with Ms Perera (Heshan)',
+      url: '#',
+      icon: Star,
+    },
+    {
+      name: 'Social Studies with Mr Silva (Nisitha)',
+      url: '#',
+      icon: Star,
     },
   ],
   classRooms: [
@@ -147,23 +164,6 @@ const data = {
       icon: Send,
     },
   ],
-  favorites: [
-    {
-      name: 'ELA with Ms Marina (Sameesha)',
-      url: '#',
-      icon: Star,
-    },
-    {
-      name: 'Chess with Ms Perera (Heshan)',
-      url: '#',
-      icon: Star,
-    },
-    {
-      name: 'Social Studies with Mr Silva (Nisitha)',
-      url: '#',
-      icon: Star,
-    },
-  ],
   DIRECT_MESSAGES: [
     {
       id: 1,
@@ -203,6 +203,20 @@ const data = {
         'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-sarah-Vsp1gZWstExMvD0Qce0ogsgN6nv2pC.png',
       status: 'idle' as const,
       url: '/dashboard/dm',
+    },
+  ],
+  STUDENTS: [
+    {
+      id: 1,
+      name: 'Zayne Smith',
+    },
+    {
+      id: 2,
+      name: 'Nailah Smith',
+    },
+    {
+      id: 3,
+      name: 'Elias Smith',
     },
   ],
 };
