@@ -14,6 +14,9 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '../../ui/dropdown-menu';
 import {
@@ -26,6 +29,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '../../ui/sidebar';
+import { useStudentFilter } from './student-filter-context';
 
 export function NavFavorites({
   favorites,
@@ -34,14 +38,27 @@ export function NavFavorites({
     name: string;
     url: string;
     icon: LucideIcon;
+    participants: number[];
   }[];
 }) {
   const { isMobile } = useSidebar();
+  const { students, selectedStudentBySection, setSelectedStudent } =
+    useStudentFilter();
+  const selectedStudentId = selectedStudentBySection.favorites;
   const [showAllFavorites, setShowAllFavorites] = useState(false);
   const maxVisibleFavorites = 3;
+  const filteredFavorites =
+    selectedStudentId === null
+      ? favorites
+      : favorites.filter((favorite) =>
+          favorite.participants.includes(selectedStudentId),
+        );
   const visibleFavorites = showAllFavorites
-    ? favorites
-    : favorites.slice(0, maxVisibleFavorites);
+    ? filteredFavorites
+    : filteredFavorites.slice(0, maxVisibleFavorites);
+  const maxVisibleStudents = 4;
+  const visibleStudents = students.slice(0, maxVisibleStudents);
+  const overflowStudents = students.slice(maxVisibleStudents);
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
@@ -58,24 +75,59 @@ export function NavFavorites({
           side={isMobile ? 'bottom' : 'right'}
           align={isMobile ? 'end' : 'start'}
         >
-          <DropdownMenuItem>
-            <CircleCheck className="text-primary" />
+          <DropdownMenuItem onSelect={() => setSelectedStudent('favorites', null)}>
+            <CircleCheck
+              className={
+                selectedStudentId === null
+                  ? 'text-primary'
+                  : 'text-muted-foreground'
+              }
+            />
             <span>View All</span>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            <CircleCheck className="text-muted-foreground" />
-            <span>Shameesha Ahmed</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <CircleCheck className="text-muted-foreground" />
-            <span>Shanum Ahmed</span>
-          </DropdownMenuItem>
+          {visibleStudents.map((student) => (
+            <DropdownMenuItem
+              key={student.id}
+              onSelect={() => setSelectedStudent('favorites', student.id)}
+            >
+              <CircleCheck
+                className={
+                  selectedStudentId === student.id
+                    ? 'text-primary'
+                    : 'text-muted-foreground'
+                }
+              />
+              <span>{student.name}</span>
+            </DropdownMenuItem>
+          ))}
+          {overflowStudents.length > 0 && (
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>More</DropdownMenuSubTrigger>
+              <DropdownMenuSubContent>
+                {overflowStudents.map((student) => (
+                  <DropdownMenuItem
+                    key={student.id}
+                    onSelect={() => setSelectedStudent('favorites', student.id)}
+                  >
+                    <CircleCheck
+                      className={
+                        selectedStudentId === student.id
+                          ? 'text-primary'
+                          : 'text-muted-foreground'
+                      }
+                    />
+                    <span>{student.name}</span>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
       <SidebarMenu>
-        {visibleFavorites.map((item) => (
-          <SidebarMenuItem key={item.name}>
+        {visibleFavorites.map((item, index) => (
+          <SidebarMenuItem key={`${item.name}-${index}`}>
             <SidebarMenuButton asChild>
               <a href={item.url}>
                 <item.icon />
@@ -102,11 +154,9 @@ export function NavFavorites({
             </DropdownMenu>
           </SidebarMenuItem>
         ))}
-        {favorites.length > maxVisibleFavorites && (
+        {filteredFavorites.length > maxVisibleFavorites && (
           <SidebarMenuItem>
-            <SidebarMenuButton
-              onClick={() => setShowAllFavorites((prev) => !prev)}
-            >
+            <SidebarMenuButton onClick={() => setShowAllFavorites((prev) => !prev)}>
               <MoreHorizontal />
               <span>{showAllFavorites ? 'Hide' : 'More'}</span>
             </SidebarMenuButton>

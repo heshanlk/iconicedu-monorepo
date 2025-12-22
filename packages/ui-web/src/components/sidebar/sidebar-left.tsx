@@ -30,6 +30,7 @@ import {
 import { NavMain } from './nav-main';
 import { NavDirectMessages } from './nav-direct-messages';
 import { SiteLogoWithName } from '../site-logo-wt-name';
+import { StudentFilterProvider } from './student-filter-context';
 
 const data = {
   user: {
@@ -75,7 +76,7 @@ const data = {
       isFavorite: true,
     },
     {
-      id: 1,
+      id: 3,
       name: 'ELA with Ms Norah',
       participants: [1, 2, 5],
       url: '#',
@@ -83,7 +84,7 @@ const data = {
       isFavorite: true,
     },
     {
-      id: 1,
+      id: 4,
       name: 'Chess with Mr Rivi',
       participants: [1, 2, 3],
       url: '#',
@@ -91,7 +92,7 @@ const data = {
       isFavorite: true,
     },
     {
-      id: 1,
+      id: 5,
       name: 'Chess with Mr Rivi',
       participants: [1, 2, 4],
       url: '#',
@@ -99,7 +100,7 @@ const data = {
       isFavorite: true,
     },
     {
-      id: 1,
+      id: 6,
       name: 'Chess with Mr Rivi',
       participants: [1, 2, 5],
       url: '#',
@@ -107,7 +108,7 @@ const data = {
       isFavorite: true,
     },
     {
-      id: 1,
+      id: 7,
       name: 'Maths with Mr Abhishek',
       participants: [1, 2, 3],
       url: '#',
@@ -115,7 +116,7 @@ const data = {
       isFavorite: true,
     },
     {
-      id: 1,
+      id: 8,
       name: 'Maths with Ms Shenaly',
       participants: [1, 2, 4],
       url: '#',
@@ -123,7 +124,7 @@ const data = {
       isFavorite: false,
     },
     {
-      id: 1,
+      id: 9,
       name: 'Maths with Ms Shenaly',
       participants: [1, 2, 5],
       url: '#',
@@ -186,16 +187,16 @@ const data = {
   ],
   STUDENTS: [
     {
-      id: 1,
-      name: 'Zayne Smith',
+      id: 3,
+      name: 'Elias Smith',
     },
     {
-      id: 2,
+      id: 4,
       name: 'Nailah Smith',
     },
     {
-      id: 3,
-      name: 'Elias Smith',
+      id: 5,
+      name: 'Zayne Smith',
     },
   ],
 };
@@ -203,27 +204,29 @@ const data = {
 export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar variant="inset" {...props} collapsible="icon">
-      <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton size="lg">
-              <SiteLogoWithName />
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarHeader>
-      <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavFavorites
-          favorites={data.CLASSROOMS.filter((classroom) => classroom.isFavorite)}
-        />
-        <NavClassrooms classrooms={data.CLASSROOMS} />
-        <NavDirectMessages dms={data.DIRECT_MESSAGES} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
-      </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={data.user} />
-      </SidebarFooter>
+      <StudentFilterProvider students={data.STUDENTS}>
+        <SidebarHeader>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton size="lg">
+                <SiteLogoWithName />
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarHeader>
+        <SidebarContent>
+          <NavMain items={data.navMain} />
+          <NavFavorites
+            favorites={data.CLASSROOMS.filter((classroom) => classroom.isFavorite)}
+          />
+          <NavClassrooms classrooms={data.CLASSROOMS} />
+          <NavDirectMessages dms={data.DIRECT_MESSAGES} />
+          <NavSecondary items={data.navSecondary} className="mt-auto" />
+        </SidebarContent>
+        <SidebarFooter>
+          <NavUser user={data.user} />
+        </SidebarFooter>
+      </StudentFilterProvider>
     </Sidebar>
   );
 }
