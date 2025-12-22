@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import {
   CircleCheck,
   ListFilterPlus,
@@ -36,6 +37,11 @@ export function NavFavorites({
   }[];
 }) {
   const { isMobile } = useSidebar();
+  const [showAllFavorites, setShowAllFavorites] = useState(false);
+  const maxVisibleFavorites = 3;
+  const visibleFavorites = showAllFavorites
+    ? favorites
+    : favorites.slice(0, maxVisibleFavorites);
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
@@ -68,7 +74,7 @@ export function NavFavorites({
         </DropdownMenuContent>
       </DropdownMenu>
       <SidebarMenu>
-        {favorites.map((item) => (
+        {visibleFavorites.map((item) => (
           <SidebarMenuItem key={item.name}>
             <SidebarMenuButton asChild>
               <a href={item.url}>
@@ -96,12 +102,16 @@ export function NavFavorites({
             </DropdownMenu>
           </SidebarMenuItem>
         ))}
-        <SidebarMenuItem>
-          <SidebarMenuButton>
-            <MoreHorizontal />
-            <span>More</span>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
+        {favorites.length > maxVisibleFavorites && (
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              onClick={() => setShowAllFavorites((prev) => !prev)}
+            >
+              <MoreHorizontal />
+              <span>{showAllFavorites ? 'Hide' : 'More'}</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        )}
       </SidebarMenu>
     </SidebarGroup>
   );

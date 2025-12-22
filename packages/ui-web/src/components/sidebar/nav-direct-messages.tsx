@@ -46,7 +46,7 @@ export function NavDirectMessages({
   };
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <SidebarGroupLabel>Direct Messages</SidebarGroupLabel>
+      <SidebarGroupLabel className="uppercase">Direct Messages</SidebarGroupLabel>
       <SidebarMenu>
         {dms.map((item) => (
           <SidebarMenuItem key={item.name}>

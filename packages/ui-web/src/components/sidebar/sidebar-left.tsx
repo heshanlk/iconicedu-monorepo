@@ -57,99 +57,78 @@ const data = {
       count: 8,
     },
   ],
-  favorites: [
+  CLASSROOMS: [
     {
-      name: 'ELA with Ms Marina (Sameesha)',
-      url: '#',
-      icon: Star,
-    },
-    {
-      name: 'Chess with Ms Perera (Heshan)',
-      url: '#',
-      icon: Star,
-    },
-    {
-      name: 'Social Studies with Mr Silva (Nisitha)',
-      url: '#',
-      icon: Star,
-    },
-  ],
-  classRooms: [
-    {
-      title: 'ELA with Ms Marina',
+      id: 1,
+      name: 'ELA with Ms Norah',
+      participants: [1, 2, 3],
       url: '#',
       icon: Languages,
-      items: [
-        {
-          title: 'Chat',
-          url: '#',
-        },
-        {
-          title: 'Homework',
-          url: '#',
-        },
-        {
-          title: 'Settings',
-          url: '#',
-        },
-      ],
+      isFavorite: true,
     },
     {
-      title: 'Chess with Ms Perera',
+      id: 2,
+      name: 'ELA with Ms Norah',
+      participants: [1, 2, 4],
+      url: '#',
+      icon: Languages,
+      isFavorite: true,
+    },
+    {
+      id: 1,
+      name: 'ELA with Ms Norah',
+      participants: [1, 2, 5],
+      url: '#',
+      icon: Languages,
+      isFavorite: true,
+    },
+    {
+      id: 1,
+      name: 'Chess with Mr Rivi',
+      participants: [1, 2, 3],
       url: '#',
       icon: ChefHat,
-      items: [
-        {
-          title: 'Chat',
-          url: '#',
-        },
-        {
-          title: 'Homework',
-          url: '#',
-        },
-        {
-          title: 'Settings',
-          url: '#',
-        },
-      ],
+      isFavorite: true,
     },
     {
-      title: 'Social Studies with Mr Silva',
+      id: 1,
+      name: 'Chess with Mr Rivi',
+      participants: [1, 2, 4],
+      url: '#',
+      icon: ChefHat,
+      isFavorite: true,
+    },
+    {
+      id: 1,
+      name: 'Chess with Mr Rivi',
+      participants: [1, 2, 5],
+      url: '#',
+      icon: ChefHat,
+      isFavorite: true,
+    },
+    {
+      id: 1,
+      name: 'Maths with Mr Abhishek',
+      participants: [1, 2, 3],
       url: '#',
       icon: Earth,
-      items: [
-        {
-          title: 'Chat',
-          url: '#',
-        },
-        {
-          title: 'Homework',
-          url: '#',
-        },
-        {
-          title: 'Settings',
-          url: '#',
-        },
-      ],
+      isFavorite: true,
     },
     {
-      title: 'Maths with Ms Wikramasinghe',
+      id: 1,
+      name: 'Maths with Ms Shenaly',
+      participants: [1, 2, 4],
       url: '#',
       icon: SquarePi,
-      items: [
-        {
-          title: 'Chat',
-          url: '#',
-        },
-        {
-          title: 'Homework',
-          url: '#',
-        },
-        {
-          title: 'Settings',
-          url: '#',
-        },
-      ],
+      isFavorite: false,
+    },
+    {
+      id: 1,
+      name: 'Maths with Ms Shenaly',
+      participants: [1, 2, 5],
+      url: '#',
+      icon: SquarePi,
+      isFavorite: false,
     },
   ],
   navSecondary: [
@@ -235,8 +214,10 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavFavorites favorites={data.favorites} />
-        <NavClassrooms classrooms={data.classRooms} />
+        <NavFavorites
+          favorites={data.CLASSROOMS.filter((classroom) => classroom.isFavorite)}
+        />
+        <NavClassrooms classrooms={data.CLASSROOMS} />
         <NavDirectMessages dms={data.DIRECT_MESSAGES} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
