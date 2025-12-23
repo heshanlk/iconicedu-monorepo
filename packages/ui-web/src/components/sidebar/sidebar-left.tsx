@@ -59,7 +59,7 @@ const data = {
   CLASSROOMS: [
     {
       id: 1,
-      name: 'ELA • Ms Norah (Mon 6:00)',
+      name: 'ELA • Ms Norah (Fri 6:00 pm)',
       participants: [1, 2, 3],
       url: '#',
       icon: Languages,
@@ -67,7 +67,7 @@ const data = {
     },
     {
       id: 2,
-      name: 'ELA with Ms Norah',
+      name: 'ELA • Ms Norah (Fri 7:00 pm)',
       participants: [1, 2, 4],
       url: '#',
       icon: Languages,
@@ -75,7 +75,7 @@ const data = {
     },
     {
       id: 3,
-      name: 'ELA with Ms Norah',
+      name: 'ELA • Ms Norah (Fri 8:00 pm)',
       participants: [1, 2, 5],
       url: '#',
       icon: Languages,
@@ -83,7 +83,7 @@ const data = {
     },
     {
       id: 4,
-      name: 'Chess with Mr Rivi',
+      name: 'Chess • Mr Rivi (Sat 9:00 am)',
       participants: [1, 2, 3],
       url: '#',
       icon: ChefHat,
@@ -91,7 +91,7 @@ const data = {
     },
     {
       id: 5,
-      name: 'Chess with Mr Rivi',
+      name: 'Chess • Mr Rivi (Sat 10:00 am)',
       participants: [1, 2, 4],
       url: '#',
       icon: ChefHat,
@@ -99,7 +99,7 @@ const data = {
     },
     {
       id: 6,
-      name: 'Chess with Mr Rivi',
+      name: 'Chess • Mr Rivi (Sat 11:30 am)',
       participants: [1, 2, 5],
       url: '#',
       icon: ChefHat,
@@ -107,7 +107,7 @@ const data = {
     },
     {
       id: 7,
-      name: 'Maths with Mr Abhishek',
+      name: 'Maths • Mr Abhishek (Sun 11:30 am)',
       participants: [1, 2, 3],
       url: '#',
       icon: Earth,
@@ -115,7 +115,7 @@ const data = {
     },
     {
       id: 8,
-      name: 'Maths with Ms Shenaly',
+      name: 'Maths • Ms Shenaly (Sun 9:30 am)',
       participants: [1, 2, 4],
       url: '#',
       icon: SquarePi,
@@ -123,7 +123,7 @@ const data = {
     },
     {
       id: 9,
-      name: 'Maths with Ms Shenaly',
+      name: 'Maths • Ms Shenaly (Sun 9:30 am)',
       participants: [1, 2, 5],
       url: '#',
       icon: SquarePi,
@@ -186,18 +186,18 @@ const data = {
   STUDENTS: [
     {
       id: 3,
-      name: 'Elias Smith',
-      color: 'bg-chart-1 text-white',
+      name: 'Elyas Smith',
+      color: 'bg-blue-500 text-white',
     },
     {
       id: 4,
       name: 'Nailah Smith',
-      color: 'bg-chart-2 text-white',
+      color: 'bg-red-500 text-white',
     },
     {
       id: 5,
       name: 'Zayne Smith',
-      color: 'bg-chart-3 text-white',
+      color: 'bg-violet-500 text-white',
     },
   ],
 };
@@ -223,12 +223,13 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        {classroomsByStudent.map(({ student, classrooms }) => (
+        {classroomsByStudent.map(({ student, classrooms }, index) => (
           <NavClassrooms
             key={student.id}
             title={student.name}
             student={student}
             classrooms={classrooms}
+            defaultOpen={index === 0}
           />
         ))}
         <NavDirectMessages dms={data.DIRECT_MESSAGES} />
