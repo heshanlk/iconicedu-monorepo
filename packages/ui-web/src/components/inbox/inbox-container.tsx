@@ -16,6 +16,7 @@ import {
   CheckCircle2,
   CreditCard,
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
 import { Badge } from '../../ui/badge';
 import { Button } from '../../ui/button';
@@ -28,7 +29,7 @@ import { AlertCompleteClass } from '../notifications/alert-complete-class';
 import { AlertPayment } from '../notifications/alert-payment';
 import { AlertReminder } from '../notifications/alert-reminder';
 import { AlertSurvey } from '../notifications/alert-survey';
-import type { Activity, NotificationType } from '../notifications/types';
+import type { Activity } from '../notifications/types';
 
 const mockActivities: Activity[] = [
   {
@@ -40,6 +41,8 @@ const mockActivities: Activity[] = [
     timestamp: '5m',
     isRead: false,
     initials: '$$',
+    icon: 'CreditCard',
+    iconBg: 'bg-red-100 text-red-700',
     category: 'payment',
     date: 'Today',
     expandedContent:
@@ -60,6 +63,8 @@ const mockActivities: Activity[] = [
     isRead: false,
     initials: 'MD',
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=dinesha',
+    icon: 'GraduationCap',
+    iconBg: 'bg-blue-500 text-white',
     studentName: 'Zayne',
     participants: [
       {
@@ -87,6 +92,8 @@ const mockActivities: Activity[] = [
         timestamp: '30m',
         isRead: false,
         initials: 'SY',
+        icon: 'Video',
+        iconBg: 'bg-green-100 text-green-700',
         studentName: 'Zayne',
         category: 'class',
         date: 'Today',
@@ -107,6 +114,8 @@ const mockActivities: Activity[] = [
         isRead: false,
         initials: 'Z',
         avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=zayne',
+        icon: 'Paperclip',
+        iconBg: 'bg-orange-100 text-orange-700',
         studentName: 'Zayne',
         category: 'class',
         date: 'Today',
@@ -122,6 +131,8 @@ const mockActivities: Activity[] = [
         isRead: false,
         initials: 'MD',
         avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=dinesha',
+        icon: 'FileText',
+        iconBg: 'bg-amber-100 text-amber-700',
         studentName: 'Zayne',
         category: 'class',
         date: 'Today',
@@ -141,6 +152,8 @@ const mockActivities: Activity[] = [
         timestamp: '1h',
         isRead: false,
         initials: 'AI',
+        icon: 'Sparkles',
+        iconBg: 'bg-violet-100 text-violet-700',
         studentName: 'Zayne',
         category: 'class',
         date: 'Today',
@@ -158,6 +171,8 @@ const mockActivities: Activity[] = [
         isRead: false,
         initials: 'MD',
         avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=dinesha',
+        icon: 'Paperclip',
+        iconBg: 'bg-orange-100 text-orange-700',
         studentName: 'Zayne',
         category: 'class',
         date: 'Today',
@@ -180,6 +195,8 @@ const mockActivities: Activity[] = [
         isRead: false,
         initials: 'MD',
         avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=dinesha',
+        icon: 'FileText',
+        iconBg: 'bg-amber-100 text-amber-700',
         studentName: 'Zayne',
         category: 'class',
         date: 'Today',
@@ -201,6 +218,8 @@ const mockActivities: Activity[] = [
     timestamp: '20m',
     isRead: false,
     initials: '✓',
+    icon: 'CheckCircle2',
+    iconBg: 'bg-yellow-100 text-yellow-700',
     studentName: 'Zayne',
     category: 'system',
     date: 'Today',
@@ -222,6 +241,8 @@ const mockActivities: Activity[] = [
     isRead: false,
     initials: 'MK',
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=mrkim',
+    icon: 'GraduationCap',
+    iconBg: 'bg-blue-500 text-white',
     studentName: 'Sophia',
     participants: [
       { avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=mrkim', initials: 'MK' },
@@ -246,6 +267,8 @@ const mockActivities: Activity[] = [
         isRead: false,
         initials: 'S',
         avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=sophia',
+        icon: 'Paperclip',
+        iconBg: 'bg-orange-100 text-orange-700',
         studentName: 'Sophia',
         category: 'class',
         date: 'Today',
@@ -261,6 +284,8 @@ const mockActivities: Activity[] = [
         isRead: false,
         initials: 'MK',
         avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=mrkim',
+        icon: 'FileText',
+        iconBg: 'bg-amber-100 text-amber-700',
         studentName: 'Sophia',
         category: 'class',
         date: 'Today',
@@ -280,6 +305,8 @@ const mockActivities: Activity[] = [
         timestamp: '1h',
         isRead: false,
         initials: 'AI',
+        icon: 'Sparkles',
+        iconBg: 'bg-violet-100 text-violet-700',
         studentName: 'Sophia',
         category: 'class',
         date: 'Today',
@@ -298,6 +325,8 @@ const mockActivities: Activity[] = [
     timestamp: '35m',
     isRead: false,
     initials: '⏰',
+    icon: 'Bell',
+    iconBg: 'bg-purple-500 text-white',
     studentName: 'Sophia',
     category: 'system',
     date: 'Today',
@@ -319,6 +348,8 @@ const mockActivities: Activity[] = [
     isRead: false,
     initials: 'MR',
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=rodriguez',
+    icon: 'Paperclip',
+    iconBg: 'bg-orange-100 text-orange-700',
     studentName: 'Zayne',
     category: 'class',
     date: 'Today',
@@ -339,6 +370,8 @@ const mockActivities: Activity[] = [
     timestamp: '1h',
     isRead: false,
     initials: '📝',
+    icon: 'ClipboardCheck',
+    iconBg: 'bg-cyan-100 text-cyan-700',
     category: 'system',
     date: 'Today',
     expandedContent:
@@ -359,6 +392,8 @@ const mockActivities: Activity[] = [
     isRead: false,
     initials: 'MC',
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=chen',
+    icon: 'Paperclip',
+    iconBg: 'bg-orange-100 text-orange-700',
     studentName: 'Zayne',
     category: 'class',
     date: 'Today',
@@ -380,6 +415,8 @@ const mockActivities: Activity[] = [
     isRead: false,
     initials: 'MD',
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=dinesha',
+    icon: 'MessageSquare',
+    iconBg: 'bg-blue-500 text-white',
     studentName: 'Zayne',
     category: 'class',
     date: 'Today',
@@ -396,6 +433,8 @@ const mockActivities: Activity[] = [
     isRead: false,
     initials: 'MR',
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=rodriguez',
+    icon: 'FileText',
+    iconBg: 'bg-amber-100 text-amber-700',
     studentName: 'Zayne',
     category: 'class',
     date: 'Today',
@@ -411,6 +450,8 @@ const mockActivities: Activity[] = [
     timestamp: '5h',
     isRead: false,
     initials: 'SY',
+    icon: 'Video',
+    iconBg: 'bg-green-100 text-green-700',
     studentName: 'Sophia',
     category: 'class',
     date: 'Today',
@@ -430,6 +471,8 @@ const mockActivities: Activity[] = [
     isRead: true,
     initials: 'MP',
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=patel',
+    icon: 'Paperclip',
+    iconBg: 'bg-orange-100 text-orange-700',
     studentName: 'Sophia',
     category: 'class',
     date: 'Yesterday',
@@ -451,6 +494,8 @@ const mockActivities: Activity[] = [
     isRead: true,
     initials: 'CA',
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=anderson',
+    icon: 'MessageSquare',
+    iconBg: 'bg-blue-500 text-white',
     studentName: 'Sophia',
     category: 'class',
     date: 'Earlier',
@@ -466,88 +511,58 @@ const mockActivities: Activity[] = [
     timestamp: '2d',
     isRead: true,
     initials: 'SY',
+    icon: 'Bell',
+    iconBg: 'bg-purple-500 text-white',
     studentName: 'Sophia',
     category: 'system',
     date: 'Earlier',
   },
 ];
 
-function getActivityIcon(type: NotificationType) {
-  switch (type) {
-    case 'homework':
-      return <Paperclip className="size-3" />;
-    case 'message':
-      return <MessageSquare className="size-3" />;
-    case 'class':
-      return <GraduationCap className="size-3" />;
-    case 'reminder':
-      return <Bell className="size-3" />;
-    case 'recording':
-      return <Video className="size-3" />;
-    case 'notes':
-      return <FileText className="size-3" />;
-    case 'ai-summary':
-      return <Sparkles className="size-3" />;
-    case 'payment':
-      return <CreditCard className="size-3" />;
-    case 'survey':
-      return <ClipboardCheck className="size-3" />;
-    case 'complete-class':
-      return <CheckCircle2 className="size-3" />;
-  }
-}
+const READ_ICON_CLASS = 'bg-muted text-muted-foreground';
+const ICON_MAP: Record<string, LucideIcon> = {
+  MessageSquare,
+  Video,
+  FileText,
+  Sparkles,
+  Paperclip,
+  Bell,
+  ClipboardCheck,
+  GraduationCap,
+  CheckCircle2,
+  CreditCard,
+};
+const TAB_FILTERS = {
+  all: (_activity: Activity) => true,
+  classes: (activity: Activity) => activity.category === 'class',
+  payment: (activity: Activity) => activity.category === 'payment',
+  system: (activity: Activity) => activity.category === 'system',
+} as const;
+type TabKey = keyof typeof TAB_FILTERS;
 
-function getIconBgColor(type: NotificationType, isRead: boolean) {
-  if (isRead) {
-    return 'bg-muted text-muted-foreground';
-  }
+const ALERT_RENDERERS: Partial<
+  Record<Activity['type'], (activity: Activity) => React.ReactElement>
+> = {
+  payment: (activity) => <AlertPayment initials={activity.initials} />,
+  survey: (activity) => <AlertSurvey initials={activity.initials} />,
+  'complete-class': (activity) => <AlertCompleteClass initials={activity.initials} />,
+  reminder: (activity) => <AlertReminder initials={activity.initials} />,
+};
 
-  switch (type) {
-    case 'homework':
-      return 'bg-orange-100 text-orange-700';
-    case 'message':
-      return 'bg-blue-500 text-white';
-    case 'class':
-      return 'bg-blue-500 text-white';
-    case 'reminder':
-      return 'bg-purple-500 text-white';
-    case 'recording':
-      return 'bg-green-100 text-green-700';
-    case 'notes':
-      return 'bg-amber-100 text-amber-700';
-    case 'ai-summary':
-      return 'bg-violet-100 text-violet-700';
-    case 'payment':
-      return 'bg-red-100 text-red-700';
-    case 'survey':
-      return 'bg-cyan-100 text-cyan-700';
-    case 'complete-class':
-      return 'bg-yellow-100 text-yellow-700';
-  }
-}
-
-export function InboxContainer() {
-  const [activities, setActivities] = useState(mockActivities);
-  const [expandedActivities, setExpandedActivities] = useState<Record<string, boolean>>(
-    {},
+const createCollapsedActivities = (items: Activity[]) =>
+  items.reduce(
+    (acc, activity) => {
+      if (activity.subActivities && activity.subActivities.length > 0) {
+        acc[activity.id] = true;
+      }
+      return acc;
+    },
+    {} as Record<string, boolean>,
   );
-  const [collapsedActivities, setCollapsedActivities] = useState<Record<string, boolean>>(
-    mockActivities.reduce(
-      (acc, activity) => {
-        if (activity.subActivities && activity.subActivities.length > 0) {
-          acc[activity.id] = true;
-        }
-        return acc;
-      },
-      {} as Record<string, boolean>,
-    ),
-  );
-  const [readActivities, setReadActivities] = useState<Record<string, boolean>>({});
-  const [activeTab, setActiveTab] = useState('all');
 
-  const unreadCount = activities.filter((a) => !a.isRead).length;
-  const groupedActivities = Object.entries(
-    activities.reduce(
+const groupActivitiesByDate = (items: Activity[]) =>
+  Object.entries(
+    items.reduce(
       (acc, activity) => {
         if (!acc[activity.date]) {
           acc[activity.date] = [];
@@ -555,19 +570,39 @@ export function InboxContainer() {
         acc[activity.date].push(activity);
         return acc;
       },
-      {} as Record<string, typeof activities>,
+      {} as Record<string, Activity[]>,
     ),
   );
 
+export function InboxContainer() {
+  const [activities, setActivities] = useState(mockActivities);
+  const [expandedActivities, setExpandedActivities] = useState<Record<string, boolean>>(
+    {},
+  );
+  const [collapsedActivities, setCollapsedActivities] = useState<Record<string, boolean>>(
+    createCollapsedActivities(mockActivities),
+  );
+  const [activeTab, setActiveTab] = useState<TabKey>('all');
+
+  const unreadCount = activities.filter((a) => !a.isRead).length;
+  const groupedActivities = groupActivitiesByDate(activities);
+  const tabFilter = TAB_FILTERS[activeTab];
+  const tabCounts = {
+    all: activities.filter((activity) => !activity.isRead).length,
+    classes: activities.filter(
+      (activity) => activity.category === 'class' && !activity.isRead,
+    ).length,
+    payment: activities.filter(
+      (activity) => activity.category === 'payment' && !activity.isRead,
+    ).length,
+    system: activities.filter(
+      (activity) => activity.category === 'system' && !activity.isRead,
+    ).length,
+  };
+
   const filteredGroupedActivities = groupedActivities
     .map(([date, dateActivities]) => {
-      const filtered = dateActivities.filter((activity) => {
-        if (activeTab === 'all') return true;
-        if (activeTab === 'classes') return activity.category === 'class';
-        if (activeTab === 'payment') return activity.category === 'payment';
-        if (activeTab === 'system') return activity.category === 'system';
-        return true;
-      });
+      const filtered = dateActivities.filter(tabFilter);
       return [date, filtered] as const;
     })
     .filter(([, dateActivities]) => dateActivities.length > 0);
@@ -599,6 +634,12 @@ export function InboxContainer() {
     }));
   };
 
+  const handleTabChange = (value: string) => {
+    if (value in TAB_FILTERS) {
+      setActiveTab(value as TabKey);
+    }
+  };
+
   const markAsRead = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
     setActivities((prev) =>
@@ -620,163 +661,156 @@ export function InboxContainer() {
     );
   };
 
-  const renderActivity = (activity: Activity, isSubActivity = false) => (
-    <ActivityWithSubitems
-      key={activity.id}
-      showStack={
-        !isSubActivity &&
-        Boolean(activity.subActivities && activity.subActivities.length > 0) &&
-        Boolean(collapsedActivities[activity.id])
-      }
-      className="flex items-start gap-3 py-2.5"
-    >
-      <div className="relative flex shrink-0 flex-col items-center">
-        {isSubActivity && (
-          <svg
-            className="absolute -top-3 left-1/2 -translate-x-1/2"
-            width="24"
-            height="30"
-            viewBox="0 0 24 30"
-            fill="none"
+  const renderActivity = (activity: Activity, isSubActivity = false) => {
+    const Icon = activity.icon ? ICON_MAP[activity.icon] : undefined;
+    const alertRenderer = ALERT_RENDERERS[activity.type];
+    const hasSubActivities = Boolean(activity.subActivities?.length);
+    const isCollapsed = collapsedActivities[activity.id];
+    const isExpanded = expandedActivities[activity.id];
+
+    return (
+      <ActivityWithSubitems
+        key={activity.id}
+        showStack={!isSubActivity && hasSubActivities && Boolean(isCollapsed)}
+        className="flex items-start gap-3 py-2.5"
+      >
+        <div className="relative flex shrink-0 flex-col items-center">
+          {isSubActivity && (
+            <svg
+              className="absolute -top-3 left-1/2 -translate-x-1/2"
+              width="24"
+              height="30"
+              viewBox="0 0 24 30"
+              fill="none"
+            >
+              <path
+                d="M 12 0 Q 12 15, 24 30"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                className="text-border"
+              />
+            </svg>
+          )}
+
+          <div
+            className={cn(
+              'z-10 flex size-6 items-center justify-center rounded-full',
+              activity.isRead ? READ_ICON_CLASS : activity.iconBg,
+            )}
           >
-            <path
-              d="M 12 0 Q 12 15, 24 30"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              className="text-border"
-            />
-          </svg>
-        )}
+            {Icon ? <Icon className="size-3" /> : null}
+          </div>
+        </div>
 
         <div
+          className="shrink-0 pt-0.5 text-xs text-muted-foreground"
+          style={{ width: '48px' }}
+        >
+          {activity.timestamp}
+        </div>
+
+        <div
+          onClick={(e) =>
+            isSubActivity
+              ? handleSubActivityClick(activity.id)
+              : handleMainActivityClick(activity.id, e)
+          }
           className={cn(
-            'z-10 flex size-6 items-center justify-center rounded-full',
-            getIconBgColor(activity.type, activity.isRead),
+            'group relative z-10 flex min-w-0 flex-1 items-start gap-2.5 rounded-md px-2 py-1 -mx-2 transition-all duration-200',
+            !isSubActivity && 'cursor-pointer hover:bg-muted/50',
+            !isSubActivity && hasSubActivities && !isCollapsed && 'bg-muted/30 shadow-sm',
+            isSubActivity &&
+              activity.parentId &&
+              collapsedActivities[activity.parentId] === false &&
+              'bg-muted/30',
           )}
         >
-          {getActivityIcon(activity.type)}
-        </div>
-      </div>
-
-      <div
-        className="shrink-0 pt-0.5 text-xs text-muted-foreground"
-        style={{ width: '48px' }}
-      >
-        {activity.timestamp}
-      </div>
-
-      <div
-        onClick={(e) =>
-          isSubActivity
-            ? handleSubActivityClick(activity.id)
-            : handleMainActivityClick(activity.id, e)
-        }
-        className={cn(
-          'group relative z-10 flex min-w-0 flex-1 items-start gap-2.5 rounded-md px-2 py-1 -mx-2 transition-all duration-200',
-          !isSubActivity && 'cursor-pointer hover:bg-muted/50',
-          !isSubActivity &&
-            !collapsedActivities[activity.id] &&
-            activity.subActivities &&
-            activity.subActivities.length > 0 &&
-            'bg-muted/30 shadow-sm',
-          isSubActivity &&
-            activity.parentId &&
-            !collapsedActivities[activity.parentId] &&
-            'bg-muted/30',
-        )}
-      >
-        {activity.type === 'payment' ? (
-          <AlertPayment initials={activity.initials} />
-        ) : activity.type === 'survey' ? (
-          <AlertSurvey initials={activity.initials} />
-        ) : activity.type === 'complete-class' ? (
-          <AlertCompleteClass initials={activity.initials} />
-        ) : activity.type === 'reminder' ? (
-          <AlertReminder initials={activity.initials} />
-        ) : activity.type === 'ai-summary' ? (
-          <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-violet-100 text-violet-600">
-            <Sparkles className="size-3.5" />
-          </div>
-        ) : activity.participants && activity.participants.length > 1 ? (
-          <div className="flex shrink-0 -space-x-1.5 pt-0.5">
-            {activity.participants.slice(0, 4).map((participant, idx) => (
-              <Avatar key={idx} className="size-6 border-2 border-background">
-                <AvatarImage src={participant.avatar || '/placeholder.svg'} />
-                <AvatarFallback className="text-[10px]">
-                  {participant.initials}
-                </AvatarFallback>
-              </Avatar>
-            ))}
-            {activity.participants.length > 4 && (
-              <Avatar className="size-6 border-2 border-background">
-                <AvatarFallback className="text-[10px]">
-                  +{activity.participants.length - 4}
-                </AvatarFallback>
-              </Avatar>
-            )}
-          </div>
-        ) : (
-          <Avatar className="size-6 shrink-0">
-            <AvatarImage src={activity.avatar || '/placeholder.svg'} />
-            <AvatarFallback className="text-[10px]">{activity.initials}</AvatarFallback>
-          </Avatar>
-        )}
-
-        <div className="flex min-w-0 flex-1 flex-col gap-2">
-          <div className="flex items-center gap-1.5">
-            <p className="text-sm leading-tight text-pretty">
-              <span className="font-semibold text-foreground">{activity.actor}</span>{' '}
-              <span className="text-muted-foreground">{activity.action}</span>{' '}
-              {activity.target && (
-                <span className="font-medium text-foreground">{activity.target}</span>
+          {alertRenderer ? (
+            alertRenderer(activity)
+          ) : activity.type === 'ai-summary' ? (
+            <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-violet-100 text-violet-600">
+              <Sparkles className="size-3.5" />
+            </div>
+          ) : activity.participants && activity.participants.length > 1 ? (
+            <div className="flex shrink-0 -space-x-1.5 pt-0.5">
+              {activity.participants.slice(0, 4).map((participant, idx) => (
+                <Avatar key={idx} className="size-6 border-2 border-background">
+                  <AvatarImage src={participant.avatar || '/placeholder.svg'} />
+                  <AvatarFallback className="text-[10px]">
+                    {participant.initials}
+                  </AvatarFallback>
+                </Avatar>
+              ))}
+              {activity.participants.length > 4 && (
+                <Avatar className="size-6 border-2 border-background">
+                  <AvatarFallback className="text-[10px]">
+                    +{activity.participants.length - 4}
+                  </AvatarFallback>
+                </Avatar>
               )}
-            </p>
+            </div>
+          ) : (
+            <Avatar className="size-6 shrink-0">
+              <AvatarImage src={activity.avatar || '/placeholder.svg'} />
+              <AvatarFallback className="text-[10px]">{activity.initials}</AvatarFallback>
+            </Avatar>
+          )}
 
-            {!activity.isRead && (
-              <Button
-                size="icon"
-                variant="ghost"
-                className="size-5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                onClick={(e) => markAsRead(activity.id, e)}
-                data-action-button="true"
-              >
-                <Check className="size-3.5" />
-              </Button>
-            )}
+          <div className="flex min-w-0 flex-1 flex-col gap-2">
+            <div className="flex items-center gap-1.5">
+              <p className="text-sm leading-tight text-pretty">
+                <span className="font-semibold text-foreground">{activity.actor}</span>{' '}
+                <span className="text-muted-foreground">{activity.action}</span>{' '}
+                {activity.target && (
+                  <span className="font-medium text-foreground">{activity.target}</span>
+                )}
+              </p>
 
-            {!isSubActivity &&
-              activity.subActivities &&
-              activity.subActivities.length > 0 && (
+              {!activity.isRead && (
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="size-5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                  onClick={(e) => markAsRead(activity.id, e)}
+                  data-action-button="true"
+                >
+                  <Check className="size-3.5" />
+                </Button>
+              )}
+
+              {!isSubActivity && hasSubActivities && (
                 <>
                   <Badge variant="secondary" className="shrink-0 text-[10px] h-4 px-1.5">
-                    {activity.subActivities.length}
+                    {activity?.subActivities?.length}
                   </Badge>
                   <ChevronDown
                     className={cn(
                       'size-4 shrink-0 text-muted-foreground transition-transform duration-200',
-                      !collapsedActivities[activity.id] && 'rotate-180',
+                      !isCollapsed && 'rotate-180',
                     )}
                   />
                 </>
               )}
-          </div>
-
-          <ActivityWithButton actionButton={activity.actionButton} />
-
-          {expandedActivities[activity.id] && activity.expandedContent && (
-            <div className="animate-in slide-in-from-top-2 fade-in duration-300 rounded-md bg-muted/50 p-3 text-sm text-muted-foreground">
-              {activity.expandedContent}
             </div>
-          )}
+
+            <ActivityWithButton actionButton={activity.actionButton} />
+
+            {isExpanded && activity.expandedContent && (
+              <div className="animate-in slide-in-from-top-2 fade-in duration-300 rounded-md bg-muted/50 p-3 text-sm text-muted-foreground">
+                {activity.expandedContent}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-    </ActivityWithSubitems>
-  );
+      </ActivityWithSubitems>
+    );
+  };
 
   return (
     <Tabs
       value={activeTab}
-      onValueChange={setActiveTab}
+      defaultValue="all"
+      onValueChange={handleTabChange}
       className="flex size-full flex-col"
     >
       <div className="flex items-center justify-between border-b px-4 pt-4 pb-3">
@@ -792,10 +826,38 @@ export function InboxContainer() {
 
       <div className="border-b px-4 py-2">
         <TabsList>
-          <TabsTrigger value="all">All</TabsTrigger>
-          <TabsTrigger value="classes">Classes</TabsTrigger>
-          <TabsTrigger value="payment">Payment</TabsTrigger>
-          <TabsTrigger value="system">System</TabsTrigger>
+          <TabsTrigger value="all" className="gap-2">
+            <span>All</span>
+            {tabCounts.all > 0 && (
+              <Badge className="h-4 px-1.5 text-[10px] bg-primary text-primary-foreground">
+                {tabCounts.all}
+              </Badge>
+            )}
+          </TabsTrigger>
+          <TabsTrigger value="classes" className="gap-2">
+            <span>Classes</span>
+            {tabCounts.classes > 0 && (
+              <Badge className="h-4 px-1.5 text-[10px] bg-primary text-primary-foreground">
+                {tabCounts.classes}
+              </Badge>
+            )}
+          </TabsTrigger>
+          <TabsTrigger value="payment" className="gap-2">
+            <span>Payment</span>
+            {tabCounts.payment > 0 && (
+              <Badge className="h-4 px-1.5 text-[10px] bg-primary text-primary-foreground">
+                {tabCounts.payment}
+              </Badge>
+            )}
+          </TabsTrigger>
+          <TabsTrigger value="system" className="gap-2">
+            <span>System</span>
+            {tabCounts.system > 0 && (
+              <Badge className="h-4 px-1.5 text-[10px] bg-primary text-primary-foreground">
+                {tabCounts.system}
+              </Badge>
+            )}
+          </TabsTrigger>
         </TabsList>
       </div>
 
@@ -816,7 +878,7 @@ export function InboxContainer() {
                         collapsedActivities[activity.id] === false && (
                           <div className="relative ml-[42px] animate-in slide-in-from-top-2 fade-in duration-300">
                             <div className="absolute left-3 top-3 bottom-3 w-px bg-border" />
-                            {activity.subActivities.map((sub, index) => (
+                            {activity.subActivities.map((sub) => (
                               <div key={sub.id} className="relative">
                                 {renderActivity(sub, true)}
                               </div>

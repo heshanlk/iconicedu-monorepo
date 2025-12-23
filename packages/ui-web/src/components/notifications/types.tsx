@@ -22,6 +22,8 @@ export interface Activity {
   isRead: boolean;
   avatar?: string;
   initials: string;
+  icon?: string;
+  iconBg?: string;
   studentName?: string;
   participants?: Array<{ avatar?: string; initials: string }>;
   expandedContent?: string;
