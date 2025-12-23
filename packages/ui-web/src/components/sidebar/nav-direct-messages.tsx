@@ -45,7 +45,7 @@ export function NavDirectMessages({
     offline: 'bg-gray-600',
   };
   return (
-    <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+    <SidebarGroup>
       <SidebarGroupLabel className="uppercase">Direct Messages</SidebarGroupLabel>
       <SidebarMenu>
         {dms.map((item) => (

@@ -73,7 +73,7 @@ export function NavClassrooms({
   );
 
   return (
-    <SidebarGroup className="py-0">
+    <SidebarGroup className="py-0 group-data-[collapsible=icon]:hidden">
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         <CollapsibleTrigger asChild>
           <SidebarGroupLabel className="flex cursor-pointer items-center gap-2 rounded-md rounded-b-none px-2 py-1 uppercase data-[state=open]:bg-chart-1/10">

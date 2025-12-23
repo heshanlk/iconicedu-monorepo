@@ -9,6 +9,7 @@ import {
   Inbox,
   Languages,
   LifeBuoy,
+  MoreHorizontal,
   Send,
   SquarePi,
   Star,
@@ -22,6 +23,7 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
+  SidebarGroupAction,
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
@@ -29,6 +31,12 @@ import {
   SidebarMenuItem,
   SidebarSeparator,
 } from '../../ui/sidebar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '../../ui/dropdown-menu';
 import { NavMain } from './nav-main';
 import { NavDirectMessages } from './nav-direct-messages';
 import { SiteLogoWithName } from '../site-logo-wt-name';
@@ -225,9 +233,23 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <SidebarSeparator className="mx-2" />
+        <SidebarSeparator className="mx-2 group-data-[collapsible=icon]:hidden" />
         <SidebarGroup className="py-0">
-          <SidebarGroupLabel className="uppercase">Student Classrooms</SidebarGroupLabel>
+          <SidebarGroupLabel className="uppercase">
+            <span>Classrooms</span>
+          </SidebarGroupLabel>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <SidebarGroupAction title="Classroom actions">
+                <MoreHorizontal />
+                <span className="sr-only">Classroom actions</span>
+              </SidebarGroupAction>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem>Request class</DropdownMenuItem>
+              <DropdownMenuItem>Manage classrooms</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </SidebarGroup>
         {classroomsByStudent.map(({ student, classrooms }, index) => (
           <NavClassrooms
