@@ -9,10 +9,13 @@ import {
   Inbox,
   Languages,
   LifeBuoy,
+  MessageSquarePlus,
   MoreHorizontal,
   Send,
+  Settings,
   SquarePi,
   Star,
+  UserPlus,
 } from 'lucide-react';
 
 import { NavClassrooms } from './nav-classrooms';
@@ -209,17 +212,17 @@ const data = {
   STUDENTS: [
     {
       id: 3,
-      name: 'Elyas Smith',
+      name: 'Elyas',
       color: 'bg-blue-500 text-white',
     },
     {
       id: 4,
-      name: 'Nailah Smith',
+      name: 'Nailah',
       color: 'bg-red-500 text-white',
     },
     {
       id: 5,
-      name: 'Zayne Smith',
+      name: 'Zayne',
       color: 'bg-violet-500 text-white',
     },
   ],
@@ -264,10 +267,19 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
               side={isMobile ? 'bottom' : 'right'}
               align={isMobile ? 'end' : 'start'}
             >
-              <DropdownMenuItem>Add student</DropdownMenuItem>
-              <DropdownMenuItem>Request classes</DropdownMenuItem>
+              <DropdownMenuItem>
+                <UserPlus className="text-muted-foreground" />
+                <span>Add student</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <MessageSquarePlus className="text-muted-foreground" />
+                <span>Request classes</span>
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Manage classrooms</DropdownMenuItem>
+              <DropdownMenuItem>
+                <Settings className="text-muted-foreground" />
+                <span>Manage classes</span>
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
           <SidebarGroupContent />

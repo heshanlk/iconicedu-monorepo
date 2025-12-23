@@ -70,7 +70,7 @@ export function NavClassrooms({
         student.color,
       )}
     >
-      {getInitials(student.name)}
+      {getInitials(student.name, 1)}
     </span>
   );
 
