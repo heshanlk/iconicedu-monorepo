@@ -1,6 +1,6 @@
 'use client';
 
-import { MoreHorizontal, Share, StarOff, Trash2 } from 'lucide-react';
+import { MoreHorizontal, Plus, Share, StarOff, Trash2 } from 'lucide-react';
 
 import {
   DropdownMenu,
@@ -11,6 +11,7 @@ import {
 } from '../../ui/dropdown-menu';
 import {
   SidebarGroup,
+  SidebarGroupAction,
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuAction,
@@ -47,6 +48,9 @@ export function NavDirectMessages({
   return (
     <SidebarGroup>
       <SidebarGroupLabel className="uppercase">Direct Messages</SidebarGroupLabel>
+      <SidebarGroupAction title="Add Project">
+        <Plus /> <span className="sr-only">Add Project</span>
+      </SidebarGroupAction>
       <SidebarMenu>
         {dms.map((item) => (
           <SidebarMenuItem key={item.name}>

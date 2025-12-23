@@ -24,17 +24,20 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupAction,
+  SidebarGroupContent,
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarSeparator,
+  useSidebar,
 } from '../../ui/sidebar';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../../ui/dropdown-menu';
 import { NavMain } from './nav-main';
@@ -220,6 +223,8 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
       classroom.participants.includes(student.id),
     ),
   })).filter((group) => group.classrooms.length > 0);
+
+  const { isMobile } = useSidebar();
   return (
     <Sidebar variant="inset" {...props} collapsible="icon">
       <SidebarHeader>
@@ -234,8 +239,8 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
       <SidebarContent>
         <NavMain items={data.navMain} />
         <SidebarSeparator className="mx-2 group-data-[collapsible=icon]:hidden" />
-        <SidebarGroup className="py-0">
-          <SidebarGroupLabel className="uppercase">
+        <SidebarGroup>
+          <SidebarGroupLabel asChild className="uppercase">
             <span>Classrooms</span>
           </SidebarGroupLabel>
           <DropdownMenu>
@@ -245,11 +250,18 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
                 <span className="sr-only">Classroom actions</span>
               </SidebarGroupAction>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem>Request class</DropdownMenuItem>
+            <DropdownMenuContent
+              className="w-56"
+              side={isMobile ? 'bottom' : 'right'}
+              align={isMobile ? 'end' : 'start'}
+            >
+              <DropdownMenuItem>Add student</DropdownMenuItem>
+              <DropdownMenuItem>Request classes</DropdownMenuItem>
+              <DropdownMenuSeparator />
               <DropdownMenuItem>Manage classrooms</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          <SidebarGroupContent />
         </SidebarGroup>
         {classroomsByStudent.map(({ student, classrooms }, index) => (
           <NavClassrooms

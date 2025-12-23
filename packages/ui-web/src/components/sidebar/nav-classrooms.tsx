@@ -20,6 +20,7 @@ import {
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuAction,
+  SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarSeparator,
@@ -45,6 +46,8 @@ export function NavClassrooms({
     url: string;
     icon: LucideIcon;
     isActive?: boolean;
+    unreadCount?: number;
+    showMenuOnUnread?: boolean;
     participants: number[];
     items?: {
       title: string;
@@ -96,29 +99,33 @@ export function NavClassrooms({
                     <span>{item.name}</span>
                   </a>
                 </SidebarMenuButton>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <SidebarMenuAction>
-                      <MoreHorizontal />
-                      <span className="sr-only">More</span>
-                    </SidebarMenuAction>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent
-                    className="w-56"
-                    side={isMobile ? 'bottom' : 'right'}
-                    align={isMobile ? 'end' : 'start'}
-                  >
-                    <DropdownMenuItem>
-                      <StarOff className="text-muted-foreground" />
-                      <span>Add to Favorites</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem className="text-red-400">
-                      <ListXIcon className="text-red-500" />
-                      <span>Hide</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                {item.unreadCount && item.unreadCount > 0 && !item.showMenuOnUnread ? (
+                  <SidebarMenuBadge>{item.unreadCount}</SidebarMenuBadge>
+                ) : (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <SidebarMenuAction>
+                        <MoreHorizontal />
+                        <span className="sr-only">More</span>
+                      </SidebarMenuAction>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      className="w-56"
+                      side={isMobile ? 'bottom' : 'right'}
+                      align={isMobile ? 'end' : 'start'}
+                    >
+                      <DropdownMenuItem>
+                        <StarOff className="text-muted-foreground" />
+                        <span>Add to Favorites</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem className="text-red-400">
+                        <ListXIcon className="text-red-500" />
+                        <span>Hide</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
               </SidebarMenuItem>
             ))}
           </SidebarMenu>
