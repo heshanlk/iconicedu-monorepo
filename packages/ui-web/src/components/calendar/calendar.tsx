@@ -17,6 +17,8 @@ import { WeekView } from './week-view';
 import { DayView } from './day-view';
 import { AgendaView } from './agenda-view';
 import { useIsMobile } from '../../hooks/use-mobile';
+import { Card, CardContent, CardHeader } from '../../ui/card';
+import { ScrollArea } from '../../ui/scroll-area';
 
 export type CalendarView = 'month' | 'week' | 'day' | 'agenda';
 
@@ -186,31 +188,35 @@ export function Calendar() {
   };
 
   return (
-    <div className="flex h-screen flex-col">
-      <CalendarHeader
-        title={getHeaderTitle()}
-        view={view}
-        onViewChange={setView}
-        onPrevious={navigatePrevious}
-        onNext={navigateNext}
-        onToday={navigateToday}
-      />
-      <div
-        className="flex-1 overflow-hidden"
-        onTouchStart={onTouchStart}
-        onTouchEnd={onTouchEnd}
-      >
-        {view === 'month' && (
-          <MonthView
-            currentDate={currentDate}
-            events={events}
-            onDateSelect={handleDateSelect}
-          />
-        )}
-        {view === 'week' && <WeekView currentDate={currentDate} events={events} />}
-        {view === 'day' && <DayView currentDate={currentDate} events={events} />}
-        {view === 'agenda' && <AgendaView currentDate={currentDate} events={events} />}
-      </div>
-    </div>
+    <Card className="flex min-h-0 flex-1">
+      <CardHeader className="p-0">
+        <CalendarHeader
+          title={getHeaderTitle()}
+          view={view}
+          onViewChange={setView}
+          onPrevious={navigatePrevious}
+          onNext={navigateNext}
+          onToday={navigateToday}
+        />
+      </CardHeader>
+      <CardContent className="min-h-0 flex-1 p-0">
+        <ScrollArea
+          className="h-full"
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
+        >
+          {view === 'month' && (
+            <MonthView
+              currentDate={currentDate}
+              events={events}
+              onDateSelect={handleDateSelect}
+            />
+          )}
+          {view === 'week' && <WeekView currentDate={currentDate} events={events} />}
+          {view === 'day' && <DayView currentDate={currentDate} events={events} />}
+          {view === 'agenda' && <AgendaView currentDate={currentDate} events={events} />}
+        </ScrollArea>
+      </CardContent>
+    </Card>
   );
 }

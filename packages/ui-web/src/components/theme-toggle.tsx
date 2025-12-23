@@ -31,7 +31,7 @@ export function ThemeToggle({ ...props }) {
   return (
     <Button
       variant="ghost"
-      className="relative p-0"
+      className="relative p-0 size-9"
       aria-label="Toggle theme"
       onClick={handleToggle}
       {...props}
