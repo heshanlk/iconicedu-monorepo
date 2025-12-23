@@ -15,7 +15,6 @@ import {
 } from 'lucide-react';
 
 import { NavClassrooms } from './nav-classrooms';
-import { NavFavorites } from './nav-favorites';
 import { NavSecondary } from './nav-secondary';
 import { NavUser } from './nav-user';
 import {
@@ -30,7 +29,6 @@ import {
 import { NavMain } from './nav-main';
 import { NavDirectMessages } from './nav-direct-messages';
 import { SiteLogoWithName } from '../site-logo-wt-name';
-import { StudentFilterProvider } from './student-filter-context';
 
 const data = {
   user: {
@@ -61,7 +59,7 @@ const data = {
   CLASSROOMS: [
     {
       id: 1,
-      name: 'ELA with Ms Norah',
+      name: 'ELA • Ms Norah (Mon 6:00)',
       participants: [1, 2, 3],
       url: '#',
       icon: Languages,
@@ -189,44 +187,56 @@ const data = {
     {
       id: 3,
       name: 'Elias Smith',
+      color: 'bg-chart-1 text-white',
     },
     {
       id: 4,
       name: 'Nailah Smith',
+      color: 'bg-chart-2 text-white',
     },
     {
       id: 5,
       name: 'Zayne Smith',
+      color: 'bg-chart-3 text-white',
     },
   ],
 };
 
 export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const classroomsByStudent = data.STUDENTS.map((student) => ({
+    student,
+    classrooms: data.CLASSROOMS.filter((classroom) =>
+      classroom.participants.includes(student.id),
+    ),
+  })).filter((group) => group.classrooms.length > 0);
+
   return (
     <Sidebar variant="inset" {...props} collapsible="icon">
-      <StudentFilterProvider students={data.STUDENTS}>
-        <SidebarHeader>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton size="lg">
-                <SiteLogoWithName />
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarHeader>
-        <SidebarContent>
-          <NavMain items={data.navMain} />
-          <NavFavorites
-            favorites={data.CLASSROOMS.filter((classroom) => classroom.isFavorite)}
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton size="lg">
+              <SiteLogoWithName />
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
+      <SidebarContent>
+        <NavMain items={data.navMain} />
+        {classroomsByStudent.map(({ student, classrooms }) => (
+          <NavClassrooms
+            key={student.id}
+            title={student.name}
+            student={student}
+            classrooms={classrooms}
           />
-          <NavClassrooms classrooms={data.CLASSROOMS} />
-          <NavDirectMessages dms={data.DIRECT_MESSAGES} />
-          <NavSecondary items={data.navSecondary} className="mt-auto" />
-        </SidebarContent>
-        <SidebarFooter>
-          <NavUser user={data.user} />
-        </SidebarFooter>
-      </StudentFilterProvider>
+        ))}
+        <NavDirectMessages dms={data.DIRECT_MESSAGES} />
+        <NavSecondary items={data.navSecondary} className="mt-auto" />
+      </SidebarContent>
+      <SidebarFooter>
+        <NavUser user={data.user} />
+      </SidebarFooter>
     </Sidebar>
   );
 }

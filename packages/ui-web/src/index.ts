@@ -2,7 +2,6 @@ export * from './components/sidebar/sidebar-left';
 export * from './components/sidebar/sidebar-right';
 export * from './components/login-form';
 export * from './components/sidebar/nav-classrooms';
-export * from './components/sidebar/nav-favorites';
 export * from './components/sidebar/nav-secondary';
 export * from './components/sidebar/nav-user';
 export * from './components/otp-form';
