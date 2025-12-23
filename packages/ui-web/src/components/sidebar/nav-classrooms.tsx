@@ -98,7 +98,7 @@ export function NavClassrooms({
               <EmptyContent>
                 <div className="flex">
                   <Button size={'lg'}>
-                    <MessageSquarePlus /> Request a Class
+                    <MessageSquarePlus /> Request a class
                   </Button>
                 </div>
               </EmptyContent>

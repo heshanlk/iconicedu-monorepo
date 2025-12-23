@@ -288,7 +288,7 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <MessageSquarePlus className="text-muted-foreground" />
-                <span>Request classes</span>
+                <span>Request a class</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
