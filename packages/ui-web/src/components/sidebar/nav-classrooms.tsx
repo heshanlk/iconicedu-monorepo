@@ -6,8 +6,10 @@ import {
   ChevronUp,
   ListXIcon,
   MessageSquareDot,
+  MessageSquarePlus,
   MoreHorizontal,
   StarOff,
+  UserPlus,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -16,6 +18,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '../../ui/collapsible';
+import { Button } from '../../ui/button';
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -34,6 +37,7 @@ import {
   DropdownMenuTrigger,
 } from '../../ui/dropdown-menu';
 import { cn, getInitials } from '../../lib/utils';
+import { Empty, EmptyContent } from '../../ui/empty';
 
 export function NavClassrooms({
   classrooms,
@@ -89,53 +93,65 @@ export function NavClassrooms({
           </SidebarGroupLabel>
         </CollapsibleTrigger>
         <CollapsibleContent className="data-[state=open]:bg-chart-1/10 rounded-md rounded-t-none">
-          <SidebarMenu>
-            {classrooms.map((item, index) => (
-              <SidebarMenuItem className="border-b" key={`${item.name}-${index}`}>
-                <SidebarMenuButton asChild tooltip={item.name}>
-                  <a href={item.url}>
-                    {item.hasUnread ? (
-                      <>
+          {classrooms.length === 0 ? (
+            <Empty>
+              <EmptyContent>
+                <div className="flex">
+                  <Button size={'lg'}>
+                    <MessageSquarePlus /> Request a Class
+                  </Button>
+                </div>
+              </EmptyContent>
+            </Empty>
+          ) : (
+            <SidebarMenu>
+              {classrooms.map((item, index) => (
+                <SidebarMenuItem className="border-b" key={`${item.name}-${index}`}>
+                  <SidebarMenuButton asChild tooltip={item.name}>
+                    <a href={item.url}>
+                      {item.hasUnread ? (
+                        <>
+                          <item.icon />
+                          <span className="relative flex size-2">
+                            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
+                            <span className="relative inline-flex size-2 rounded-full bg-green-500"></span>
+                          </span>
+                        </>
+                      ) : (
                         <item.icon />
-                        <span className="relative flex size-2">
-                          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
-                          <span className="relative inline-flex size-2 rounded-full bg-green-500"></span>
-                        </span>
-                      </>
-                    ) : (
-                      <item.icon />
-                    )}
-                    <span className={cn(item.hasUnread && 'font-semibold')}>
-                      {item.name}
-                    </span>
-                  </a>
-                </SidebarMenuButton>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <SidebarMenuAction>
-                      <MoreHorizontal />
-                      <span className="sr-only">More</span>
-                    </SidebarMenuAction>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent
-                    className="w-56"
-                    side={isMobile ? 'bottom' : 'right'}
-                    align={isMobile ? 'end' : 'start'}
-                  >
-                    <DropdownMenuItem>
-                      <StarOff className="text-muted-foreground" />
-                      <span>Add to Favorites</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem className="text-red-400">
-                      <ListXIcon className="text-red-500" />
-                      <span>Hide</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
+                      )}
+                      <span className={cn(item.hasUnread && 'font-semibold')}>
+                        {item.name}
+                      </span>
+                    </a>
+                  </SidebarMenuButton>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <SidebarMenuAction>
+                        <MoreHorizontal />
+                        <span className="sr-only">More</span>
+                      </SidebarMenuAction>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      className="w-56"
+                      side={isMobile ? 'bottom' : 'right'}
+                      align={isMobile ? 'end' : 'start'}
+                    >
+                      <DropdownMenuItem>
+                        <StarOff className="text-muted-foreground" />
+                        <span>Add to Favorites</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem className="text-red-400">
+                        <ListXIcon className="text-red-500" />
+                        <span>Hide</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          )}
         </CollapsibleContent>
       </Collapsible>
     </SidebarGroup>

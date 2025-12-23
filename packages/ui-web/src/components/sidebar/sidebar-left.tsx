@@ -2,9 +2,11 @@
 
 import * as React from 'react';
 import {
+  ArrowUpRightIcon,
   Calendar,
   ChefHat,
   Earth,
+  FolderCheckIcon,
   Home,
   Inbox,
   Languages,
@@ -36,6 +38,7 @@ import {
   SidebarSeparator,
   useSidebar,
 } from '../../ui/sidebar';
+import { Button } from '../../ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -46,6 +49,14 @@ import {
 import { NavMain } from './nav-main';
 import { NavDirectMessages } from './nav-direct-messages';
 import { SiteLogoWithName } from '../site-logo-wt-name';
+import { Empty } from '../../ui/empty';
+import {
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+  EmptyDescription,
+  EmptyContent,
+} from '../../ui/empty';
 
 const data = {
   user: {
@@ -211,7 +222,7 @@ const data = {
   ],
   STUDENTS: [
     {
-      id: 3,
+      id: 6,
       name: 'Elyas',
       color: 'bg-blue-500 text-white',
     },
@@ -225,7 +236,11 @@ const data = {
       name: 'Zayne',
       color: 'bg-violet-500 text-white',
     },
-  ],
+  ] as {
+    id: number;
+    name: string;
+    color: string;
+  }[],
 };
 
 export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -234,7 +249,7 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
     classrooms: data.CLASSROOMS.filter((classroom) =>
       classroom.participants.includes(student.id),
     ),
-  })).filter((group) => group.classrooms.length > 0);
+  }));
 
   const { isMobile } = useSidebar();
   return (
@@ -284,15 +299,31 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
           </DropdownMenu>
           <SidebarGroupContent />
         </SidebarGroup>
-        {classroomsByStudent.map(({ student, classrooms }, index) => (
-          <NavClassrooms
-            key={student.id}
-            title={student.name}
-            student={student}
-            classrooms={classrooms}
-            defaultOpen={index === 0}
-          />
-        ))}
+        {classroomsByStudent.length === 0 ? (
+          <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+            <SidebarGroupContent>
+              <Empty>
+                <EmptyContent>
+                  <div className="flex">
+                    <Button size={'lg'}>
+                      <UserPlus /> Add a Student
+                    </Button>
+                  </div>
+                </EmptyContent>
+              </Empty>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ) : (
+          classroomsByStudent.map(({ student, classrooms }, index) => (
+            <NavClassrooms
+              key={student.id}
+              title={student.name}
+              student={student}
+              classrooms={classrooms}
+              defaultOpen={index === 0}
+            />
+          ))
+        )}
         <SidebarSeparator className="mx-2" />
         <NavDirectMessages dms={data.DIRECT_MESSAGES} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
