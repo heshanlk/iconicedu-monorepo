@@ -21,6 +21,8 @@ import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -210,10 +212,6 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
       classroom.participants.includes(student.id),
     ),
   })).filter((group) => group.classrooms.length > 0);
-  const [openStudentId, setOpenStudentId] = React.useState<number | null>(
-    classroomsByStudent[0]?.student.id ?? null,
-  );
-
   return (
     <Sidebar variant="inset" {...props} collapsible="icon">
       <SidebarHeader>
@@ -228,18 +226,16 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
       <SidebarContent>
         <NavMain items={data.navMain} />
         <SidebarSeparator className="mx-2" />
+        <SidebarGroup className="py-0">
+          <SidebarGroupLabel className="uppercase">Student Classrooms</SidebarGroupLabel>
+        </SidebarGroup>
         {classroomsByStudent.map(({ student, classrooms }, index) => (
           <NavClassrooms
             key={student.id}
             title={student.name}
             student={student}
             classrooms={classrooms}
-            isOpen={openStudentId === student.id}
-            onToggle={() =>
-              setOpenStudentId((current) =>
-                current === student.id ? current : student.id,
-              )
-            }
+            defaultOpen={index === 0}
           />
         ))}
         <SidebarSeparator className="mx-2" />

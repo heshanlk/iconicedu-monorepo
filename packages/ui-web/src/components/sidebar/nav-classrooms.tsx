@@ -37,8 +37,7 @@ export function NavClassrooms({
   classrooms,
   title,
   student,
-  isOpen,
-  onToggle,
+  defaultOpen = false,
 }: {
   classrooms: {
     name: string;
@@ -57,15 +56,10 @@ export function NavClassrooms({
     name: string;
     color: string;
   };
-  isOpen: boolean;
-  onToggle: () => void;
+  defaultOpen?: boolean;
 }) {
   const { isMobile } = useSidebar();
-  const [showAllClassrooms, setShowAllClassrooms] = useState(false);
-  const maxVisibleClassrooms = 5;
-  const visibleClassrooms = showAllClassrooms
-    ? classrooms
-    : classrooms.slice(0, maxVisibleClassrooms);
+  const [isOpen, setIsOpen] = useState(defaultOpen);
   const renderClassroomAvatar = () => (
     <span
       className={cn(
@@ -78,66 +72,54 @@ export function NavClassrooms({
   );
 
   return (
-    <SidebarGroup>
-      <Collapsible open={isOpen} onOpenChange={onToggle}>
+    <SidebarGroup className="py-0">
+      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         <CollapsibleTrigger asChild>
           <SidebarGroupLabel className="flex cursor-pointer items-center gap-2 uppercase">
             {renderClassroomAvatar()}
             <span className="flex-1">{title}</span>
-            {isOpen ? <ChevronUp className="size-4" /> : <ChevronDown className="size-4" />}
+            {isOpen ? (
+              <ChevronUp className="size-4" />
+            ) : (
+              <ChevronDown className="size-4" />
+            )}
           </SidebarGroupLabel>
         </CollapsibleTrigger>
         <CollapsibleContent>
           <SidebarMenu>
-            {visibleClassrooms.map((item, index) => (
-              <Collapsible
-                key={`${item.name}-${index}`}
-                asChild
-                defaultOpen={item.isActive}
-              >
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild tooltip={item.name}>
-                    <a href={item.url}>
-                      <item.icon />
-                      <span>{item.name}</span>
-                    </a>
-                  </SidebarMenuButton>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <SidebarMenuAction>
-                        <MoreHorizontal />
-                        <span className="sr-only">More</span>
-                      </SidebarMenuAction>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                      className="w-56"
-                      side={isMobile ? 'bottom' : 'right'}
-                      align={isMobile ? 'end' : 'start'}
-                    >
-                      <DropdownMenuItem>
-                        <StarOff className="text-muted-foreground" />
-                        <span>Add to Favorites</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem className="text-red-400">
-                        <ListXIcon className="text-red-500" />
-                        <span>Hide</span>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </SidebarMenuItem>
-              </Collapsible>
-            ))}
-            {classrooms.length > maxVisibleClassrooms && (
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  onClick={() => setShowAllClassrooms((prev) => !prev)}
-                >
-                  <MoreHorizontal />
-                  <span>{showAllClassrooms ? 'Hide' : 'More'}</span>
+            {classrooms.map((item, index) => (
+              <SidebarMenuItem key={`${item.name}-${index}`}>
+                <SidebarMenuButton asChild tooltip={item.name}>
+                  <a href={item.url}>
+                    <item.icon />
+                    <span>{item.name}</span>
+                  </a>
                 </SidebarMenuButton>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <SidebarMenuAction>
+                      <MoreHorizontal />
+                      <span className="sr-only">More</span>
+                    </SidebarMenuAction>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    className="w-56"
+                    side={isMobile ? 'bottom' : 'right'}
+                    align={isMobile ? 'end' : 'start'}
+                  >
+                    <DropdownMenuItem>
+                      <StarOff className="text-muted-foreground" />
+                      <span>Add to Favorites</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="text-red-400">
+                      <ListXIcon className="text-red-500" />
+                      <span>Hide</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </SidebarMenuItem>
-            )}
+            ))}
           </SidebarMenu>
         </CollapsibleContent>
       </Collapsible>
