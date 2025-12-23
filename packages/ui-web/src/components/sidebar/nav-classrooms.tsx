@@ -5,6 +5,7 @@ import {
   ChevronDown,
   ChevronUp,
   ListXIcon,
+  MessageSquareDot,
   MoreHorizontal,
   StarOff,
   type LucideIcon,
@@ -45,6 +46,7 @@ export function NavClassrooms({
     url: string;
     icon: LucideIcon;
     isActive?: boolean;
+    hasUnread?: boolean;
     participants: number[];
     items?: {
       title: string;
@@ -89,11 +91,23 @@ export function NavClassrooms({
         <CollapsibleContent className="data-[state=open]:bg-chart-1/10 rounded-md rounded-t-none">
           <SidebarMenu>
             {classrooms.map((item, index) => (
-              <SidebarMenuItem key={`${item.name}-${index}`}>
+              <SidebarMenuItem className="border-b" key={`${item.name}-${index}`}>
                 <SidebarMenuButton asChild tooltip={item.name}>
                   <a href={item.url}>
-                    <item.icon />
-                    <span>{item.name}</span>
+                    {item.hasUnread ? (
+                      <>
+                        <item.icon />
+                        <span className="relative flex size-2">
+                          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
+                          <span className="relative inline-flex size-2 rounded-full bg-green-500"></span>
+                        </span>
+                      </>
+                    ) : (
+                      <item.icon />
+                    )}
+                    <span className={cn(item.hasUnread && 'font-semibold')}>
+                      {item.name}
+                    </span>
                   </a>
                 </SidebarMenuButton>
                 <DropdownMenu>
