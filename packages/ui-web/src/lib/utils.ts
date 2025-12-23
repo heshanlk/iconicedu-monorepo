@@ -5,13 +5,15 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function getStudentInitials(name: string) {
-  const parts = name.trim().split(/\s+/);
-  if (parts.length === 0 || parts[0].length === 0) {
+export function getInitials(text: string, letters = 2) {
+  const trimmed = text.trim();
+  if (!trimmed) {
     return '';
   }
+  const parts = trimmed.split(/\s+/);
   if (parts.length === 1) {
-    return parts[0].slice(0, 2).toUpperCase();
+    return parts[0].slice(0, letters).toUpperCase();
   }
-  return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+  const initials = parts.map((part) => part[0]).join('');
+  return initials.slice(0, letters).toUpperCase();
 }

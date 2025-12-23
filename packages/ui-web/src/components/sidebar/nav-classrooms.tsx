@@ -33,7 +33,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../../ui/dropdown-menu';
-import { cn, getStudentInitials } from '../../lib/utils';
+import { cn, getInitials } from '../../lib/utils';
 
 export function NavClassrooms({
   classrooms,
@@ -70,7 +70,7 @@ export function NavClassrooms({
         student.color,
       )}
     >
-      {getStudentInitials(student.name)}
+      {getInitials(student.name)}
     </span>
   );
 
