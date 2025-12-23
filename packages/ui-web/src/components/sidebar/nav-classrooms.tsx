@@ -37,7 +37,8 @@ export function NavClassrooms({
   classrooms,
   title,
   student,
-  defaultOpen = false,
+  isOpen,
+  onToggle,
 }: {
   classrooms: {
     name: string;
@@ -56,11 +57,11 @@ export function NavClassrooms({
     name: string;
     color: string;
   };
-  defaultOpen?: boolean;
+  isOpen: boolean;
+  onToggle: () => void;
 }) {
   const { isMobile } = useSidebar();
   const [showAllClassrooms, setShowAllClassrooms] = useState(false);
-  const [isOpen, setIsOpen] = useState(defaultOpen);
   const maxVisibleClassrooms = 5;
   const visibleClassrooms = showAllClassrooms
     ? classrooms
@@ -78,7 +79,7 @@ export function NavClassrooms({
 
   return (
     <SidebarGroup>
-      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Collapsible open={isOpen} onOpenChange={onToggle}>
         <CollapsibleTrigger asChild>
           <SidebarGroupLabel className="flex cursor-pointer items-center gap-2 uppercase">
             {renderClassroomAvatar()}
