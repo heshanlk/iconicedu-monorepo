@@ -106,7 +106,7 @@ export function NavClassrooms({
           ) : (
             <SidebarMenu>
               {classrooms.map((item, index) => (
-                <SidebarMenuItem className="border-b" key={`${item.name}-${index}`}>
+                <SidebarMenuItem key={`${item.name}-${index}`}>
                   <SidebarMenuButton asChild tooltip={item.name}>
                     <a href={item.url}>
                       {item.hasUnread ? (

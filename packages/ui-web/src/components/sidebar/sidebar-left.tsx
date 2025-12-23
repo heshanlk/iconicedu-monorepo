@@ -222,7 +222,7 @@ const data = {
   ],
   STUDENTS: [
     {
-      id: 6,
+      id: 3,
       name: 'Elyas',
       color: 'bg-blue-500 text-white',
     },
@@ -284,7 +284,7 @@ export function SidebarLeft({ ...props }: React.ComponentProps<typeof Sidebar>) 
             >
               <DropdownMenuItem>
                 <UserPlus className="text-muted-foreground" />
-                <span>Add student</span>
+                <span>Add a student</span>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <MessageSquarePlus className="text-muted-foreground" />
