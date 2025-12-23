@@ -26,3 +26,4 @@ export * from './components/site-logo-wt-name';
 export * from './components/calendar/calendar';
 export * from './components/features/dm/direct-messages';
 export * from './components/error-boundary';
+export * from './components/inbox/inbox-container';

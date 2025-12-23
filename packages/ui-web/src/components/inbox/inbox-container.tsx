@@ -1,0 +1,836 @@
+'use client';
+
+import type React from 'react';
+import { useState } from 'react';
+import {
+  MessageSquare,
+  Video,
+  FileText,
+  Sparkles,
+  Paperclip,
+  Bell,
+  ChevronDown,
+  Check,
+  ClipboardCheck,
+  GraduationCap,
+  CheckCircle2,
+  CreditCard,
+} from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
+import { Badge } from '../../ui/badge';
+import { Button } from '../../ui/button';
+import { ScrollArea } from '../../ui/scroll-area';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '../../ui/tabs';
+import { cn } from '../../lib/utils';
+import { ActivityWithSubitems } from '../notifications/activity-with-subitems';
+import { ActivityWithButton } from '../notifications/activity-with-button';
+import { AlertCompleteClass } from '../notifications/alert-complete-class';
+import { AlertPayment } from '../notifications/alert-payment';
+import { AlertReminder } from '../notifications/alert-reminder';
+import { AlertSurvey } from '../notifications/alert-survey';
+import type { Activity, NotificationType } from '../notifications/types';
+
+const mockActivities: Activity[] = [
+  {
+    id: 'payment-1',
+    type: 'payment',
+    actor: 'Payment System',
+    action: 'reminder for',
+    target: 'March Tuition Payment',
+    timestamp: '5m',
+    isRead: false,
+    initials: '$$',
+    category: 'payment',
+    date: 'Today',
+    expandedContent:
+      'Your monthly tuition payment of $480 for both Zayne and Sophia is due on March 15th. Please complete payment by the due date to avoid late fees.',
+    actionButton: {
+      label: 'Pay Now',
+      variant: 'default',
+      onClick: () => console.log('Processing payment...'),
+    },
+  },
+  {
+    id: '1',
+    type: 'class',
+    actor: 'Ms. Dinesha',
+    action: 'upcoming class for Zayne',
+    target: 'Algebra I',
+    timestamp: '15m',
+    isRead: false,
+    initials: 'MD',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=dinesha',
+    studentName: 'Zayne',
+    participants: [
+      {
+        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=dinesha',
+        initials: 'MD',
+      },
+      { avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=zayne', initials: 'Z' },
+      { avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=emma', initials: 'EW' },
+      { avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=jake', initials: 'JD' },
+    ],
+    category: 'class',
+    date: 'Today',
+    actionButton: {
+      label: 'Join Now',
+      variant: 'default',
+      onClick: () => console.log('Joining class...'),
+    },
+    subActivities: [
+      {
+        id: '1-1',
+        type: 'recording',
+        actor: 'System',
+        action: 'class recording completed',
+        target: '',
+        timestamp: '30m',
+        isRead: false,
+        initials: 'SY',
+        studentName: 'Zayne',
+        category: 'class',
+        date: 'Today',
+        actionButton: {
+          label: 'Watch',
+          variant: 'outline',
+          onClick: () => console.log('Playing recording...'),
+        },
+        parentId: '1',
+      },
+      {
+        id: '1-2',
+        type: 'homework',
+        actor: 'Zayne',
+        action: 'submitted',
+        target: 'Chapter 5 Assignment',
+        timestamp: '45m',
+        isRead: false,
+        initials: 'Z',
+        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=zayne',
+        studentName: 'Zayne',
+        category: 'class',
+        date: 'Today',
+        parentId: '1',
+      },
+      {
+        id: '1-3',
+        type: 'notes',
+        actor: 'Ms. Dinesha',
+        action: 'added class notes',
+        target: 'Linear Equations Summary',
+        timestamp: '1h',
+        isRead: false,
+        initials: 'MD',
+        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=dinesha',
+        studentName: 'Zayne',
+        category: 'class',
+        date: 'Today',
+        actionButton: {
+          label: 'View',
+          variant: 'outline',
+          onClick: () => console.log('Viewing notes...'),
+        },
+        parentId: '1',
+      },
+      {
+        id: '1-4',
+        type: 'ai-summary',
+        actor: 'AI Assistant',
+        action: 'generated lesson summary',
+        target: '',
+        timestamp: '1h',
+        isRead: false,
+        initials: 'AI',
+        studentName: 'Zayne',
+        category: 'class',
+        date: 'Today',
+        expandedContent:
+          "Today's lesson covered linear equations in algebra. Key concepts: slope-intercept form (y = mx + b), finding x and y intercepts, and graphing lines on coordinate planes. Practice problems assigned for homework.",
+        parentId: '1',
+      },
+      {
+        id: '1-5',
+        type: 'homework',
+        actor: 'Ms. Dinesha',
+        action: 'graded',
+        target: 'Previous Assignment',
+        timestamp: '2h',
+        isRead: false,
+        initials: 'MD',
+        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=dinesha',
+        studentName: 'Zayne',
+        category: 'class',
+        date: 'Today',
+        expandedContent:
+          'Score: 94/100. Excellent work on understanding linear functions!',
+        actionButton: {
+          label: 'View Grade',
+          variant: 'outline',
+          onClick: () => console.log('Viewing grade...'),
+        },
+        parentId: '1',
+      },
+      {
+        id: '1-6',
+        type: 'notes',
+        actor: 'Ms. Dinesha',
+        action: 'shared',
+        target: 'Practice Problems',
+        timestamp: '2h',
+        isRead: false,
+        initials: 'MD',
+        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=dinesha',
+        studentName: 'Zayne',
+        category: 'class',
+        date: 'Today',
+        actionButton: {
+          label: 'Download',
+          variant: 'outline',
+          onClick: () => console.log('Downloading...'),
+        },
+        parentId: '1',
+      },
+    ],
+  },
+  {
+    id: 'complete-1',
+    type: 'complete-class',
+    actor: 'System',
+    action: 'reminder for Zayne',
+    target: "Mark yesterday's Geometry class as complete",
+    timestamp: '20m',
+    isRead: false,
+    initials: '✓',
+    studentName: 'Zayne',
+    category: 'system',
+    date: 'Today',
+    expandedContent:
+      'Your Geometry class with Mrs. Anderson ended yesterday. Please confirm that the class was completed successfully.',
+    actionButton: {
+      label: 'Mark Complete',
+      variant: 'default',
+      onClick: () => console.log('Marking class complete...'),
+    },
+  },
+  {
+    id: '10',
+    type: 'class',
+    actor: 'Mr. Kim',
+    action: 'upcoming class for Sophia',
+    target: 'Biology Lab',
+    timestamp: '30m',
+    isRead: false,
+    initials: 'MK',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=mrkim',
+    studentName: 'Sophia',
+    participants: [
+      { avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=mrkim', initials: 'MK' },
+      { avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=sophia', initials: 'S' },
+      { avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=lucy', initials: 'LB' },
+    ],
+    category: 'class',
+    date: 'Today',
+    actionButton: {
+      label: 'Join Now',
+      variant: 'default',
+      onClick: () => console.log('Joining class...'),
+    },
+    subActivities: [
+      {
+        id: '10-1',
+        type: 'homework',
+        actor: 'Sophia',
+        action: 'submitted',
+        target: 'Cell Structure Lab Report',
+        timestamp: '45m',
+        isRead: false,
+        initials: 'S',
+        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=sophia',
+        studentName: 'Sophia',
+        category: 'class',
+        date: 'Today',
+        parentId: '10',
+      },
+      {
+        id: '10-2',
+        type: 'notes',
+        actor: 'Mr. Kim',
+        action: 'posted',
+        target: 'Lab Instructions',
+        timestamp: '50m',
+        isRead: false,
+        initials: 'MK',
+        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=mrkim',
+        studentName: 'Sophia',
+        category: 'class',
+        date: 'Today',
+        actionButton: {
+          label: 'View',
+          variant: 'outline',
+          onClick: () => console.log('Viewing instructions...'),
+        },
+        parentId: '10',
+      },
+      {
+        id: '10-3',
+        type: 'ai-summary',
+        actor: 'AI Assistant',
+        action: 'created study guide',
+        target: '',
+        timestamp: '1h',
+        isRead: false,
+        initials: 'AI',
+        studentName: 'Sophia',
+        category: 'class',
+        date: 'Today',
+        expandedContent:
+          'Key topics: Cell membrane structure, organelles and their functions, differences between prokaryotic and eukaryotic cells.',
+        parentId: '10',
+      },
+    ],
+  },
+  {
+    id: 'reminder-1',
+    type: 'reminder',
+    actor: 'System',
+    action: 'reminder for Sophia',
+    target: 'Physics class starts in 2 hours',
+    timestamp: '35m',
+    isRead: false,
+    initials: '⏰',
+    studentName: 'Sophia',
+    category: 'system',
+    date: 'Today',
+    expandedContent:
+      "Your Physics class with Dr. Martinez is scheduled for 3:00 PM today. Don't forget to prepare your lab materials!",
+    actionButton: {
+      label: 'View Class',
+      variant: 'outline',
+      onClick: () => console.log('Viewing class details...'),
+    },
+  },
+  {
+    id: '2',
+    type: 'homework',
+    actor: 'Mr. Rodriguez',
+    action: 'uploaded homework for Zayne',
+    target: 'Polynomials Worksheet',
+    timestamp: '1h',
+    isRead: false,
+    initials: 'MR',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=rodriguez',
+    studentName: 'Zayne',
+    category: 'class',
+    date: 'Today',
+    expandedContent:
+      'Complete problems 1-15 on page 87. Focus on factoring techniques. Due by Friday at 5:00 PM.',
+    actionButton: {
+      label: 'View Assignment',
+      variant: 'outline',
+      onClick: () => console.log('Viewing assignment...'),
+    },
+  },
+  {
+    id: 'survey-1',
+    type: 'survey',
+    actor: 'Feedback System',
+    action: 'feedback request for',
+    target: "Ms. Dinesha's Algebra I Class",
+    timestamp: '1h',
+    isRead: false,
+    initials: '📝',
+    category: 'system',
+    date: 'Today',
+    expandedContent:
+      "We'd love to hear your feedback about Zayne's recent Algebra I class with Ms. Dinesha. Your input helps us improve the learning experience!",
+    actionButton: {
+      label: 'Take Survey',
+      variant: 'default',
+      onClick: () => console.log('Opening survey...'),
+    },
+  },
+  {
+    id: '3',
+    type: 'homework',
+    actor: 'Ms. Chen',
+    action: "graded Zayne's homework",
+    target: 'Algebra Quiz #3',
+    timestamp: '2h',
+    isRead: false,
+    initials: 'MC',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=chen',
+    studentName: 'Zayne',
+    category: 'class',
+    date: 'Today',
+    expandedContent:
+      'Score: 92/100. Great work on linear equations! Review problem #8 for improvement.',
+    actionButton: {
+      label: 'View Results',
+      variant: 'outline',
+      onClick: () => console.log('Viewing results...'),
+    },
+  },
+  {
+    id: '4',
+    type: 'message',
+    actor: 'Ms. Dinesha',
+    action: 'sent message to Zayne in',
+    target: 'Algebra I Chat',
+    timestamp: '3h',
+    isRead: false,
+    initials: 'MD',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=dinesha',
+    studentName: 'Zayne',
+    category: 'class',
+    date: 'Today',
+    expandedContent:
+      "Great job on today's class! Don't forget to review the practice problems for next week's quiz. Let me know if you have any questions.",
+  },
+  {
+    id: '5',
+    type: 'notes',
+    actor: 'Mr. Rodriguez',
+    action: 'added notes to',
+    target: 'Math Study Group',
+    timestamp: '4h',
+    isRead: false,
+    initials: 'MR',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=rodriguez',
+    studentName: 'Zayne',
+    category: 'class',
+    date: 'Today',
+    expandedContent:
+      "Study guide for next week's test: Chapter 5 (Polynomials), Chapter 6 (Factoring). Focus on completing the square and quadratic formula.",
+  },
+  {
+    id: '6',
+    type: 'recording',
+    actor: 'System',
+    action: 'class recording ready for Sophia',
+    target: 'Biology Lab Session',
+    timestamp: '5h',
+    isRead: false,
+    initials: 'SY',
+    studentName: 'Sophia',
+    category: 'class',
+    date: 'Today',
+    actionButton: {
+      label: 'Watch Recording',
+      variant: 'outline',
+      onClick: () => console.log('Playing recording...'),
+    },
+  },
+  {
+    id: '7',
+    type: 'homework',
+    actor: 'Mrs. Patel',
+    action: "graded Sophia's homework",
+    target: 'Biology Lab Report',
+    timestamp: '1d',
+    isRead: true,
+    initials: 'MP',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=patel',
+    studentName: 'Sophia',
+    category: 'class',
+    date: 'Yesterday',
+    expandedContent:
+      'Score: 95/100. Excellent work! Your hypothesis was clear and data analysis was thorough.',
+    actionButton: {
+      label: 'View Feedback',
+      variant: 'outline',
+      onClick: () => console.log('Viewing feedback...'),
+    },
+  },
+  {
+    id: '8',
+    type: 'message',
+    actor: 'Coach Anderson',
+    action: 'sent message about Sophia',
+    target: 'Track & Field',
+    timestamp: '2d',
+    isRead: true,
+    initials: 'CA',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=anderson',
+    studentName: 'Sophia',
+    category: 'class',
+    date: 'Earlier',
+    expandedContent:
+      'Great job at practice today! Your technique on the hurdles has improved significantly. Keep up the excellent work!',
+  },
+  {
+    id: '9',
+    type: 'reminder',
+    actor: 'System',
+    action: 'reminder for Sophia',
+    target: 'Spanish II class tomorrow at 3:00 PM',
+    timestamp: '2d',
+    isRead: true,
+    initials: 'SY',
+    studentName: 'Sophia',
+    category: 'system',
+    date: 'Earlier',
+  },
+];
+
+function getActivityIcon(type: NotificationType) {
+  switch (type) {
+    case 'homework':
+      return <Paperclip className="size-3" />;
+    case 'message':
+      return <MessageSquare className="size-3" />;
+    case 'class':
+      return <GraduationCap className="size-3" />;
+    case 'reminder':
+      return <Bell className="size-3" />;
+    case 'recording':
+      return <Video className="size-3" />;
+    case 'notes':
+      return <FileText className="size-3" />;
+    case 'ai-summary':
+      return <Sparkles className="size-3" />;
+    case 'payment':
+      return <CreditCard className="size-3" />;
+    case 'survey':
+      return <ClipboardCheck className="size-3" />;
+    case 'complete-class':
+      return <CheckCircle2 className="size-3" />;
+  }
+}
+
+function getIconBgColor(type: NotificationType, isRead: boolean) {
+  if (isRead) {
+    return 'bg-muted text-muted-foreground';
+  }
+
+  switch (type) {
+    case 'homework':
+      return 'bg-orange-100 text-orange-700';
+    case 'message':
+      return 'bg-blue-500 text-white';
+    case 'class':
+      return 'bg-blue-500 text-white';
+    case 'reminder':
+      return 'bg-purple-500 text-white';
+    case 'recording':
+      return 'bg-green-100 text-green-700';
+    case 'notes':
+      return 'bg-amber-100 text-amber-700';
+    case 'ai-summary':
+      return 'bg-violet-100 text-violet-700';
+    case 'payment':
+      return 'bg-red-100 text-red-700';
+    case 'survey':
+      return 'bg-cyan-100 text-cyan-700';
+    case 'complete-class':
+      return 'bg-yellow-100 text-yellow-700';
+  }
+}
+
+export function InboxContainer() {
+  const [activities, setActivities] = useState(mockActivities);
+  const [expandedActivities, setExpandedActivities] = useState<Record<string, boolean>>(
+    {},
+  );
+  const [collapsedActivities, setCollapsedActivities] = useState<Record<string, boolean>>(
+    mockActivities.reduce(
+      (acc, activity) => {
+        if (activity.subActivities && activity.subActivities.length > 0) {
+          acc[activity.id] = true;
+        }
+        return acc;
+      },
+      {} as Record<string, boolean>,
+    ),
+  );
+  const [readActivities, setReadActivities] = useState<Record<string, boolean>>({});
+  const [activeTab, setActiveTab] = useState('all');
+
+  const unreadCount = activities.filter((a) => !a.isRead).length;
+  const groupedActivities = Object.entries(
+    activities.reduce(
+      (acc, activity) => {
+        if (!acc[activity.date]) {
+          acc[activity.date] = [];
+        }
+        acc[activity.date].push(activity);
+        return acc;
+      },
+      {} as Record<string, typeof activities>,
+    ),
+  );
+
+  const filteredGroupedActivities = groupedActivities
+    .map(([date, dateActivities]) => {
+      const filtered = dateActivities.filter((activity) => {
+        if (activeTab === 'all') return true;
+        if (activeTab === 'classes') return activity.category === 'class';
+        if (activeTab === 'payment') return activity.category === 'payment';
+        if (activeTab === 'system') return activity.category === 'system';
+        return true;
+      });
+      return [date, filtered] as const;
+    })
+    .filter(([, dateActivities]) => dateActivities.length > 0);
+
+  const handleMainActivityClick = (id: string, e: React.MouseEvent) => {
+    const target = e.target as HTMLElement;
+    if (target.closest('button[data-action-button="true"]')) {
+      return;
+    }
+
+    const activity = activities.find((a) => a.id === id);
+    if (activity?.subActivities && activity.subActivities.length > 0) {
+      setCollapsedActivities((prev) => ({
+        ...prev,
+        [id]: !prev[id],
+      }));
+    } else if (activity?.expandedContent) {
+      setExpandedActivities((prev) => ({
+        ...prev,
+        [id]: !prev[id],
+      }));
+    }
+  };
+
+  const handleSubActivityClick = (id: string) => {
+    setExpandedActivities((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
+
+  const markAsRead = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setActivities((prev) =>
+      prev.map((activity) => {
+        if (activity.id === id) {
+          return { ...activity, isRead: true };
+        }
+        // Also mark sub-activities as read
+        if (activity.subActivities) {
+          return {
+            ...activity,
+            subActivities: activity.subActivities.map((sub) =>
+              sub.id === id ? { ...sub, isRead: true } : sub,
+            ),
+          };
+        }
+        return activity;
+      }),
+    );
+  };
+
+  const renderActivity = (activity: Activity, isSubActivity = false) => (
+    <ActivityWithSubitems
+      key={activity.id}
+      showStack={
+        !isSubActivity &&
+        Boolean(activity.subActivities && activity.subActivities.length > 0) &&
+        Boolean(collapsedActivities[activity.id])
+      }
+      className="flex items-start gap-3 py-2.5"
+    >
+      <div className="relative flex shrink-0 flex-col items-center">
+        {isSubActivity && (
+          <svg
+            className="absolute -top-3 left-1/2 -translate-x-1/2"
+            width="24"
+            height="30"
+            viewBox="0 0 24 30"
+            fill="none"
+          >
+            <path
+              d="M 12 0 Q 12 15, 24 30"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              className="text-border"
+            />
+          </svg>
+        )}
+
+        <div
+          className={cn(
+            'z-10 flex size-6 items-center justify-center rounded-full',
+            getIconBgColor(activity.type, activity.isRead),
+          )}
+        >
+          {getActivityIcon(activity.type)}
+        </div>
+      </div>
+
+      <div
+        className="shrink-0 pt-0.5 text-xs text-muted-foreground"
+        style={{ width: '48px' }}
+      >
+        {activity.timestamp}
+      </div>
+
+      <div
+        onClick={(e) =>
+          isSubActivity
+            ? handleSubActivityClick(activity.id)
+            : handleMainActivityClick(activity.id, e)
+        }
+        className={cn(
+          'group relative z-10 flex min-w-0 flex-1 items-start gap-2.5 rounded-md px-2 py-1 -mx-2 transition-all duration-200',
+          !isSubActivity && 'cursor-pointer hover:bg-muted/50',
+          !isSubActivity &&
+            !collapsedActivities[activity.id] &&
+            activity.subActivities &&
+            activity.subActivities.length > 0 &&
+            'bg-muted/30 shadow-sm',
+          isSubActivity &&
+            activity.parentId &&
+            !collapsedActivities[activity.parentId] &&
+            'bg-muted/30',
+        )}
+      >
+        {activity.type === 'payment' ? (
+          <AlertPayment initials={activity.initials} />
+        ) : activity.type === 'survey' ? (
+          <AlertSurvey initials={activity.initials} />
+        ) : activity.type === 'complete-class' ? (
+          <AlertCompleteClass initials={activity.initials} />
+        ) : activity.type === 'reminder' ? (
+          <AlertReminder initials={activity.initials} />
+        ) : activity.type === 'ai-summary' ? (
+          <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-violet-100 text-violet-600">
+            <Sparkles className="size-3.5" />
+          </div>
+        ) : activity.participants && activity.participants.length > 1 ? (
+          <div className="flex shrink-0 -space-x-1.5 pt-0.5">
+            {activity.participants.slice(0, 4).map((participant, idx) => (
+              <Avatar key={idx} className="size-6 border-2 border-background">
+                <AvatarImage src={participant.avatar || '/placeholder.svg'} />
+                <AvatarFallback className="text-[10px]">
+                  {participant.initials}
+                </AvatarFallback>
+              </Avatar>
+            ))}
+            {activity.participants.length > 4 && (
+              <Avatar className="size-6 border-2 border-background">
+                <AvatarFallback className="text-[10px]">
+                  +{activity.participants.length - 4}
+                </AvatarFallback>
+              </Avatar>
+            )}
+          </div>
+        ) : (
+          <Avatar className="size-6 shrink-0">
+            <AvatarImage src={activity.avatar || '/placeholder.svg'} />
+            <AvatarFallback className="text-[10px]">{activity.initials}</AvatarFallback>
+          </Avatar>
+        )}
+
+        <div className="flex min-w-0 flex-1 flex-col gap-2">
+          <div className="flex items-center gap-1.5">
+            <p className="text-sm leading-tight text-pretty">
+              <span className="font-semibold text-foreground">{activity.actor}</span>{' '}
+              <span className="text-muted-foreground">{activity.action}</span>{' '}
+              {activity.target && (
+                <span className="font-medium text-foreground">{activity.target}</span>
+              )}
+            </p>
+
+            {!activity.isRead && (
+              <Button
+                size="icon"
+                variant="ghost"
+                className="size-5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                onClick={(e) => markAsRead(activity.id, e)}
+                data-action-button="true"
+              >
+                <Check className="size-3.5" />
+              </Button>
+            )}
+
+            {!isSubActivity &&
+              activity.subActivities &&
+              activity.subActivities.length > 0 && (
+                <>
+                  <Badge variant="secondary" className="shrink-0 text-[10px] h-4 px-1.5">
+                    {activity.subActivities.length}
+                  </Badge>
+                  <ChevronDown
+                    className={cn(
+                      'size-4 shrink-0 text-muted-foreground transition-transform duration-200',
+                      !collapsedActivities[activity.id] && 'rotate-180',
+                    )}
+                  />
+                </>
+              )}
+          </div>
+
+          <ActivityWithButton actionButton={activity.actionButton} />
+
+          {expandedActivities[activity.id] && activity.expandedContent && (
+            <div className="animate-in slide-in-from-top-2 fade-in duration-300 rounded-md bg-muted/50 p-3 text-sm text-muted-foreground">
+              {activity.expandedContent}
+            </div>
+          )}
+        </div>
+      </div>
+    </ActivityWithSubitems>
+  );
+
+  return (
+    <Tabs
+      value={activeTab}
+      onValueChange={setActiveTab}
+      className="flex size-full flex-col"
+    >
+      <div className="flex items-center justify-between border-b px-4 pt-4 pb-3">
+        <div className="flex items-center gap-2">
+          <h1 className="text-xl font-semibold">Latest activity</h1>
+          {unreadCount > 0 && (
+            <Badge variant="secondary" className="h-5 px-2 text-xs">
+              {unreadCount} new
+            </Badge>
+          )}
+        </div>
+      </div>
+
+      <div className="border-b px-4 py-2">
+        <TabsList>
+          <TabsTrigger value="all">All</TabsTrigger>
+          <TabsTrigger value="classes">Classes</TabsTrigger>
+          <TabsTrigger value="payment">Payment</TabsTrigger>
+          <TabsTrigger value="system">System</TabsTrigger>
+        </TabsList>
+      </div>
+
+      <TabsContent value={activeTab} className="mt-0">
+        <ScrollArea className="h-[calc(100vh-180px)]">
+          <div className="p-4 space-y-8">
+            {filteredGroupedActivities.map(([date, dateActivities]) => (
+              <div key={date} className="space-y-1">
+                <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">
+                  {date}
+                </h2>
+                <div className="space-y-1">
+                  {dateActivities.map((activity) => (
+                    <div key={activity.id} className="relative">
+                      {renderActivity(activity)}
+
+                      {activity.subActivities &&
+                        collapsedActivities[activity.id] === false && (
+                          <div className="relative ml-[42px] animate-in slide-in-from-top-2 fade-in duration-300">
+                            <div className="absolute left-3 top-3 bottom-3 w-px bg-border" />
+                            {activity.subActivities.map((sub, index) => (
+                              <div key={sub.id} className="relative">
+                                {renderActivity(sub, true)}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </ScrollArea>
+      </TabsContent>
+    </Tabs>
+  );
+}

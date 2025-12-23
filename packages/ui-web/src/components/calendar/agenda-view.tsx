@@ -79,9 +79,7 @@ export function AgendaView({ currentDate, events }: AgendaViewProps) {
                         <span className="text-xs font-medium uppercase">
                           {format(date, 'EEE')}
                         </span>
-                        <span className="text-lg font-bold">
-                          {format(date, 'd')}
-                        </span>
+                        <span className="text-lg font-bold">{format(date, 'd')}</span>
                       </div>
                       <div>
                         <h3
@@ -117,9 +115,7 @@ export function AgendaView({ currentDate, events }: AgendaViewProps) {
                             )}
                           />
                           <div className="flex-1 space-y-1">
-                            <h4 className="font-medium text-foreground">
-                              {event.title}
-                            </h4>
+                            <h4 className="font-medium text-foreground">{event.title}</h4>
                             <div className="flex items-center gap-1 text-sm text-muted-foreground">
                               <Clock className="h-3.5 w-3.5" />
                               <span>

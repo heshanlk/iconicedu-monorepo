@@ -12,15 +12,13 @@ import {
   subWeeks,
 } from 'date-fns';
 import { CalendarHeader } from './calendar-header';
-import { MonthView } from './month-view';
 import { WeekView } from './week-view';
 import { DayView } from './day-view';
-import { AgendaView } from './agenda-view';
 import { useIsMobile } from '../../hooks/use-mobile';
 import { Card, CardContent, CardHeader } from '../../ui/card';
 import { ScrollArea } from '../../ui/scroll-area';
 
-export type CalendarView = 'month' | 'week' | 'day' | 'agenda';
+export type CalendarView = 'week' | 'day';
 
 export interface CalendarEvent {
   id: string;
@@ -111,50 +109,34 @@ export function Calendar() {
 
   const navigatePrevious = () => {
     switch (view) {
-      case 'month':
-        setCurrentDate(subMonths(currentDate, 1));
-        break;
       case 'week':
         setCurrentDate(subWeeks(currentDate, 1));
         break;
       case 'day':
         setCurrentDate(subDays(currentDate, 1));
         break;
-      case 'agenda':
-        setCurrentDate(subMonths(currentDate, 1));
-        break;
     }
   };
 
   const navigateNext = () => {
     switch (view) {
-      case 'month':
-        setCurrentDate(addMonths(currentDate, 1));
-        break;
       case 'week':
         setCurrentDate(addWeeks(currentDate, 1));
         break;
       case 'day':
         setCurrentDate(addDays(currentDate, 1));
         break;
-      case 'agenda':
-        setCurrentDate(addMonths(currentDate, 1));
-        break;
     }
   };
 
   const getHeaderTitle = () => {
     switch (view) {
-      case 'month':
-        return format(currentDate, 'MMMM yyyy');
       case 'week':
         const weekStart = startOfWeek(currentDate);
         const weekEnd = addDays(weekStart, 6);
         return `${format(weekStart, 'MMM d')} - ${format(weekEnd, 'MMM d, yyyy')}`;
       case 'day':
         return format(currentDate, 'EEEE, MMMM d, yyyy');
-      case 'agenda':
-        return format(currentDate, 'MMMM yyyy');
     }
   };
 
@@ -205,16 +187,8 @@ export function Calendar() {
           onTouchStart={onTouchStart}
           onTouchEnd={onTouchEnd}
         >
-          {view === 'month' && (
-            <MonthView
-              currentDate={currentDate}
-              events={events}
-              onDateSelect={handleDateSelect}
-            />
-          )}
           {view === 'week' && <WeekView currentDate={currentDate} events={events} />}
           {view === 'day' && <DayView currentDate={currentDate} events={events} />}
-          {view === 'agenda' && <AgendaView currentDate={currentDate} events={events} />}
         </ScrollArea>
       </CardContent>
     </Card>
