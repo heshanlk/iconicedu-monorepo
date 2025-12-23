@@ -22,6 +22,7 @@ import {
   SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarSeparator,
   useSidebar,
 } from '../../ui/sidebar';
 import {
@@ -75,7 +76,7 @@ export function NavClassrooms({
     <SidebarGroup className="py-0">
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         <CollapsibleTrigger asChild>
-          <SidebarGroupLabel className="flex cursor-pointer items-center gap-2 uppercase">
+          <SidebarGroupLabel className="flex cursor-pointer items-center gap-2 rounded-md rounded-b-none px-2 py-1 uppercase data-[state=open]:bg-chart-1/10">
             {renderClassroomAvatar()}
             <span className="flex-1">{title}</span>
             {isOpen ? (
@@ -85,7 +86,7 @@ export function NavClassrooms({
             )}
           </SidebarGroupLabel>
         </CollapsibleTrigger>
-        <CollapsibleContent>
+        <CollapsibleContent className="data-[state=open]:bg-chart-1/10 rounded-md rounded-t-none">
           <SidebarMenu>
             {classrooms.map((item, index) => (
               <SidebarMenuItem key={`${item.name}-${index}`}>
