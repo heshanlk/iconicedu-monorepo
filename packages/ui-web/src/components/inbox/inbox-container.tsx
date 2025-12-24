@@ -5,6 +5,10 @@ import { useState } from 'react';
 import { Badge } from '../../ui/badge';
 import { ScrollArea } from '../../ui/scroll-area';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../../ui/tabs';
+import { ActivityBasic } from '../notifications/activity-basic';
+import { ActivityBasicWithActionButton } from '../notifications/activity-basic-with-action-button';
+import { ActivityBasicWithContentActionButton } from '../notifications/activity-basic-with-content-action-button';
+import { ActivityBasicWithExpandedContent } from '../notifications/activity-basic-with-expanded-content';
 import { ActivityWithSubitems } from '../notifications/activity-with-subitems';
 import type { Activity } from '../notifications/types';
 
@@ -572,6 +576,35 @@ export function InboxContainer() {
     );
   };
 
+  const renderActivity = (activity: Activity) => {
+    if (activity.subActivities?.length) {
+      return <ActivityWithSubitems activity={activity} onMarkRead={markAsRead} />;
+    }
+
+    if (activity.expandedContent && activity.actionButton) {
+      return (
+        <ActivityBasicWithContentActionButton
+          activity={activity}
+          onMarkRead={markAsRead}
+        />
+      );
+    }
+
+    if (activity.expandedContent) {
+      return (
+        <ActivityBasicWithExpandedContent activity={activity} onMarkRead={markAsRead} />
+      );
+    }
+
+    if (activity.actionButton) {
+      return (
+        <ActivityBasicWithActionButton activity={activity} onMarkRead={markAsRead} />
+      );
+    }
+
+    return <ActivityBasic activity={activity} onMarkRead={markAsRead} />;
+  };
+
   return (
     <Tabs
       value={activeTab}
@@ -579,18 +612,7 @@ export function InboxContainer() {
       onValueChange={handleTabChange}
       className="flex size-full flex-col"
     >
-      <div className="flex items-center justify-between border-b px-4 pt-4 pb-3">
-        <div className="flex items-center gap-2">
-          <h1 className="text-xl font-semibold">Latest activity</h1>
-          {unreadCount > 0 && (
-            <Badge variant="secondary" className="h-5 px-2 text-xs">
-              {unreadCount} new
-            </Badge>
-          )}
-        </div>
-      </div>
-
-      <div className="border-b px-4 py-2">
+      <div className="px-4 py-2">
         <TabsList>
           <TabsTrigger value="all" className="gap-2">
             <span>All</span>
@@ -626,7 +648,6 @@ export function InboxContainer() {
           </TabsTrigger>
         </TabsList>
       </div>
-
       <TabsContent value={activeTab} className="mt-0">
         <ScrollArea className="h-[calc(100vh-180px)]">
           <div className="p-4 space-y-8">
@@ -637,12 +658,9 @@ export function InboxContainer() {
                 </h2>
                 <div className="space-y-1">
                   {dateActivities.map((activity) => (
-                    <ActivityWithSubitems
-                      key={activity.id}
-                      activity={activity}
-                      onMarkRead={markAsRead}
-                      className="relative"
-                    />
+                    <div key={activity.id} className="relative">
+                      {renderActivity(activity)}
+                    </div>
                   ))}
                 </div>
               </div>

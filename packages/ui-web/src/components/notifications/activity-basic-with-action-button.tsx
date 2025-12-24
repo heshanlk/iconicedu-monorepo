@@ -4,7 +4,7 @@ import type React from 'react';
 import { ActivityItemBase } from './activity-item-base';
 import type { Activity } from './types';
 
-type ActivityBasicProps = {
+type ActivityBasicWithActionButtonProps = {
   activity: Activity;
   onMarkRead: (id: string, event: React.MouseEvent) => void;
   isSubActivity?: boolean;
@@ -12,19 +12,20 @@ type ActivityBasicProps = {
   className?: string;
 };
 
-export function ActivityBasic({
+export function ActivityBasicWithActionButton({
   activity,
   onMarkRead,
   isSubActivity,
   parentExpanded,
   className,
-}: ActivityBasicProps) {
+}: ActivityBasicWithActionButtonProps) {
   return (
     <ActivityItemBase
       activity={activity}
       onMarkRead={onMarkRead}
       isSubActivity={isSubActivity}
       parentExpanded={parentExpanded}
+      showActionButton
       className={className}
     />
   );
