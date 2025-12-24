@@ -3,7 +3,7 @@ import { DashboardHeader, DirectMessages, ErrorBoundary } from '@iconicedu/ui-we
 export default function Page() {
   return (
     <>
-      <div className="flex min-h-0 h-screen flex-col">
+      <div className="flex h-[calc(100vh-1.0rem)] flex-col">
         <DashboardHeader />
         <ErrorBoundary>
           <DirectMessages />
