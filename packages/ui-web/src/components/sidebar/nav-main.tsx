@@ -35,7 +35,7 @@ export function NavMain({
               </a>
             </SidebarMenuButton>
             {item.count && (
-              <SidebarMenuBadge className="border-2 border-red-600 bg-red-500 text-white peer-hover/menu-button:text-white peer-data-active/menu-button:text-white">
+              <SidebarMenuBadge className="px-1.5 text-[10px] bg-rose-500 text-white peer-hover/menu-button:text-white peer-data-active/menu-button:text-white">
                 {item.count}
               </SidebarMenuBadge>
             )}

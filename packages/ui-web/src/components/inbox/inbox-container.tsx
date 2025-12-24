@@ -19,7 +19,6 @@ import { ScrollArea } from '../../ui/scroll-area';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../../ui/tabs';
 import { ActivityBasic } from '../notifications/activity-basic';
 import { ActivityBasicWithActionButton } from '../notifications/activity-basic-with-action-button';
-import { ActivityBasicWithContentActionButton } from '../notifications/activity-basic-with-content-action-button';
 import { ActivityBasicWithExpandedContent } from '../notifications/activity-basic-with-expanded-content';
 import { ActivityWithSubitems } from '../notifications/activity-with-subitems';
 import type { Activity } from '../notifications/types';
@@ -704,23 +703,16 @@ export function InboxContainer() {
 
   const renderActivity = (activity: Activity) => {
     if (activity.subActivities?.length) {
-      return (
-        <ActivityWithSubitems activity={activity} onMarkRead={markAsRead} />
-      );
-    }
-
-    if (activity.expandedContent && activity.actionButton) {
-      return (
-        <ActivityBasicWithContentActionButton
-          activity={activity}
-          onMarkRead={markAsRead}
-        />
-      );
+      return <ActivityWithSubitems activity={activity} onMarkRead={markAsRead} />;
     }
 
     if (activity.expandedContent) {
       return (
-        <ActivityBasicWithExpandedContent activity={activity} onMarkRead={markAsRead} />
+        <ActivityBasicWithExpandedContent
+          activity={activity}
+          onMarkRead={markAsRead}
+          showActionButton={Boolean(activity.actionButton)}
+        />
       );
     }
 

@@ -4,7 +4,6 @@ import type React from 'react';
 import { useState } from 'react';
 import { cn } from '../../lib/utils';
 import { ActivityBasicWithActionButton } from './activity-basic-with-action-button';
-import { ActivityBasicWithContentActionButton } from './activity-basic-with-content-action-button';
 import { ActivityBasicWithExpandedContent } from './activity-basic-with-expanded-content';
 import { ActivityItemBase } from './activity-item-base';
 import type { Activity } from './types';
@@ -53,17 +52,11 @@ export function ActivityWithSubitems({
         <div className="relative ml-6 md:ml-[42px] animate-in slide-in-from-top-2 fade-in duration-300">
           {activity.subActivities?.map((sub) => (
             <div key={sub.id} className="relative">
-              {sub.actionButton && sub.expandedContent ? (
-                <ActivityBasicWithContentActionButton
-                  activity={sub}
-                  onMarkRead={onMarkRead}
-                  isSubActivity
-                  parentExpanded={!isCollapsed}
-                />
-              ) : sub.expandedContent ? (
+              {sub.expandedContent ? (
                 <ActivityBasicWithExpandedContent
                   activity={sub}
                   onMarkRead={onMarkRead}
+                  showActionButton={Boolean(sub.actionButton)}
                   isSubActivity
                   parentExpanded={!isCollapsed}
                 />

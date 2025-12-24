@@ -8,6 +8,7 @@ import type { Activity } from './types';
 type ActivityBasicWithExpandedContentProps = {
   activity: Activity;
   onMarkRead: (id: string, event: React.MouseEvent) => void;
+  showActionButton?: boolean;
   isSubActivity?: boolean;
   parentExpanded?: boolean;
   className?: string;
@@ -16,6 +17,7 @@ type ActivityBasicWithExpandedContentProps = {
 export function ActivityBasicWithExpandedContent({
   activity,
   onMarkRead,
+  showActionButton = false,
   isSubActivity,
   parentExpanded,
   className,
@@ -35,10 +37,11 @@ export function ActivityBasicWithExpandedContent({
       onToggle={handleToggle}
       isSubActivity={isSubActivity}
       parentExpanded={parentExpanded}
+      showActionButton={showActionButton}
       className={className}
       footer={
         isExpanded && activity.expandedContent ? (
-          <div className="animate-in slide-in-from-top-2 fade-in duration-300 rounded-md bg-muted/50 p-3 text-sm text-muted-foreground">
+          <div className="animate-in slide-in-from-top-2 fade-in duration-300 rounded-md bg-muted/50 p-3 text-[12px] text-muted-foreground">
             {activity.expandedContent}
           </div>
         ) : null
