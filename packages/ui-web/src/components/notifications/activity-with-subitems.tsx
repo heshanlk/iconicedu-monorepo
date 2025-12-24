@@ -1,7 +1,6 @@
 'use client';
 
 import type React from 'react';
-import type { LucideIcon } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '../../lib/utils';
 import { ActivityBasicWithActionButton } from './activity-basic-with-action-button';
@@ -12,7 +11,6 @@ import type { Activity } from './types';
 
 type ActivityWithSubitemsProps = {
   activity: Activity;
-  iconMap: Record<string, LucideIcon>;
   isSubActivity?: boolean;
   parentExpanded?: boolean;
   onMarkRead: (id: string, event: React.MouseEvent) => void;
@@ -21,7 +19,6 @@ type ActivityWithSubitemsProps = {
 
 export function ActivityWithSubitems({
   activity,
-  iconMap,
   isSubActivity = false,
   parentExpanded = false,
   onMarkRead,
@@ -44,7 +41,6 @@ export function ActivityWithSubitems({
       <ActivityItemBase
         activity={activity}
         onMarkRead={onMarkRead}
-        iconMap={iconMap}
         onToggle={handleToggle}
         isSubActivity={isSubActivity}
         parentExpanded={parentExpanded}
@@ -61,7 +57,6 @@ export function ActivityWithSubitems({
                 <ActivityBasicWithContentActionButton
                   activity={sub}
                   onMarkRead={onMarkRead}
-                  iconMap={iconMap}
                   isSubActivity
                   parentExpanded={!isCollapsed}
                 />
@@ -69,7 +64,6 @@ export function ActivityWithSubitems({
                 <ActivityBasicWithExpandedContent
                   activity={sub}
                   onMarkRead={onMarkRead}
-                  iconMap={iconMap}
                   isSubActivity
                   parentExpanded={!isCollapsed}
                 />
@@ -77,7 +71,6 @@ export function ActivityWithSubitems({
                 <ActivityBasicWithActionButton
                   activity={sub}
                   onMarkRead={onMarkRead}
-                  iconMap={iconMap}
                   isSubActivity
                   parentExpanded={!isCollapsed}
                 />
@@ -85,7 +78,6 @@ export function ActivityWithSubitems({
                 <ActivityItemBase
                   activity={sub}
                   onMarkRead={onMarkRead}
-                  iconMap={iconMap}
                   isSubActivity
                   parentExpanded={!isCollapsed}
                 />

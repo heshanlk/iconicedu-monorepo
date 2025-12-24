@@ -14,7 +14,6 @@ import {
   Sparkles,
   Video,
 } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
 import { Badge } from '../../ui/badge';
 import { ScrollArea } from '../../ui/scroll-area';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../../ui/tabs';
@@ -35,7 +34,7 @@ const mockActivities: Activity[] = [
     timestamp: '5m',
     isRead: false,
     initials: '💳',
-    icon: 'CreditCard',
+    icon: CreditCard,
     iconBg: 'bg-red-100 text-red-700',
     category: 'payment',
     date: 'Today',
@@ -57,7 +56,7 @@ const mockActivities: Activity[] = [
     isRead: false,
     initials: 'MD',
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=dinesha',
-    icon: 'GraduationCap',
+    icon: GraduationCap,
     iconBg: 'bg-blue-500 text-white',
     studentName: 'Zayne',
     participants: [
@@ -86,7 +85,7 @@ const mockActivities: Activity[] = [
         timestamp: '30m',
         isRead: false,
         initials: 'SY',
-        icon: 'Video',
+        icon: Video,
         iconBg: 'bg-green-100 text-green-700',
         studentName: 'Zayne',
         category: 'class',
@@ -108,7 +107,7 @@ const mockActivities: Activity[] = [
         isRead: false,
         initials: 'Z',
         avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=zayne',
-        icon: 'Paperclip',
+        icon: Paperclip,
         iconBg: 'bg-orange-100 text-orange-700',
         studentName: 'Zayne',
         category: 'class',
@@ -125,7 +124,7 @@ const mockActivities: Activity[] = [
         isRead: false,
         initials: 'MD',
         avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=dinesha',
-        icon: 'FileText',
+        icon: FileText,
         iconBg: 'bg-amber-100 text-amber-700',
         studentName: 'Zayne',
         category: 'class',
@@ -146,7 +145,7 @@ const mockActivities: Activity[] = [
         timestamp: '1h',
         isRead: false,
         initials: '🤖',
-        icon: 'Sparkles',
+        icon: Sparkles,
         iconBg: 'bg-violet-100 text-violet-700',
         studentName: 'Zayne',
         category: 'class',
@@ -165,7 +164,7 @@ const mockActivities: Activity[] = [
         isRead: false,
         initials: 'MD',
         avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=dinesha',
-        icon: 'Paperclip',
+        icon: Paperclip,
         iconBg: 'bg-orange-100 text-orange-700',
         studentName: 'Zayne',
         category: 'class',
@@ -189,7 +188,7 @@ const mockActivities: Activity[] = [
         isRead: false,
         initials: 'MD',
         avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=dinesha',
-        icon: 'FileText',
+        icon: FileText,
         iconBg: 'bg-amber-100 text-amber-700',
         studentName: 'Zayne',
         category: 'class',
@@ -212,7 +211,7 @@ const mockActivities: Activity[] = [
     timestamp: '20m',
     isRead: false,
     initials: '✓',
-    icon: 'CheckCircle2',
+    icon: CheckCircle2,
     iconBg: 'bg-yellow-100 text-yellow-700',
     studentName: 'Zayne',
     category: 'system',
@@ -235,7 +234,7 @@ const mockActivities: Activity[] = [
     isRead: false,
     initials: 'MK',
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=mrkim',
-    icon: 'GraduationCap',
+    icon: GraduationCap,
     iconBg: 'bg-blue-500 text-white',
     studentName: 'Sophia',
     participants: [
@@ -261,7 +260,7 @@ const mockActivities: Activity[] = [
         isRead: false,
         initials: 'S',
         avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=sophia',
-        icon: 'Paperclip',
+        icon: Paperclip,
         iconBg: 'bg-orange-100 text-orange-700',
         studentName: 'Sophia',
         category: 'class',
@@ -278,7 +277,7 @@ const mockActivities: Activity[] = [
         isRead: false,
         initials: 'MK',
         avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=mrkim',
-        icon: 'FileText',
+        icon: FileText,
         iconBg: 'bg-amber-100 text-amber-700',
         studentName: 'Sophia',
         category: 'class',
@@ -299,7 +298,7 @@ const mockActivities: Activity[] = [
         timestamp: '1h',
         isRead: false,
         initials: '🤖',
-        icon: 'Sparkles',
+        icon: Sparkles,
         iconBg: 'bg-violet-100 text-violet-700',
         studentName: 'Sophia',
         category: 'class',
@@ -319,7 +318,7 @@ const mockActivities: Activity[] = [
     timestamp: '35m',
     isRead: false,
     initials: '⏰',
-    icon: 'Bell',
+    icon: Bell,
     iconBg: 'bg-purple-500 text-white',
     studentName: 'Sophia',
     category: 'system',
@@ -342,7 +341,7 @@ const mockActivities: Activity[] = [
     isRead: false,
     initials: 'MR',
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=rodriguez',
-    icon: 'Paperclip',
+    icon: Paperclip,
     iconBg: 'bg-orange-100 text-orange-700',
     studentName: 'Zayne',
     category: 'class',
@@ -364,7 +363,7 @@ const mockActivities: Activity[] = [
     timestamp: '1h',
     isRead: false,
     initials: '📝',
-    icon: 'ClipboardCheck',
+    icon: ClipboardCheck,
     iconBg: 'bg-cyan-100 text-cyan-700',
     category: 'system',
     date: 'Today',
@@ -386,7 +385,7 @@ const mockActivities: Activity[] = [
     isRead: false,
     initials: 'MC',
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=chen',
-    icon: 'Paperclip',
+    icon: Paperclip,
     iconBg: 'bg-orange-100 text-orange-700',
     studentName: 'Zayne',
     category: 'class',
@@ -409,7 +408,7 @@ const mockActivities: Activity[] = [
     isRead: false,
     initials: 'MD',
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=dinesha',
-    icon: 'MessageSquare',
+    icon: MessageSquare,
     iconBg: 'bg-blue-500 text-white',
     studentName: 'Zayne',
     category: 'class',
@@ -427,7 +426,7 @@ const mockActivities: Activity[] = [
     isRead: false,
     initials: 'MR',
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=rodriguez',
-    icon: 'FileText',
+    icon: FileText,
     iconBg: 'bg-amber-100 text-amber-700',
     studentName: 'Zayne',
     category: 'class',
@@ -444,7 +443,7 @@ const mockActivities: Activity[] = [
     timestamp: '5h',
     isRead: false,
     initials: 'SY',
-    icon: 'Video',
+    icon: Video,
     iconBg: 'bg-green-100 text-green-700',
     studentName: 'Sophia',
     category: 'class',
@@ -465,7 +464,7 @@ const mockActivities: Activity[] = [
     isRead: true,
     initials: 'MP',
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=patel',
-    icon: 'Paperclip',
+    icon: Paperclip,
     iconBg: 'bg-orange-100 text-orange-700',
     studentName: 'Sophia',
     category: 'class',
@@ -488,7 +487,7 @@ const mockActivities: Activity[] = [
     isRead: true,
     initials: 'CA',
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=anderson',
-    icon: 'MessageSquare',
+    icon: MessageSquare,
     iconBg: 'bg-blue-500 text-white',
     studentName: 'Sophia',
     category: 'class',
@@ -505,7 +504,7 @@ const mockActivities: Activity[] = [
     timestamp: '2d',
     isRead: true,
     initials: 'SY',
-    icon: 'Bell',
+    icon: Bell,
     iconBg: 'bg-purple-500 text-white',
     studentName: 'Sophia',
     category: 'system',
@@ -520,19 +519,6 @@ const TAB_FILTERS = {
   system: (activity: Activity) => activity.category === 'system',
 } as const;
 type TabKey = keyof typeof TAB_FILTERS;
-
-const ICON_MAP: Record<string, LucideIcon> = {
-  MessageSquare,
-  Video,
-  FileText,
-  Sparkles,
-  Paperclip,
-  Bell,
-  ClipboardCheck,
-  GraduationCap,
-  CheckCircle2,
-  CreditCard,
-};
 
 const groupActivitiesByDate = (items: Activity[]) =>
   Object.entries(
@@ -604,11 +590,7 @@ export function InboxContainer() {
   const renderActivity = (activity: Activity) => {
     if (activity.subActivities?.length) {
       return (
-        <ActivityWithSubitems
-          activity={activity}
-          onMarkRead={markAsRead}
-          iconMap={ICON_MAP}
-        />
+        <ActivityWithSubitems activity={activity} onMarkRead={markAsRead} />
       );
     }
 
@@ -617,32 +599,23 @@ export function InboxContainer() {
         <ActivityBasicWithContentActionButton
           activity={activity}
           onMarkRead={markAsRead}
-          iconMap={ICON_MAP}
         />
       );
     }
 
     if (activity.expandedContent) {
       return (
-        <ActivityBasicWithExpandedContent
-          activity={activity}
-          onMarkRead={markAsRead}
-          iconMap={ICON_MAP}
-        />
+        <ActivityBasicWithExpandedContent activity={activity} onMarkRead={markAsRead} />
       );
     }
 
     if (activity.actionButton) {
       return (
-        <ActivityBasicWithActionButton
-          activity={activity}
-          onMarkRead={markAsRead}
-          iconMap={ICON_MAP}
-        />
+        <ActivityBasicWithActionButton activity={activity} onMarkRead={markAsRead} />
       );
     }
 
-    return <ActivityBasic activity={activity} onMarkRead={markAsRead} iconMap={ICON_MAP} />;
+    return <ActivityBasic activity={activity} onMarkRead={markAsRead} />;
   };
 
   return (

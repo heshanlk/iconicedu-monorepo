@@ -1,5 +1,7 @@
 'use client';
 
+import type React from 'react';
+
 export type NotificationType =
   | 'homework'
   | 'message'
@@ -22,7 +24,7 @@ export interface Activity {
   isRead: boolean;
   avatar?: string;
   initials: string;
-  icon?: string;
+  icon?: React.ComponentType<{ className?: string }>;
   iconBg?: string;
   studentName?: string;
   participants?: Array<{ avatar?: string; initials: string }>;

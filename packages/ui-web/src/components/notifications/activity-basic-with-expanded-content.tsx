@@ -1,7 +1,6 @@
 'use client';
 
 import type React from 'react';
-import type { LucideIcon } from 'lucide-react';
 import { useState } from 'react';
 import { ActivityItemBase } from './activity-item-base';
 import type { Activity } from './types';
@@ -9,7 +8,6 @@ import type { Activity } from './types';
 type ActivityBasicWithExpandedContentProps = {
   activity: Activity;
   onMarkRead: (id: string, event: React.MouseEvent) => void;
-  iconMap: Record<string, LucideIcon>;
   isSubActivity?: boolean;
   parentExpanded?: boolean;
   className?: string;
@@ -18,7 +16,6 @@ type ActivityBasicWithExpandedContentProps = {
 export function ActivityBasicWithExpandedContent({
   activity,
   onMarkRead,
-  iconMap,
   isSubActivity,
   parentExpanded,
   className,
@@ -36,7 +33,6 @@ export function ActivityBasicWithExpandedContent({
       activity={activity}
       onMarkRead={onMarkRead}
       onToggle={handleToggle}
-      iconMap={iconMap}
       isSubActivity={isSubActivity}
       parentExpanded={parentExpanded}
       className={className}
