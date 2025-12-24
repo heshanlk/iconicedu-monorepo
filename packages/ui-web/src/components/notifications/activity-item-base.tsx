@@ -16,7 +16,6 @@ import {
   Video,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
 import { Badge } from '../../ui/badge';
 import { Button } from '../../ui/button';
 import { cn } from '../../lib/utils';
@@ -52,26 +51,6 @@ const ICON_MAP: Record<string, LucideIcon> = {
   CreditCard,
 };
 
-const ALERT_RENDERERS: Partial<
-  Record<Activity['type'], (activity: Activity) => React.ReactElement>
-> = {
-  payment: (activity) => (
-    <ActivityBadge activity={activity} className="bg-red-100 text-red-600" />
-  ),
-  survey: (activity) => (
-    <ActivityBadge activity={activity} className="bg-cyan-100 text-cyan-600" />
-  ),
-  'complete-class': (activity) => (
-    <ActivityBadge activity={activity} className="bg-yellow-100 text-yellow-600" />
-  ),
-  reminder: (activity) => (
-    <ActivityBadge activity={activity} className="bg-purple-100 text-purple-600" />
-  ),
-  'ai-summary': (activity) => (
-    <ActivityBadge activity={activity} className="bg-violet-100 text-violet-600" />
-  ),
-};
-
 export function ActivityItemBase({
   activity,
   onMarkRead,
@@ -85,7 +64,6 @@ export function ActivityItemBase({
   className,
 }: ActivityItemBaseProps) {
   const Icon = activity.icon ? ICON_MAP[activity.icon] : undefined;
-  const alertRenderer = ALERT_RENDERERS[activity.type];
 
   return (
     <div className={cn('flex items-start gap-3 py-2.5', className)}>
@@ -112,36 +90,11 @@ export function ActivityItemBase({
         className={cn(
           'group relative z-10 flex min-w-0 flex-1 items-start gap-2.5 rounded-md px-2 py-1 -mx-2 transition-all duration-200',
           onToggle && !isSubActivity && 'cursor-pointer hover:bg-muted/50',
-          onToggle && showSubActivityToggle && !isCollapsed && 'bg-muted/30 shadow-sm',
+          onToggle && showSubActivityToggle && !isCollapsed && 'bg-muted/30',
           isSubActivity && parentExpanded && 'bg-muted/30',
         )}
       >
-        {alertRenderer ? (
-          alertRenderer(activity)
-        ) : activity.participants && activity.participants.length > 1 ? (
-          <div className="flex shrink-0 -space-x-1.5 pt-0.5">
-            {activity.participants.slice(0, 2).map((participant, idx) => (
-              <Avatar key={idx} className="size-6 border-2 border-background">
-                <AvatarImage src={participant.avatar || '/placeholder.svg'} />
-                <AvatarFallback className="text-[10px]">
-                  {participant.initials}
-                </AvatarFallback>
-              </Avatar>
-            ))}
-            {activity.participants.length > 2 && (
-              <Avatar className="size-6 border-2 border-background">
-                <AvatarFallback className="text-[10px]">
-                  +{activity.participants.length - 2}
-                </AvatarFallback>
-              </Avatar>
-            )}
-          </div>
-        ) : (
-          <Avatar className="size-6 shrink-0">
-            <AvatarImage src={activity.avatar || '/placeholder.svg'} />
-            <AvatarFallback className="text-[10px]">{activity.initials}</AvatarFallback>
-          </Avatar>
-        )}
+        <ActivityBadge variant={activity} />
 
         <div className="flex min-w-0 flex-1 flex-col gap-2">
           <div className="flex items-center gap-1.5">
