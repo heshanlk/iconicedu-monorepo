@@ -39,23 +39,27 @@ export function ActivityItemBase({
   const Icon = activity.icon;
 
   return (
-    <div className={cn('flex items-start gap-3 py-2.5', className)}>
-      <div className="relative flex shrink-0 flex-col items-center">
-        <div
-          className={cn(
-            'z-10 flex size-6 items-center justify-center rounded-full',
-            activity.isRead ? READ_ICON_CLASS : activity.iconBg,
-          )}
-        >
-          {Icon ? <Icon className="size-3" /> : null}
+    <div
+      className={cn(
+        'flex flex-col gap-2 py-2.5 md:flex-row md:items-start md:gap-3',
+        className,
+      )}
+    >
+      <div className="flex items-center gap-2 md:flex-row md:items-start">
+        <div className="relative flex shrink-0 flex-col items-center">
+          <div
+            className={cn(
+              'z-10 flex size-6 items-center justify-center rounded-full',
+              activity.isRead ? READ_ICON_CLASS : activity.iconBg,
+            )}
+          >
+            {Icon ? <Icon className="size-3" /> : null}
+          </div>
         </div>
-      </div>
 
-      <div
-        className="shrink-0 pt-0.5 text-xs text-muted-foreground"
-        style={{ width: '48px' }}
-      >
-        {activity.timestamp}
+        <div className="text-xs text-muted-foreground md:pt-0.5 md:w-12 md:shrink-0">
+          {activity.timestamp}
+        </div>
       </div>
 
       <div

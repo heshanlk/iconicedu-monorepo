@@ -50,7 +50,7 @@ export function ActivityWithSubitems({
       />
 
       {hasSubActivities && !isCollapsed && (
-        <div className="relative ml-[42px] animate-in slide-in-from-top-2 fade-in duration-300">
+        <div className="relative ml-6 md:ml-[42px] animate-in slide-in-from-top-2 fade-in duration-300">
           {activity.subActivities?.map((sub) => (
             <div key={sub.id} className="relative">
               {sub.actionButton && sub.expandedContent ? (
