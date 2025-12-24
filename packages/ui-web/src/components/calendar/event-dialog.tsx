@@ -23,7 +23,7 @@ export function EventDialog({ event, open, onOpenChange, children }: EventDialog
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="max-w-lg max-h-[85vh] p-0 gap-0 [&>button]:hidden">
         <ScrollArea className="max-h-[85vh]">
-          <div className="p-4 bg-muted">
+          <div className="p-4 bg-muted rounded-2xl">
             <div className="space-y-4">
               <EventDetailsHeader event={event} />
               <div className="px-4 space-y-3">
