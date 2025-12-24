@@ -7,10 +7,12 @@ import {
   isSameDay,
   getTimeSlots,
   timeToMinutes,
+  getEventLayout,
 } from '../../lib/calendar-utils';
 import { EventCard } from './event-card';
 import { cn } from '@iconicedu/ui-web/lib/utils';
 import { useEffect, useRef } from 'react';
+import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
 
 interface WeekViewProps {
   currentDate: Date;
@@ -34,6 +36,8 @@ export function WeekView({
   const currentHour = today.getHours();
   const currentMinutes = today.getMinutes();
   const currentTimeOffset = (currentHour * 2 + currentMinutes / 30) * 32;
+  const columnGap = 6;
+  const maxVisibleColumns = 3;
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const hasMountedRef = useRef(false);
@@ -150,8 +154,31 @@ export function WeekView({
             {/* Day columns */}
             {weekDays.map((day, dayIndex) => {
               const dayEvents = events.filter((event) => isSameDay(event.date, day));
+              const dayLayout = getEventLayout(dayEvents);
+              const clusterInfo = new Map<
+                number,
+                { startMinutes: number; hiddenEvents: CalendarEvent[]; columns: number }
+              >();
               const isToday = isSameDay(day, today);
               const isSelected = isSameDay(day, currentDate);
+
+              dayEvents.forEach((event) => {
+                const layout = dayLayout.get(event.id);
+                if (!layout) return;
+                const startMinutes = timeToMinutes(event.startTime);
+                const info = clusterInfo.get(layout.clusterId);
+                const nextInfo = {
+                  startMinutes: info ? Math.min(info.startMinutes, startMinutes) : startMinutes,
+                  hiddenEvents: info?.hiddenEvents ?? [],
+                  columns: layout.columns,
+                };
+
+                if (layout.column >= maxVisibleColumns) {
+                  nextInfo.hiddenEvents = [...nextInfo.hiddenEvents, event];
+                }
+
+                clusterInfo.set(layout.clusterId, nextInfo);
+              });
 
               return (
                 <div
@@ -175,22 +202,76 @@ export function WeekView({
                     const endMinutes = timeToMinutes(event.endTime);
                     const top = (startMinutes / 30) * 32;
                     const height = ((endMinutes - startMinutes) / 30) * 32;
+                    const layout = dayLayout.get(event.id);
+                    const columns = layout?.columns ?? 1;
+                    const column = layout?.column ?? 0;
+                    if (column >= maxVisibleColumns) {
+                      return null;
+                    }
+
+                    const visibleColumns = Math.min(columns, maxVisibleColumns);
+                    const width = 100 / visibleColumns;
+                    const left = column * width;
 
                     return (
                       <div
                         key={event.id}
-                        className="absolute left-1 right-1 px-1 py-1 pointer-events-none"
+                        className="absolute px-1 py-1 pointer-events-none"
                         style={{
                           top: `${top}px`,
                           height: `${height}px`,
+                          left: `calc(${left}% + ${columnGap}px)`,
+                          width: `calc(${width}% - ${columnGap * 2}px)`,
                         }}
                       >
-                        <div className="pointer-events-auto">
+                        <div className="pointer-events-auto h-full">
                           <EventCard
                             event={event}
                             onClick={() => handleEventClick(event)}
                           />
                         </div>
+                      </div>
+                    );
+                  })}
+                  {[...clusterInfo.entries()].map(([clusterId, info]) => {
+                    if (info.hiddenEvents.length === 0) return null;
+                    const visibleColumns = Math.min(info.columns, maxVisibleColumns);
+                    const width = 100 / visibleColumns;
+                    const left = (visibleColumns - 1) * width;
+                    const top = (info.startMinutes / 30) * 32;
+
+                    return (
+                      <div
+                        key={`more-${dayIndex}-${clusterId}`}
+                        className="absolute px-1 pointer-events-none"
+                        style={{
+                          top: `${top}px`,
+                          left: `calc(${left}% + ${columnGap}px)`,
+                          width: `calc(${width}% - ${columnGap * 2}px)`,
+                        }}
+                      >
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <button
+                              type="button"
+                              className="pointer-events-auto inline-flex items-center justify-center rounded-md bg-muted/80 px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground shadow-sm hover:bg-muted"
+                            >
+                              +{info.hiddenEvents.length} more
+                            </button>
+                          </PopoverTrigger>
+                          <PopoverContent align="start" className="w-64 p-2">
+                            <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide px-2 py-1">
+                              More events
+                            </div>
+                            <div className="max-h-48 overflow-auto">
+                              {info.hiddenEvents.map((hidden) => (
+                                <div key={hidden.id} className="pointer-events-auto">
+                                  <EventCard event={hidden} />
+                                </div>
+                              ))}
+                            </div>
+                          </PopoverContent>
+                        </Popover>
                       </div>
                     );
                   })}

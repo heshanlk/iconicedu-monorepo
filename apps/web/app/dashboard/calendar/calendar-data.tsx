@@ -28,6 +28,86 @@ export const sampleEvents: CalendarEvent[] = [
     },
   },
   {
+    id: 'today-1-1',
+    title: 'Team standup 2',
+    startTime: '9:30 AM',
+    endTime: '10:30 AM',
+    date: new Date(),
+    color: 'blue',
+    description:
+      "Join us for our daily team standup. We'll discuss progress updates, blockers, and plan for the day ahead.\n\nTopic: Daily standup meeting to sync on current sprint tasks.",
+    organizer: 'Engineering Team',
+    location: 'Virtual Meeting Room',
+    visibility: 'Team members only',
+    guests: {
+      avatars: [
+        'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah&backgroundColor=b6e3f4',
+        'https://api.dicebear.com/7.x/avataaars/svg?seed=Mike&backgroundColor=c0aede',
+      ],
+      count: 8,
+    },
+  },
+  {
+    id: 'today-1-2',
+    title: 'Team standup 3',
+    startTime: '10:00 AM',
+    endTime: '12:00 PM',
+    date: new Date(),
+    color: 'blue',
+    description:
+      "Join us for our daily team standup. We'll discuss progress updates, blockers, and plan for the day ahead.\n\nTopic: Daily standup meeting to sync on current sprint tasks.",
+    organizer: 'Engineering Team',
+    location: 'Virtual Meeting Room',
+    visibility: 'Team members only',
+    guests: {
+      avatars: [
+        'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah&backgroundColor=b6e3f4',
+        'https://api.dicebear.com/7.x/avataaars/svg?seed=Mike&backgroundColor=c0aede',
+      ],
+      count: 8,
+    },
+  },
+  {
+    id: 'today-1-2-4',
+    title: 'Team standup 4',
+    startTime: '10:00 AM',
+    endTime: '10:30 AM',
+    date: new Date(),
+    color: 'blue',
+    description:
+      "Join us for our daily team standup. We'll discuss progress updates, blockers, and plan for the day ahead.\n\nTopic: Daily standup meeting to sync on current sprint tasks.",
+    organizer: 'Engineering Team',
+    location: 'Virtual Meeting Room',
+    visibility: 'Team members only',
+    guests: {
+      avatars: [
+        'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah&backgroundColor=b6e3f4',
+        'https://api.dicebear.com/7.x/avataaars/svg?seed=Mike&backgroundColor=c0aede',
+      ],
+      count: 8,
+    },
+  },
+  {
+    id: 'today-1-2-3',
+    title: 'Team standup 5',
+    startTime: '10:30 AM',
+    endTime: '11:30 AM',
+    date: new Date(),
+    color: 'blue',
+    description:
+      "Join us for our daily team standup. We'll discuss progress updates, blockers, and plan for the day ahead.\n\nTopic: Daily standup meeting to sync on current sprint tasks.",
+    organizer: 'Engineering Team',
+    location: 'Virtual Meeting Room',
+    visibility: 'Team members only',
+    guests: {
+      avatars: [
+        'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah&backgroundColor=b6e3f4',
+        'https://api.dicebear.com/7.x/avataaars/svg?seed=Mike&backgroundColor=c0aede',
+      ],
+      count: 8,
+    },
+  },
+  {
     id: 'today-2',
     title: 'Client presentation',
     startTime: '11:00 AM',

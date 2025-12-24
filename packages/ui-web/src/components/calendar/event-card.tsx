@@ -20,14 +20,14 @@ export function EventCard({ event, onClick }: EventCardProps) {
     <button
       type="button"
       className={cn(
-        'w-full rounded-md border p-2 text-left text-sm transition-all relative group',
+        'relative w-full h-full overflow-hidden rounded-md border p-2 text-left text-sm transition-all',
         colorVariants[event.color],
       )}
     >
       {isLive && <EventLiveIndicator />}
 
-      <div className="font-medium pr-4">{event.title}</div>
-      <div className="text-xs mt-0.5 text-muted-foreground">{event.startTime}</div>
+      <div className="font-medium pr-4 truncate">{event.title}</div>
+      <div className="mt-0.5 text-xs text-muted-foreground truncate">{event.startTime}</div>
     </button>
   );
 

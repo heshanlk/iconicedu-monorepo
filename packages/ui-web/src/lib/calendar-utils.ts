@@ -84,3 +84,68 @@ export function getDaysInMonth(year: number, month: number): Date[] {
 
   return days;
 }
+
+export function getEventLayout(events: CalendarEvent[]) {
+  const sorted = [...events].sort((a, b) => {
+    const aStart = timeToMinutes(a.startTime);
+    const bStart = timeToMinutes(b.startTime);
+    if (aStart !== bStart) return aStart - bStart;
+    return timeToMinutes(a.endTime) - timeToMinutes(b.endTime);
+  });
+
+  const clusters: CalendarEvent[][] = [];
+  let currentCluster: CalendarEvent[] = [];
+  let currentEnd = -1;
+
+  sorted.forEach((event) => {
+    const start = timeToMinutes(event.startTime);
+    const end = timeToMinutes(event.endTime);
+
+    if (currentCluster.length === 0 || start < currentEnd) {
+      currentCluster.push(event);
+      currentEnd = Math.max(currentEnd, end);
+      return;
+    }
+
+    clusters.push(currentCluster);
+    currentCluster = [event];
+    currentEnd = end;
+  });
+
+  if (currentCluster.length) {
+    clusters.push(currentCluster);
+  }
+
+  const layout = new Map<
+    string,
+    { column: number; columns: number; clusterId: number }
+  >();
+
+  clusters.forEach((cluster, clusterId) => {
+    const columnEndTimes: number[] = [];
+    const assignments: Array<{ id: string; column: number }> = [];
+
+    cluster.forEach((event) => {
+      const start = timeToMinutes(event.startTime);
+      const end = timeToMinutes(event.endTime);
+      let columnIndex = columnEndTimes.findIndex((time) => time <= start);
+
+      if (columnIndex === -1) {
+        columnIndex = columnEndTimes.length;
+        columnEndTimes.push(end);
+      } else {
+        columnEndTimes[columnIndex] = end;
+      }
+
+      assignments.push({ id: event.id, column: columnIndex });
+    });
+
+    const columns = columnEndTimes.length;
+    assignments.forEach((assignment) => {
+      layout.set(assignment.id, { column: assignment.column, columns, clusterId });
+    });
+  });
+
+  return layout;
+}
+import type { CalendarEvent } from '@iconicedu/shared-types';
