@@ -1,13 +1,14 @@
 'use client';
 
 import { cn } from '../../lib/utils';
+import type { Activity } from './types';
 
-type AlertBadgeProps = {
-  initials: string;
+type ActivityBasicProps = {
+  activity: Activity;
   className: string;
 };
 
-export function AlertBadge({ initials, className }: AlertBadgeProps) {
+export function ActivityBasic({ activity, className }: ActivityBasicProps) {
   return (
     <div
       className={cn(
@@ -15,7 +16,7 @@ export function AlertBadge({ initials, className }: AlertBadgeProps) {
         className,
       )}
     >
-      {initials}
+      {activity.initials}
     </div>
   );
 }

@@ -22,7 +22,7 @@ import { Badge } from '../../ui/badge';
 import { Button } from '../../ui/button';
 import { cn } from '../../lib/utils';
 import { ActivityWithButton } from './activity-with-button';
-import { AlertBadge } from './alert-badge';
+import { ActivityBasic } from './activity-basic';
 import type { Activity } from './types';
 
 type ActivityWithSubitemsProps = {
@@ -52,19 +52,16 @@ const ALERT_RENDERERS: Partial<
   Record<Activity['type'], (activity: Activity) => React.ReactElement>
 > = {
   payment: (activity) => (
-    <AlertBadge initials={activity.initials} className="bg-red-100 text-red-600" />
+    <ActivityBasic activity={activity} className="bg-red-100 text-red-600" />
   ),
   survey: (activity) => (
-    <AlertBadge initials={activity.initials} className="bg-cyan-100 text-cyan-600" />
+    <ActivityBasic activity={activity} className="bg-cyan-100 text-cyan-600" />
   ),
   'complete-class': (activity) => (
-    <AlertBadge
-      initials={activity.initials}
-      className="bg-yellow-100 text-yellow-600"
-    />
+    <ActivityBasic activity={activity} className="bg-yellow-100 text-yellow-600" />
   ),
   reminder: (activity) => (
-    <AlertBadge initials={activity.initials} className="bg-purple-100 text-purple-600" />
+    <ActivityBasic activity={activity} className="bg-purple-100 text-purple-600" />
   ),
 };
 
@@ -224,7 +221,7 @@ export function ActivityWithSubitems({
               )}
             </div>
 
-            <ActivityWithButton actionButton={activity.actionButton} />
+            <ActivityWithButton activity={activity} />
 
             {isExpanded && activity.expandedContent && (
               <div className="animate-in slide-in-from-top-2 fade-in duration-300 rounded-md bg-muted/50 p-3 text-sm text-muted-foreground">

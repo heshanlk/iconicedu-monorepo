@@ -1,19 +1,24 @@
 'use client';
 
 import { Button } from '../../ui/button';
+import { cn } from '../../lib/utils';
 import type { Activity } from './types';
 
 export function ActivityWithButton({
-  actionButton,
+  activity,
+  className,
 }: {
-  actionButton?: Activity['actionButton'];
+  activity: Activity;
+  className?: string;
 }) {
+  const actionButton = activity.actionButton;
+
   if (!actionButton) {
     return null;
   }
 
   return (
-    <div className="flex items-center gap-2">
+    <div className={cn('flex items-center gap-2', className)}>
       <Button
         size="sm"
         variant={actionButton.variant}
