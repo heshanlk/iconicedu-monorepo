@@ -25,10 +25,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '../../ui/tabs';
 import { cn } from '../../lib/utils';
 import { ActivityWithSubitems } from '../notifications/activity-with-subitems';
 import { ActivityWithButton } from '../notifications/activity-with-button';
-import { AlertCompleteClass } from '../notifications/alert-complete-class';
-import { AlertPayment } from '../notifications/alert-payment';
-import { AlertReminder } from '../notifications/alert-reminder';
-import { AlertSurvey } from '../notifications/alert-survey';
+import { AlertBadge } from '../notifications/alert-badge';
 import type { Activity } from '../notifications/types';
 
 const mockActivities: Activity[] = [
@@ -543,10 +540,18 @@ type TabKey = keyof typeof TAB_FILTERS;
 const ALERT_RENDERERS: Partial<
   Record<Activity['type'], (activity: Activity) => React.ReactElement>
 > = {
-  payment: (activity) => <AlertPayment initials={activity.initials} />,
-  survey: (activity) => <AlertSurvey initials={activity.initials} />,
-  'complete-class': (activity) => <AlertCompleteClass initials={activity.initials} />,
-  reminder: (activity) => <AlertReminder initials={activity.initials} />,
+  payment: (activity) => (
+    <AlertBadge initials={activity.initials} className="bg-red-100 text-red-600" />
+  ),
+  survey: (activity) => (
+    <AlertBadge initials={activity.initials} className="bg-cyan-100 text-cyan-600" />
+  ),
+  'complete-class': (activity) => (
+    <AlertBadge initials={activity.initials} className="bg-yellow-100 text-yellow-600" />
+  ),
+  reminder: (activity) => (
+    <AlertBadge initials={activity.initials} className="bg-purple-100 text-purple-600" />
+  ),
 };
 
 const createCollapsedActivities = (items: Activity[]) =>
@@ -829,7 +834,7 @@ export function InboxContainer() {
           <TabsTrigger value="all" className="gap-2">
             <span>All</span>
             {tabCounts.all > 0 && (
-              <Badge className="h-4 px-1.5 text-[10px] bg-primary text-primary-foreground">
+              <Badge className="h-4 px-1.5 text-[10px] bg-rose-500 text-white">
                 {tabCounts.all}
               </Badge>
             )}
@@ -837,7 +842,7 @@ export function InboxContainer() {
           <TabsTrigger value="classes" className="gap-2">
             <span>Classes</span>
             {tabCounts.classes > 0 && (
-              <Badge className="h-4 px-1.5 text-[10px] bg-primary text-primary-foreground">
+              <Badge className="h-4 px-1.5 text-[10px] bg-rose-500 text-white">
                 {tabCounts.classes}
               </Badge>
             )}
@@ -845,7 +850,7 @@ export function InboxContainer() {
           <TabsTrigger value="payment" className="gap-2">
             <span>Payment</span>
             {tabCounts.payment > 0 && (
-              <Badge className="h-4 px-1.5 text-[10px] bg-primary text-primary-foreground">
+              <Badge className="h-4 px-1.5 text-[10px] bg-rose-500 text-white">
                 {tabCounts.payment}
               </Badge>
             )}
@@ -853,7 +858,7 @@ export function InboxContainer() {
           <TabsTrigger value="system" className="gap-2">
             <span>System</span>
             {tabCounts.system > 0 && (
-              <Badge className="h-4 px-1.5 text-[10px] bg-primary text-primary-foreground">
+              <Badge className="h-4 px-1.5 text-[10px] bg-rose-500 text-white">
                 {tabCounts.system}
               </Badge>
             )}
