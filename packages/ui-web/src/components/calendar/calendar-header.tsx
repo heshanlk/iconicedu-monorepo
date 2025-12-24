@@ -1,89 +1,91 @@
 'use client';
 
-import { ChevronLeft, ChevronRight, CalendarIcon } from 'lucide-react';
 import { Button } from '../../ui/button';
-import { CardDescription, CardTitle } from '../../ui/card';
-import { Separator } from '../../ui/separator';
-import { Tabs, TabsList, TabsTrigger } from '../../ui/tabs';
-import type { CalendarView } from './calendar';
+import { ButtonGroup } from '../../ui/button-group';
+import { ChevronLeft, ChevronRight, Columns4, Columns } from 'lucide-react';
+import type { CalendarView } from '@iconicedu/shared-types';
 
 interface CalendarHeaderProps {
-  title: string;
+  currentDate: Date;
   view: CalendarView;
   onViewChange: (view: CalendarView) => void;
-  onPrevious: () => void;
-  onNext: () => void;
-  onToday: () => void;
+  onNavigate: (direction: 'prev' | 'next' | 'today') => void;
 }
 
 export function CalendarHeader({
-  title,
+  currentDate,
   view,
   onViewChange,
-  onPrevious,
-  onNext,
-  onToday,
+  onNavigate,
 }: CalendarHeaderProps) {
+  const monthYear = currentDate.toLocaleDateString('en-US', {
+    month: 'long',
+    year: 'numeric',
+  });
+
+  const dateRange = (() => {
+    if (view === 'week') {
+      const startOfWeek = new Date(currentDate);
+      const day = startOfWeek.getDay();
+      const diff = startOfWeek.getDate() - day + (day === 0 ? -6 : 1);
+      startOfWeek.setDate(diff);
+
+      const endOfWeek = new Date(startOfWeek);
+      endOfWeek.setDate(startOfWeek.getDate() + 6);
+
+      return `${startOfWeek.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${endOfWeek.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+    } else {
+      return currentDate.toLocaleDateString('en-US', {
+        weekday: 'long',
+      });
+    }
+  })();
+
   return (
-    <header className="flex flex-col gap-4 bg-card px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-2">
-          <CalendarIcon className="h-6 w-6 text-primary" />
-          <CardTitle>Calendar</CardTitle>
+    <div className="flex items-center justify-between border-b bg-background p-4">
+      <div className="flex items-center gap-6">
+        <div className="flex flex-col items-center justify-center rounded-lg border bg-muted px-2.5 py-1.5">
+          <span className="text-[10px] font-medium text-muted-foreground uppercase leading-tight">
+            {currentDate.toLocaleDateString('en-US', { month: 'short' })}
+          </span>
+          <span className="text-lg font-semibold leading-tight">
+            {currentDate.getDate()}
+          </span>
         </div>
-        <Separator orientation="vertical" className="hidden sm:flex" />
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={onPrevious}
-            className="h-8 w-8 bg-transparent"
-          >
+
+        <div>
+          <h1 className="text-lg font-semibold">{monthYear}</h1>
+          <p className="text-xs text-muted-foreground">{dateRange}</p>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <ButtonGroup>
+          <Button variant="outline" size="icon" onClick={() => onNavigate('prev')}>
             <ChevronLeft className="h-4 w-4" />
-            <span className="sr-only">Previous</span>
           </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={onNext}
-            className="h-8 w-8 bg-transparent"
-          >
-            <ChevronRight className="h-4 w-4" />
-            <span className="sr-only">Next</span>
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={onToday}
-            className="hidden sm:inline-flex bg-transparent"
-          >
+
+          <Button variant="outline" onClick={() => onNavigate('today')}>
             Today
           </Button>
-        </div>
-        <CardDescription className="text-base font-medium text-foreground">
-          {title}
-        </CardDescription>
-      </div>
-      <div className="flex items-center gap-2">
+
+          <Button variant="outline" size="icon" onClick={() => onNavigate('next')}>
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </ButtonGroup>
+
         <Button
           variant="outline"
-          size="sm"
-          onClick={onToday}
-          className="sm:hidden bg-transparent"
+          size="icon"
+          onClick={() => onViewChange(view === 'week' ? 'day' : 'week')}
         >
-          Today
+          {view === 'week' ? (
+            <Columns className="h-4 w-4" />
+          ) : (
+            <Columns4 className="h-4 w-4" />
+          )}
         </Button>
-        <Tabs value={view} onValueChange={(v) => onViewChange(v as CalendarView)}>
-          <TabsList className="grid w-full grid-cols-2 sm:w-auto">
-            <TabsTrigger value="week" className="text-xs sm:text-sm">
-              Week
-            </TabsTrigger>
-            <TabsTrigger value="day" className="text-xs sm:text-sm">
-              Day
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
       </div>
-    </header>
+    </div>
   );
 }

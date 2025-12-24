@@ -1,188 +1,215 @@
 'use client';
 
+import type { CalendarEvent } from '@iconicedu/shared-types';
 import {
-  startOfWeek,
-  addDays,
-  format,
+  getWeekDays,
+  formatDayName,
   isSameDay,
-  isToday,
-  setHours,
-  setMinutes,
-  differenceInMinutes,
-  startOfDay,
-} from 'date-fns';
-import { useEffect, useMemo, useRef } from 'react';
-import { cn } from '../../lib/utils';
-import { Card, CardContent } from '../../ui/card';
-import { CurrentTimeIndicator } from '../../ui/current-time-indicator';
-import { ScrollArea } from '../../ui/scroll-area';
-import { Separator } from '../../ui/separator';
-import type { CalendarEvent } from './calendar';
+  getTimeSlots,
+  timeToMinutes,
+} from '../../lib/calendar-utils';
+import { EventCard } from './event-card';
+import { cn } from '@iconicedu/ui-web/lib/utils';
+import { useEffect, useRef } from 'react';
 
 interface WeekViewProps {
   currentDate: Date;
   events: CalendarEvent[];
+  onEventClick: (event: CalendarEvent) => void;
+  onDateSelect?: (date: Date) => void;
+  onSwitchToDay?: () => void;
 }
 
-const HOURS = Array.from({ length: 24 }, (_, i) => i);
+export function WeekView({
+  currentDate,
+  events,
+  onEventClick,
+  onDateSelect,
+  onSwitchToDay,
+}: WeekViewProps) {
+  const weekDays = getWeekDays(currentDate);
+  const timeSlots = getTimeSlots();
+  const today = new Date();
 
-export function WeekView({ currentDate, events }: WeekViewProps) {
-  const weekStart = startOfWeek(currentDate);
-  const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
-  const isCurrentWeek = useMemo(() => weekDays.some((day) => isToday(day)), [weekDays]);
+  const currentHour = today.getHours();
+  const currentMinutes = today.getMinutes();
+  const currentTimeOffset = (currentHour * 2 + currentMinutes / 30) * 32;
 
-  const getEventsForDay = (date: Date) => {
-    return events.filter((event) => isSameDay(new Date(event.start), date));
-  };
-
-  const getEventPosition = (event: CalendarEvent) => {
-    const eventStart = new Date(event.start);
-    const eventEnd = new Date(event.end);
-    const dayStart = startOfDay(eventStart);
-
-    const top = differenceInMinutes(eventStart, dayStart) * (60 / 60); // 60px per hour
-    const height = differenceInMinutes(eventEnd, eventStart) * (60 / 60);
-
-    return { top, height: Math.max(height, 20) };
-  };
-
-  const currentTimeTop = useMemo(() => {
-    if (!isCurrentWeek) return null;
-    const minutesFromStart = differenceInMinutes(new Date(), startOfDay(new Date()));
-    return minutesFromStart; // 1px per minute (60px per hour grid)
-  }, [isCurrentWeek]);
-
-  const scrollTarget = useMemo(() => {
-    if (!isCurrentWeek) return null;
-    const today = weekDays.find((day) => isToday(day));
-    if (!today) return null;
-
-    const todayEvents = getEventsForDay(today);
-    if (todayEvents.length > 0) {
-      const firstTop = todayEvents
-        .map((event) => getEventPosition(event).top)
-        .sort((a, b) => a - b)[0];
-      return firstTop;
-    }
-
-    const minutesFromStart = differenceInMinutes(new Date(), startOfDay(new Date()));
-    return minutesFromStart; // 1px per minute (60px per hour grid)
-  }, [getEventPosition, getEventsForDay, isCurrentWeek, weekDays]);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const hasMountedRef = useRef(false);
 
   useEffect(() => {
-    if (scrollTarget == null) return;
-    const viewport = scrollAreaRef.current?.querySelector(
-      '[data-slot="scroll-area-viewport"]',
-    ) as HTMLElement | null;
-    if (!viewport) return;
-    const target = Math.max(0, scrollTarget - viewport.clientHeight / 2);
-    const scrollOnce = () => viewport.scrollTo({ top: target, behavior: 'auto' });
-    requestAnimationFrame(() => {
-      scrollOnce();
-      requestAnimationFrame(scrollOnce);
+    if (!scrollContainerRef.current) return;
+
+    const todayEvents = events.filter((event) => {
+      return weekDays.some((day) => isSameDay(event.date, day));
     });
-  }, [scrollTarget]);
+
+    let scrollTop: number;
+    if (todayEvents.length > 0) {
+      const earliestEvent = todayEvents.reduce((earliest, event) => {
+        const eventMinutes = timeToMinutes(event.startTime);
+        const earliestMinutes = timeToMinutes(earliest.startTime);
+        return eventMinutes < earliestMinutes ? event : earliest;
+      });
+
+      const eventMinutes = timeToMinutes(earliestEvent.startTime);
+      const scrollToMinutes = Math.max(0, eventMinutes - 60);
+      scrollTop = (scrollToMinutes / 30) * 32;
+    } else {
+      scrollTop = 8 * 2 * 32;
+    }
+
+    // Add delay on initial mount to ensure DOM is ready
+    if (!hasMountedRef.current) {
+      setTimeout(() => {
+        scrollContainerRef.current?.scrollTo({ top: scrollTop, behavior: 'smooth' });
+      }, 100);
+      hasMountedRef.current = true;
+    } else {
+      scrollContainerRef.current.scrollTo({ top: scrollTop, behavior: 'smooth' });
+    }
+  }, [currentDate, events, weekDays]);
+
+  const handleEventClick = (event: CalendarEvent) => {
+    onEventClick(event);
+    if (onDateSelect) {
+      onDateSelect(event.date);
+    }
+  };
+
+  const handleCellClick = (day: Date) => {
+    if (onDateSelect) {
+      onDateSelect(day);
+    }
+  };
+
+  const handleDayHeaderDoubleClick = (day: Date) => {
+    if (onDateSelect) {
+      onDateSelect(day);
+    }
+    if (onSwitchToDay) {
+      onSwitchToDay();
+    }
+  };
 
   return (
-    <Card className="flex h-full flex-col border-0 bg-transparent shadow-none">
-      <CardContent className="flex h-full flex-col p-0">
-        {/* Day headers */}
-        <div className="grid grid-cols-[60px_repeat(7,1fr)] bg-muted/50">
-          <div className="border-r border-border" />
-          {weekDays.map((day, index) => {
-            const isDayToday = isToday(day);
-            return (
-              <div
-                key={index}
-                className={cn(
-                  'flex flex-col items-center py-2 text-center',
-                  isDayToday && 'bg-primary/10',
-                )}
-              >
-                <span className="text-xs font-medium uppercase text-muted-foreground">
-                  {format(day, 'EEE')}
-                </span>
-                <span
+    <div ref={scrollContainerRef} className="flex-1 overflow-auto">
+      <div className="inline-block min-w-full">
+        {/* Days header */}
+        <div className="sticky top-0 z-20 bg-background border-b">
+          <div className="flex">
+            <div className="w-20 flex-shrink-0" />
+            {weekDays.map((day, index) => {
+              const isToday = isSameDay(day, today);
+              const isSelected = isSameDay(day, currentDate);
+
+              return (
+                <button
+                  key={index}
+                  onClick={() => onDateSelect?.(day)}
+                  onDoubleClick={() => handleDayHeaderDoubleClick(day)}
                   className={cn(
-                    'mt-1 flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold',
-                    isDayToday && 'bg-primary text-primary-foreground',
+                    'flex-1 border-l p-4 text-center min-w-[140px] transition-colors',
+                    'hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                   )}
                 >
-                  {format(day, 'd')}
-                </span>
-              </div>
-            );
-          })}
+                  <div className="text-sm text-muted-foreground">
+                    {formatDayName(day)}
+                  </div>
+                  <div
+                    className={cn(
+                      'mt-1 inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold transition-colors',
+                      isToday && 'bg-primary text-primary-foreground',
+                      isSelected && !isToday && 'bg-muted text-foreground',
+                    )}
+                  >
+                    {day.getDate()}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
         </div>
-        <Separator className="mx-0" />
 
         {/* Time grid */}
-        <ScrollArea className="flex-1 min-h-0 overflow-hidden" ref={scrollAreaRef}>
-          <div className="relative grid grid-cols-[60px_repeat(7,1fr)]">
-            {/* Time column */}
-            <div className="relative border-r border-border">
-              {HOURS.map((hour) => (
-                <div key={hour} className="relative h-[60px] border-b border-border">
-                  <span className="absolute -top-2.5 right-2 text-xs text-muted-foreground">
-                    {format(setHours(setMinutes(new Date(), 0), hour), 'h a')}
-                  </span>
+        <div className="relative">
+          <div className="flex">
+            {/* Time labels */}
+            <div className="w-20 flex-shrink-0">
+              {timeSlots.map((time, index) => (
+                <div
+                  key={time}
+                  className="h-8 text-xs text-muted-foreground pr-2 text-right pt-1"
+                >
+                  {index % 2 === 0 ? time : ''}
                 </div>
               ))}
             </div>
 
             {/* Day columns */}
             {weekDays.map((day, dayIndex) => {
-              const dayEvents = getEventsForDay(day);
-              const isDayToday = isToday(day);
+              const dayEvents = events.filter((event) => isSameDay(event.date, day));
+              const isToday = isSameDay(day, today);
+              const isSelected = isSameDay(day, currentDate);
 
               return (
                 <div
                   key={dayIndex}
                   className={cn(
-                    'relative border-r border-border',
-                    isDayToday && 'bg-primary/5 ring-1 ring-primary/30',
+                    'relative flex-1 border-l min-w-[140px]',
+                    isSelected && 'bg-muted/20',
                   )}
                 >
-                  {HOURS.map((hour) => (
-                    <div key={hour} className="h-[60px] border-b border-border" />
-                  ))}
-                  {isDayToday && currentTimeTop !== null && (
+                  {timeSlots.map((_, index) => (
                     <div
-                      className="pointer-events-none absolute inset-x-0 z-10"
-                      style={{ top: `${currentTimeTop}px` }}
-                    >
-                      <CurrentTimeIndicator />
-                    </div>
-                  )}
+                      key={index}
+                      className="h-8 border-b hover:bg-muted/40 transition-colors cursor-pointer focus:bg-muted/50"
+                      onClick={() => handleCellClick(day)}
+                    />
+                  ))}
+
                   {/* Events */}
                   {dayEvents.map((event) => {
-                    const { top, height } = getEventPosition(event);
+                    const startMinutes = timeToMinutes(event.startTime);
+                    const endMinutes = timeToMinutes(event.endTime);
+                    const top = (startMinutes / 30) * 32;
+                    const height = ((endMinutes - startMinutes) / 30) * 32;
+
                     return (
                       <div
                         key={event.id}
-                        className={cn(
-                          'absolute left-0.5 right-0.5 overflow-hidden rounded px-1.5 py-0.5 text-xs text-white',
-                          event.color || 'bg-primary',
-                        )}
+                        className="absolute left-1 right-1 px-1 py-1 pointer-events-none"
                         style={{
                           top: `${top}px`,
                           height: `${height}px`,
                         }}
                       >
-                        <div className="font-medium truncate">{event.title}</div>
-                        <div className="text-white/80 truncate">
-                          {format(new Date(event.start), 'h:mm a')}
+                        <div className="pointer-events-auto">
+                          <EventCard
+                            event={event}
+                            onClick={() => handleEventClick(event)}
+                          />
                         </div>
                       </div>
                     );
                   })}
+
+                  {/* Current time indicator */}
+                  {isToday && (
+                    <div
+                      className="absolute left-0 right-0 border-t-2 border-destructive z-10"
+                      style={{ top: `${currentTimeOffset}px` }}
+                    >
+                      <div className="absolute -left-1 -top-1 h-2 w-2 rounded-full bg-destructive" />
+                    </div>
+                  )}
                 </div>
               );
             })}
           </div>
-        </ScrollArea>
-      </CardContent>
-    </Card>
+        </div>
+      </div>
+    </div>
   );
 }
