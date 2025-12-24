@@ -175,9 +175,7 @@ export function ActivityWithSubitems({
           ) : (
             <Avatar className="size-6 shrink-0">
               <AvatarImage src={activity.avatar || '/placeholder.svg'} />
-              <AvatarFallback className="text-[10px]">
-                {activity.initials}
-              </AvatarFallback>
+              <AvatarFallback className="text-[10px]">{activity.initials}</AvatarFallback>
             </Avatar>
           )}
 
@@ -205,10 +203,7 @@ export function ActivityWithSubitems({
 
               {!isSubActivity && hasSubActivities && (
                 <>
-                  <Badge
-                    variant="secondary"
-                    className="shrink-0 text-[10px] h-4 px-1.5"
-                  >
+                  <Badge variant="secondary" className="shrink-0 text-[10px] h-4 px-1.5">
                     {activity.subActivities.length}
                   </Badge>
                   <ChevronDown
