@@ -33,7 +33,7 @@ export default function CalendarPage() {
   };
 
   return (
-    <div className="flex h-screen flex-col">
+    <div className="flex flex-col h-[calc(100vh-3.5rem)]">
       <DashboardHeader title={'Calendar'} />
       <CalendarHeader
         currentDate={currentDate}
