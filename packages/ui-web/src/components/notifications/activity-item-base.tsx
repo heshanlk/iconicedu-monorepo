@@ -57,9 +57,10 @@ export function ActivityItemBase({
           </div>
         </div>
 
-        <div className="text-xs text-muted-foreground md:pt-0.5 md:w-12 md:shrink-0">
+        <div className="text-xs text-muted-foreground md:pt-0.5 md:w-12 md:shrink-0 text-center">
           {activity.timestamp}
         </div>
+        {!isSubActivity && <div className="h-px flex-1 bg-border md:hidden" />}
       </div>
 
       <div
