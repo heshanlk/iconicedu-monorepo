@@ -67,6 +67,9 @@ const ALERT_RENDERERS: Partial<
   reminder: (activity) => (
     <ActivityBadge activity={activity} className="bg-purple-100 text-purple-600" />
   ),
+  'ai-summary': (activity) => (
+    <ActivityBadge activity={activity} className="bg-violet-100 text-violet-600" />
+  ),
 };
 
 export function ActivityItemBase({
@@ -138,7 +141,7 @@ export function ActivityItemBase({
           </div>
         ) : activity.participants && activity.participants.length > 1 ? (
           <div className="flex shrink-0 -space-x-1.5 pt-0.5">
-            {activity.participants.slice(0, 4).map((participant, idx) => (
+            {activity.participants.slice(0, 2).map((participant, idx) => (
               <Avatar key={idx} className="size-6 border-2 border-background">
                 <AvatarImage src={participant.avatar || '/placeholder.svg'} />
                 <AvatarFallback className="text-[10px]">
@@ -146,10 +149,10 @@ export function ActivityItemBase({
                 </AvatarFallback>
               </Avatar>
             ))}
-            {activity.participants.length > 4 && (
+            {activity.participants.length > 2 && (
               <Avatar className="size-6 border-2 border-background">
                 <AvatarFallback className="text-[10px]">
-                  +{activity.participants.length - 4}
+                  +{activity.participants.length - 2}
                 </AvatarFallback>
               </Avatar>
             )}

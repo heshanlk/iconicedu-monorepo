@@ -21,7 +21,7 @@ const mockActivities: Activity[] = [
     target: 'March Tuition Payment',
     timestamp: '5m',
     isRead: false,
-    initials: '$$',
+    initials: '💳',
     icon: 'CreditCard',
     iconBg: 'bg-red-100 text-red-700',
     category: 'payment',
@@ -132,7 +132,7 @@ const mockActivities: Activity[] = [
         target: '',
         timestamp: '1h',
         isRead: false,
-        initials: 'AI',
+        initials: '🤖',
         icon: 'Sparkles',
         iconBg: 'bg-violet-100 text-violet-700',
         studentName: 'Zayne',
@@ -285,7 +285,7 @@ const mockActivities: Activity[] = [
         target: '',
         timestamp: '1h',
         isRead: false,
-        initials: 'AI',
+        initials: '🤖',
         icon: 'Sparkles',
         iconBg: 'bg-violet-100 text-violet-700',
         studentName: 'Sophia',
@@ -526,7 +526,6 @@ export function InboxContainer() {
   const [activities, setActivities] = useState(mockActivities);
   const [activeTab, setActiveTab] = useState<TabKey>('all');
 
-  const unreadCount = activities.filter((a) => !a.isRead).length;
   const groupedActivities = groupActivitiesByDate(activities);
   const tabFilter = TAB_FILTERS[activeTab];
   const tabCounts = {
