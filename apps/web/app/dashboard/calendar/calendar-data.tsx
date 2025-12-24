@@ -15,7 +15,7 @@ export const sampleEvents: CalendarEvent[] = [
     date: new Date(),
     color: 'blue',
     description:
-      "About this event\n\nJoin us for our daily team standup. We'll discuss progress updates, blockers, and plan for the day ahead.\n\nTopic: Daily standup meeting to sync on current sprint tasks.",
+      "Join us for our daily team standup. We'll discuss progress updates, blockers, and plan for the day ahead.\n\nTopic: Daily standup meeting to sync on current sprint tasks.",
     organizer: 'Engineering Team',
     location: 'Virtual Meeting Room',
     visibility: 'Team members only',
@@ -35,7 +35,7 @@ export const sampleEvents: CalendarEvent[] = [
     date: new Date(),
     color: 'purple',
     description:
-      'About this event\n\nQuarterly review presentation for Acme Corp covering Q4 performance metrics and 2025 roadmap.\n\nTopic: Strategic business review and future planning session.',
+      'Quarterly review presentation for Acme Corp covering Q4 performance metrics and 2025 roadmap.\n\nTopic: Strategic business review and future planning session.',
     organizer: 'Sales Department',
     location: 'Conference Room A',
     visibility: 'Open to everyone',
@@ -55,7 +55,7 @@ export const sampleEvents: CalendarEvent[] = [
     date: new Date(),
     color: 'green',
     description:
-      'About this event\n\nCasual lunch to discuss upcoming projects and team building activities.\n\nTopic: Informal team discussion over lunch.',
+      'Casual lunch to discuss upcoming projects and team building activities.\n\nTopic: Informal team discussion over lunch.',
     organizer: 'Team Lead',
     location: 'Downtown Cafe',
     visibility: 'Open to everyone',
@@ -75,7 +75,7 @@ export const sampleEvents: CalendarEvent[] = [
     date: new Date(),
     color: 'blue',
     description:
-      'About this event\n\nReviewing recent pull requests and discussing code quality improvements.\n\nTopic: Code quality and best practices discussion.',
+      'Reviewing recent pull requests and discussing code quality improvements.\n\nTopic: Code quality and best practices discussion.',
     organizer: 'Tech Lead',
     location: 'Development Office',
     visibility: 'Engineering team',
@@ -95,7 +95,7 @@ export const sampleEvents: CalendarEvent[] = [
     date: new Date(),
     color: 'pink',
     description:
-      'About this event\n\nReview and provide feedback on the latest design mockups for the mobile app redesign.\n\nTopic: Mobile app UI/UX design review session.',
+      'Review and provide feedback on the latest design mockups for the mobile app redesign.\n\nTopic: Mobile app UI/UX design review session.',
     organizer: 'Design Team',
     location: 'Design Studio',
     visibility: 'Open to everyone',
@@ -116,7 +116,7 @@ export const sampleEvents: CalendarEvent[] = [
     date: getDateOffset(-1),
     color: 'purple',
     description:
-      'About this event\n\nDiscussing upcoming product releases and roadmap updates.\n\nTopic: Product roadmap planning session.',
+      'Discussing upcoming product releases and roadmap updates.\n\nTopic: Product roadmap planning session.',
     organizer: 'Product Team',
     location: 'Virtual Meeting Room',
     visibility: 'Engineering team',
@@ -136,7 +136,7 @@ export const sampleEvents: CalendarEvent[] = [
     date: getDateOffset(-1),
     color: 'green',
     description:
-      'About this event\n\nWeekly sales call to discuss targets, strategies, and client interactions.\n\nTopic: Sales performance review and strategy session.',
+      'Weekly sales call to discuss targets, strategies, and client interactions.\n\nTopic: Sales performance review and strategy session.',
     organizer: 'Sales Team',
     location: 'Virtual Call Room',
     visibility: 'Sales team',
@@ -157,7 +157,7 @@ export const sampleEvents: CalendarEvent[] = [
     date: getDateOffset(1),
     color: 'blue',
     description:
-      'About this event\n\nWeekly engineering sync to align on technical priorities and architectural decisions.\n\nTopic: Technical roadmap and architecture planning.',
+      'Weekly engineering sync to align on technical priorities and architectural decisions.\n\nTopic: Technical roadmap and architecture planning.',
     organizer: 'Engineering Manager',
     location: 'Zoom Meeting',
     visibility: 'Engineering team',
@@ -177,7 +177,7 @@ export const sampleEvents: CalendarEvent[] = [
     date: getDateOffset(1),
     color: 'green',
     description:
-      'About this event\n\nSienna is inviting you to a scheduled Zoom meeting.\n\nTopic: Plan upcoming two-week sprint. Review backlog priorities and assign story points.\n\nJoin Zoom Meeting: https://us02web.zoom.us/j/86341969512',
+      'Sienna is inviting you to a scheduled Zoom meeting.\n\nTopic: Plan upcoming two-week sprint. Review backlog priorities and assign story points.\n\nJoin Zoom Meeting: https://us02web.zoom.us/j/86341969512',
     organizer: 'Product Team',
     location: 'Mohakhali, Dhaka',
     visibility: 'Open to everyone',
@@ -198,7 +198,7 @@ export const sampleEvents: CalendarEvent[] = [
     date: getDateOffset(1),
     color: 'pink',
     description:
-      'About this event\n\nComprehensive design review covering all recent projects and design system updates.\n\nTopic: Design system consistency and component library review.',
+      'Comprehensive design review covering all recent projects and design system updates.\n\nTopic: Design system consistency and component library review.',
     organizer: 'Design Lead',
     location: 'Creative Space',
     visibility: 'Design team',
@@ -218,7 +218,7 @@ export const sampleEvents: CalendarEvent[] = [
     date: getDateOffset(1),
     color: 'purple',
     description:
-      'About this event\n\nQuarterly all hands meeting to update on company progress and discuss future goals.\n\nTopic: Company updates and strategic planning session.',
+      'Quarterly all hands meeting to update on company progress and discuss future goals.\n\nTopic: Company updates and strategic planning session.',
     organizer: 'CEO',
     location: 'Main Conference Hall',
     visibility: 'Open to everyone',
@@ -238,7 +238,7 @@ export const sampleEvents: CalendarEvent[] = [
     date: getDateOffset(2),
     color: 'blue',
     description:
-      'About this event\n\nLive product demonstration for potential customers showcasing key features and capabilities.\n\nTopic: Product walkthrough and customer Q&A session.',
+      'Live product demonstration for potential customers showcasing key features and capabilities.\n\nTopic: Product walkthrough and customer Q&A session.',
     organizer: 'Sales Team',
     location: 'Virtual Demo Room',
     visibility: 'Open to everyone',
@@ -258,7 +258,7 @@ export const sampleEvents: CalendarEvent[] = [
     date: getDateOffset(2),
     color: 'green',
     description:
-      'About this event\n\nRelaxing lunch for the team to bond and discuss personal and professional matters.\n\nTopic: Casual team lunch and social interaction.',
+      'Relaxing lunch for the team to bond and discuss personal and professional matters.\n\nTopic: Casual team lunch and social interaction.',
     organizer: 'Team Lead',
     location: 'Downtown Cafe',
     visibility: 'Open to everyone',
@@ -278,7 +278,7 @@ export const sampleEvents: CalendarEvent[] = [
     date: getDateOffset(2),
     color: 'purple',
     description:
-      'About this event\n\nDiscussing architectural changes and improvements for the upcoming projects.\n\nTopic: System architecture planning and discussion.',
+      'Discussing architectural changes and improvements for the upcoming projects.\n\nTopic: System architecture planning and discussion.',
     organizer: 'Tech Lead',
     location: 'Development Office',
     visibility: 'Engineering team',
@@ -299,7 +299,7 @@ export const sampleEvents: CalendarEvent[] = [
     date: getDateOffset(3),
     color: 'blue',
     description:
-      'About this event\n\nWeekly standup to discuss progress, challenges, and next steps for the ongoing projects.\n\nTopic: Project progress and team alignment meeting.',
+      'Weekly standup to discuss progress, challenges, and next steps for the ongoing projects.\n\nTopic: Project progress and team alignment meeting.',
     organizer: 'Engineering Team',
     location: 'Virtual Meeting Room',
     visibility: 'Team members only',
@@ -319,7 +319,7 @@ export const sampleEvents: CalendarEvent[] = [
     date: getDateOffset(3),
     color: 'pink',
     description:
-      'About this event\n\nConducting usability tests with real users to gather feedback on new features.\n\nTopic: User experience research and feedback collection.',
+      'Conducting usability tests with real users to gather feedback on new features.\n\nTopic: User experience research and feedback collection.',
     organizer: 'UX Research Team',
     location: 'Research Lab',
     visibility: 'Research team',
@@ -339,7 +339,7 @@ export const sampleEvents: CalendarEvent[] = [
     date: getDateOffset(3),
     color: 'orange',
     description:
-      'About this event\n\nReviewing the current budget and discussing financial strategies for the upcoming quarter.\n\nTopic: Budget analysis and financial planning session.',
+      'Reviewing the current budget and discussing financial strategies for the upcoming quarter.\n\nTopic: Budget analysis and financial planning session.',
     organizer: 'Finance Team',
     location: 'Finance Office',
     visibility: 'Open to everyone',
@@ -360,7 +360,7 @@ export const sampleEvents: CalendarEvent[] = [
     date: getDateOffset(4),
     color: 'pink',
     description:
-      'About this event\n\nDiscussing marketing strategies and campaigns for the next quarter.\n\nTopic: Marketing strategy planning and brainstorming session.',
+      'Discussing marketing strategies and campaigns for the next quarter.\n\nTopic: Marketing strategy planning and brainstorming session.',
     organizer: 'Marketing Team',
     location: 'Virtual Meeting Room',
     visibility: 'Open to everyone',
@@ -381,7 +381,7 @@ export const sampleEvents: CalendarEvent[] = [
     date: getDateOffset(4),
     color: 'blue',
     description:
-      'About this event\n\nPlanning content for the upcoming quarter, including blog posts, social media updates, and email campaigns.\n\nTopic: Content calendar and strategy session.',
+      'Planning content for the upcoming quarter, including blog posts, social media updates, and email campaigns.\n\nTopic: Content calendar and strategy session.',
     organizer: 'Content Team',
     location: 'Creative Space',
     visibility: 'Open to everyone',
@@ -401,7 +401,7 @@ export const sampleEvents: CalendarEvent[] = [
     date: getDateOffset(4),
     color: 'blue',
     description:
-      'About this event\n\nSienna is inviting you to a scheduled Zoom meeting.\n\nTopic: Product demo for the new dashboard and Q&A session.\n\nJoin Zoom Meeting: https://us02web.zoom.us/j/86341969512',
+      'Sienna is inviting you to a scheduled Zoom meeting.\n\nTopic: Product demo for the new dashboard and Q&A session.\n\nJoin Zoom Meeting: https://us02web.zoom.us/j/86341969512',
     organizer: 'Wellness Insight Lab',
     location: 'Mohakhali, Dhaka',
     visibility: 'Open to everyone',
@@ -424,7 +424,7 @@ export const sampleEvents: CalendarEvent[] = [
     date: getDateOffset(4),
     color: 'green',
     description:
-      "About this event\n\nReflecting on the past week's accomplishments and identifying areas for improvement.\n\nTopic: Week retrospective and action planning session.",
+      "Reflecting on the past week's accomplishments and identifying areas for improvement.\n\nTopic: Week retrospective and action planning session.",
     organizer: 'Engineering Team',
     location: 'Virtual Meeting Room',
     visibility: 'Team members only',
@@ -445,7 +445,7 @@ export const sampleEvents: CalendarEvent[] = [
     date: getDateOffset(5),
     color: 'green',
     description:
-      'About this event\n\nScheduled coffee meeting with a mentor to discuss career growth and development.\n\nTopic: Career guidance and mentorship session.',
+      'Scheduled coffee meeting with a mentor to discuss career growth and development.\n\nTopic: Career guidance and mentorship session.',
     organizer: 'Mentor Program',
     location: 'Coffee Shop',
     visibility: 'Open to everyone',
@@ -465,7 +465,7 @@ export const sampleEvents: CalendarEvent[] = [
     date: getDateOffset(5),
     color: 'orange',
     description:
-      'About this event\n\nRegular physical activity is one of the simplest ways to improve your heart health. Small, consistent habits can create meaningful, long-term benefits.\n\nTopic: Fitness and wellness session.',
+      'Regular physical activity is one of the simplest ways to improve your heart health. Small, consistent habits can create meaningful, long-term benefits.\n\nTopic: Fitness and wellness session.',
     organizer: 'Wellness Team',
     location: 'Gym',
     visibility: 'Open to everyone',
@@ -486,7 +486,7 @@ export const sampleEvents: CalendarEvent[] = [
     date: getDateOffset(6),
     color: 'green',
     description:
-      'About this event\n\nEnjoy a relaxing brunch with family to strengthen bonds and unwind.\n\nTopic: Family time and social interaction.',
+      'Enjoy a relaxing brunch with family to strengthen bonds and unwind.\n\nTopic: Family time and social interaction.',
     organizer: 'Personal',
     location: 'Home',
     visibility: 'Private',
@@ -506,7 +506,7 @@ export const sampleEvents: CalendarEvent[] = [
     date: getDateOffset(6),
     color: 'yellow',
     description:
-      'About this event\n\nWatching a movie together as a team to foster collaboration and entertainment.\n\nTopic: Team bonding and movie night.',
+      'Watching a movie together as a team to foster collaboration and entertainment.\n\nTopic: Team bonding and movie night.',
     organizer: 'Entertainment Team',
     location: 'Cinema',
     visibility: 'Open to everyone',
@@ -527,7 +527,7 @@ export const sampleEvents: CalendarEvent[] = [
     date: getDateOffset(7),
     color: 'blue',
     description:
-      'About this event\n\nWeekly planning session to discuss goals, tasks, and timelines for the next week.\n\nTopic: Weekly planning and task allocation meeting.',
+      'Weekly planning session to discuss goals, tasks, and timelines for the next week.\n\nTopic: Weekly planning and task allocation meeting.',
     organizer: 'Engineering Team',
     location: 'Virtual Meeting Room',
     visibility: 'Team members only',
@@ -547,7 +547,7 @@ export const sampleEvents: CalendarEvent[] = [
     date: getDateOffset(7),
     color: 'orange',
     description:
-      'About this event\n\nMeeting with vendors to discuss partnership opportunities and product updates.\n\nTopic: Vendor collaboration and product discussion.',
+      'Meeting with vendors to discuss partnership opportunities and product updates.\n\nTopic: Vendor collaboration and product discussion.',
     organizer: 'Procurement Team',
     location: 'Vendor Conference Room',
     visibility: 'Open to everyone',
@@ -567,7 +567,7 @@ export const sampleEvents: CalendarEvent[] = [
     date: getDateOffset(8),
     color: 'purple',
     description:
-      'About this event\n\nTraining session for new team members to get up to speed on company processes and tools.\n\nTopic: Onboarding and training session.',
+      'Training session for new team members to get up to speed on company processes and tools.\n\nTopic: Onboarding and training session.',
     organizer: 'HR Team',
     location: 'Training Room',
     visibility: 'Open to everyone',
@@ -587,7 +587,7 @@ export const sampleEvents: CalendarEvent[] = [
     date: getDateOffset(8),
     color: 'pink',
     description:
-      'About this event\n\nGathering customer feedback through surveys and interviews to improve product offerings.\n\nTopic: Customer feedback collection and analysis session.',
+      'Gathering customer feedback through surveys and interviews to improve product offerings.\n\nTopic: Customer feedback collection and analysis session.',
     organizer: 'Customer Support Team',
     location: 'Conference Room B',
     visibility: 'Open to everyone',
@@ -607,7 +607,7 @@ export const sampleEvents: CalendarEvent[] = [
     date: getDateOffset(9),
     color: 'blue',
     description:
-      'About this event\n\nReviewing the architecture of recent projects to ensure scalability and efficiency.\n\nTopic: Architecture review and optimization session.',
+      'Reviewing the architecture of recent projects to ensure scalability and efficiency.\n\nTopic: Architecture review and optimization session.',
     organizer: 'Tech Lead',
     location: 'Development Office',
     visibility: 'Engineering team',
@@ -627,7 +627,7 @@ export const sampleEvents: CalendarEvent[] = [
     date: getDateOffset(9),
     color: 'green',
     description:
-      'About this event\n\nDiscussing ways to optimize system performance and user experience.\n\nTopic: Performance tuning and user experience enhancement session.',
+      'Discussing ways to optimize system performance and user experience.\n\nTopic: Performance tuning and user experience enhancement session.',
     organizer: 'Engineering Team',
     location: 'Virtual Meeting Room',
     visibility: 'Team members only',
@@ -647,7 +647,7 @@ export const sampleEvents: CalendarEvent[] = [
     date: getDateOffset(10),
     color: 'orange',
     description:
-      'About this event\n\nConducting a security audit to identify and address potential vulnerabilities.\n\nTopic: Security assessment and improvement session.',
+      'Conducting a security audit to identify and address potential vulnerabilities.\n\nTopic: Security assessment and improvement session.',
     organizer: 'Security Team',
     location: 'Security Lab',
     visibility: 'Open to everyone',
@@ -667,7 +667,7 @@ export const sampleEvents: CalendarEvent[] = [
     date: getDateOffset(10),
     color: 'purple',
     description:
-      'About this event\n\nPreparing for an investor pitch to secure funding for upcoming projects.\n\nTopic: Investor pitch preparation and presentation session.',
+      'Preparing for an investor pitch to secure funding for upcoming projects.\n\nTopic: Investor pitch preparation and presentation session.',
     organizer: 'Finance Team',
     location: 'Board Room',
     visibility: 'Open to everyone',
