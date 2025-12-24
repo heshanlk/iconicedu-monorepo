@@ -78,10 +78,10 @@ const data = {
     },
     {
       title: 'Inbox',
-      url: '#',
+      url: '/dashboard/inbox',
       icon: Inbox,
       badge: '10',
-      count: 8,
+      count: 11,
     },
   ],
   CLASSROOMS: [

@@ -478,6 +478,57 @@ const mockActivities: Activity[] = [
     },
   },
   {
+    id: '11',
+    type: 'notes',
+    actor: 'Mr. Silva',
+    action: 'shared notes for Sophia',
+    target: 'Chemistry Lab Review',
+    timestamp: '1d',
+    isRead: true,
+    initials: 'MS',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=silva',
+    icon: FileText,
+    iconBg: 'bg-amber-100 text-amber-700',
+    studentName: 'Sophia',
+    category: 'class',
+    date: 'Yesterday',
+    expandedContent:
+      'Review these notes before the lab: safety protocol, measurement accuracy, and material handling.',
+  },
+  {
+    id: '12',
+    type: 'reminder',
+    actor: 'System',
+    action: 'reminder for Zayne',
+    target: 'Submit math worksheet by 6 PM',
+    timestamp: '1d',
+    isRead: true,
+    initials: '⏰',
+    icon: Bell,
+    iconBg: 'bg-purple-500 text-white',
+    studentName: 'Zayne',
+    category: 'system',
+    date: 'Yesterday',
+  },
+  {
+    id: '13',
+    type: 'message',
+    actor: 'Ms. Dinesha',
+    action: 'sent message to Zayne in',
+    target: 'Algebra I Chat',
+    timestamp: '1d',
+    isRead: true,
+    initials: 'MD',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=dinesha',
+    icon: MessageSquare,
+    iconBg: 'bg-blue-500 text-white',
+    studentName: 'Zayne',
+    category: 'class',
+    date: 'Yesterday',
+    expandedContent:
+      'Quick update: next class will include a short quiz on linear equations.',
+  },
+  {
     id: '8',
     type: 'message',
     actor: 'Coach Anderson',
@@ -494,6 +545,70 @@ const mockActivities: Activity[] = [
     date: 'Earlier',
     expandedContent:
       'Great job at practice today! Your technique on the hurdles has improved significantly. Keep up the excellent work!',
+  },
+  {
+    id: '14',
+    type: 'recording',
+    actor: 'System',
+    action: 'class recording ready for Zayne',
+    target: 'Geometry Session',
+    timestamp: '2d',
+    isRead: true,
+    initials: 'SY',
+    icon: Video,
+    iconBg: 'bg-green-100 text-green-700',
+    studentName: 'Zayne',
+    category: 'class',
+    date: 'Earlier',
+    actionButton: {
+      label: 'Watch Recording',
+      variant: 'outline',
+      onClick: () => console.log('Playing recording...'),
+    },
+  },
+  {
+    id: '15',
+    type: 'survey',
+    actor: 'Feedback System',
+    action: 'feedback request for',
+    target: "Mr. Kim's Biology Lab",
+    timestamp: '3d',
+    isRead: true,
+    initials: '📝',
+    icon: ClipboardCheck,
+    iconBg: 'bg-cyan-100 text-cyan-700',
+    category: 'system',
+    date: 'Earlier',
+    expandedContent:
+      'Please rate your experience and share any feedback about the lab session.',
+    actionButton: {
+      label: 'Take Survey',
+      variant: 'default',
+      onClick: () => console.log('Opening survey...'),
+    },
+  },
+  {
+    id: '16',
+    type: 'homework',
+    actor: 'Mr. Rodriguez',
+    action: 'posted homework for Zayne',
+    target: 'Factoring Practice',
+    timestamp: '4d',
+    isRead: true,
+    initials: 'MR',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=rodriguez',
+    icon: Paperclip,
+    iconBg: 'bg-orange-100 text-orange-700',
+    studentName: 'Zayne',
+    category: 'class',
+    date: 'Earlier',
+    expandedContent:
+      'Complete problems 1–12. Focus on factorization patterns and check your work.',
+    actionButton: {
+      label: 'View Assignment',
+      variant: 'outline',
+      onClick: () => console.log('Viewing assignment...'),
+    },
   },
   {
     id: '9',
@@ -666,7 +781,7 @@ export function InboxContainer() {
           <div className="p-4 space-y-8">
             {filteredGroupedActivities.map(([date, dateActivities]) => (
               <div key={date} className="space-y-1">
-                <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">
+                <h2 className="sticky top-0 z-30 -mx-4 mb-4 bg-background/95 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground shadow-sm backdrop-blur">
                   {date}
                 </h2>
                 <div className="space-y-1">
