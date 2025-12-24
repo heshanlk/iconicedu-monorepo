@@ -2,7 +2,7 @@
 
 import type React from 'react';
 
-import { Dialog, DialogContent, DialogTrigger } from '../../ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '../../ui/dialog';
 import { ScrollArea } from '../../ui/scroll-area';
 import { Separator } from '../../ui/separator';
 import type { CalendarEvent } from '@iconicedu/shared-types';
@@ -22,6 +22,9 @@ export function EventDialog({ event, open, onOpenChange, children }: EventDialog
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="max-w-lg max-h-[85vh] p-0 gap-0 [&>button]:hidden">
+        <DialogTitle className="sr-only">
+          {event.title || 'Calendar event details'}
+        </DialogTitle>
         <ScrollArea className="max-h-[85vh]">
           <div className="p-4 bg-muted rounded-2xl">
             <div className="space-y-4">

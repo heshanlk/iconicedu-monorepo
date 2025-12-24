@@ -15,7 +15,7 @@ export function EventActions({ onClose }: EventActionsProps) {
           <Video className="h-4 w-4 mr-2" />
           Join
         </Button>
-        <Button size="sm" variant="secondary">
+        <Button size="sm" variant="outline">
           <MessageSquare className="h-4 w-4 mr-2" />
           Chat
         </Button>
