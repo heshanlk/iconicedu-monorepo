@@ -110,7 +110,7 @@ export function WeekView({
                   onClick={() => onDateSelect?.(day)}
                   onDoubleClick={() => handleDayHeaderDoubleClick(day)}
                   className={cn(
-                    'flex-1 border-l p-4 text-center min-w-[140px] transition-colors',
+                    'flex-1 border-l p-4 text-center min-w-[75px] transition-colors',
                     'hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                   )}
                 >
@@ -157,7 +157,7 @@ export function WeekView({
                 <div
                   key={dayIndex}
                   className={cn(
-                    'relative flex-1 border-l min-w-[140px]',
+                    'relative flex-1 border-l min-w-[75px]',
                     isSelected && 'bg-muted/20',
                   )}
                 >
