@@ -90,23 +90,6 @@ export function ActivityItemBase({
   return (
     <div className={cn('flex items-start gap-3 py-2.5', className)}>
       <div className="relative flex shrink-0 flex-col items-center">
-        {isSubActivity && (
-          <svg
-            className="absolute -top-3 left-1/2 -translate-x-1/2"
-            width="24"
-            height="30"
-            viewBox="0 0 24 30"
-            fill="none"
-          >
-            <path
-              d="M 12 0 Q 12 15, 24 30"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              className="text-border"
-            />
-          </svg>
-        )}
-
         <div
           className={cn(
             'z-10 flex size-6 items-center justify-center rounded-full',
@@ -135,10 +118,6 @@ export function ActivityItemBase({
       >
         {alertRenderer ? (
           alertRenderer(activity)
-        ) : activity.type === 'ai-summary' ? (
-          <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-violet-100 text-violet-600">
-            <Sparkles className="size-3.5" />
-          </div>
         ) : activity.participants && activity.participants.length > 1 ? (
           <div className="flex shrink-0 -space-x-1.5 pt-0.5">
             {activity.participants.slice(0, 2).map((participant, idx) => (
