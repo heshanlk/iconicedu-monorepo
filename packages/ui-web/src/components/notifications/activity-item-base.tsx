@@ -1,20 +1,7 @@
 'use client';
 
 import type React from 'react';
-import {
-  Bell,
-  Check,
-  CheckCircle2,
-  ChevronDown,
-  ClipboardCheck,
-  CreditCard,
-  FileText,
-  GraduationCap,
-  MessageSquare,
-  Paperclip,
-  Sparkles,
-  Video,
-} from 'lucide-react';
+import { Check, ChevronDown } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Badge } from '../../ui/badge';
 import { Button } from '../../ui/button';
@@ -26,6 +13,7 @@ import type { Activity } from './types';
 type ActivityItemBaseProps = {
   activity: Activity;
   onMarkRead: (id: string, event: React.MouseEvent) => void;
+  iconMap: Record<string, LucideIcon>;
   onToggle?: (event: React.MouseEvent) => void;
   isSubActivity?: boolean;
   parentExpanded?: boolean;
@@ -38,22 +26,10 @@ type ActivityItemBaseProps = {
 
 const READ_ICON_CLASS = 'bg-muted text-muted-foreground';
 
-const ICON_MAP: Record<string, LucideIcon> = {
-  MessageSquare,
-  Video,
-  FileText,
-  Sparkles,
-  Paperclip,
-  Bell,
-  ClipboardCheck,
-  GraduationCap,
-  CheckCircle2,
-  CreditCard,
-};
-
 export function ActivityItemBase({
   activity,
   onMarkRead,
+  iconMap,
   onToggle,
   isSubActivity = false,
   parentExpanded = false,
@@ -63,7 +39,7 @@ export function ActivityItemBase({
   footer,
   className,
 }: ActivityItemBaseProps) {
-  const Icon = activity.icon ? ICON_MAP[activity.icon] : undefined;
+  const Icon = activity.icon ? iconMap[activity.icon] : undefined;
 
   return (
     <div className={cn('flex items-start gap-3 py-2.5', className)}>

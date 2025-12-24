@@ -2,6 +2,19 @@
 
 import type React from 'react';
 import { useState } from 'react';
+import {
+  Bell,
+  CheckCircle2,
+  ClipboardCheck,
+  CreditCard,
+  FileText,
+  GraduationCap,
+  MessageSquare,
+  Paperclip,
+  Sparkles,
+  Video,
+} from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { Badge } from '../../ui/badge';
 import { ScrollArea } from '../../ui/scroll-area';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../../ui/tabs';
@@ -508,6 +521,19 @@ const TAB_FILTERS = {
 } as const;
 type TabKey = keyof typeof TAB_FILTERS;
 
+const ICON_MAP: Record<string, LucideIcon> = {
+  MessageSquare,
+  Video,
+  FileText,
+  Sparkles,
+  Paperclip,
+  Bell,
+  ClipboardCheck,
+  GraduationCap,
+  CheckCircle2,
+  CreditCard,
+};
+
 const groupActivitiesByDate = (items: Activity[]) =>
   Object.entries(
     items.reduce(
@@ -577,7 +603,13 @@ export function InboxContainer() {
 
   const renderActivity = (activity: Activity) => {
     if (activity.subActivities?.length) {
-      return <ActivityWithSubitems activity={activity} onMarkRead={markAsRead} />;
+      return (
+        <ActivityWithSubitems
+          activity={activity}
+          onMarkRead={markAsRead}
+          iconMap={ICON_MAP}
+        />
+      );
     }
 
     if (activity.expandedContent && activity.actionButton) {
@@ -585,23 +617,32 @@ export function InboxContainer() {
         <ActivityBasicWithContentActionButton
           activity={activity}
           onMarkRead={markAsRead}
+          iconMap={ICON_MAP}
         />
       );
     }
 
     if (activity.expandedContent) {
       return (
-        <ActivityBasicWithExpandedContent activity={activity} onMarkRead={markAsRead} />
+        <ActivityBasicWithExpandedContent
+          activity={activity}
+          onMarkRead={markAsRead}
+          iconMap={ICON_MAP}
+        />
       );
     }
 
     if (activity.actionButton) {
       return (
-        <ActivityBasicWithActionButton activity={activity} onMarkRead={markAsRead} />
+        <ActivityBasicWithActionButton
+          activity={activity}
+          onMarkRead={markAsRead}
+          iconMap={ICON_MAP}
+        />
       );
     }
 
-    return <ActivityBasic activity={activity} onMarkRead={markAsRead} />;
+    return <ActivityBasic activity={activity} onMarkRead={markAsRead} iconMap={ICON_MAP} />;
   };
 
   return (
