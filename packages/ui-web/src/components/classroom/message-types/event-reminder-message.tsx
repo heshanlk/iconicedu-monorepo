@@ -55,11 +55,11 @@ export const EventReminderMessage = memo(function EventReminderMessage(
 
   return (
     <MessageBase message={message} {...baseProps} className="bg-primary/5">
-      <div className="rounded-lg border border-primary/20 bg-card overflow-hidden max-w-sm">
+      <div className="rounded-xl border border-primary/20 bg-card overflow-hidden max-w-sm">
         <div className="p-4">
           <div className="flex items-start justify-between gap-3 mb-3">
             <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 flex-col items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <div className="flex h-12 w-12 flex-col items-center justify-center rounded-xl bg-primary/10 text-primary">
                 <span className="text-[10px] font-medium uppercase leading-none">
                   {event.startTime.toLocaleDateString('en-US', { month: 'short' })}
                 </span>

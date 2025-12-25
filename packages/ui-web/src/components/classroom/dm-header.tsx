@@ -1,5 +1,4 @@
 import { memo, useCallback } from 'react';
-import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
 import { Button } from '../../ui/button';
 import { Phone, Video, MoreVertical, Bookmark } from 'lucide-react';
 import {
@@ -16,6 +15,7 @@ import {
   TooltipTrigger,
 } from '../../ui/tooltip';
 import type { User } from '@iconicedu/shared-types';
+import { AvatarWithStatus } from '../shared/avatar-with-status';
 
 interface DMHeaderProps {
   user: User;
@@ -72,15 +72,12 @@ export const DMHeader = memo(function DMHeader({
         onClick={handleProfileClick}
         className="flex items-center gap-3 hover:opacity-80 transition-opacity"
       >
-        <div className="relative">
-          <Avatar className="h-8 w-8">
-            <AvatarImage src={user.avatar || '/placeholder.svg'} alt={user.name} />
-            <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-          </Avatar>
-          {user.isOnline && (
-            <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-card bg-online" />
-          )}
-        </div>
+        <AvatarWithStatus
+          name={user.name}
+          avatar={user.avatar}
+          isOnline={user.isOnline}
+          sizeClassName="h-8 w-8"
+        />
         <div className="flex flex-col">
           <div className="flex items-center gap-1.5">
             <span className="text-sm font-semibold text-foreground">{user.name}</span>

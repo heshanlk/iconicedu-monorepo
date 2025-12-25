@@ -18,7 +18,7 @@ export const ImageMessage = memo(function ImageMessage(props: ImageMessageProps)
           {message.content}
         </p>
       )}
-      <div className="overflow-hidden rounded-lg border border-border max-w-sm">
+      <div className="overflow-hidden rounded-xl border border-border max-w-sm">
         <img
           src={message.attachment.url || '/placeholder.svg'}
           alt={message.attachment.name}

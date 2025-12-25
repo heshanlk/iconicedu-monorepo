@@ -241,7 +241,7 @@ export const MessageActions = React.memo(function MessageActions({
   }, [onToggleHidden]);
 
   return (
-    <div className="absolute right-2 top-0 z-10 flex items-center gap-1 rounded-lg border bg-card px-1 py-1 shadow-md">
+    <div className="absolute right-2 top-0 z-10 flex items-center gap-1 rounded-xl border bg-card px-1 py-1 shadow-md">
       {!isThreadReply && (
         <TooltipProvider>
           <Tooltip>
@@ -385,7 +385,7 @@ export const HiddenMessagePlaceholder = React.memo(function HiddenMessagePlaceho
   onUnhide: () => void;
 }) {
   return (
-    <div className="flex items-center gap-2 rounded-lg border border-dashed border-muted-foreground/30 bg-muted/20 px-3 py-2">
+    <div className="flex items-center gap-2 rounded-xl border border-dashed border-muted-foreground/30 bg-muted/20 px-3 py-2">
       <EyeOff className="h-4 w-4 text-muted-foreground" />
       <span className="text-sm text-muted-foreground">Message hidden</span>
       <Button
@@ -428,7 +428,7 @@ export function MessageBase({
 
   if (message.isHidden) {
     return (
-      <div className="group relative flex gap-3 rounded-lg px-2 py-1.5">
+      <div className="group relative flex gap-3 rounded-xl px-2 py-1.5">
         <button
           onClick={handleProfileClick}
           className="flex-shrink-0 transition-opacity hover:opacity-80"
@@ -472,7 +472,7 @@ export function MessageBase({
   return (
     <div
       className={cn(
-        'group relative flex gap-3 rounded-lg px-4 py-2 transition-colors hover:bg-muted/50',
+        'group relative flex gap-3 rounded-xl px-4 py-2 transition-colors hover:bg-muted/50',
         className,
       )}
       onMouseEnter={() => setIsHovered(true)}
@@ -632,7 +632,7 @@ export function ImageMessage({
           {message.content}
         </p>
       )}
-      <div className="overflow-hidden rounded-lg border border-border max-w-sm">
+      <div className="overflow-hidden rounded-xl border border-border max-w-sm">
         <img
           src={message.attachment.url || '/placeholder.svg'}
           alt={message.attachment.name}
@@ -686,7 +686,7 @@ export function FileMessage({
           {message.content}
         </p>
       )}
-      <div className="flex items-center gap-3 rounded-lg border border-border bg-muted/50 p-3 max-w-sm">
+      <div className="flex items-center gap-3 rounded-xl border border-border bg-muted/50 p-3 max-w-sm">
         <div className="flex h-10 w-10 items-center justify-center rounded bg-primary/10">
           <FileText className="h-5 w-5 text-primary" />
         </div>
@@ -758,7 +758,7 @@ export function DesignFileMessage({
           {message.content}
         </p>
       )}
-      <div className="rounded-lg border border-border overflow-hidden max-w-md">
+      <div className="rounded-xl border border-border overflow-hidden max-w-md">
         {message.attachment.thumbnail && (
           <div className="aspect-video bg-muted relative">
             <img
@@ -888,11 +888,11 @@ export function PaymentReminderMessage({
       onToggleHidden={onToggleHidden} // Pass prop down
       currentUserId={currentUserId}
     >
-      <div className="rounded-lg border border-amber-500/20 bg-card overflow-hidden max-w-sm">
+      <div className="rounded-xl border border-amber-500/20 bg-card overflow-hidden max-w-sm">
         <div className="p-4">
           <div className="flex items-start justify-between gap-3 mb-3">
             <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500/10">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/10">
                 <CreditCard className="h-4 w-4 text-amber-600" />
               </div>
               <div>
@@ -1000,11 +1000,11 @@ export function EventReminderMessage({
       onToggleHidden={onToggleHidden} // Pass prop down
       currentUserId={currentUserId}
     >
-      <div className="rounded-lg border border-primary/20 bg-card overflow-hidden max-w-sm">
+      <div className="rounded-xl border border-primary/20 bg-card overflow-hidden max-w-sm">
         <div className="p-4">
           <div className="flex items-start justify-between gap-3 mb-3">
             <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 flex-col items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <div className="flex h-12 w-12 flex-col items-center justify-center rounded-xl bg-primary/10 text-primary">
                 <span className="text-[10px] font-medium uppercase leading-none">
                   {event.startTime.toLocaleDateString('en-US', { month: 'short' })}
                 </span>
@@ -1154,11 +1154,11 @@ export function LessonAssignmentMessage({
           {message.content}
         </p>
       )}
-      <div className="rounded-lg border border-primary/20 bg-card overflow-hidden max-w-md">
+      <div className="rounded-xl border border-primary/20 bg-card overflow-hidden max-w-md">
         <div className="p-4">
           <div className="flex items-start justify-between gap-3 mb-3">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
                 <BookOpen className="h-5 w-5 text-primary" />
               </div>
               <div>
@@ -1202,7 +1202,7 @@ export function LessonAssignmentMessage({
                 {assignment.attachments.map((attachment, i) => (
                   <div
                     key={i}
-                    className="flex items-center gap-3 rounded-lg border border-border bg-muted/50 p-2"
+                    className="flex items-center gap-3 rounded-xl border border-border bg-muted/50 p-2"
                   >
                     <FileText className="h-4 w-4 text-primary" />
                     <span className="flex-1 text-xs truncate text-foreground">
@@ -1268,10 +1268,10 @@ export function ProgressUpdateMessage({
           {message.content}
         </p>
       )}
-      <div className="rounded-lg border border-green-500/20 bg-card overflow-hidden max-w-md">
+      <div className="rounded-xl border border-green-500/20 bg-card overflow-hidden max-w-md">
         <div className="p-4">
           <div className="flex items-start gap-3 mb-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-500/10">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-500/10">
               <TrendingUp className="h-5 w-5 text-green-600" />
             </div>
             <div className="flex-1">
@@ -1398,11 +1398,11 @@ export function SessionBookingMessage({
           {message.content}
         </p>
       )}
-      <div className="rounded-lg border border-blue-500/20 bg-card overflow-hidden max-w-md">
+      <div className="rounded-xl border border-blue-500/20 bg-card overflow-hidden max-w-md">
         <div className="p-4">
           <div className="flex items-start justify-between gap-3 mb-3">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/10">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/10">
                 <GraduationCap className="h-5 w-5 text-blue-600" />
               </div>
               <div>
@@ -1554,11 +1554,11 @@ export function HomeworkSubmissionMessage({
           {message.content}
         </p>
       )}
-      <div className="rounded-lg border border-blue-500/20 bg-card overflow-hidden max-w-md">
+      <div className="rounded-xl border border-blue-500/20 bg-card overflow-hidden max-w-md">
         <div className="p-4">
           <div className="flex items-start justify-between gap-3 mb-3">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/10">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/10">
                 <FileText className="h-5 w-5 text-blue-600" />
               </div>
               <div>
@@ -1590,7 +1590,7 @@ export function HomeworkSubmissionMessage({
                 {homework.attachments.map((attachment, i) => (
                   <div
                     key={i}
-                    className="flex items-center gap-3 rounded-lg border border-border bg-muted/50 p-2"
+                    className="flex items-center gap-3 rounded-xl border border-border bg-muted/50 p-2"
                   >
                     <FileText className="h-4 w-4 text-primary" />
                     <span className="flex-1 text-xs truncate text-foreground">
@@ -1677,7 +1677,7 @@ export function LinkPreviewMessage({
         href={link.url}
         target="_blank"
         rel="noopener noreferrer"
-        className="block rounded-lg border border-border bg-card overflow-hidden max-w-md hover:bg-muted/50 transition-colors"
+        className="block rounded-xl border border-border bg-card overflow-hidden max-w-md hover:bg-muted/50 transition-colors"
       >
         {link.imageUrl && (
           <div className="aspect-video bg-muted relative overflow-hidden">

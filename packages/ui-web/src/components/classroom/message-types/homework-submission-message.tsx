@@ -57,11 +57,11 @@ export const HomeworkSubmissionMessage = memo(function HomeworkSubmissionMessage
           {message.content}
         </p>
       )}
-      <div className="rounded-lg border border-blue-500/20 bg-card overflow-hidden max-w-md">
+      <div className="rounded-xl border border-blue-500/20 bg-card overflow-hidden max-w-md">
         <div className="p-4">
           <div className="flex items-start justify-between gap-3 mb-3">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/10">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/10">
                 <FileText className="h-5 w-5 text-blue-600" />
               </div>
               <div>
@@ -93,7 +93,7 @@ export const HomeworkSubmissionMessage = memo(function HomeworkSubmissionMessage
                 {homework.attachments.map((attachment, i) => (
                   <div
                     key={i}
-                    className="flex items-center gap-3 rounded-lg border border-border bg-muted/50 p-2"
+                    className="flex items-center gap-3 rounded-xl border border-border bg-muted/50 p-2"
                   >
                     <FileText className="h-4 w-4 text-primary" />
                     <span className="flex-1 text-xs truncate text-foreground">

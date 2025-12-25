@@ -30,7 +30,7 @@ export const FileMessage = memo(function FileMessage(props: FileMessageProps) {
           {message.content}
         </p>
       )}
-      <div className="flex items-center gap-3 rounded-lg border border-border bg-muted/30 p-3 max-w-sm">
+      <div className="flex items-center gap-3 rounded-xl border border-border bg-muted/30 p-3 max-w-sm">
         <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary/10">
           <FileText className="h-5 w-5 text-primary" />
         </div>

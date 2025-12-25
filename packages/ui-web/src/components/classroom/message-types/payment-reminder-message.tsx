@@ -58,11 +58,11 @@ export const PaymentReminderMessage = memo(function PaymentReminderMessage(
 
   return (
     <MessageBase message={message} {...baseProps} className="bg-amber-500/5">
-      <div className="rounded-lg border border-amber-500/20 bg-card overflow-hidden max-w-sm">
+      <div className="rounded-xl border border-amber-500/20 bg-card overflow-hidden max-w-sm">
         <div className="p-4">
           <div className="flex items-start justify-between gap-3 mb-3">
             <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500/10">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/10">
                 <CreditCard className="h-4 w-4 text-amber-600" />
               </div>
               <div>

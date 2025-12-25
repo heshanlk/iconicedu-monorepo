@@ -49,7 +49,7 @@ export function SavedMessagePreview({ message, onClick }: SavedMessagePreviewPro
     <button
       onClick={onClick}
       className={cn(
-        'w-full flex gap-3 rounded-lg border border-border bg-card p-3 text-left transition-colors',
+        'w-full flex gap-3 rounded-xl border border-border bg-card p-3 text-left transition-colors',
         'hover:bg-accent hover:border-accent-foreground/20',
         'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
       )}

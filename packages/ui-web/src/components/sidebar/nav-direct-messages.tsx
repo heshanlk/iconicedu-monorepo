@@ -19,7 +19,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '../../ui/sidebar';
-import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
+import { AvatarWithStatus } from '../shared/avatar-with-status';
 
 export function NavDirectMessages({
   dms,
@@ -32,19 +32,6 @@ export function NavDirectMessages({
   }[];
 }) {
   const { isMobile } = useSidebar();
-  const getInitials = (name: string) => {
-    return name
-      .split(' ')
-      .map((n) => n[0])
-      .join('')
-      .toUpperCase();
-  };
-  const statusColors = {
-    online: 'bg-green-500',
-    away: 'bg-yellow-500',
-    idle: 'bg-gray-400',
-    offline: 'bg-gray-600',
-  };
   return (
     <SidebarGroup>
       <SidebarGroupLabel className="uppercase">Direct Messages</SidebarGroupLabel>
@@ -56,18 +43,14 @@ export function NavDirectMessages({
           <SidebarMenuItem key={item.name}>
             <SidebarMenuButton asChild>
               <a href={item.url}>
-                <div className="relative">
-                  <Avatar className="size-6">
-                    <AvatarImage src={item.avatar} alt={item.name} />
-                    <AvatarFallback className="text-xs font-medium">
-                      {getInitials(item.name)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div
-                    className={`absolute bottom-0 right-0 h-2 w-2 rounded-full border border-background ${statusColors[item.status as keyof typeof statusColors]}`}
-                    aria-label={`Status: ${item.status}`}
-                  />
-                </div>
+                <AvatarWithStatus
+                  name={item.name}
+                  avatar={item.avatar}
+                  status={item.status as 'online' | 'away' | 'idle' | 'offline'}
+                  sizeClassName="size-6"
+                  statusClassName="h-2 w-2 border border-background"
+                  fallbackClassName="text-xs font-medium"
+                />
                 <span>{item.name}</span>
               </a>
             </SidebarMenuButton>

@@ -102,7 +102,7 @@ export const MessageInput = memo(function MessageInput({
 
   return (
     <div className="border-t border-border bg-card p-4">
-      <div className="rounded-lg border border-input bg-background focus-within:ring-1 focus-within:ring-ring">
+      <div className="rounded-xl border border-input bg-background focus-within:ring-1 focus-within:ring-ring">
         <Textarea
           ref={textareaRef}
           value={content}

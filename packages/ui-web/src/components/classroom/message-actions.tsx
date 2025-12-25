@@ -85,7 +85,7 @@ export const MessageActions = memo(function MessageActions({
   }, [onToggleHidden, onDropdownOpenChange]);
 
   return (
-    <div className="absolute right-2 top-0 z-10 flex items-center gap-1 rounded-lg border bg-card px-1 py-1 shadow-md">
+    <div className="absolute right-2 top-0 z-10 flex items-center gap-1 rounded-xl border bg-card px-1 py-1 shadow-md">
       {!isThreadReply && (
         <TooltipProvider>
           <Tooltip>

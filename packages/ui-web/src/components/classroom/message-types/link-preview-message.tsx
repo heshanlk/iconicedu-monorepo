@@ -25,7 +25,7 @@ export const LinkPreviewMessage = memo(function LinkPreviewMessage(
         href={message.link.url}
         target="_blank"
         rel="noopener noreferrer"
-        className="block max-w-md overflow-hidden rounded-lg border border-border bg-card transition-colors hover:bg-accent"
+        className="block max-w-md overflow-hidden rounded-xl border border-border bg-card transition-colors hover:bg-accent"
       >
         {message.link.imageUrl && (
           <div className="aspect-video w-full overflow-hidden bg-muted">

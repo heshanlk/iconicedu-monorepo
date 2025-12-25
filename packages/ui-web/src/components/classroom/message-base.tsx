@@ -65,7 +65,7 @@ export const MessageBase = memo(function MessageBase({
 
   if (message.isHidden) {
     return (
-      <div className="group relative flex items-start gap-3 rounded-lg px-2 py-1.5">
+      <div className="group relative flex items-start gap-3 rounded-xl px-2 py-1.5">
         <button
           onClick={handleProfileClick}
           className="flex-shrink-0 transition-opacity hover:opacity-80"
@@ -109,7 +109,7 @@ export const MessageBase = memo(function MessageBase({
   return (
     <div
       className={cn(
-        'group relative flex items-start gap-3 rounded-lg px-4 py-2 transition-colors hover:bg-muted/50',
+        'group relative flex items-start gap-3 rounded-xl px-4 py-2 transition-colors hover:bg-muted/50',
         className,
       )}
       onMouseEnter={() => setIsHovered(true)}

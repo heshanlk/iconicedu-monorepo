@@ -40,7 +40,7 @@ export const DesignFileMessage = memo(function DesignFileMessage(
           {message.content}
         </p>
       )}
-      <div className="rounded-lg border border-border overflow-hidden max-w-md">
+      <div className="rounded-xl border border-border overflow-hidden max-w-md">
         {message.attachment.thumbnail && (
           <div className="aspect-video bg-muted relative">
             <img

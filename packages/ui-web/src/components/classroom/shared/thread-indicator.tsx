@@ -22,7 +22,7 @@ export const ThreadIndicator = memo(function ThreadIndicator({
       variant="ghost"
       size="sm"
       onClick={onClick}
-      className="mt-1 h-auto w-fit gap-2 rounded-lg border border-border bg-muted/30 px-3 py-1.5 text-sm text-primary hover:bg-muted hover:text-primary"
+      className="mt-1 h-auto w-fit gap-2 rounded-xl border border-border bg-muted/30 px-3 py-1.5 text-sm text-primary hover:bg-muted hover:text-primary"
     >
       <MessageCircle className="h-3.5 w-3.5" />
       <span className="font-medium">
