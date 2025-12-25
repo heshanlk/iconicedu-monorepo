@@ -7,7 +7,7 @@ import type {
   HomeworkSubmissionMessage,
   LinkPreviewMessage,
   AudioRecordingMessage, // Added audio recording import
-} from '../types/types';
+} from '@iconicedu/shared-types';
 
 export const MOCK_TEACHER = {
   id: 'teacher-1',

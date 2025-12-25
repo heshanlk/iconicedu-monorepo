@@ -1,2 +1,2 @@
-export * from './domain';
 export * from './calendar';
+export * from './messages';

@@ -1,5 +1,5 @@
 import { createContext, useContext, type ReactNode } from 'react';
-import type { Message } from '../types/types';
+import type { Message } from '@iconicedu/shared-types';
 
 interface MessageContextValue {
   currentUserId: string;

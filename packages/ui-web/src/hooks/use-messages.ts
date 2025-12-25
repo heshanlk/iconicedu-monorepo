@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import type { Message } from '../types/types';
+import type { Message } from '@iconicedu/shared-types';
 
 export function useMessages(initialMessages: Message[]) {
   const [messages, setMessages] = useState<Message[]>(initialMessages);

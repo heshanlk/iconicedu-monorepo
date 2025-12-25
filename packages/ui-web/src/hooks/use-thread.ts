@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import type { Message, Thread } from '../types/types';
+import type { Message, Thread } from '@iconicedu/shared-types';
 
 export function useThread() {
   const [activeThread, setActiveThread] = useState<Thread | null>(null);

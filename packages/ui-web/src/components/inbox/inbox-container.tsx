@@ -17,11 +17,11 @@ import {
 import { Badge } from '../../ui/badge';
 import { ScrollArea } from '../../ui/scroll-area';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../../ui/tabs';
-import { ActivityBasic } from '../notifications/activity-basic';
-import { ActivityBasicWithActionButton } from '../notifications/activity-basic-with-action-button';
-import { ActivityBasicWithExpandedContent } from '../notifications/activity-basic-with-expanded-content';
-import { ActivityWithSubitems } from '../notifications/activity-with-subitems';
-import type { Activity } from '../notifications/types';
+import { ActivityBasic } from '../notification/activity-basic';
+import { ActivityBasicWithActionButton } from '../notification/activity-basic-with-action-button';
+import { ActivityBasicWithExpandedContent } from '../notification/activity-basic-with-expanded-content';
+import { ActivityWithSubitems } from '../notification/activity-with-subitems';
+import type { Activity } from '../notification/types';
 
 const mockActivities: Activity[] = [
   {

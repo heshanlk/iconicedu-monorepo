@@ -1,0 +1,307 @@
+'use client';
+
+import { useCallback, useMemo, useRef } from 'react';
+import { MessageList, type MessageListRef } from './message-list';
+import { ThreadPanel } from './thread-panel';
+import { ThreadSheet } from './thread-sheet';
+import { ProfilePanel } from './profile-panel';
+import { ProfileSheet } from './profile-sheet';
+import { SavedMessagesPanel } from './saved-messages-panel';
+import { RightSidebar } from './right-sidebar';
+import { RightSidebarSheet } from './right-sidebar-sheet';
+import { MessageInput } from './message-input';
+import { DMHeader } from './dm-header';
+import { useIsMobile } from '../../hooks/use-mobile';
+import { useMessages } from '../../hooks/use-messages';
+import { useDMSidebar } from '../../hooks/use-dm-sidebar';
+import { useThread } from '../../hooks/use-thread';
+import {
+  MOCK_MESSAGES,
+  MOCK_THREAD_MESSAGES,
+  MOCK_TEACHER,
+  MOCK_PARENT,
+  LAST_READ_MESSAGE_ID,
+} from '../../constants/mock-data';
+import type { Thread, TextMessage, Message } from '@iconicedu/shared-types';
+
+export function DirectMessages() {
+  const isMobile = useIsMobile();
+  const messageListRef = useRef<MessageListRef>(null);
+  const {
+    openThread: openThreadSidebar,
+    openProfile,
+    openSavedMessages,
+    closeSidebar,
+    profileUserId,
+    sidebarContent,
+  } = useDMSidebar();
+  const { messages, addMessage, toggleReaction, toggleSaved, toggleHidden } =
+    useMessages(MOCK_MESSAGES);
+  const {
+    activeThread,
+    threadMessages,
+    openThread,
+    addThreadMessage,
+    toggleThreadReaction,
+    toggleThreadSaved,
+    toggleThreadHidden,
+  } = useThread();
+
+  const handleOpenThread = useCallback(
+    (thread: Thread, parentMessage: Message) => {
+      openThread(
+        { ...thread, parentMessage },
+        MOCK_THREAD_MESSAGES[thread.id] || [parentMessage],
+      );
+      openThreadSidebar();
+    },
+    [openThread, openThreadSidebar],
+  );
+
+  const handleSendMessage = useCallback(
+    (content: string) => {
+      const newMessage: TextMessage = {
+        id: `msg-${Date.now()}`,
+        type: 'text',
+        content,
+        sender: MOCK_PARENT,
+        timestamp: new Date(),
+        reactions: [],
+        visibility: { type: 'all' },
+        isSaved: false,
+        isRead: true,
+      };
+      addMessage(newMessage);
+    },
+    [addMessage],
+  );
+
+  const handleSendThreadReply = useCallback(
+    (content: string) => {
+      const newReply: TextMessage = {
+        id: `reply-${Date.now()}`,
+        type: 'text',
+        content,
+        sender: MOCK_PARENT,
+        timestamp: new Date(),
+        reactions: [],
+        visibility: { type: 'all' },
+        isSaved: false,
+        isRead: true,
+      };
+      addThreadMessage(newReply);
+    },
+    [addThreadMessage],
+  );
+
+  const handleProfileClick = useCallback(
+    (userId: string) => {
+      openProfile(userId);
+    },
+    [openProfile],
+  );
+
+  const handleSavedMessagesClick = useCallback(() => {
+    openSavedMessages();
+  }, [openSavedMessages]);
+
+  const handleCloseSidebar = useCallback(() => {
+    closeSidebar();
+  }, [closeSidebar]);
+
+  const handleToggleReaction = useCallback(
+    (messageId: string, emoji: string) => {
+      toggleReaction(messageId, emoji, MOCK_PARENT.id);
+    },
+    [toggleReaction],
+  );
+
+  const handleToggleThreadReaction = useCallback(
+    (messageId: string, emoji: string) => {
+      toggleThreadReaction(messageId, emoji, MOCK_PARENT.id);
+    },
+    [toggleThreadReaction],
+  );
+
+  const handleToggleSaved = useCallback(
+    (messageId: string) => {
+      toggleSaved(messageId);
+    },
+    [toggleSaved],
+  );
+
+  const handleToggleThreadSaved = useCallback(
+    (messageId: string) => {
+      toggleThreadSaved(messageId);
+    },
+    [toggleThreadSaved],
+  );
+
+  const handleToggleHidden = useCallback(
+    (messageId: string) => {
+      toggleHidden(messageId);
+    },
+    [toggleHidden],
+  );
+
+  const handleToggleThreadHidden = useCallback(
+    (messageId: string) => {
+      toggleThreadHidden(messageId);
+    },
+    [toggleThreadHidden],
+  );
+
+  const handleSavedMessageClick = useCallback(
+    (messageId: string) => {
+      closeSidebar();
+      globalThis.setTimeout(() => {
+        messageListRef.current?.scrollToMessage(messageId);
+      }, 300);
+    },
+    [closeSidebar],
+  );
+
+  const profileUser = useMemo(() => {
+    if (profileUserId === 'teacher-1') return MOCK_TEACHER;
+    if (profileUserId === 'parent-1') return MOCK_PARENT;
+    return MOCK_TEACHER;
+  }, [profileUserId]);
+
+  const sidebarMeta = useMemo(() => {
+    if (sidebarContent === 'thread' && activeThread) {
+      return {
+        title: 'Thread',
+        subtitle: `${activeThread.messageCount} ${activeThread.messageCount === 1 ? 'reply' : 'replies'}`,
+      };
+    }
+    if (sidebarContent === 'profile') {
+      return { title: 'Profile', subtitle: undefined };
+    }
+    if (sidebarContent === 'saved-messages') {
+      const savedCount = messages.filter((m) => m.isSaved).length;
+      return {
+        title: 'Saved Messages',
+        subtitle: `${savedCount} ${savedCount === 1 ? 'message' : 'messages'}`,
+      };
+    }
+    return { title: '', subtitle: undefined };
+  }, [sidebarContent, activeThread, messages]);
+
+  const messageListProps = useMemo(
+    () => ({
+      messages,
+      onOpenThread: handleOpenThread,
+      onProfileClick: handleProfileClick,
+      onToggleReaction: handleToggleReaction,
+      onToggleSaved: handleToggleSaved,
+      onToggleHidden: handleToggleHidden,
+      currentUserId: MOCK_PARENT.id,
+    }),
+    [
+      messages,
+      handleOpenThread,
+      handleProfileClick,
+      handleToggleReaction,
+      handleToggleSaved,
+      handleToggleHidden,
+    ],
+  );
+
+  const threadPanelProps = useMemo(
+    () => ({
+      thread: activeThread!,
+      messages: threadMessages,
+      onSendReply: handleSendThreadReply,
+      onProfileClick: handleProfileClick,
+      onToggleReaction: handleToggleThreadReaction,
+      onToggleSaved: handleToggleThreadSaved,
+      onToggleHidden: handleToggleThreadHidden,
+      currentUserId: MOCK_PARENT.id,
+      lastReadMessageId: LAST_READ_MESSAGE_ID,
+    }),
+    [
+      activeThread,
+      threadMessages,
+      handleSendThreadReply,
+      handleProfileClick,
+      handleToggleThreadReaction,
+      handleToggleThreadSaved,
+      handleToggleThreadHidden,
+    ],
+  );
+
+  const savedMessagesPanelProps = useMemo(
+    () => ({
+      messages,
+      onMessageClick: handleSavedMessageClick,
+    }),
+    [messages, handleSavedMessageClick],
+  );
+
+  return (
+    <div className="flex h-full min-h-0 max-h-[93%]">
+      <div className="flex flex-1 flex-col">
+        <DMHeader
+          user={MOCK_TEACHER}
+          onProfileClick={() => handleProfileClick(MOCK_TEACHER.id)}
+          onSavedMessagesClick={handleSavedMessagesClick}
+        />
+        <div className="flex flex-1 overflow-hidden">
+          <div className="flex flex-1 flex-col">
+            <MessageList ref={messageListRef} {...messageListProps} />
+            <MessageInput
+              onSend={handleSendMessage}
+              placeholder={`Message ${MOCK_TEACHER.name}`}
+            />
+          </div>
+          {!isMobile && sidebarContent && (
+            <RightSidebar
+              key={`${sidebarContent}-${profileUserId || activeThread?.id}`}
+              title={sidebarMeta.title}
+              subtitle={sidebarMeta.subtitle}
+              onClose={handleCloseSidebar}
+            >
+              {sidebarContent === 'thread' && activeThread && (
+                <ThreadPanel {...threadPanelProps} />
+              )}
+              {sidebarContent === 'profile' && <ProfilePanel user={profileUser} />}
+              {sidebarContent === 'saved-messages' && (
+                <SavedMessagesPanel {...savedMessagesPanelProps} />
+              )}
+            </RightSidebar>
+          )}
+        </div>
+      </div>
+      {isMobile && sidebarContent === 'thread' && activeThread && (
+        <RightSidebarSheet
+          title={sidebarMeta.title}
+          subtitle={sidebarMeta.subtitle}
+          open={true}
+          onClose={handleCloseSidebar}
+        >
+          <ThreadSheet {...threadPanelProps} />
+        </RightSidebarSheet>
+      )}
+      {isMobile && sidebarContent === 'profile' && (
+        <RightSidebarSheet
+          title={sidebarMeta.title}
+          subtitle={sidebarMeta.subtitle}
+          open={true}
+          onClose={handleCloseSidebar}
+        >
+          <ProfileSheet user={profileUser} />
+        </RightSidebarSheet>
+      )}
+      {isMobile && sidebarContent === 'saved-messages' && (
+        <RightSidebarSheet
+          title={sidebarMeta.title}
+          subtitle={sidebarMeta.subtitle}
+          open={true}
+          onClose={handleCloseSidebar}
+        >
+          <SavedMessagesPanel {...savedMessagesPanelProps} />
+        </RightSidebarSheet>
+      )}
+    </div>
+  );
+}
