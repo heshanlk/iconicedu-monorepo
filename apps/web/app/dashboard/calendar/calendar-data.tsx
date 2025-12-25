@@ -280,7 +280,7 @@ export const baseEvents: CalendarEvent[] = [
     id: 'recurring-ela-elias',
     title: 'Elias - ELA with Ms. Norah',
     startTime: '4:00 PM',
-    endTime: '5:00 AM',
+    endTime: '5:00 PM',
     date: getDateOffset(-7),
     recurrence: {
       frequency: 'weekly',
@@ -307,7 +307,7 @@ export const baseEvents: CalendarEvent[] = [
     id: 'recurring-ela-nailah',
     title: 'Nailah - ELA with Ms. Norah',
     startTime: '5:00 PM',
-    endTime: '6:00 AM',
+    endTime: '6:00 PM',
     date: getDateOffset(-7),
     recurrence: {
       frequency: 'weekly',
@@ -316,7 +316,7 @@ export const baseEvents: CalendarEvent[] = [
       exceptions: [],
       overrides: {},
     },
-    color: 'purple',
+    color: 'pink',
     description:
       'Join Zoom Meeting\nhttps://us06web.zoom.us/j/88176711138?pwd=QyOYewr8ovQnVs5Kf5SEUHXzjlrGq7.1\n\nView meeting insights with Zoom AI Companion\nhttps://us06web.zoom.us/launch/edl?muid=55f36ba3-a6ef-46c8-a191-fc1847c48d60\n\nMeeting ID: 881 7671 1138\nPasscode: 903480',
     organizer: 'Ms. Norah',

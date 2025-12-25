@@ -160,6 +160,9 @@ export function DayView({
                 const width = 100 / visibleColumns;
                 const left = column * width;
 
+                const durationMinutes = endMinutes - startMinutes;
+                const isCompact = durationMinutes <= 45;
+
                 return (
                   <div
                     key={event.id}
@@ -172,10 +175,14 @@ export function DayView({
                     }}
                   >
                     <div className="pointer-events-auto h-full">
-                      <EventCard event={event} onClick={() => onEventClick(event)} />
+                      <EventCard
+                        event={event}
+                        compact={isCompact}
+                        onClick={() => onEventClick(event)}
+                      />
                     </div>
                   </div>
-                  );
+                );
               })}
               {[...clusterInfo.entries()].map(([clusterId, info]) => {
                 if (info.hiddenEvents.length === 0) return null;

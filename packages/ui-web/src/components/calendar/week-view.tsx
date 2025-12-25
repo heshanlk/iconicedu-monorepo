@@ -213,6 +213,9 @@ export function WeekView({
                     const width = 100 / visibleColumns;
                     const left = column * width;
 
+                    const durationMinutes = endMinutes - startMinutes;
+                    const isCompact = durationMinutes <= 45;
+
                     return (
                       <div
                         key={event.id}
@@ -227,6 +230,7 @@ export function WeekView({
                         <div className="pointer-events-auto h-full">
                           <EventCard
                             event={event}
+                            compact={isCompact}
                             onClick={() => handleEventClick(event)}
                           />
                         </div>

@@ -10,9 +10,10 @@ import { EventLiveIndicator } from './event-live-indicator';
 interface EventCardProps {
   event: CalendarEvent;
   onClick?: () => void;
+  compact?: boolean;
 }
 
-export function EventCard({ event, onClick }: EventCardProps) {
+export function EventCard({ event, onClick, compact = false }: EventCardProps) {
   const isLive = isEventLive(event);
   const [open, setOpen] = useState(false);
 
@@ -26,8 +27,18 @@ export function EventCard({ event, onClick }: EventCardProps) {
     >
       {isLive && <EventLiveIndicator />}
 
-      <div className="font-medium pr-4 truncate">{event.title}</div>
-      <div className="mt-0.5 text-xs text-muted-foreground truncate">{event.startTime}</div>
+      {compact ? (
+        <div className="flex h-full items-center gap-1.5 pr-4 text-xs">
+          <span className="font-medium text-foreground truncate">{event.title}</span>
+          <span className="text-muted-foreground">·</span>
+          <span className="text-muted-foreground truncate">{event.startTime}</span>
+        </div>
+      ) : (
+        <>
+          <div className="font-medium pr-4 truncate">{event.title}</div>
+          <div className="mt-0.5 text-xs text-muted-foreground truncate">{event.startTime}</div>
+        </>
+      )}
     </button>
   );
 
