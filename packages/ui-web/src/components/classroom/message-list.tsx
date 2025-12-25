@@ -80,7 +80,7 @@ export const MessageList = forwardRef<MessageListRef, MessageListProps>(
     }, [messages]);
 
     return (
-      <ScrollArea className="flex-1">
+      <ScrollArea className="flex-1 min-h-0">
         {groupedMessages.map((group) => (
           <div key={group.date}>
             <div className="relative my-4 flex items-center">

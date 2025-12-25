@@ -47,7 +47,7 @@ export function RightSidebar({ title, subtitle, onClose, children }: RightSideba
           <X className="h-4 w-4" />
         </Button>
       </div>
-      {children}
+      <div className="flex min-h-0 flex-1 flex-col">{children}</div>
     </aside>
   );
 }
