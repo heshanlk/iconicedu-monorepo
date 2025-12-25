@@ -2,7 +2,7 @@
 
 import type { ReactNode } from 'react';
 import { useState, useCallback, memo } from 'react';
-import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
+import { AvatarWithStatus } from '../shared/avatar-with-status';
 import {
   Tooltip,
   TooltipContent,
@@ -71,13 +71,13 @@ export const MessageBase = memo(function MessageBase({
           className="flex-shrink-0 transition-opacity hover:opacity-80"
           aria-label={`View ${message.sender.name}'s profile`}
         >
-          <Avatar className="h-9 w-9">
-            <AvatarImage
-              src={message.sender.avatar || '/placeholder.svg'}
-              alt={message.sender.name}
-            />
-            <AvatarFallback>{message.sender.name.charAt(0)}</AvatarFallback>
-          </Avatar>
+          <AvatarWithStatus
+            name={message.sender.name}
+            avatar={message.sender.avatar}
+            showStatus={false}
+            sizeClassName="h-9 w-9"
+            initialsLength={1}
+          />
         </button>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap mb-1">
@@ -125,13 +125,13 @@ export const MessageBase = memo(function MessageBase({
         className="flex-shrink-0 transition-opacity hover:opacity-80"
         aria-label={`View ${message.sender.name}'s profile`}
       >
-        <Avatar className="h-9 w-9">
-          <AvatarImage
-            src={message.sender.avatar || '/placeholder.svg'}
-            alt={message.sender.name}
-          />
-          <AvatarFallback>{message.sender.name.charAt(0)}</AvatarFallback>
-        </Avatar>
+        <AvatarWithStatus
+          name={message.sender.name}
+          avatar={message.sender.avatar}
+          showStatus={false}
+          sizeClassName="h-9 w-9"
+          initialsLength={1}
+        />
       </button>
 
       <div className="flex-1 min-w-0">

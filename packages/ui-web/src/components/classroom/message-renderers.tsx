@@ -3,7 +3,7 @@
 import type { ReactNode } from 'react';
 import { useState, useCallback, useMemo } from 'react';
 import React from 'react';
-import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
+import { AvatarWithStatus } from '../shared/avatar-with-status';
 import { Button } from '../../ui/button';
 import {
   Tooltip,
@@ -170,15 +170,15 @@ export const ThreadIndicator = React.memo(function ThreadIndicator({
     >
       <div className="flex -space-x-1.5">
         {thread.participants.slice(0, 3).map((participant) => (
-          <Avatar key={participant.id} className="h-5 w-5 border-2 border-background">
-            <AvatarImage
-              src={participant.avatar || '/placeholder.svg'}
-              alt={participant.name}
-            />
-            <AvatarFallback className="text-[8px]">
-              {participant.name.charAt(0)}
-            </AvatarFallback>
-          </Avatar>
+          <AvatarWithStatus
+            key={participant.id}
+            name={participant.name}
+            avatar={participant.avatar}
+            showStatus={false}
+            sizeClassName="h-5 w-5 border-2 border-background"
+            fallbackClassName="text-[8px]"
+            initialsLength={1}
+          />
         ))}
       </div>
       <span className="font-medium text-primary">
@@ -434,13 +434,13 @@ export function MessageBase({
           className="flex-shrink-0 transition-opacity hover:opacity-80"
           aria-label={`View ${message.sender.name}'s profile`}
         >
-          <Avatar className="h-9 w-9">
-            <AvatarImage
-              src={message.sender.avatar || '/placeholder.svg'}
-              alt={message.sender.name}
-            />
-            <AvatarFallback>{message.sender.name.charAt(0)}</AvatarFallback>
-          </Avatar>
+          <AvatarWithStatus
+            name={message.sender.name}
+            avatar={message.sender.avatar}
+            showStatus={false}
+            sizeClassName="h-9 w-9"
+            initialsLength={1}
+          />
         </button>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap mb-1">
@@ -488,13 +488,13 @@ export function MessageBase({
         className="flex-shrink-0 transition-opacity hover:opacity-80"
         aria-label={`View ${message.sender.name}'s profile`}
       >
-        <Avatar className="h-9 w-9">
-          <AvatarImage
-            src={message.sender.avatar || '/placeholder.svg'}
-            alt={message.sender.name}
-          />
-          <AvatarFallback>{message.sender.name.charAt(0)}</AvatarFallback>
-        </Avatar>
+        <AvatarWithStatus
+          name={message.sender.name}
+          avatar={message.sender.avatar}
+          showStatus={false}
+          sizeClassName="h-9 w-9"
+          initialsLength={1}
+        />
       </button>
 
       <div className="flex-1 min-w-0">
@@ -1051,18 +1051,15 @@ export function EventReminderMessage({
               <Users className="h-3 w-3 text-muted-foreground" />
               <div className="flex -space-x-1.5">
                 {event.attendees.slice(0, 4).map((attendee) => (
-                  <Avatar
+                  <AvatarWithStatus
                     key={attendee.id}
-                    className="h-5 w-5 border-2 border-background"
-                  >
-                    <AvatarImage
-                      src={attendee.avatar || '/placeholder.svg'}
-                      alt={attendee.name}
-                    />
-                    <AvatarFallback className="text-[8px]">
-                      {attendee.name.charAt(0)}
-                    </AvatarFallback>
-                  </Avatar>
+                    name={attendee.name}
+                    avatar={attendee.avatar}
+                    showStatus={false}
+                    sizeClassName="h-5 w-5 border-2 border-background"
+                    fallbackClassName="text-[8px]"
+                    initialsLength={1}
+                  />
                 ))}
               </div>
               <span className="text-xs text-muted-foreground">

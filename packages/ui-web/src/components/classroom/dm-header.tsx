@@ -77,6 +77,7 @@ export const DMHeader = memo(function DMHeader({
           avatar={user.avatar}
           isOnline={user.isOnline}
           sizeClassName="h-8 w-8"
+          initialsLength={1}
         />
         <div className="flex flex-col">
           <div className="flex items-center gap-1.5">

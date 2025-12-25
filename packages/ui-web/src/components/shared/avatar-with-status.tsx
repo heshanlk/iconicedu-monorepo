@@ -15,6 +15,7 @@ interface AvatarWithStatusProps {
   avatar?: string;
   status?: keyof typeof STATUS_COLORS | 'online' | 'away' | 'idle' | 'offline';
   isOnline?: boolean;
+  showStatus?: boolean;
   initialsLength?: number;
   sizeClassName?: string;
   statusClassName?: string;
@@ -34,12 +35,14 @@ export function AvatarWithStatus({
   avatar,
   status,
   isOnline,
+  showStatus,
   initialsLength,
   sizeClassName,
   statusClassName,
   fallbackClassName,
 }: AvatarWithStatusProps) {
-  const showStatus = isOnline !== undefined ? isOnline : !!status;
+  const displayStatus =
+    showStatus !== undefined ? showStatus : isOnline !== undefined ? isOnline : !!status;
   const statusColor = status ? STATUS_COLORS[status] : STATUS_COLORS.online;
 
   return (
@@ -50,12 +53,12 @@ export function AvatarWithStatus({
           {getInitials(name, initialsLength)}
         </AvatarFallback>
       </Avatar>
-      {showStatus && (
+      {displayStatus && (
         <span
           className={cn(
-            'absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-card',
+            'absolute rounded-full border-2 border-card',
             statusColor,
-            statusClassName,
+            statusClassName ?? 'bottom-0 right-0 h-2.5 w-2.5',
           )}
           aria-label={`Status: ${status ?? (isOnline ? 'online' : 'offline')}`}
         />

@@ -1,6 +1,6 @@
 'use client';
 
-import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
+import { AvatarWithStatus } from '../shared/avatar-with-status';
 import { formatDistanceToNow } from 'date-fns';
 import type { Message } from '@iconicedu/shared-types';
 import { cn } from '../../lib/utils';
@@ -54,13 +54,13 @@ export function SavedMessagePreview({ message, onClick }: SavedMessagePreviewPro
         'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
       )}
     >
-      <Avatar className="h-10 w-10 flex-shrink-0">
-        <AvatarImage
-          src={message.sender.avatar || '/placeholder.svg'}
-          alt={message.sender.name}
-        />
-        <AvatarFallback>{message.sender.name.charAt(0)}</AvatarFallback>
-      </Avatar>
+      <AvatarWithStatus
+        name={message.sender.name}
+        avatar={message.sender.avatar}
+        showStatus={false}
+        sizeClassName="h-10 w-10 flex-shrink-0"
+        initialsLength={1}
+      />
 
       <div className="flex-1 min-w-0">
         <div className="flex items-baseline justify-between gap-2 mb-1">

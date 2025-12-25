@@ -1,6 +1,6 @@
 'use client';
 
-import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
+import { AvatarWithStatus } from '../shared/avatar-with-status';
 import { cn } from '../../lib/utils';
 import type { User } from '@iconicedu/shared-types';
 
@@ -12,10 +12,13 @@ interface TypingIndicatorProps {
 export function TypingIndicator({ user, className }: TypingIndicatorProps) {
   return (
     <div className={cn('flex items-start gap-3 px-4 py-2', className)}>
-      <Avatar className="h-8 w-8">
-        <AvatarImage src={user.avatar || '/placeholder.svg'} alt={user.name} />
-        <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-      </Avatar>
+      <AvatarWithStatus
+        name={user.name}
+        avatar={user.avatar}
+        showStatus={false}
+        sizeClassName="h-8 w-8"
+        initialsLength={1}
+      />
 
       <div className="flex flex-col gap-1">
         <span className="text-xs font-medium text-muted-foreground">

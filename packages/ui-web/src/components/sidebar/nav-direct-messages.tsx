@@ -48,8 +48,9 @@ export function NavDirectMessages({
                   avatar={item.avatar}
                   status={item.status as 'online' | 'away' | 'idle' | 'offline'}
                   sizeClassName="size-6"
-                  statusClassName="h-2 w-2 border border-background"
+                  statusClassName="bottom-0 right-0 h-2 w-2 border border-background"
                   fallbackClassName="text-xs font-medium"
+                  initialsLength={1}
                 />
                 <span>{item.name}</span>
               </a>

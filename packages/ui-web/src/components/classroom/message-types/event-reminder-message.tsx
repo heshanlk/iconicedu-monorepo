@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { Calendar, Clock, MapPin, Video, Users } from 'lucide-react';
 import { Button } from '../../../ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
+import { AvatarWithStatus } from '../../shared/avatar-with-status';
 import type { EventReminderMessage as EventReminderMessageType } from '@iconicedu/shared-types';
 import { MessageBase, type MessageBaseProps } from '../message-base';
 
@@ -103,18 +103,15 @@ export const EventReminderMessage = memo(function EventReminderMessage(
               <Users className="h-3 w-3 text-muted-foreground" />
               <div className="flex -space-x-1.5">
                 {event.attendees.slice(0, 4).map((attendee) => (
-                  <Avatar
+                  <AvatarWithStatus
                     key={attendee.id}
-                    className="h-5 w-5 border-2 border-background"
-                  >
-                    <AvatarImage
-                      src={attendee.avatar || '/placeholder.svg'}
-                      alt={attendee.name}
-                    />
-                    <AvatarFallback className="text-[8px]">
-                      {attendee.name.charAt(0)}
-                    </AvatarFallback>
-                  </Avatar>
+                    name={attendee.name}
+                    avatar={attendee.avatar}
+                    showStatus={false}
+                    sizeClassName="h-5 w-5 border-2 border-background"
+                    fallbackClassName="text-[8px]"
+                    initialsLength={1}
+                  />
                 ))}
               </div>
               <span className="text-xs text-muted-foreground">

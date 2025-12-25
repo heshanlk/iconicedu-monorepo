@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { Button } from '../../../ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
+import { AvatarWithStatus } from '../../shared/avatar-with-status';
 import { Badge } from '../../../ui/badge';
 import { MessageCircle } from 'lucide-react';
 import type { Thread } from '@iconicedu/shared-types';
@@ -35,15 +35,15 @@ export const ThreadIndicator = memo(function ThreadIndicator({
       )}
       <div className="flex -space-x-2">
         {thread.participants.slice(0, 3).map((participant) => (
-          <Avatar key={participant.id} className="h-5 w-5 border-2 border-background">
-            <AvatarImage
-              src={participant.avatar || '/placeholder.svg'}
-              alt={participant.name}
-            />
-            <AvatarFallback className="text-[10px]">
-              {participant.name.charAt(0)}
-            </AvatarFallback>
-          </Avatar>
+          <AvatarWithStatus
+            key={participant.id}
+            name={participant.name}
+            avatar={participant.avatar}
+            showStatus={false}
+            sizeClassName="h-5 w-5 border-2 border-background"
+            fallbackClassName="text-[10px]"
+            initialsLength={1}
+          />
         ))}
       </div>
       <span className="text-xs text-muted-foreground">

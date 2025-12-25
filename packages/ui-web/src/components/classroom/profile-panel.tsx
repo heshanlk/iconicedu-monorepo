@@ -1,7 +1,7 @@
 'use client';
 
 import { Mail, Phone, School, Calendar, UserIcon } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
+import { AvatarWithStatus } from '../shared/avatar-with-status';
 import { Badge } from '../../ui/badge';
 import { Separator } from '../../ui/separator';
 import type { User } from '@iconicedu/shared-types';
@@ -23,15 +23,15 @@ export function ProfilePanel({ user }: ProfilePanelProps) {
     <>
       <div className="flex-1 overflow-y-auto">
         <div className="flex flex-col items-center gap-3 p-6">
-          <div className="relative">
-            <Avatar className="h-20 w-20">
-              <AvatarImage src={user.avatar || '/placeholder.svg'} alt={user.name} />
-              <AvatarFallback className="text-2xl">{user.name.charAt(0)}</AvatarFallback>
-            </Avatar>
-            {user.isOnline && (
-              <span className="absolute bottom-1 right-1 h-4 w-4 rounded-full border-2 border-card bg-online" />
-            )}
-          </div>
+          <AvatarWithStatus
+            name={user.name}
+            avatar={user.avatar}
+            showStatus={false}
+            sizeClassName="h-20 w-20"
+            statusClassName="bottom-1 right-1 h-4 w-4"
+            fallbackClassName="text-2xl"
+            initialsLength={1}
+          />
           <div className="text-center">
             <h2 className="text-lg font-semibold text-foreground">{user.name}</h2>
             {user.status && (
