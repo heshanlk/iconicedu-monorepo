@@ -1,7 +1,8 @@
 'use client';
 
-import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
+import { AvatarWithStatus } from '../shared/avatar-with-status';
 import { cn } from '../../lib/utils';
+import { AvatarGroup, AvatarGroupCount } from '../../ui/avatar';
 import type { Activity } from './types';
 
 type ActivityBadgeProps = {
@@ -26,40 +27,45 @@ export function ActivityBadge({ variant, className }: ActivityBadgeProps) {
         className={cn(
           'flex size-6 shrink-0 items-center justify-center rounded-full text-sm',
           alertClassName,
-        className,
-      )}
-    >
-      {variant.initials}
-    </div>
-  );
-}
-
-  if (variant.participants && variant.participants.length > 1) {
-    return (
-      <div className={cn('flex shrink-0 -space-x-1.5 pt-0.5', className)}>
-        {variant.participants.slice(0, 2).map((participant, idx) => (
-          <Avatar key={idx} className="size-6 border-2 border-background">
-            <AvatarImage src={participant.avatar || '/placeholder.svg'} />
-            <AvatarFallback className="text-[10px]">
-              {participant.initials}
-            </AvatarFallback>
-          </Avatar>
-        ))}
-        {variant.participants.length > 2 && (
-          <Avatar className="size-6 border-2 border-background">
-            <AvatarFallback className="text-[10px]">
-              +{variant.participants.length - 2}
-            </AvatarFallback>
-          </Avatar>
+          className,
         )}
+      >
+        {variant.initials}
       </div>
     );
   }
 
+  if (variant.participants && variant.participants.length > 1) {
+    return (
+      <AvatarGroup className={cn('shrink-0 pt-0.5', className)}>
+        {variant.participants.slice(0, 2).map((participant, idx) => (
+          <AvatarWithStatus
+            key={idx}
+            name={participant.initials}
+            avatar={participant.avatar}
+            showStatus={false}
+            sizeClassName="size-6 border-2 border-background"
+            initialsLength={2}
+          />
+        ))}
+        {variant.participants.length > 2 && (
+          <AvatarGroupCount className="text-[10px] size-6">
+            +{variant.participants.length - 2}
+          </AvatarGroupCount>
+        )}
+      </AvatarGroup>
+    );
+  }
+
   return (
-    <Avatar className={cn('size-6 shrink-0', className)}>
-      <AvatarImage src={variant.avatar || '/placeholder.svg'} />
-      <AvatarFallback className="text-[10px]">{variant.initials}</AvatarFallback>
-    </Avatar>
+    <AvatarWithStatus
+      name={variant.initials}
+      avatar={variant.avatar}
+      showStatus={false}
+      sizeClassName={cn('size-6 shrink-0', className)}
+      fallbackClassName="text-[10px]"
+      fallbackText={variant.initials}
+      initialsLength={2}
+    />
   );
 }
