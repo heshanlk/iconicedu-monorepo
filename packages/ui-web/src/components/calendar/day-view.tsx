@@ -203,7 +203,7 @@ export function DayView({
                       top: `${top}px`,
                       left: `calc(${left}% + ${gap}px)`,
                       width: `calc(${width}% - ${gap * 2}px)`,
-                      }}
+                    }}
                   >
                     <Popover>
                       <PopoverTrigger asChild>
@@ -245,7 +245,7 @@ export function DayView({
 
           {dayEvents.length === 0 && (
             <div className="absolute inset-0 flex items-center justify-center px-6">
-              <div className="flex flex-col items-center gap-3 rounded-lg border bg-background/90 px-6 py-4 text-center shadow-sm">
+              <div className="flex flex-col items-center gap-3 rounded-xl border bg-background/90 px-6 py-4 text-center shadow-sm">
                 {!hasStudents ? (
                   <>
                     <div className="text-sm font-medium text-foreground">

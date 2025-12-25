@@ -20,16 +20,12 @@ import {
   useSidebar,
 } from '../../ui/sidebar';
 import { AvatarWithStatus } from '../shared/avatar-with-status';
+import type { SidebarDirectMessageItem } from '@iconicedu/shared-types';
 
 export function NavDirectMessages({
   dms,
 }: {
-  dms: {
-    name: string;
-    avatar: string;
-    status: string;
-    url?: string;
-  }[];
+  dms: SidebarDirectMessageItem[];
 }) {
   const { isMobile } = useSidebar();
   return (

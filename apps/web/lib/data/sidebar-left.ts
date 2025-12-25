@@ -1,0 +1,182 @@
+import type { SidebarLeftData } from '@iconicedu/ui-web';
+export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
+  user: {
+    name: 'Heshan Wanigasooriya',
+    email: 'heshanmw@gmail.com',
+    avatar: '/avatars/shadcn.jpg',
+    isOnline: true,
+  },
+  navMain: [
+    {
+      title: 'Home',
+      url: '/dashboard',
+      icon: 'home',
+      isActive: true,
+    },
+    {
+      title: 'Calendar',
+      url: '/dashboard/calendar',
+      icon: 'calendar',
+    },
+    {
+      title: 'Inbox',
+      url: '/dashboard/inbox',
+      icon: 'inbox',
+      badge: '10',
+      count: 11,
+    },
+  ],
+  CLASSROOMS: [
+    {
+      id: 1,
+      name: 'ELA • Ms Norah  • Fri 5 pm',
+      participants: [1, 2, 3],
+      url: '#',
+      icon: 'languages',
+      isFavorite: true,
+      hasUnread: true,
+    },
+    {
+      id: 2,
+      name: 'ELA • Ms Norah (Fri 4 pm)',
+      participants: [1, 2, 4],
+      url: '#',
+      icon: 'languages',
+      isFavorite: true,
+      hasUnread: false,
+    },
+    {
+      id: 3,
+      name: 'ELA • Ms Norah (Fri 6 pm)',
+      participants: [1, 2, 5],
+      url: '#',
+      icon: 'languages',
+      isFavorite: true,
+      hasUnread: true,
+    },
+    {
+      id: 4,
+      name: 'Chess • Mr Rivi • Sat 10 am',
+      participants: [1, 2, 3],
+      url: '#',
+      icon: 'chef-hat',
+      isFavorite: true,
+      hasUnread: false,
+    },
+    {
+      id: 5,
+      name: 'Chess • Mr Rivi (Fri 6 pm)',
+      participants: [1, 2, 4],
+      url: '#',
+      icon: 'chef-hat',
+      isFavorite: true,
+      hasUnread: true,
+    },
+    {
+      id: 6,
+      name: 'Chess • Mr Rivi (Fri 6 pm)',
+      participants: [1, 2, 5],
+      url: '#',
+      icon: 'chef-hat',
+      isFavorite: true,
+      hasUnread: false,
+    },
+    {
+      id: 7,
+      name: 'Math • Mr Abhishek (Fri 6 pm)',
+      participants: [1, 2, 3],
+      url: '#',
+      icon: 'earth',
+      isFavorite: true,
+      hasUnread: false,
+    },
+    {
+      id: 8,
+      name: 'Math • Ms Wikramasingha (Fri 6 pm)',
+      participants: [1, 2, 4],
+      url: '#',
+      icon: 'square-pi',
+      isFavorite: false,
+      hasUnread: false,
+    },
+    {
+      id: 9,
+      name: 'Math • Ms Shenaly (Fri 6 pm)',
+      participants: [1, 2, 5],
+      url: '#',
+      icon: 'square-pi',
+      isFavorite: false,
+      hasUnread: true,
+    },
+  ],
+  navSecondary: [
+    {
+      title: 'Support',
+      url: '#',
+      icon: 'life-buoy',
+    },
+    {
+      title: 'Feedback',
+      url: '#',
+      icon: 'send',
+    },
+  ],
+  DIRECT_MESSAGES: [
+    {
+      id: 1,
+      name: 'Ms Wikramasinghe',
+      avatar:
+        'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-alex-UoI6qSVh9rZS9DvLOmhIY8pabZfAOq.png',
+      status: 'online',
+      url: '/dashboard/dm',
+    },
+    {
+      id: 2,
+      name: 'Shenaly Prakash',
+      avatar: '',
+      status: 'away',
+      url: '/dashboard/dm',
+    },
+    {
+      id: 3,
+      name: 'Ms Marina Perera',
+      avatar:
+        'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-jordan-ACflnHBYNP7M9crd5MtKL7WSpk3GiQ.jpg',
+      status: 'online',
+      url: '/dashboard/dm',
+    },
+    {
+      id: 4,
+      name: 'Ms Mike Silva',
+      avatar:
+        'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-mike-T2UMe9BlbWWIxlq7z99cJWqwEagAuc.jpg',
+      status: 'offline',
+      url: '/dashboard/dm',
+    },
+    {
+      id: 5,
+      name: 'Mr Sarah Johnson',
+      avatar:
+        'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-sarah-Vsp1gZWstExMvD0Qce0ogsgN6nv2pC.png',
+      status: 'idle',
+      url: '/dashboard/dm',
+    },
+  ],
+  STUDENTS: [
+    {
+      id: 3,
+      name: 'Elyas',
+      color: 'bg-blue-500 text-white',
+    },
+    {
+      id: 4,
+      name: 'Nailah',
+      color: 'bg-red-500 text-white',
+    },
+    {
+      id: 5,
+      name: 'Zayne',
+      color: 'bg-violet-500 text-white',
+    },
+  ],
+};

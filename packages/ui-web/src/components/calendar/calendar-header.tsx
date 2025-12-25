@@ -44,7 +44,7 @@ export function CalendarHeader({
   return (
     <div className="flex items-center justify-between border-b bg-background p-4">
       <div className="flex items-center gap-6">
-        <div className="flex flex-col items-center justify-center rounded-lg border bg-muted px-2.5 py-1.5">
+        <div className="flex flex-col items-center justify-center rounded-xl border bg-muted px-2.5 py-1.5">
           <span className="text-[10px] font-medium text-muted-foreground uppercase leading-tight">
             {currentDate.toLocaleDateString('en-US', { month: 'short' })}
           </span>

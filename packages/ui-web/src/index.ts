@@ -1,5 +1,4 @@
 export * from './components/sidebar/sidebar-left';
-export * from './components/sidebar/sidebar-right';
 export * from './components/login-form';
 export * from './components/sidebar/nav-classrooms';
 export * from './components/sidebar/nav-secondary';
@@ -29,3 +28,4 @@ export * from './components/inbox/inbox-container';
 export * from './components/calendar/calendar-header';
 export * from './components/calendar/week-view';
 export * from './components/calendar/day-view';
+export type { SidebarLeftData } from '@iconicedu/shared-types';

@@ -10,8 +10,8 @@ import {
   MoreHorizontal,
   StarOff,
   UserPlus,
-  type LucideIcon,
 } from 'lucide-react';
+import type { SidebarClassroomItem, SidebarStudent } from '@iconicedu/shared-types';
 
 import {
   Collapsible,
@@ -46,24 +46,9 @@ export function NavClassrooms({
   student,
   defaultOpen = false,
 }: {
-  classrooms: {
-    name: string;
-    url: string;
-    icon: LucideIcon;
-    isActive?: boolean;
-    hasUnread?: boolean;
-    participants: number[];
-    items?: {
-      title: string;
-      url: string;
-    }[];
-  }[];
+  classrooms: SidebarClassroomItem[];
   title: string;
-  student: {
-    id: number;
-    name: string;
-    color: string;
-  };
+  student: SidebarStudent;
   defaultOpen?: boolean;
 }) {
   const { isMobile } = useSidebar();

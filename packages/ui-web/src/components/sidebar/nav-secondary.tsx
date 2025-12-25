@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { type LucideIcon } from 'lucide-react';
+import type { SidebarSecondaryItem } from '@iconicedu/shared-types';
 
 import {
   SidebarGroup,
@@ -13,11 +13,7 @@ export function NavSecondary({
   items,
   ...props
 }: {
-  items: {
-    title: string;
-    url: string;
-    icon: LucideIcon;
-  }[];
+  items: SidebarSecondaryItem[];
 } & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
   return (
     <SidebarGroup {...props}>

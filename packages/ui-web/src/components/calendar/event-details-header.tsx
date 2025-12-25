@@ -13,7 +13,7 @@ export function EventDetailsHeader({ event }: EventDetailsHeaderProps) {
   const remainingGuests = event.guests.count - visibleGuests.length;
 
   return (
-    <div className="bg-background border rounded-lg shadow-sm p-4 space-y-3">
+    <div className="bg-background border rounded-xl shadow-sm p-4 space-y-3">
       <p className="text-sm font-medium">
         {event.date.toLocaleDateString('en-US', {
           weekday: 'long',
