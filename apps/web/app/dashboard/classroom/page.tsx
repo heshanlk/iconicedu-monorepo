@@ -1,18 +1,18 @@
-import { MessagesContainer, DashboardHeader, ErrorBoundary } from '@iconicedu/ui-web';
+import { ClassroomContainer, DashboardHeader } from '@iconicedu/ui-web';
 import {
   LAST_READ_MESSAGE_ID,
   MOCK_MESSAGES,
   MOCK_PARENT,
   MOCK_TEACHER,
   MOCK_THREAD_MESSAGES,
-} from '../../../lib/data/dm-messages';
+} from '../../../lib/data/classroom-messages';
 
 export default function Page() {
   return (
     <>
       <div className="flex h-[calc(100vh-1.0rem)] flex-col">
         <DashboardHeader />
-        <MessagesContainer
+        <ClassroomContainer
           messages={MOCK_MESSAGES}
           initialThreadMessages={MOCK_THREAD_MESSAGES}
           teacher={MOCK_TEACHER}

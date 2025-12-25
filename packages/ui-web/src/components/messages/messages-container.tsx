@@ -17,7 +17,7 @@ import { useDMSidebar } from '../../hooks/use-messages-sidebar';
 import { useThread } from '../../hooks/use-thread';
 import type { Thread, TextMessage, Message, User } from '@iconicedu/shared-types';
 
-interface MessagesContainerProps {
+export interface MessagesContainerProps {
   messages: Message[];
   initialThreadMessages: Record<string, Message[]>;
   teacher: User;

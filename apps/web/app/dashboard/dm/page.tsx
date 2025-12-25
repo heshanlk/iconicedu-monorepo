@@ -1,23 +1,23 @@
-import { MessagesContainer, DashboardHeader, ErrorBoundary } from '@iconicedu/ui-web';
+import { DirectMessagesContainer, DashboardHeader } from '@iconicedu/ui-web';
 import {
-  LAST_READ_MESSAGE_ID,
-  MOCK_MESSAGES,
-  MOCK_PARENT,
-  MOCK_TEACHER,
-  MOCK_THREAD_MESSAGES,
-} from '../../../lib/data/dm-messages';
+  DIRECT_CONTACT,
+  DIRECT_LAST_READ_MESSAGE_ID,
+  DIRECT_MESSAGES,
+  DIRECT_THREAD_MESSAGES,
+  DIRECT_USER,
+} from '../../../lib/data/direct-messages';
 
 export default function Page() {
   return (
     <>
       <div className="flex h-[calc(100vh-1.0rem)] flex-col">
         <DashboardHeader />
-        <MessagesContainer
-          messages={MOCK_MESSAGES}
-          initialThreadMessages={MOCK_THREAD_MESSAGES}
-          teacher={MOCK_TEACHER}
-          parent={MOCK_PARENT}
-          lastReadMessageId={LAST_READ_MESSAGE_ID}
+        <DirectMessagesContainer
+          messages={DIRECT_MESSAGES}
+          initialThreadMessages={DIRECT_THREAD_MESSAGES}
+          teacher={DIRECT_CONTACT}
+          parent={DIRECT_USER}
+          lastReadMessageId={DIRECT_LAST_READ_MESSAGE_ID}
         />
       </div>
     </>
