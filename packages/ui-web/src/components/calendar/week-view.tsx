@@ -37,6 +37,7 @@ export function WeekView({
   const currentMinutes = today.getMinutes();
   const currentTimeOffset = (currentHour * 2 + currentMinutes / 30) * 32;
   const columnGap = 6;
+  const overlapPx = 12;
   const maxVisibleColumns = 3;
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -210,8 +211,12 @@ export function WeekView({
                     }
 
                     const visibleColumns = Math.min(columns, maxVisibleColumns);
+                    const sideInset = columnGap;
                     const width = 100 / visibleColumns;
                     const left = column * width;
+                    const overlapExtra =
+                      visibleColumns > 1 ? overlapPx + (visibleColumns === 3 ? 6 : 0) : 0;
+                    const overlapOffset = visibleColumns > 1 ? overlapPx * column : 0;
 
                     const durationMinutes = endMinutes - startMinutes;
                     const isCompact = durationMinutes <= 45;
@@ -219,12 +224,13 @@ export function WeekView({
                     return (
                       <div
                         key={event.id}
-                        className="absolute px-1 py-1 pointer-events-none"
+                        className="absolute py-1 pointer-events-none"
                         style={{
                           top: `${top}px`,
                           height: `${height}px`,
-                          left: `calc(${left}% + ${columnGap}px)`,
-                          width: `calc(${width}% - ${columnGap * 2}px)`,
+                          left: `calc(${left}% + ${sideInset}px - ${overlapOffset}px)`,
+                          width: `calc(${width}% - ${sideInset * 2}px + ${overlapExtra}px)`,
+                          zIndex: column + 1,
                         }}
                       >
                         <div className="pointer-events-auto h-full">
@@ -240,6 +246,7 @@ export function WeekView({
                   {[...clusterInfo.entries()].map(([clusterId, info]) => {
                     if (info.hiddenEvents.length === 0) return null;
                     const visibleColumns = Math.min(info.columns, maxVisibleColumns);
+                    const sideInset = columnGap;
                     const width = 100 / visibleColumns;
                     const left = (visibleColumns - 1) * width;
                     const top = (info.startMinutes / 30) * 32;
@@ -250,8 +257,8 @@ export function WeekView({
                         className="absolute px-1 pointer-events-none"
                         style={{
                           top: `${top}px`,
-                          left: `calc(${left}% + ${columnGap}px)`,
-                          width: `calc(${width}% - ${columnGap * 2}px)`,
+                          left: `calc(${left}% + ${sideInset}px)`,
+                          width: `calc(${width}% - ${sideInset * 2}px)`,
                         }}
                       >
                         <Popover>
