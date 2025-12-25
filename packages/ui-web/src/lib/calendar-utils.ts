@@ -167,15 +167,7 @@ const getISODate = (date: Date) => {
   return `${year}-${month}-${day}`;
 };
 
-const weekdayTokens: Array<RecurrenceRule['byWeekday'][number]> = [
-  'SU',
-  'MO',
-  'TU',
-  'WE',
-  'TH',
-  'FR',
-  'SA',
-];
+const weekdayTokens = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'] as const;
 
 const isWithinRange = (date: Date, rangeStart: Date, rangeEnd: Date) => {
   const day = startOfDay(date).getTime();

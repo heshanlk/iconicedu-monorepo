@@ -151,7 +151,7 @@ export const baseEvents: CalendarEvent[] = [
     recurrence: {
       frequency: 'weekly',
       interval: 1,
-      byWeekday: ['SA'],
+      byWeekday: ['FR'],
       exceptions: [],
       overrides: {},
     },
@@ -178,7 +178,7 @@ export const baseEvents: CalendarEvent[] = [
     recurrence: {
       frequency: 'weekly',
       interval: 1,
-      byWeekday: ['SA'],
+      byWeekday: ['FR'],
       exceptions: [],
       overrides: {},
     },
@@ -205,7 +205,7 @@ export const baseEvents: CalendarEvent[] = [
     recurrence: {
       frequency: 'weekly',
       interval: 1,
-      byWeekday: ['SA'],
+      byWeekday: ['SA', 'TU'],
       exceptions: [],
       overrides: {},
     },
@@ -232,7 +232,7 @@ export const baseEvents: CalendarEvent[] = [
     recurrence: {
       frequency: 'weekly',
       interval: 1,
-      byWeekday: ['SA'],
+      byWeekday: ['FR', 'MO'],
       exceptions: [],
       overrides: {},
     },

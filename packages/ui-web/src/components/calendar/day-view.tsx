@@ -285,7 +285,12 @@ export function DayView({
                     {nextEvent && (
                       <Button size="sm" onClick={() => onDateSelect(nextEvent.date)}>
                         <ArrowRight className="mr-2 size-4" />
-                        Go to next up
+                        Next up:{' '}
+                        {nextEvent.date.toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                          year: 'numeric',
+                        })}
                       </Button>
                     )}
                   </>
