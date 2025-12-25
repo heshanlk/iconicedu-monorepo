@@ -15,16 +15,23 @@ import { useIsMobile } from '../../hooks/use-mobile';
 import { useMessages } from '../../hooks/use-messages';
 import { useDMSidebar } from '../../hooks/use-dm-sidebar';
 import { useThread } from '../../hooks/use-thread';
-import {
-  MOCK_MESSAGES,
-  MOCK_THREAD_MESSAGES,
-  MOCK_TEACHER,
-  MOCK_PARENT,
-  LAST_READ_MESSAGE_ID,
-} from '../../constants/mock-data';
-import type { Thread, TextMessage, Message } from '@iconicedu/shared-types';
+import type { Thread, TextMessage, Message, User } from '@iconicedu/shared-types';
 
-export function DirectMessages() {
+interface DirectMessagesProps {
+  messages: Message[];
+  initialThreadMessages: Record<string, Message[]>;
+  teacher: User;
+  parent: User;
+  lastReadMessageId?: string;
+}
+
+export function DirectMessages({
+  messages: initialMessages,
+  initialThreadMessages,
+  teacher,
+  parent,
+  lastReadMessageId,
+}: DirectMessagesProps) {
   const isMobile = useIsMobile();
   const messageListRef = useRef<MessageListRef>(null);
   const {
@@ -36,7 +43,7 @@ export function DirectMessages() {
     sidebarContent,
   } = useDMSidebar();
   const { messages, addMessage, toggleReaction, toggleSaved, toggleHidden } =
-    useMessages(MOCK_MESSAGES);
+    useMessages(initialMessages);
   const {
     activeThread,
     threadMessages,
@@ -51,11 +58,11 @@ export function DirectMessages() {
     (thread: Thread, parentMessage: Message) => {
       openThread(
         { ...thread, parentMessage },
-        MOCK_THREAD_MESSAGES[thread.id] || [parentMessage],
+        initialThreadMessages[thread.id] || [parentMessage],
       );
       openThreadSidebar();
     },
-    [openThread, openThreadSidebar],
+    [openThread, openThreadSidebar, initialThreadMessages],
   );
 
   const handleSendMessage = useCallback(
@@ -64,7 +71,7 @@ export function DirectMessages() {
         id: `msg-${Date.now()}`,
         type: 'text',
         content,
-        sender: MOCK_PARENT,
+        sender: parent,
         timestamp: new Date(),
         reactions: [],
         visibility: { type: 'all' },
@@ -73,7 +80,7 @@ export function DirectMessages() {
       };
       addMessage(newMessage);
     },
-    [addMessage],
+    [addMessage, parent],
   );
 
   const handleSendThreadReply = useCallback(
@@ -82,7 +89,7 @@ export function DirectMessages() {
         id: `reply-${Date.now()}`,
         type: 'text',
         content,
-        sender: MOCK_PARENT,
+        sender: parent,
         timestamp: new Date(),
         reactions: [],
         visibility: { type: 'all' },
@@ -91,7 +98,7 @@ export function DirectMessages() {
       };
       addThreadMessage(newReply);
     },
-    [addThreadMessage],
+    [addThreadMessage, parent],
   );
 
   const handleProfileClick = useCallback(
@@ -111,16 +118,16 @@ export function DirectMessages() {
 
   const handleToggleReaction = useCallback(
     (messageId: string, emoji: string) => {
-      toggleReaction(messageId, emoji, MOCK_PARENT.id);
+      toggleReaction(messageId, emoji, parent.id);
     },
-    [toggleReaction],
+    [toggleReaction, parent.id],
   );
 
   const handleToggleThreadReaction = useCallback(
     (messageId: string, emoji: string) => {
-      toggleThreadReaction(messageId, emoji, MOCK_PARENT.id);
+      toggleThreadReaction(messageId, emoji, parent.id);
     },
-    [toggleThreadReaction],
+    [toggleThreadReaction, parent.id],
   );
 
   const handleToggleSaved = useCallback(
@@ -162,10 +169,10 @@ export function DirectMessages() {
   );
 
   const profileUser = useMemo(() => {
-    if (profileUserId === 'teacher-1') return MOCK_TEACHER;
-    if (profileUserId === 'parent-1') return MOCK_PARENT;
-    return MOCK_TEACHER;
-  }, [profileUserId]);
+    if (profileUserId === teacher.id) return teacher;
+    if (profileUserId === parent.id) return parent;
+    return teacher;
+  }, [profileUserId, teacher, parent]);
 
   const sidebarMeta = useMemo(() => {
     if (sidebarContent === 'thread' && activeThread) {
@@ -195,7 +202,8 @@ export function DirectMessages() {
       onToggleReaction: handleToggleReaction,
       onToggleSaved: handleToggleSaved,
       onToggleHidden: handleToggleHidden,
-      currentUserId: MOCK_PARENT.id,
+      currentUserId: parent.id,
+      lastReadMessageId,
     }),
     [
       messages,
@@ -204,6 +212,8 @@ export function DirectMessages() {
       handleToggleReaction,
       handleToggleSaved,
       handleToggleHidden,
+      parent.id,
+      lastReadMessageId,
     ],
   );
 
@@ -216,8 +226,8 @@ export function DirectMessages() {
       onToggleReaction: handleToggleThreadReaction,
       onToggleSaved: handleToggleThreadSaved,
       onToggleHidden: handleToggleThreadHidden,
-      currentUserId: MOCK_PARENT.id,
-      lastReadMessageId: LAST_READ_MESSAGE_ID,
+      currentUserId: parent.id,
+      lastReadMessageId,
     }),
     [
       activeThread,
@@ -227,6 +237,8 @@ export function DirectMessages() {
       handleToggleThreadReaction,
       handleToggleThreadSaved,
       handleToggleThreadHidden,
+      parent.id,
+      lastReadMessageId,
     ],
   );
 
@@ -242,8 +254,8 @@ export function DirectMessages() {
     <div className="flex h-full min-h-0 max-h-[93%]">
       <div className="flex flex-1 flex-col">
         <DMHeader
-          user={MOCK_TEACHER}
-          onProfileClick={() => handleProfileClick(MOCK_TEACHER.id)}
+          user={teacher}
+          onProfileClick={() => handleProfileClick(teacher.id)}
           onSavedMessagesClick={handleSavedMessagesClick}
         />
         <div className="flex flex-1 overflow-hidden">
@@ -251,7 +263,7 @@ export function DirectMessages() {
             <MessageList ref={messageListRef} {...messageListProps} />
             <MessageInput
               onSend={handleSendMessage}
-              placeholder={`Message ${MOCK_TEACHER.name}`}
+              placeholder={`Message ${teacher.name}`}
             />
           </div>
           {!isMobile && sidebarContent && (

@@ -15,14 +15,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '../../ui/tooltip';
-
-interface User {
-  id: string;
-  name: string;
-  avatar: string;
-  isOnline: boolean;
-  status?: string;
-}
+import type { User } from '@iconicedu/shared-types';
 
 interface DMHeaderProps {
   user: User;

@@ -1,7 +1,6 @@
 import { useRef, useEffect, useImperativeHandle, forwardRef, useMemo } from 'react';
 import { MessageItem } from './message-item';
 import type { Message, Thread, User } from '@iconicedu/shared-types';
-import { LAST_READ_MESSAGE_ID } from '../../constants/mock-data';
 import { formatDateHeader } from '../../lib/message-utils';
 
 interface MessageListProps {
@@ -12,6 +11,7 @@ interface MessageListProps {
   onToggleSaved?: (messageId: string) => void;
   onToggleHidden?: (messageId: string) => void;
   currentUserId?: string;
+  lastReadMessageId?: string;
   typingUser?: User;
   isTyping?: boolean;
 }
@@ -30,6 +30,7 @@ export const MessageList = forwardRef<MessageListRef, MessageListProps>(
       onToggleSaved,
       onToggleHidden,
       currentUserId,
+      lastReadMessageId,
       typingUser,
       isTyping,
     },
@@ -91,8 +92,9 @@ export const MessageList = forwardRef<MessageListRef, MessageListProps>(
             {group.messages.map((message, index) => {
               const previousMessage = index > 0 ? group.messages[index - 1] : null;
               const showUnreadDivider =
-                previousMessage?.id === LAST_READ_MESSAGE_ID &&
-                message.id !== LAST_READ_MESSAGE_ID;
+                !!lastReadMessageId &&
+                previousMessage?.id === lastReadMessageId &&
+                message.id !== lastReadMessageId;
 
               return (
                 <div
