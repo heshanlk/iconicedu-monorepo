@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import type { CalendarEvent } from '@iconicedu/shared-types';
 import { cn } from '@iconicedu/ui-web/lib/utils';
-import { isEventLive, colorVariants } from '../../lib/event-utils';
+import { isEventLive, colorVariants } from '../../lib/calendar-utils';
 import { EventDialog } from './event-dialog';
 import { EventLiveIndicator } from './event-live-indicator';
 

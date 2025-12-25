@@ -48,7 +48,9 @@ export function CalendarContainer({
     }
 
     const newDate = new Date(currentDate);
-    newDate.setDate(currentDate.getDate() + (view === 'week' ? 7 : 1) * (direction === 'next' ? 1 : -1));
+    newDate.setDate(
+      currentDate.getDate() + (view === 'week' ? 7 : 1) * (direction === 'next' ? 1 : -1),
+    );
     onDateSelect(newDate);
   };
 
