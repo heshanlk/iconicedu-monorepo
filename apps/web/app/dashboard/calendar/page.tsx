@@ -3,9 +3,17 @@
 import { useMemo, useState } from 'react';
 import { CalendarHeader, WeekView, DayView, DashboardHeader } from '@iconicedu/ui-web';
 import type { CalendarEvent, CalendarView } from '@iconicedu/shared-types';
-import { getCalendarEventsForMonthRange, getCalendarEventsForView } from './calendar-data';
+import {
+  getCalendarEventsForMonthRange,
+  getCalendarEventsForView,
+} from './calendar-data';
 
 export default function CalendarPage() {
+  const students = [
+    { id: 3, name: 'Elyas' },
+    { id: 4, name: 'Nailah' },
+    { id: 5, name: 'Zayne' },
+  ];
   const [currentDate, setCurrentDate] = useState(new Date());
   const [view, setView] = useState<CalendarView>('day');
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
@@ -66,6 +74,7 @@ export default function CalendarPage() {
           currentDate={currentDate}
           events={calendarEventsForView}
           calendarEvents={calendarEventsForDots}
+          studentsCount={students.length}
           selectedEvent={selectedEvent}
           onEventClick={handleEventClick}
           onDateSelect={handleDateSelect}

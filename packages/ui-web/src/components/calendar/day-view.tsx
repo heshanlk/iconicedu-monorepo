@@ -11,6 +11,7 @@ import { EventCard } from './event-card';
 import { MiniCalendar } from './mini-calendar';
 import { ScrollArea } from '../../ui/scroll-area';
 import { Button } from '../../ui/button';
+import { MessageSquarePlus, UserPlus } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
 import { useEffect, useRef } from 'react';
 
@@ -18,6 +19,7 @@ interface DayViewProps {
   currentDate: Date;
   events: CalendarEvent[];
   calendarEvents?: CalendarEvent[];
+  studentsCount?: number;
   selectedEvent: CalendarEvent | null;
   onEventClick: (event: CalendarEvent) => void;
   onDateSelect: (date: Date) => void;
@@ -28,6 +30,7 @@ export function DayView({
   currentDate,
   events,
   calendarEvents,
+  studentsCount,
   selectedEvent,
   onEventClick,
   onDateSelect,
@@ -36,6 +39,8 @@ export function DayView({
   const timeSlots = getTimeSlots();
   const dayEvents = events.filter((event) => isSameDay(event.date, currentDate));
   const miniCalendarEvents = calendarEvents ?? events;
+  const hasStudents = studentsCount === undefined ? true : studentsCount > 0;
+  const hasClasses = miniCalendarEvents.length > 0;
   const nextEvent = [...miniCalendarEvents]
     .filter((event) => event.date > currentDate)
     .sort((a, b) => {
@@ -230,16 +235,48 @@ export function DayView({
           {dayEvents.length === 0 && (
             <div className="absolute inset-0 flex items-center justify-center px-6">
               <div className="flex flex-col items-center gap-3 rounded-lg border bg-background/90 px-6 py-4 text-center shadow-sm">
-                <div className="text-sm font-medium text-foreground">No events today</div>
-                <div className="text-xs text-muted-foreground">
-                  {nextEvent
-                    ? `Next up: ${nextEvent.title} at ${nextEvent.startTime}`
-                    : 'No upcoming events scheduled'}
-                </div>
-                {nextEvent && (
-                  <Button size="sm" onClick={() => onDateSelect(nextEvent.date)}>
-                    Go to next up
-                  </Button>
+                {!hasStudents ? (
+                  <>
+                    <div className="text-sm font-medium text-foreground">
+                      Add your student to get started
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      You need at least one student profile to see classes.
+                    </div>
+                    <Button size="sm">
+                      <UserPlus className="mr-2 size-4" />
+                      Add a student
+                    </Button>
+                  </>
+                ) : !hasClasses ? (
+                  <>
+                    <div className="text-sm font-medium text-foreground">
+                      No classes enrolled yet
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      Request a class to start scheduling.
+                    </div>
+                    <Button size="sm">
+                      <MessageSquarePlus className="mr-2 size-4" />
+                      Request a class
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <div className="text-sm font-medium text-foreground">
+                      No events today
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      {nextEvent
+                        ? `Next up: ${nextEvent.title} at ${nextEvent.startTime}`
+                        : 'No upcoming events scheduled'}
+                    </div>
+                    {nextEvent && (
+                      <Button size="sm" onClick={() => onDateSelect(nextEvent.date)}>
+                        Go to next up
+                      </Button>
+                    )}
+                  </>
                 )}
               </div>
             </div>
