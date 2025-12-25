@@ -36,8 +36,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../../ui/dropdown-menu';
-import { cn, getInitials } from '../../lib/utils';
+import { cn } from '../../lib/utils';
 import { Empty, EmptyContent } from '../../ui/empty';
+import { AvatarWithStatus } from '../shared/avatar-with-status';
 
 export function NavClassrooms({
   classrooms,
@@ -67,23 +68,22 @@ export function NavClassrooms({
 }) {
   const { isMobile } = useSidebar();
   const [isOpen, setIsOpen] = useState(defaultOpen);
-  const renderClassroomAvatar = () => (
-    <span
-      className={cn(
-        'flex size-5 items-center justify-center rounded-full text-[10px] font-semibold leading-none uppercase',
-        student.color,
-      )}
-    >
-      {getInitials(student.name, 1)}
-    </span>
-  );
 
   return (
     <SidebarGroup className="py-0 group-data-[collapsible=icon]:hidden">
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         <CollapsibleTrigger asChild>
           <SidebarGroupLabel className="flex cursor-pointer items-center gap-2 rounded-md rounded-b-none px-2 py-1 uppercase">
-            {renderClassroomAvatar()}
+            <AvatarWithStatus
+              name={student.name}
+              showStatus={false}
+              sizeClassName="size-5"
+              fallbackClassName={cn(
+                'text-[10px] font-semibold leading-none uppercase',
+                student.color,
+              )}
+              initialsLength={1}
+            />
             <span className="flex-1">{title}</span>
             {isOpen ? (
               <ChevronUp className="size-4" />

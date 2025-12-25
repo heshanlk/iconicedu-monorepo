@@ -1,12 +1,17 @@
 import type { CalendarEvent } from '@iconicedu/shared-types';
-import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
 import { cn } from '../../lib/utils';
+import { AvatarGroup, AvatarGroupCount } from '../../ui/avatar';
+import { AvatarWithStatus } from '../shared/avatar-with-status';
 
 interface EventDetailsHeaderProps {
   event: CalendarEvent;
 }
 
 export function EventDetailsHeader({ event }: EventDetailsHeaderProps) {
+  const maxVisibleGuests = 2;
+  const visibleGuests = event.guests.avatars.slice(0, maxVisibleGuests);
+  const remainingGuests = event.guests.count - visibleGuests.length;
+
   return (
     <div className="bg-background border rounded-lg shadow-sm p-4 space-y-3">
       <p className="text-sm font-medium">
@@ -24,26 +29,20 @@ export function EventDetailsHeader({ event }: EventDetailsHeaderProps) {
       <p className="text-sm text-muted-foreground">{event.location}</p>
 
       <div className="flex items-center gap-2">
-        <div className="flex -space-x-2">
-          {event.guests.avatars.map((avatar, index) => (
-            <Avatar
+        <AvatarGroup>
+          {visibleGuests.map((avatar, index) => (
+            <AvatarWithStatus
               key={index}
-              className={cn(
-                'border-2 border-background',
-                index === 3 && 'ring-2 ring-pink-200',
-              )}
-            >
-              <AvatarImage
-                src={avatar || '/placeholder.svg'}
-                alt={`Guest ${index + 1}`}
-              />
-              <AvatarFallback>{index + 1}</AvatarFallback>
-            </Avatar>
+              name={`Guest ${index + 1}`}
+              avatar={avatar}
+              showStatus={false}
+              sizeClassName={cn('border-2 border-background')}
+            />
           ))}
-        </div>
-        <span className="text-sm font-medium text-muted-foreground">
-          +{event.guests.count - event.guests.avatars.length} People
-        </span>
+          {remainingGuests > 0 && (
+            <AvatarGroupCount className="text-sm">+{remainingGuests}</AvatarGroupCount>
+          )}
+        </AvatarGroup>
       </div>
     </div>
   );

@@ -13,6 +13,8 @@ const STATUS_COLORS = {
 interface AvatarWithStatusProps {
   name: string;
   avatar?: string;
+  alt?: string;
+  fallbackText?: string;
   status?: keyof typeof STATUS_COLORS | 'online' | 'away' | 'idle' | 'offline';
   isOnline?: boolean;
   showStatus?: boolean;
