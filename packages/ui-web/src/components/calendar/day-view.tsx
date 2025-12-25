@@ -49,8 +49,6 @@ export function DayView({
       return timeToMinutes(a.startTime) - timeToMinutes(b.startTime);
     })[0];
   const dayLayout = getEventLayout(dayEvents);
-  const columnGap = 6;
-  const overlapPx = 12;
   const maxVisibleColumns = 3;
   const clusterInfo = new Map<
     number,
@@ -158,11 +156,11 @@ export function DayView({
                 }
 
                 const visibleColumns = Math.min(columns, maxVisibleColumns);
-                const gap = visibleColumns > 1 ? columnGap : 0;
+                const gap = 0;
                 const width = 100 / visibleColumns;
                 const left = column * width;
-                const overlapExtra = visibleColumns > 1 ? overlapPx : 0;
-                const overlapOffset = visibleColumns > 1 ? overlapPx * column : 0;
+                const overlapExtra = 0;
+                const overlapOffset = 0;
 
                 const durationMinutes = endMinutes - startMinutes;
                 const isCompact = durationMinutes <= 45;
@@ -192,7 +190,7 @@ export function DayView({
               {[...clusterInfo.entries()].map(([clusterId, info]) => {
                 if (info.hiddenEvents.length === 0) return null;
                 const visibleColumns = Math.min(info.columns, maxVisibleColumns);
-                const gap = visibleColumns > 1 ? columnGap : 0;
+                const gap = 0;
                 const width = 100 / visibleColumns;
                 const left = (visibleColumns - 1) * width;
                 const top = (info.startMinutes / 30) * 32;
