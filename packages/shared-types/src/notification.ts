@@ -39,3 +39,27 @@ export interface Activity {
   category: string;
   date: string;
 }
+
+export type InboxIconKey =
+  | 'Bell'
+  | 'CheckCircle2'
+  | 'ClipboardCheck'
+  | 'CreditCard'
+  | 'FileText'
+  | 'GraduationCap'
+  | 'MessageSquare'
+  | 'Paperclip'
+  | 'Sparkles'
+  | 'Video';
+
+export type InboxActivityInput = Omit<
+  Activity,
+  'icon' | 'actionButton' | 'subActivities'
+> & {
+  iconKey?: InboxIconKey;
+  actionButton?: {
+    label: string;
+    variant: 'default' | 'outline' | 'secondary';
+  };
+  subActivities?: InboxActivityInput[];
+};
