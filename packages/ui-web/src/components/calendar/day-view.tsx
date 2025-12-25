@@ -10,6 +10,7 @@ import {
 import { EventCard } from './event-card';
 import { MiniCalendar } from './mini-calendar';
 import { ScrollArea } from '../../ui/scroll-area';
+import { Button } from '../../ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
 import { useEffect, useRef } from 'react';
 
@@ -35,6 +36,13 @@ export function DayView({
   const timeSlots = getTimeSlots();
   const dayEvents = events.filter((event) => isSameDay(event.date, currentDate));
   const miniCalendarEvents = calendarEvents ?? events;
+  const nextEvent = [...miniCalendarEvents]
+    .filter((event) => event.date > currentDate)
+    .sort((a, b) => {
+      const dateDiff = a.date.getTime() - b.date.getTime();
+      if (dateDiff !== 0) return dateDiff;
+      return timeToMinutes(a.startTime) - timeToMinutes(b.startTime);
+    })[0];
   const dayLayout = getEventLayout(dayEvents);
   const columnGap = 6;
   const maxVisibleColumns = 3;
@@ -107,7 +115,7 @@ export function DayView({
     <div className="flex flex-1 overflow-hidden">
       {/* Day schedule */}
       <ScrollArea ref={scrollContainerRef} className="flex-1 border-r">
-        <div className="relative">
+        <div className="relative min-h-[400px]">
           <div className="flex">
             {/* Time labels */}
             <div className="w-20 flex-shrink-0">
@@ -218,6 +226,24 @@ export function DayView({
               )}
             </div>
           </div>
+
+          {dayEvents.length === 0 && (
+            <div className="absolute inset-0 flex items-center justify-center px-6">
+              <div className="flex flex-col items-center gap-3 rounded-lg border bg-background/90 px-6 py-4 text-center shadow-sm">
+                <div className="text-sm font-medium text-foreground">No events today</div>
+                <div className="text-xs text-muted-foreground">
+                  {nextEvent
+                    ? `Next up: ${nextEvent.title} at ${nextEvent.startTime}`
+                    : 'No upcoming events scheduled'}
+                </div>
+                {nextEvent && (
+                  <Button size="sm" onClick={() => onDateSelect(nextEvent.date)}>
+                    Go to next up
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </ScrollArea>
 
