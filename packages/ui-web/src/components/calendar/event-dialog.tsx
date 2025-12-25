@@ -3,12 +3,14 @@
 import type React from 'react';
 
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '../../ui/dialog';
+import { Drawer, DrawerContent, DrawerTitle, DrawerTrigger } from '../../ui/drawer';
 import { ScrollArea } from '../../ui/scroll-area';
 import { Separator } from '../../ui/separator';
 import type { CalendarEvent } from '@iconicedu/shared-types';
 import { EventDetailsHeader } from './event-details-header';
 import { EventDetailsInfo } from './event-details-info';
 import { EventActions } from './event-actions';
+import { useIsMobile } from '../../hooks/use-mobile';
 
 interface EventDialogProps {
   event: CalendarEvent;
@@ -18,6 +20,36 @@ interface EventDialogProps {
 }
 
 export function EventDialog({ event, open, onOpenChange, children }: EventDialogProps) {
+  const isMobile = useIsMobile();
+  const content = (
+    // <ScrollArea className="max-h-[85vh]">
+    <div className="p-4">
+      <div className="space-y-4">
+        <EventDetailsHeader event={event} />
+        <div className="px-4 space-y-3">
+          <EventDetailsInfo event={event} />
+          <Separator />
+          <EventActions onClose={() => onOpenChange(false)} />
+        </div>
+      </div>
+    </div>
+    // </ScrollArea>
+  );
+
+  if (isMobile) {
+    return (
+      <Drawer open={open} onOpenChange={onOpenChange}>
+        <DrawerTrigger asChild>{children}</DrawerTrigger>
+        <DrawerContent>
+          <DrawerTitle className="sr-only">
+            {event.title || 'Calendar event details'}
+          </DrawerTitle>
+          {content}
+        </DrawerContent>
+      </Drawer>
+    );
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -25,18 +57,7 @@ export function EventDialog({ event, open, onOpenChange, children }: EventDialog
         <DialogTitle className="sr-only">
           {event.title || 'Calendar event details'}
         </DialogTitle>
-        <ScrollArea className="max-h-[85vh]">
-          <div className="p-4 bg-muted rounded-2xl">
-            <div className="space-y-4">
-              <EventDetailsHeader event={event} />
-              <div className="px-4 space-y-3">
-                <EventDetailsInfo event={event} />
-                <Separator />
-                <EventActions onClose={() => onOpenChange(false)} />
-              </div>
-            </div>
-          </div>
-        </ScrollArea>
+        {content}
       </DialogContent>
     </Dialog>
   );
