@@ -26,5 +26,6 @@ export * from './components/classroom/direct-messages';
 export * from './components/error-boundary';
 export * from './components/inbox/inbox-container';
 export * from './components/calendar/calendar-header';
+export * from './components/calendar/calendar-container';
 export * from './components/calendar/week-view';
 export * from './components/calendar/day-view';
