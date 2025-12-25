@@ -10,14 +10,14 @@ import { SavedMessagesPanel } from './saved-messages-panel';
 import { RightSidebar } from './right-sidebar';
 import { RightSidebarSheet } from './right-sidebar-sheet';
 import { MessageInput } from './message-input';
-import { DMHeader } from './dm-header';
+import { DMHeader } from './messages-header';
 import { useIsMobile } from '../../hooks/use-mobile';
 import { useMessages } from '../../hooks/use-messages';
-import { useDMSidebar } from '../../hooks/use-dm-sidebar';
+import { useDMSidebar } from '../../hooks/use-messages-sidebar';
 import { useThread } from '../../hooks/use-thread';
 import type { Thread, TextMessage, Message, User } from '@iconicedu/shared-types';
 
-interface DirectMessagesProps {
+interface MessagesContainerProps {
   messages: Message[];
   initialThreadMessages: Record<string, Message[]>;
   teacher: User;
@@ -25,13 +25,13 @@ interface DirectMessagesProps {
   lastReadMessageId?: string;
 }
 
-export function DirectMessages({
+export function MessagesContainer({
   messages: initialMessages,
   initialThreadMessages,
   teacher,
   parent,
   lastReadMessageId,
-}: DirectMessagesProps) {
+}: MessagesContainerProps) {
   const isMobile = useIsMobile();
   const messageListRef = useRef<MessageListRef>(null);
   const {

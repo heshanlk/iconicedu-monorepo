@@ -1,4 +1,4 @@
-import { DashboardHeader, DirectMessages, ErrorBoundary } from '@iconicedu/ui-web';
+import { MessagesContainer, DashboardHeader, ErrorBoundary } from '@iconicedu/ui-web';
 import {
   LAST_READ_MESSAGE_ID,
   MOCK_MESSAGES,
@@ -12,7 +12,7 @@ export default function Page() {
     <>
       <div className="flex h-[calc(100vh-1.0rem)] flex-col">
         <DashboardHeader />
-        <DirectMessages
+        <MessagesContainer
           messages={MOCK_MESSAGES}
           initialThreadMessages={MOCK_THREAD_MESSAGES}
           teacher={MOCK_TEACHER}

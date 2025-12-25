@@ -22,7 +22,7 @@ export { GalleryVerticalEnd } from 'lucide-react';
 export { FingerprintIcon } from 'lucide-react';
 export * from './components/site-logo';
 export * from './components/site-logo-wt-name';
-export * from './components/classroom/direct-messages';
+export * from './components/messages/messages-container';
 export * from './components/error-boundary';
 export * from './components/inbox/inbox-container';
 export * from './components/calendar/calendar-header';

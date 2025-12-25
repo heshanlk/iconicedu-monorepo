@@ -190,9 +190,9 @@ export const MOCK_MESSAGES: Message[] = [
       title: 'Fractions | Arithmetic | Khan Academy',
       description:
         'Learn about fractions with step-by-step lessons, practice problems, and video explanations.',
-      imageUrl: '/placeholder.svg?height=400&width=800',
+      imageUrl: 'https://picsum.photos/seed/picsum/400/800',
       siteName: 'Khan Academy',
-      favicon: '/placeholder.svg?height=16&width=16',
+      favicon: 'https://picsum.photos/seed/picsum/16/16',
     },
   } as LinkPreviewMessage,
   {

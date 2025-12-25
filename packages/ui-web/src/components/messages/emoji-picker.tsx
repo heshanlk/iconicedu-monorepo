@@ -100,7 +100,7 @@ const emojiCategories = {
   },
 } as const;
 
-const RECENT_EMOJIS_KEY = 'dm-recent-emojis';
+const RECENT_EMOJIS_KEY = 'messages-recent-emojis';
 const MAX_RECENT_EMOJIS = 24;
 
 const EmojiButton = memo(function EmojiButton({
