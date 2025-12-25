@@ -1,22 +1,10 @@
 import { useRef, useEffect } from 'react';
-import { MessageItem } from './message-item';
 import { MessageInput } from './message-input';
-import type { Message, Thread } from '@iconicedu/shared-types';
-
-interface ThreadSheetProps {
-  thread: Thread;
-  messages: Message[];
-  onSendReply: (content: string) => void;
-  onProfileClick: (userId: string) => void;
-  lastReadMessageId?: string;
-  onToggleReaction?: (messageId: string, emoji: string) => void;
-  onToggleSaved?: (messageId: string) => void;
-  onToggleHidden?: (messageId: string) => void;
-  currentUserId?: string;
-}
+import type { ThreadPanelProps } from '@iconicedu/shared-types';
+import { ScrollArea } from '../../ui/scroll-area';
+import { ThreadMessageList } from './shared/thread-message-list';
 
 export function ThreadSheet({
-  thread,
   messages,
   onSendReply,
   onProfileClick,
@@ -25,7 +13,7 @@ export function ThreadSheet({
   onToggleHidden,
   currentUserId,
   lastReadMessageId,
-}: ThreadSheetProps) {
+}: ThreadPanelProps) {
   const bottomRef = useRef<HTMLDivElement>(null);
   const messageCountRef = useRef(messages.length);
 
@@ -36,56 +24,20 @@ export function ThreadSheet({
     messageCountRef.current = messages.length;
   }, [messages]);
 
-  const handleOpenThread = () => {
-    // Nested threads not supported
-  };
-
   return (
     <>
-      <div className="flex-1 overflow-y-auto px-2 py-4">
-        {messages.map((message, index) => {
-          const previousMessage = index > 0 ? messages[index - 1] : null;
-          const showUnreadDivider =
-            lastReadMessageId &&
-            previousMessage?.id === lastReadMessageId &&
-            message.id !== lastReadMessageId;
-
-          return (
-            <div key={message.id}>
-              {showUnreadDivider && (
-                <div className="relative my-4 flex items-center px-2">
-                  <div className="flex-1 border-t-2 border-destructive" />
-                  <span className="mx-3 text-xs font-bold text-destructive bg-background px-3 py-1 rounded-full">
-                    NEW
-                  </span>
-                  <div className="flex-1 border-t-2 border-destructive" />
-                </div>
-              )}
-              <MessageItem
-                message={message}
-                onOpenThread={handleOpenThread}
-                isThreadReply={index > 0}
-                onProfileClick={onProfileClick}
-                onToggleReaction={onToggleReaction}
-                onToggleSaved={onToggleSaved}
-                onToggleHidden={onToggleHidden}
-                currentUserId={currentUserId}
-              />
-              {index === 0 && messages.length > 1 && (
-                <div className="relative my-3 flex items-center px-2">
-                  <div className="flex-1 border-t border-border" />
-                  <span className="mx-3 text-xs text-muted-foreground">
-                    {messages.length - 1}{' '}
-                    {messages.length - 1 === 1 ? 'reply' : 'replies'}
-                  </span>
-                  <div className="flex-1 border-t border-border" />
-                </div>
-              )}
-            </div>
-          );
-        })}
+      <ScrollArea className="flex-1 px-2 py-4">
+        <ThreadMessageList
+          messages={messages}
+          onProfileClick={onProfileClick}
+          onToggleReaction={onToggleReaction}
+          onToggleSaved={onToggleSaved}
+          onToggleHidden={onToggleHidden}
+          currentUserId={currentUserId}
+          lastReadMessageId={lastReadMessageId}
+        />
         <div ref={bottomRef} />
-      </div>
+      </ScrollArea>
 
       <div className="flex-shrink-0 border-t border-border">
         <MessageInput onSend={onSendReply} placeholder="Reply..." />

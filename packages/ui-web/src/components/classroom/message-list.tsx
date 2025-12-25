@@ -1,6 +1,7 @@
 import { useRef, useEffect, useImperativeHandle, forwardRef, useMemo } from 'react';
 import { MessageItem } from './message-item';
 import type { Message, Thread, User } from '@iconicedu/shared-types';
+import { ScrollArea } from '../../ui/scroll-area';
 import { formatDateHeader } from '../../lib/message-utils';
 
 interface MessageListProps {
@@ -79,7 +80,7 @@ export const MessageList = forwardRef<MessageListRef, MessageListProps>(
     }, [messages]);
 
     return (
-      <div className="flex-1 overflow-y-auto">
+      <ScrollArea className="flex-1">
         {groupedMessages.map((group) => (
           <div key={group.date}>
             <div className="relative my-4 flex items-center">
@@ -132,7 +133,7 @@ export const MessageList = forwardRef<MessageListRef, MessageListProps>(
         {/* {isTyping && typingUser && <div>TypingIndicator user={typingUser}</div>} */}
 
         <div ref={bottomRef} />
-      </div>
+      </ScrollArea>
     );
   },
 );
