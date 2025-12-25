@@ -11,7 +11,7 @@ import { EventCard } from './event-card';
 import { MiniCalendar } from './mini-calendar';
 import { ScrollArea } from '../../ui/scroll-area';
 import { Button } from '../../ui/button';
-import { MessageSquarePlus, UserPlus } from 'lucide-react';
+import { ArrowRight, MessageSquarePlus, UserPlus } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
 import { useEffect, useRef } from 'react';
 
@@ -284,6 +284,7 @@ export function DayView({
                     </div>
                     {nextEvent && (
                       <Button size="sm" onClick={() => onDateSelect(nextEvent.date)}>
+                        <ArrowRight className="mr-2 size-4" />
                         Go to next up
                       </Button>
                     )}
