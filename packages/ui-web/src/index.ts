@@ -28,4 +28,3 @@ export * from './components/inbox/inbox-container';
 export * from './components/calendar/calendar-header';
 export * from './components/calendar/week-view';
 export * from './components/calendar/day-view';
-export type { SidebarLeftData } from '@iconicedu/shared-types';

@@ -3,7 +3,7 @@
 import type React from 'react';
 import { useState } from 'react';
 import { ActivityItemBase } from './activity-item-base';
-import type { Activity } from './types';
+import type { Activity } from '@iconicedu/shared-types';
 
 type ActivityBasicWithExpandedContentProps = {
   activity: Activity;

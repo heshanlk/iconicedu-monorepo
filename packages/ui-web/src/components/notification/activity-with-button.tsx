@@ -2,7 +2,7 @@
 
 import { Button } from '../../ui/button';
 import { cn } from '../../lib/utils';
-import type { Activity } from './types';
+import type { Activity } from '@iconicedu/shared-types';
 
 export function ActivityWithButton({
   activity,

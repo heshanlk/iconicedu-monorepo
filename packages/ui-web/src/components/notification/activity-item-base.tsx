@@ -7,7 +7,7 @@ import { Button } from '../../ui/button';
 import { cn } from '../../lib/utils';
 import { ActivityBadge } from './activity-badge';
 import { ActivityWithButton } from './activity-with-button';
-import type { Activity } from './types';
+import type { Activity } from '@iconicedu/shared-types';
 
 type ActivityItemBaseProps = {
   activity: Activity;

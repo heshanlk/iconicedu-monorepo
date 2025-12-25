@@ -21,7 +21,7 @@ import { ActivityBasic } from '../notification/activity-basic';
 import { ActivityBasicWithActionButton } from '../notification/activity-basic-with-action-button';
 import { ActivityBasicWithExpandedContent } from '../notification/activity-basic-with-expanded-content';
 import { ActivityWithSubitems } from '../notification/activity-with-subitems';
-import type { Activity } from '../notification/types';
+import type { Activity } from '@iconicedu/shared-types';
 
 const mockActivities: Activity[] = [
   {
@@ -634,7 +634,7 @@ const TAB_FILTERS = {
 } as const;
 type TabKey = keyof typeof TAB_FILTERS;
 
-const groupActivitiesByDate = (items: Activity[]) =>
+const groupActivitiesByDate = (items: Activity[]): Array<[string, Activity[]]> =>
   Object.entries(
     items.reduce(
       (acc, activity) => {
@@ -646,10 +646,10 @@ const groupActivitiesByDate = (items: Activity[]) =>
       },
       {} as Record<string, Activity[]>,
     ),
-  );
+  ) as Array<[string, Activity[]]>;
 
 export function InboxContainer() {
-  const [activities, setActivities] = useState(mockActivities);
+  const [activities, setActivities] = useState<Activity[]>(mockActivities);
   const [activeTab, setActiveTab] = useState<TabKey>('all');
 
   const groupedActivities = groupActivitiesByDate(activities);
@@ -691,7 +691,7 @@ export function InboxContainer() {
         if (activity.subActivities) {
           return {
             ...activity,
-            subActivities: activity.subActivities.map((sub) =>
+            subActivities: activity.subActivities.map((sub: Activity) =>
               sub.id === id ? { ...sub, isRead: true } : sub,
             ),
           };

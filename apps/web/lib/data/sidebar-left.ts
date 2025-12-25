@@ -1,4 +1,4 @@
-import type { SidebarLeftData } from '@iconicedu/ui-web';
+import type { SidebarLeftData } from '@iconicedu/shared-types';
 export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
   user: {
     name: 'Heshan Wanigasooriya',
@@ -176,7 +176,7 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
     {
       id: 5,
       name: 'Zayne',
-      color: 'bg-violet-500 text-white',
+      color: 'bg-green-500 text-white',
     },
   ],
 };

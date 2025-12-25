@@ -3,7 +3,7 @@
 import { AvatarWithStatus } from '../shared/avatar-with-status';
 import { cn } from '../../lib/utils';
 import { AvatarGroup, AvatarGroupCount } from '../../ui/avatar';
-import type { Activity } from './types';
+import type { Activity } from '@iconicedu/shared-types';
 
 type ActivityBadgeProps = {
   variant: Activity;

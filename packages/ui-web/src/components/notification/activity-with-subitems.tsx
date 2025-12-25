@@ -6,7 +6,7 @@ import { cn } from '../../lib/utils';
 import { ActivityBasicWithActionButton } from './activity-basic-with-action-button';
 import { ActivityBasicWithExpandedContent } from './activity-basic-with-expanded-content';
 import { ActivityItemBase } from './activity-item-base';
-import type { Activity } from './types';
+import type { Activity } from '@iconicedu/shared-types';
 
 type ActivityWithSubitemsProps = {
   activity: Activity;
