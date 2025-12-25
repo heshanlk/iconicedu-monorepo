@@ -1,14 +1,25 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { CalendarHeader, WeekView, DayView, DashboardHeader } from '@iconicedu/ui-web';
 import type { CalendarEvent, CalendarView } from '@iconicedu/shared-types';
-import { sampleEvents } from './calendar-data';
+import { getCalendarEventsForMonthRange, getCalendarEventsForView } from './calendar-data';
 
 export default function CalendarPage() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [view, setView] = useState<CalendarView>('day');
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
+  const [calendarMonthAnchor, setCalendarMonthAnchor] = useState(
+    new Date(currentDate.getFullYear(), currentDate.getMonth(), 1),
+  );
+  const calendarEventsForDots = useMemo(
+    () => getCalendarEventsForMonthRange(calendarMonthAnchor, 1, 1),
+    [calendarMonthAnchor],
+  );
+  const calendarEventsForView = useMemo(
+    () => getCalendarEventsForView(currentDate, view),
+    [currentDate, view],
+  );
 
   const handleNavigate = (direction: 'prev' | 'next' | 'today') => {
     if (direction === 'today') {
@@ -45,7 +56,7 @@ export default function CalendarPage() {
       {view === 'week' ? (
         <WeekView
           currentDate={currentDate}
-          events={sampleEvents}
+          events={calendarEventsForView}
           onEventClick={handleEventClick}
           onDateSelect={handleDateSelect}
           onSwitchToDay={() => setView('day')}
@@ -53,10 +64,12 @@ export default function CalendarPage() {
       ) : (
         <DayView
           currentDate={currentDate}
-          events={sampleEvents}
+          events={calendarEventsForView}
+          calendarEvents={calendarEventsForDots}
           selectedEvent={selectedEvent}
           onEventClick={handleEventClick}
           onDateSelect={handleDateSelect}
+          onMonthChange={setCalendarMonthAnchor}
         />
       )}
     </div>

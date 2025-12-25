@@ -13,6 +13,7 @@ interface MiniCalendarProps {
   selectedDate: Date;
   onDateSelect: (date: Date) => void;
   events?: CalendarEvent[];
+  onMonthChange?: (date: Date) => void;
 }
 
 export function MiniCalendar({
@@ -20,6 +21,7 @@ export function MiniCalendar({
   selectedDate,
   onDateSelect,
   events = [],
+  onMonthChange,
 }: MiniCalendarProps) {
   const [displayMonth, setDisplayMonth] = useState(currentDate.getMonth());
   const [displayYear, setDisplayYear] = useState(currentDate.getFullYear());
@@ -27,6 +29,7 @@ export function MiniCalendar({
   useEffect(() => {
     setDisplayMonth(currentDate.getMonth());
     setDisplayYear(currentDate.getFullYear());
+    onMonthChange?.(new Date(currentDate.getFullYear(), currentDate.getMonth(), 1));
   }, [currentDate]);
 
   const days = getDaysInMonth(displayYear, displayMonth);
@@ -42,8 +45,10 @@ export function MiniCalendar({
     if (displayMonth === 0) {
       setDisplayMonth(11);
       setDisplayYear(displayYear - 1);
+      onMonthChange?.(new Date(displayYear - 1, 11, 1));
     } else {
       setDisplayMonth(displayMonth - 1);
+      onMonthChange?.(new Date(displayYear, displayMonth - 1, 1));
     }
   };
 
@@ -51,8 +56,10 @@ export function MiniCalendar({
     if (displayMonth === 11) {
       setDisplayMonth(0);
       setDisplayYear(displayYear + 1);
+      onMonthChange?.(new Date(displayYear + 1, 0, 1));
     } else {
       setDisplayMonth(displayMonth + 1);
+      onMonthChange?.(new Date(displayYear, displayMonth + 1, 1));
     }
   };
 

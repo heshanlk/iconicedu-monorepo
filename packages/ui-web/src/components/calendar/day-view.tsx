@@ -16,20 +16,25 @@ import { useEffect, useRef } from 'react';
 interface DayViewProps {
   currentDate: Date;
   events: CalendarEvent[];
+  calendarEvents?: CalendarEvent[];
   selectedEvent: CalendarEvent | null;
   onEventClick: (event: CalendarEvent) => void;
   onDateSelect: (date: Date) => void;
+  onMonthChange?: (date: Date) => void;
 }
 
 export function DayView({
   currentDate,
   events,
+  calendarEvents,
   selectedEvent,
   onEventClick,
   onDateSelect,
+  onMonthChange,
 }: DayViewProps) {
   const timeSlots = getTimeSlots();
   const dayEvents = events.filter((event) => isSameDay(event.date, currentDate));
+  const miniCalendarEvents = calendarEvents ?? events;
   const dayLayout = getEventLayout(dayEvents);
   const columnGap = 6;
   const maxVisibleColumns = 3;
@@ -224,7 +229,8 @@ export function DayView({
               currentDate={currentDate}
               selectedDate={currentDate}
               onDateSelect={onDateSelect}
-              events={events}
+              events={miniCalendarEvents}
+              onMonthChange={onMonthChange}
             />
           </div>
         </ScrollArea>
