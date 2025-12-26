@@ -66,7 +66,7 @@ export function MessagesSidebar({
   if (isMobile) {
     return (
       <Drawer open={open} onOpenChange={(value) => !value && onClose()}>
-        <DrawerContent className="flex h-[85vh] min-h-0 flex-col overflow-hidden p-0 before:inset-0 before:rounded-t-xl">
+        <DrawerContent className="flex h-[85vh] min-h-0 flex-col overflow-hidden p-0 before:inset-0 before:rounded-t-xl data-[vaul-drawer-direction=bottom]:mt-0 data-[vaul-drawer-direction=bottom]:max-h-[85vh]">
           <DrawerHeader className="w-full border-b border-border bg-background px-4 py-3">
             <DrawerTitle asChild>
               <div className="w-full text-base">
@@ -79,7 +79,7 @@ export function MessagesSidebar({
             </DrawerTitle>
             {subtitle ? <DrawerDescription className="sr-only" /> : null}
           </DrawerHeader>
-          <div className="flex min-h-0 flex-1 flex-col">{children}</div>
+          <div className="flex min-h-0 flex-1 flex-col overflow-hidden">{children}</div>
         </DrawerContent>
       </Drawer>
     );

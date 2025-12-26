@@ -25,6 +25,7 @@ import {
 interface MessageInputProps {
   onSend: (content: string) => void;
   placeholder?: string;
+  sticky?: boolean;
 }
 
 const FormatButton = memo(function FormatButton({
@@ -53,6 +54,7 @@ const FormatButton = memo(function FormatButton({
 export const MessageInput = memo(function MessageInput({
   onSend,
   placeholder = 'Write a message...',
+  sticky = true,
 }: MessageInputProps) {
   const [content, setContent] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -101,7 +103,13 @@ export const MessageInput = memo(function MessageInput({
   ];
 
   return (
-    <div className="sticky bottom-0 z-10 w-full border-t border-border bg-card/95 backdrop-blur p-4">
+    <div
+      className={
+        sticky
+          ? 'sticky bottom-0 z-10 w-full border-t border-border bg-card/95 backdrop-blur p-4'
+          : 'w-full border-t border-border bg-card/95 backdrop-blur p-4'
+      }
+    >
       <div className="rounded-xl border border-input bg-background focus-within:ring-1 focus-within:ring-ring">
         <Textarea
           ref={textareaRef}
