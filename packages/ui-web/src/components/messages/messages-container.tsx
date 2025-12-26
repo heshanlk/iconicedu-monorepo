@@ -10,7 +10,7 @@ import { SavedMessagesPanel } from './saved-messages-panel';
 import { RightSidebar } from './right-sidebar';
 import { RightSidebarSheet } from './right-sidebar-sheet';
 import { MessageInput } from './message-input';
-import { DMHeader } from './messages-header';
+import { MessageHeader } from './messages-header';
 import { useIsMobile } from '../../hooks/use-mobile';
 import { useMessages } from '../../hooks/use-messages';
 import { useDMSidebar } from '../../hooks/use-messages-sidebar';
@@ -251,9 +251,9 @@ export function MessagesContainer({
   );
 
   return (
-    <div className="flex h-full min-h-0 max-h-[93%]">
+    <div className="flex h-full min-h-0">
       <div className="flex flex-1 flex-col">
-        <DMHeader
+        <MessageHeader
           user={teacher}
           onProfileClick={() => handleProfileClick(teacher.id)}
           onSavedMessagesClick={handleSavedMessagesClick}

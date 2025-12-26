@@ -17,7 +17,7 @@ import {
 import type { User } from '@iconicedu/shared-types';
 import { AvatarWithStatus } from '../shared/avatar-with-status';
 
-interface DMHeaderProps {
+interface MessageHeaderProps {
   user: User;
   onProfileClick?: () => void;
   onSavedMessagesClick?: () => void;
@@ -53,11 +53,11 @@ const HeaderButton = memo(function HeaderButton({
   );
 });
 
-export const DMHeader = memo(function DMHeader({
+export const MessageHeader = memo(function MessageHeader({
   user,
   onProfileClick,
   onSavedMessagesClick,
-}: DMHeaderProps) {
+}: MessageHeaderProps) {
   const handleProfileClick = useCallback(() => {
     onProfileClick?.();
   }, [onProfileClick]);
