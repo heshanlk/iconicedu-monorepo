@@ -16,6 +16,7 @@ interface MessagesSidebarProps {
   onClose: () => void;
   children: ReactNode;
   mobileScrollable?: boolean;
+  className?: string;
 }
 
 function SidebarHeader({
@@ -54,6 +55,7 @@ export function MessagesSidebar({
   open,
   onClose,
   children,
+  className,
 }: MessagesSidebarProps) {
   const isMobile = useIsMobile();
 
@@ -61,7 +63,12 @@ export function MessagesSidebar({
     if (!open) return null;
     return (
       <Drawer open={open} onOpenChange={(value) => !value && onClose()}>
-        <DrawerContent className="flex h-[85vh] flex-col overflow-hidden bg-background p-0 rounded-t-xl">
+        <DrawerContent
+          className={cn(
+            'flex flex-col overflow-hidden bg-background p-0 rounded-t-xl',
+            className,
+          )}
+        >
           <DrawerHeader className="border-b border-border px-4 py-3">
             <SidebarHeader title={title} subtitle={subtitle} onClose={onClose} />
           </DrawerHeader>
