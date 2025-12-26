@@ -10,6 +10,7 @@ import { SavedMessagesPanel } from './saved-messages-panel';
 import { MessagesSidebar } from './messages-sidebar';
 import { MessageInput } from './message-input';
 import { MessageHeader } from './messages-header';
+import { useIsMobile } from '../../hooks/use-mobile';
 import { useMessages } from '../../hooks/use-messages';
 import { useDMSidebar } from '../../hooks/use-messages-sidebar';
 import { useThread } from '../../hooks/use-thread';
@@ -30,6 +31,7 @@ export function MessagesContainer({
   parent,
   lastReadMessageId,
 }: MessagesContainerProps) {
+  const isMobile = useIsMobile();
   const messageListRef = useRef<MessageListRef>(null);
   const {
     openThread: openThreadSidebar,
@@ -268,29 +270,26 @@ export function MessagesContainer({
             title={sidebarMeta.title}
             subtitle={sidebarMeta.subtitle}
             onClose={handleCloseSidebar}
-            desktopContent={
+          >
+            {sidebarContent === 'thread' && activeThread && (
               <>
-                {sidebarContent === 'thread' && activeThread && (
+                {isMobile ? (
+                  <ThreadSheet {...threadPanelProps} />
+                ) : (
                   <ThreadPanel {...threadPanelProps} />
                 )}
-                {sidebarContent === 'profile' && <ProfilePanel user={profileUser} />}
-                {sidebarContent === 'saved-messages' && (
-                  <SavedMessagesPanel {...savedMessagesPanelProps} />
-                )}
               </>
-            }
-            mobileContent={
-              <>
-                {sidebarContent === 'thread' && activeThread && (
-                  <ThreadSheet {...threadPanelProps} />
-                )}
-                {sidebarContent === 'profile' && <ProfileSheet user={profileUser} />}
-                {sidebarContent === 'saved-messages' && (
-                  <SavedMessagesPanel {...savedMessagesPanelProps} />
-                )}
-              </>
-            }
-          />
+            )}
+            {sidebarContent === 'profile' &&
+              (isMobile ? (
+                <ProfileSheet user={profileUser} />
+              ) : (
+                <ProfilePanel user={profileUser} />
+              ))}
+            {sidebarContent === 'saved-messages' && (
+              <SavedMessagesPanel {...savedMessagesPanelProps} />
+            )}
+          </MessagesSidebar>
         </div>
       </div>
     </div>
