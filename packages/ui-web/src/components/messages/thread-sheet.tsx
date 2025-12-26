@@ -25,8 +25,8 @@ export function ThreadSheet({
   }, [messages]);
 
   return (
-    <>
-      <ScrollArea className="flex-1 px-2 py-4">
+    <div className="flex min-h-0 flex-1 flex-col">
+      <ScrollArea className="flex-1 min-h-0 px-2 py-4">
         <ThreadMessageList
           messages={messages}
           onProfileClick={onProfileClick}
@@ -42,6 +42,6 @@ export function ThreadSheet({
       <div className="flex-shrink-0 border-t border-border">
         <MessageInput onSend={onSendReply} placeholder="Reply..." />
       </div>
-    </>
+    </div>
   );
 }
