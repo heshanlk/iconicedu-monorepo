@@ -10,6 +10,7 @@ import {
   DrawerDescription,
 } from '../../ui/drawer';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../ui/card';
+import { ScrollArea } from '../../ui/scroll-area';
 import { X } from 'lucide-react';
 import { useIsMobile } from '../../hooks/use-mobile';
 
@@ -65,7 +66,7 @@ export function MessagesSidebar({
   if (isMobile) {
     return (
       <Drawer open={open} onOpenChange={(value) => !value && onClose()}>
-        <DrawerContent className="flex h-[85vh] flex-col p-0">
+        <DrawerContent className="flex h-[85vh] min-h-0 flex-col overflow-hidden p-0">
           <DrawerHeader className="border-b border-border bg-background px-4 py-3 text-left">
             <DrawerTitle asChild>
               <div className="text-base">
@@ -85,20 +86,16 @@ export function MessagesSidebar({
   }
 
   return (
-    <Card className="hidden md:flex w-[400px] flex-col rounded-none border-0 border-l border-border bg-card">
+    <Card className="hidden md:flex w-[400px] min-h-0 flex-col rounded-none border-0 border-l border-border bg-card">
       <CardHeader className="border-b border-border bg-card px-4 py-3">
-        <CardTitle asChild>
-          <div>
-            <MessagesSidebarHeader
-              title={title}
-              subtitle={subtitle}
-              onClose={onClose}
-            />
-          </div>
-        </CardTitle>
+        <MessagesSidebarHeader title={title} subtitle={subtitle} onClose={onClose} />
         {subtitle ? <CardDescription className="sr-only" /> : null}
       </CardHeader>
-      <CardContent className="flex min-h-0 flex-1 flex-col p-0">{children}</CardContent>
+      <CardContent className="flex min-h-0 flex-1 flex-col p-0">
+        <ScrollArea className="flex-1 min-h-0">
+          <div className="flex min-h-0 flex-col">{children}</div>
+        </ScrollArea>
+      </CardContent>
     </Card>
   );
 }
