@@ -9,7 +9,7 @@ export type UUID = string;
 export type ContactMethod = 'email' | 'phone' | 'whatsapp' | 'none';
 
 export interface BaseUserProfile {
-  userId: string;
+  userId: UUID;
   displayName: string;
   firstName?: string | null;
   lastName?: string | null;
@@ -17,41 +17,30 @@ export interface BaseUserProfile {
   avatarSeed: string;
   avatarUrl?: string | null;
   avatarUpdatedAt?: string | null;
+  email?: string | null;
   phoneE164?: string | null;
   timezone: string;
   locale?: string | null;
   prefs?: Record<string, unknown> | null;
   notificationDefaults?: Record<string, unknown> | null;
-}
-
-export type PersonaKey = 'teacher' | 'parent' | 'student';
-
-export interface OrgMemberProfile {
-  orgId: UUID;
-  userId: UUID;
-  preferredContactMethod?: ContactMethod | null;
-  preferredLanguage?: string | null;
-  notesInternal?: string | null;
+  userRoles?: UserRole[] | null;
   createdAt: ISODateTime;
   updatedAt: ISODateTime;
+  preferredContactMethod?: ContactMethod | null;
+  preferredLanguage?: string | null;
 }
 
 export type OrgRoleKey = 'owner' | 'admin' | 'teacher' | 'parent' | 'student';
 
 export interface UserRole {
-  orgId: UUID;
   userId: UUID;
   roleKey: OrgRoleKey;
   assignedBy?: UUID | null;
   assignedAt: ISODateTime;
 }
 
-// =====================
-// Families (Parent ↔ Student referencing)
-// =====================
 export interface Family {
   id: UUID;
-  orgId: UUID;
   familyName?: string | null;
   createdAt: ISODateTime;
   updatedAt?: ISODateTime | null;
@@ -62,7 +51,6 @@ export type FamilyRole = 'parent' | 'guardian' | 'student';
 export interface FamilyMember {
   familyId: UUID;
   userId: UUID;
-  orgId: UUID;
   familyRole: FamilyRole;
   relationship?: string | null;
   isPrimary?: boolean | null;
@@ -71,7 +59,6 @@ export interface FamilyMember {
 
 // Helpful computed shapes (not DB tables)
 export interface ParentChildLink {
-  orgId: UUID;
   familyId: UUID;
   parentUserId: UUID;
   studentUserId: UUID;
@@ -80,9 +67,7 @@ export interface ParentChildLink {
 }
 
 export interface TeacherProfile extends BaseUserProfile {
-  role: 'Teacher';
-  orgId: UUID;
-  email?: string | null;
+  email: string;
   headline?: string | null;
   subjects?: string[] | null;
   gradesSupported?: Array<number | string> | null;
@@ -93,52 +78,39 @@ export interface TeacherProfile extends BaseUserProfile {
     issuer?: string;
     year?: number;
   }> | null;
-  notesInternal?: string | null;
-  createdAt: ISODateTime;
-  updatedAt: ISODateTime;
   school: string;
   grade: string;
   joinedDate: Date;
+  notesInternal?: string | null;
 }
 
 export interface ParentProfile extends BaseUserProfile {
-  role: 'Parent';
-  email?: string | null;
+  email: string;
   school: string;
   grade: string;
   students: StudentProfile[];
   joinedDate: Date;
+  notesInternal?: string | null;
 }
 
 export interface StaffProfile extends BaseUserProfile {
-  role: 'Staff';
-  orgId: UUID;
   department?: string | null;
   jobTitle?: string | null;
   notesInternal?: string | null;
-  createdAt: ISODateTime;
-  updatedAt: ISODateTime;
 }
 
 export interface StudentProfile extends BaseUserProfile {
-  role: 'Student';
-  orgId: UUID;
   gradeLevel?: number | null;
   schoolName?: string | null;
   schoolYear?: string | null;
-  notesInternal?: string | null;
-  createdAt: ISODateTime;
-  updatedAt: ISODateTime;
   key: MockStudentKey;
   legacyId: number;
   color: string;
+  notesInternal?: string | null;
 }
-
-export type MockStudent = StudentProfile;
 
 export const MOCK_STUDENTS: StudentProfile[] = [
   {
-    orgId: MOCK_ORG_ID,
     userId: '1b9504c3-0e65-4d7a-a843-2d7169f73407',
     displayName: 'Sarah Chen',
     firstName: 'Sarah',
@@ -152,6 +124,13 @@ export const MOCK_STUDENTS: StudentProfile[] = [
     locale: 'en-US',
     prefs: null,
     notificationDefaults: null,
+    userRoles: [
+      {
+        userId: '1b9504c3-0e65-4d7a-a843-2d7169f73407',
+        roleKey: 'student',
+        assignedAt: '2020-09-01T00:00:00.000Z',
+      },
+    ],
     gradeLevel: 4,
     schoolName: 'Riverside Elementary School',
     schoolYear: '2024-2025',
@@ -161,10 +140,8 @@ export const MOCK_STUDENTS: StudentProfile[] = [
     key: 'sarahChen',
     legacyId: 3,
     color: 'bg-green-500 text-white',
-    role: 'Student',
   },
   {
-    orgId: MOCK_ORG_ID,
     userId: '8f055dda-76e1-4a50-9e6e-34f0dc82e6f6',
     displayName: 'Zayne',
     firstName: 'Zayne',
@@ -178,6 +155,13 @@ export const MOCK_STUDENTS: StudentProfile[] = [
     locale: 'en-US',
     prefs: null,
     notificationDefaults: null,
+    userRoles: [
+      {
+        userId: '8f055dda-76e1-4a50-9e6e-34f0dc82e6f6',
+        roleKey: 'student',
+        assignedAt: '2021-01-01T00:00:00.000Z',
+      },
+    ],
     gradeLevel: 7,
     schoolName: 'Riverside Middle School',
     schoolYear: '2024-2025',
@@ -187,10 +171,8 @@ export const MOCK_STUDENTS: StudentProfile[] = [
     key: 'zayne',
     legacyId: 4,
     color: 'bg-red-500 text-white',
-    role: 'Student',
   },
   {
-    orgId: MOCK_ORG_ID,
     userId: 'f0c0ea47-e1c1-4f54-bb99-b1df83db9da4',
     displayName: 'Sophia',
     firstName: 'Sophia',
@@ -204,6 +186,13 @@ export const MOCK_STUDENTS: StudentProfile[] = [
     locale: 'en-US',
     prefs: null,
     notificationDefaults: null,
+    userRoles: [
+      {
+        userId: 'f0c0ea47-e1c1-4f54-bb99-b1df83db9da4',
+        roleKey: 'student',
+        assignedAt: '2021-01-01T00:00:00.000Z',
+      },
+    ],
     gradeLevel: 7,
     schoolName: 'Riverside Middle School',
     schoolYear: '2024-2025',
@@ -213,7 +202,6 @@ export const MOCK_STUDENTS: StudentProfile[] = [
     key: 'sophia',
     legacyId: 5,
     color: 'bg-green-500 text-white',
-    role: 'Student',
   },
 ];
 
@@ -229,74 +217,16 @@ const isMockStudent = (student: StudentProfile | undefined): student is StudentP
 export const getMockStudentsByIds = (ids: number[]): StudentProfile[] =>
   ids.map((id) => getMockStudentById(id)).filter(isMockStudent);
 
-export const MOCK_ORG_ID = '4fca0d16-5d72-4a24-9a0d-6f8c0bf2b652';
-
-export const MOCK_ORG_MEMBER_PROFILES: OrgMemberProfile[] = [
-  {
-    orgId: MOCK_ORG_ID,
-    userId: 'a21b9c5f-0906-4f04-9b7f-6f7b4a6fb1c5',
-    activePersona: 'teacher',
-    displayNameOverride: null,
-    preferredContactMethod: 'email',
-    preferredLanguage: 'en-US',
-    notesInternal: null,
-    createdAt: '2020-09-01T00:00:00.000Z',
-    updatedAt: '2024-01-01T00:00:00.000Z',
-  },
-  {
-    orgId: MOCK_ORG_ID,
-    userId: '2a0f3cbe-0b3b-470a-8a98-9381c1c9c6a7',
-    activePersona: 'parent',
-    displayNameOverride: null,
-    preferredContactMethod: 'email',
-    preferredLanguage: 'en-US',
-    notesInternal: null,
-    createdAt: '2021-09-15T00:00:00.000Z',
-    updatedAt: '2024-01-01T00:00:00.000Z',
-  },
-  {
-    orgId: MOCK_ORG_ID,
-    userId: '1b9504c3-0e65-4d7a-a843-2d7169f73407',
-    activePersona: 'student',
-    displayNameOverride: null,
-    preferredContactMethod: null,
-    preferredLanguage: 'en-US',
-    notesInternal: null,
-    createdAt: '2020-09-01T00:00:00.000Z',
-    updatedAt: '2024-01-01T00:00:00.000Z',
-  },
-  {
-    orgId: MOCK_ORG_ID,
-    userId: '8f055dda-76e1-4a50-9e6e-34f0dc82e6f6',
-    activePersona: 'student',
-    displayNameOverride: null,
-    preferredContactMethod: null,
-    preferredLanguage: 'en-US',
-    notesInternal: null,
-    createdAt: '2021-01-01T00:00:00.000Z',
-    updatedAt: '2024-01-01T00:00:00.000Z',
-  },
-  {
-    orgId: MOCK_ORG_ID,
-    userId: 'f0c0ea47-e1c1-4f54-bb99-b1df83db9da4',
-    activePersona: 'student',
-    displayNameOverride: null,
-    preferredContactMethod: null,
-    preferredLanguage: 'en-US',
-    notesInternal: null,
-    createdAt: '2021-01-01T00:00:00.000Z',
-    updatedAt: '2024-01-01T00:00:00.000Z',
-  },
-];
-
-export const getMockOrgMemberProfileByUserId = (userId: string) =>
-  MOCK_ORG_MEMBER_PROFILES.find((profile) => profile.userId === userId);
-
 export const toMessageUser = (profile: BaseUserProfile): User => ({
   id: profile.userId,
   name: profile.displayName,
   avatar: profile.avatarUrl ?? '',
 });
+
+const toRoleLabel = (roleKey: OrgRoleKey | undefined) => {
+  if (!roleKey) return undefined;
+  return roleKey.charAt(0).toUpperCase() + roleKey.slice(1);
+};
 
 export const toProfileUser = (
   profile: TeacherProfile | ParentProfile,
@@ -309,7 +239,7 @@ export const toProfileUser = (
   joinedDate?: Date;
 } => ({
   ...toMessageUser(profile),
-  role: profile.role,
+  role: toRoleLabel(profile.userRoles?.[0]?.roleKey),
   email: profile.email ?? null,
   phone: profile.phoneE164 ?? null,
   school: profile.school,
@@ -318,7 +248,6 @@ export const toProfileUser = (
 });
 
 export const MOCK_TEACHER: TeacherProfile = {
-  orgId: MOCK_ORG_ID,
   userId: 'a21b9c5f-0906-4f04-9b7f-6f7b4a6fb1c5',
   displayName: 'Ms. Jennifer Williams',
   firstName: 'Jennifer',
@@ -333,7 +262,13 @@ export const MOCK_TEACHER: TeacherProfile = {
   locale: 'en-US',
   prefs: null,
   notificationDefaults: null,
-  role: 'Teacher',
+  userRoles: [
+    {
+      userId: 'a21b9c5f-0906-4f04-9b7f-6f7b4a6fb1c5',
+      roleKey: 'teacher',
+      assignedAt: '2020-09-01T00:00:00.000Z',
+    },
+  ],
   email: 'j.williams@school.edu',
   headline: 'Helping 4th graders love math.',
   subjects: ['Mathematics'],
@@ -366,8 +301,17 @@ export const MOCK_PARENT: ParentProfile = {
   locale: 'en-US',
   prefs: null,
   notificationDefaults: null,
-  role: 'Parent',
+  userRoles: [
+    {
+      userId: '2a0f3cbe-0b3b-470a-8a98-9381c1c9c6a7',
+      roleKey: 'parent',
+      assignedAt: '2021-09-15T00:00:00.000Z',
+    },
+  ],
   email: 'michael.chen@email.com',
+  notesInternal: null,
+  createdAt: '2021-09-15T00:00:00.000Z',
+  updatedAt: '2024-01-01T00:00:00.000Z',
   school: 'Riverside Elementary School',
   grade: '4th Grade',
   students: getMockStudentsByIds([3]),
