@@ -117,7 +117,7 @@ export const MessageInput = memo(function MessageInput({
           onChange={(e) => setContent(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
-          className="min-h-[80px] resize-none border-0 bg-transparent px-3 py-2 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+          className="min-h-[80px] resize-none border-0 bg-transparent px-3 py-2 text-base sm:text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
         />
         <div className="flex items-center justify-between border-t border-border px-2 py-1.5">
           <TooltipProvider>
