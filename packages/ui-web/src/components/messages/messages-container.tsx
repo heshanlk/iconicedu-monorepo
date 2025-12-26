@@ -55,13 +55,24 @@ export function MessagesContainer({
 
   const handleOpenThread = useCallback(
     (thread: Thread, parentMessage: Message) => {
+      if (sidebarContent === 'thread' && activeThread?.id === thread.id) {
+        closeSidebar();
+        return;
+      }
       openThread(
         { ...thread, parentMessage },
         initialThreadMessages[thread.id] || [parentMessage],
       );
       openThreadSidebar();
     },
-    [openThread, openThreadSidebar, initialThreadMessages],
+    [
+      sidebarContent,
+      activeThread,
+      closeSidebar,
+      openThread,
+      openThreadSidebar,
+      initialThreadMessages,
+    ],
   );
 
   const handleSendMessage = useCallback(
@@ -102,14 +113,22 @@ export function MessagesContainer({
 
   const handleProfileClick = useCallback(
     (userId: string) => {
+      if (sidebarContent === 'profile' && profileUserId === userId) {
+        closeSidebar();
+        return;
+      }
       openProfile(userId);
     },
-    [openProfile],
+    [sidebarContent, profileUserId, closeSidebar, openProfile],
   );
 
   const handleSavedMessagesClick = useCallback(() => {
+    if (sidebarContent === 'saved-messages') {
+      closeSidebar();
+      return;
+    }
     openSavedMessages();
-  }, [openSavedMessages]);
+  }, [sidebarContent, closeSidebar, openSavedMessages]);
 
   const handleCloseSidebar = useCallback(() => {
     closeSidebar();
