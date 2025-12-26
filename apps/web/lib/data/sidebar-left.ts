@@ -1,10 +1,10 @@
 import type { SidebarLeftData } from '@iconicedu/shared-types';
+import { MOCK_PARENT, MOCK_STUDENTS } from './people';
 export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
   user: {
-    name: 'Heshan Wanigasooriya',
-    email: 'heshanmw@gmail.com',
-    avatar: '/avatars/shadcn.jpg',
-    isOnline: true,
+    name: MOCK_PARENT.displayName,
+    email: MOCK_PARENT.email ?? '',
+    avatar: MOCK_PARENT.avatarUrl ?? '',
   },
   navMain: [
     {
@@ -162,21 +162,9 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
       url: '/dashboard/dm',
     },
   ],
-  STUDENTS: [
-    {
-      id: 3,
-      name: 'Elyas',
-      color: 'bg-green-500 text-white',
-    },
-    {
-      id: 4,
-      name: 'Nailah',
-      color: 'bg-red-500 text-white',
-    },
-    {
-      id: 5,
-      name: 'Zayne',
-      color: 'bg-green-500 text-white',
-    },
-  ],
+  STUDENTS: MOCK_STUDENTS.map((student) => ({
+    id: student.legacyId,
+    name: student.displayName,
+    color: student.color,
+  })),
 };
