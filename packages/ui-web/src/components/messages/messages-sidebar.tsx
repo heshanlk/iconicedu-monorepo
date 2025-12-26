@@ -1,18 +1,13 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { Button } from '../../ui/button';
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerDescription,
-} from '../../ui/drawer';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../ui/card';
-import { ScrollArea } from '../../ui/scroll-area';
 import { X } from 'lucide-react';
 import { useIsMobile } from '../../hooks/use-mobile';
+import { Button } from '../../ui/button';
+import { Card, CardContent, CardHeader } from '../../ui/card';
+import { Drawer, DrawerContent, DrawerHeader } from '../../ui/drawer';
+import { ScrollArea } from '../../ui/scroll-area';
+import { cn } from '../../lib/utils';
 
 interface MessagesSidebarProps {
   title: string;
@@ -22,7 +17,7 @@ interface MessagesSidebarProps {
   children: ReactNode;
 }
 
-function MessagesSidebarHeader({
+function SidebarHeader({
   title,
   subtitle,
   onClose,
@@ -33,10 +28,10 @@ function MessagesSidebarHeader({
 }) {
   return (
     <div className="flex w-full items-center justify-between gap-3">
-      <div className="space-y-0.5">
-        <div className="text-sm font-semibold text-foreground">{title}</div>
+      <div className="min-w-0">
+        <div className="truncate text-sm font-semibold text-foreground">{title}</div>
         {subtitle ? (
-          <div className="text-xs text-muted-foreground">{subtitle}</div>
+          <div className="truncate text-xs text-muted-foreground">{subtitle}</div>
         ) : null}
       </div>
       <Button
@@ -61,41 +56,43 @@ export function MessagesSidebar({
 }: MessagesSidebarProps) {
   const isMobile = useIsMobile();
 
-  if (!open) return null;
-
   if (isMobile) {
+    if (!open) return null;
     return (
       <Drawer open={open} onOpenChange={(value) => !value && onClose()}>
-        <DrawerContent className="flex h-[85vh] min-h-0 flex-col overflow-hidden p-0 before:inset-0 before:rounded-t-xl data-[vaul-drawer-direction=bottom]:mt-0 data-[vaul-drawer-direction=bottom]:max-h-[85vh]">
-          <DrawerHeader className="w-full border-b border-border bg-background px-4 py-3">
-            <DrawerTitle asChild>
-              <div className="w-full text-base">
-                <MessagesSidebarHeader
-                  title={title}
-                  subtitle={subtitle}
-                  onClose={onClose}
-                />
-              </div>
-            </DrawerTitle>
-            {subtitle ? <DrawerDescription className="sr-only" /> : null}
+        <DrawerContent className="flex h-[85vh] flex-col overflow-hidden bg-background p-0 rounded-t-xl">
+          <DrawerHeader className="border-b border-border px-4 py-3">
+            <SidebarHeader title={title} subtitle={subtitle} onClose={onClose} />
           </DrawerHeader>
-          <div className="flex min-h-0 flex-1 flex-col overflow-hidden">{children}</div>
+          <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+            <ScrollArea className="flex-1 min-h-0">
+              <div className="flex min-h-0 flex-col">{children}</div>
+            </ScrollArea>
+          </div>
         </DrawerContent>
       </Drawer>
     );
   }
 
   return (
-    <Card className="hidden md:flex w-[400px] min-h-0 flex-col rounded-none border-0 border-l border-border bg-card">
-      <CardHeader className="border-b border-border bg-card px-4 py-3">
-        <MessagesSidebarHeader title={title} subtitle={subtitle} onClose={onClose} />
-        {subtitle ? <CardDescription className="sr-only" /> : null}
+    <div
+      data-state={open ? 'open' : 'closed'}
+      className={cn(
+        'hidden md:flex',
+        'transition duration-200 motion-reduce:transition-none',
+        'data-[state=closed]:pointer-events-none data-[state=closed]:opacity-0 data-[state=closed]:translate-x-4',
+      )}
+    >
+      <Card className="w-[400px] min-h-0 flex-col rounded-none border-0 border-l border-border bg-card">
+      <CardHeader className="border-b border-border px-4 py-3">
+        <SidebarHeader title={title} subtitle={subtitle} onClose={onClose} />
       </CardHeader>
       <CardContent className="flex min-h-0 flex-1 flex-col p-0">
         <ScrollArea className="flex-1 min-h-0">
           <div className="flex min-h-0 flex-col">{children}</div>
         </ScrollArea>
       </CardContent>
-    </Card>
+      </Card>
+    </div>
   );
 }
