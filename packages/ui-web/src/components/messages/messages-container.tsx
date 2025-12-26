@@ -7,11 +7,9 @@ import { ThreadSheet } from './thread-sheet';
 import { ProfilePanel } from './profile-panel';
 import { ProfileSheet } from './profile-sheet';
 import { SavedMessagesPanel } from './saved-messages-panel';
-import { RightSidebar } from './right-sidebar';
-import { RightSidebarSheet } from './right-sidebar-sheet';
+import { MessagesSidebar } from './messages-sidebar';
 import { MessageInput } from './message-input';
 import { MessageHeader } from './messages-header';
-import { useIsMobile } from '../../hooks/use-mobile';
 import { useMessages } from '../../hooks/use-messages';
 import { useDMSidebar } from '../../hooks/use-messages-sidebar';
 import { useThread } from '../../hooks/use-thread';
@@ -32,7 +30,6 @@ export function MessagesContainer({
   parent,
   lastReadMessageId,
 }: MessagesContainerProps) {
-  const isMobile = useIsMobile();
   const messageListRef = useRef<MessageListRef>(null);
   const {
     openThread: openThreadSidebar,
@@ -251,8 +248,8 @@ export function MessagesContainer({
   );
 
   return (
-    <div className="flex h-full min-h-0">
-      <div className="flex flex-1 flex-col">
+      <div className="flex h-full min-h-0">
+        <div className="flex flex-1 flex-col">
         <MessageHeader
           user={teacher}
           onProfileClick={() => handleProfileClick(teacher.id)}
@@ -266,54 +263,36 @@ export function MessagesContainer({
               placeholder={`Message ${teacher.name}`}
             />
           </div>
-          {!isMobile && sidebarContent && (
-            <RightSidebar
-              key={`${sidebarContent}-${profileUserId || activeThread?.id}`}
-              title={sidebarMeta.title}
-              subtitle={sidebarMeta.subtitle}
-              onClose={handleCloseSidebar}
-            >
-              {sidebarContent === 'thread' && activeThread && (
-                <ThreadPanel {...threadPanelProps} />
-              )}
-              {sidebarContent === 'profile' && <ProfilePanel user={profileUser} />}
-              {sidebarContent === 'saved-messages' && (
-                <SavedMessagesPanel {...savedMessagesPanelProps} />
-              )}
-            </RightSidebar>
-          )}
+          <MessagesSidebar
+            open={Boolean(sidebarContent)}
+            title={sidebarMeta.title}
+            subtitle={sidebarMeta.subtitle}
+            onClose={handleCloseSidebar}
+            desktopContent={
+              <>
+                {sidebarContent === 'thread' && activeThread && (
+                  <ThreadPanel {...threadPanelProps} />
+                )}
+                {sidebarContent === 'profile' && <ProfilePanel user={profileUser} />}
+                {sidebarContent === 'saved-messages' && (
+                  <SavedMessagesPanel {...savedMessagesPanelProps} />
+                )}
+              </>
+            }
+            mobileContent={
+              <>
+                {sidebarContent === 'thread' && activeThread && (
+                  <ThreadSheet {...threadPanelProps} />
+                )}
+                {sidebarContent === 'profile' && <ProfileSheet user={profileUser} />}
+                {sidebarContent === 'saved-messages' && (
+                  <SavedMessagesPanel {...savedMessagesPanelProps} />
+                )}
+              </>
+            }
+          />
         </div>
       </div>
-      {isMobile && sidebarContent === 'thread' && activeThread && (
-        <RightSidebarSheet
-          title={sidebarMeta.title}
-          subtitle={sidebarMeta.subtitle}
-          open={true}
-          onClose={handleCloseSidebar}
-        >
-          <ThreadSheet {...threadPanelProps} />
-        </RightSidebarSheet>
-      )}
-      {isMobile && sidebarContent === 'profile' && (
-        <RightSidebarSheet
-          title={sidebarMeta.title}
-          subtitle={sidebarMeta.subtitle}
-          open={true}
-          onClose={handleCloseSidebar}
-        >
-          <ProfileSheet user={profileUser} />
-        </RightSidebarSheet>
-      )}
-      {isMobile && sidebarContent === 'saved-messages' && (
-        <RightSidebarSheet
-          title={sidebarMeta.title}
-          subtitle={sidebarMeta.subtitle}
-          open={true}
-          onClose={handleCloseSidebar}
-        >
-          <SavedMessagesPanel {...savedMessagesPanelProps} />
-        </RightSidebarSheet>
-      )}
     </div>
   );
 }
