@@ -66,10 +66,10 @@ export function MessagesSidebar({
   if (isMobile) {
     return (
       <Drawer open={open} onOpenChange={(value) => !value && onClose()}>
-        <DrawerContent className="flex h-[85vh] min-h-0 flex-col overflow-hidden p-0">
-          <DrawerHeader className="border-b border-border bg-background px-4 py-3 text-left">
+        <DrawerContent className="flex h-[85vh] min-h-0 flex-col overflow-hidden p-0 before:inset-0 before:rounded-t-xl">
+          <DrawerHeader className="w-full border-b border-border bg-background px-4 py-3">
             <DrawerTitle asChild>
-              <div className="text-base">
+              <div className="w-full text-base">
                 <MessagesSidebarHeader
                   title={title}
                   subtitle={subtitle}

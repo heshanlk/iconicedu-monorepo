@@ -101,7 +101,7 @@ export const MessageInput = memo(function MessageInput({
   ];
 
   return (
-    <div className="sticky bottom-0 z-10 border-t border-border bg-card/95 backdrop-blur p-4">
+    <div className="sticky bottom-0 z-10 w-full border-t border-border bg-card/95 backdrop-blur p-4">
       <div className="rounded-xl border border-input bg-background focus-within:ring-1 focus-within:ring-ring">
         <Textarea
           ref={textareaRef}
