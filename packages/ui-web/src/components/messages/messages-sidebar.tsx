@@ -15,6 +15,7 @@ interface MessagesSidebarProps {
   open: boolean;
   onClose: () => void;
   children: ReactNode;
+  mobileScrollable?: boolean;
 }
 
 function SidebarHeader({
@@ -65,9 +66,7 @@ export function MessagesSidebar({
             <SidebarHeader title={title} subtitle={subtitle} onClose={onClose} />
           </DrawerHeader>
           <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-            <ScrollArea className="flex-1 min-h-0">
-              <div className="flex min-h-0 flex-col">{children}</div>
-            </ScrollArea>
+            <div className="flex min-h-0 flex-1 flex-col">{children}</div>
           </div>
         </DrawerContent>
       </Drawer>
@@ -85,14 +84,14 @@ export function MessagesSidebar({
       )}
     >
       <Card className="w-full min-h-0 flex-col rounded-none border-0 border-l border-border bg-card">
-      <CardHeader className="border-b border-border px-4 py-3">
-        <SidebarHeader title={title} subtitle={subtitle} onClose={onClose} />
-      </CardHeader>
-      <CardContent className="flex min-h-0 flex-1 flex-col p-0">
-        <ScrollArea className="flex-1 min-h-0">
-          <div className="flex min-h-0 flex-col">{children}</div>
-        </ScrollArea>
-      </CardContent>
+        <CardHeader className="border-b border-border px-4 py-3">
+          <SidebarHeader title={title} subtitle={subtitle} onClose={onClose} />
+        </CardHeader>
+        <CardContent className="flex min-h-0 flex-1 flex-col p-0">
+          <ScrollArea className="flex-1 min-h-0">
+            <div className="flex min-h-0 flex-col">{children}</div>
+          </ScrollArea>
+        </CardContent>
       </Card>
     </div>
   );

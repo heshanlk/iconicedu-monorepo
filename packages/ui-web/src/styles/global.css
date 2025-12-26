@@ -129,3 +129,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* overide the drawer after element to remove the extra space at the bottom */
+[data-vaul-drawer][data-vaul-drawer-direction='bottom']::after {
+  height: 0 !important;
+}

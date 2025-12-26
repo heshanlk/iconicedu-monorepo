@@ -270,6 +270,7 @@ export function MessagesContainer({
             title={sidebarMeta.title}
             subtitle={sidebarMeta.subtitle}
             onClose={handleCloseSidebar}
+            mobileScrollable={sidebarContent === 'thread'}
           >
             {sidebarContent === 'thread' && activeThread && (
               <>

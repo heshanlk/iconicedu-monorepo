@@ -38,9 +38,9 @@ export function EventDialog({ event, open, onOpenChange, children }: EventDialog
 
   if (isMobile) {
     return (
-      <Drawer open={open} onOpenChange={onOpenChange}>
+      <Drawer open={open} onOpenChange={onOpenChange} data-vaul-custom-container="true">
         <DrawerTrigger asChild>{children}</DrawerTrigger>
-        <DrawerContent>
+        <DrawerContent className="flex flex-col overflow-hidden bg-background p-0 rounded-t-xl before:inset-0 before:rounded-t-xl">
           <DrawerTitle className="sr-only">
             {event.title || 'Calendar event details'}
           </DrawerTitle>
