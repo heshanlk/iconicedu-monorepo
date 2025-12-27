@@ -30,7 +30,7 @@ export type SidebarNavItem = Omit<SidebarNavItemData, 'icon'> & {
 export type SidebarClassroomItemData = {
   id: number;
   name: string;
-  participants: number[];
+  participants: string[];
   url: string;
   icon: SidebarIconKey;
   isFavorite?: boolean;

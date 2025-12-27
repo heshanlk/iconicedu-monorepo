@@ -85,7 +85,7 @@ export function SidebarLeft({
   const classroomsByStudent = data.STUDENTS.map((student) => ({
     student,
     classrooms: classrooms.filter((classroom) =>
-      classroom.participants.includes(student.id),
+      classroom.participants.includes(student.userId),
     ),
   }));
 
