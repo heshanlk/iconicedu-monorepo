@@ -4,34 +4,38 @@ export type AvatarSource = 'seed' | 'upload' | 'external';
 export type ISODateTime = string;
 export type UUID = string;
 export type GradeLevel = number | string;
-
+export type RoleKey = 'owner' | 'admin' | 'teacher' | 'parent' | 'child';
+export interface UserRole {
+  userId: UUID;
+  roleKey: RoleKey;
+  assignedBy?: UUID | null;
+  assignedAt: ISODateTime;
+}
 export interface BaseUserProfile {
   userId: UUID;
+
   displayName: string;
   firstName?: string | null;
   lastName?: string | null;
+
   avatarSource: AvatarSource;
   avatarSeed: string;
   avatarUrl?: string | null;
   avatarUpdatedAt?: string | null;
+
   email?: string | null;
   phoneE164?: string | null;
+
   timezone: string;
   locale?: string | null;
+
   prefs?: Record<string, unknown> | null;
   notificationDefaults?: Record<string, unknown> | null;
+
   userRoles?: UserRole[] | null;
+
   createdAt: ISODateTime;
   updatedAt: ISODateTime;
-}
-
-export type OrgRoleKey = 'owner' | 'admin' | 'teacher' | 'parent' | 'student';
-
-export interface UserRole {
-  userId: UUID;
-  roleKey: OrgRoleKey;
-  assignedBy?: UUID | null;
-  assignedAt: ISODateTime;
 }
 
 export interface TeacherProfile extends BaseUserProfile {
@@ -52,13 +56,13 @@ export interface TeacherProfile extends BaseUserProfile {
 
 export interface ParentProfile extends BaseUserProfile {
   email: string;
-  students: StudentProfile[];
+  children: ChildProfile[];
   joinedDate: Date;
   notesInternal?: string | null;
   bio?: string | null;
 }
 
-export interface StudentProfile extends BaseUserProfile {
+export interface ChildProfile extends BaseUserProfile {
   gradeLevel?: GradeLevel | null;
   schoolName?: string | null;
   schoolYear?: string | null;
@@ -66,20 +70,27 @@ export interface StudentProfile extends BaseUserProfile {
   notesInternal?: string | null;
 }
 
-export const MOCK_STUDENT_IDS = {
+export interface StaffProfile extends BaseUserProfile {
+  department?: string | null;
+  jobTitle?: string | null;
+  permissionsScope?: 'limited' | 'standard' | 'elevated' | null;
+  notesInternal?: string | null;
+}
+
+export const MOCK_CHILDREN_IDS = {
   sarah: '1b9504c3-0e65-4d7a-a843-2d7169f73407',
   zayne: '8f055dda-76e1-4a50-9e6e-34f0dc82e6f6',
   sophia: 'f0c0ea47-e1c1-4f54-bb99-b1df83db9da4',
 } as const;
 
-export const MOCK_STUDENTS: StudentProfile[] = [
+export const MOCK_CHILDREN: ChildProfile[] = [
   {
-    userId: MOCK_STUDENT_IDS.sarah,
+    userId: MOCK_CHILDREN_IDS.sarah,
     displayName: 'Sarah',
     firstName: 'Sarah',
     lastName: 'Chen',
     avatarSource: 'seed',
-    avatarSeed: 'student-3',
+    avatarSeed: 'Children-3',
     avatarUrl: null,
     avatarUpdatedAt: null,
     phoneE164: null,
@@ -90,7 +101,7 @@ export const MOCK_STUDENTS: StudentProfile[] = [
     userRoles: [
       {
         userId: '1b9504c3-0e65-4d7a-a843-2d7169f73407',
-        roleKey: 'student',
+        roleKey: 'child',
         assignedAt: '2020-09-01T00:00:00.000Z',
       },
     ],
@@ -103,12 +114,12 @@ export const MOCK_STUDENTS: StudentProfile[] = [
     color: 'bg-green-500 text-white',
   },
   {
-    userId: MOCK_STUDENT_IDS.zayne,
+    userId: MOCK_CHILDREN_IDS.zayne,
     displayName: 'Zayne',
     firstName: 'Zayne',
     lastName: null,
     avatarSource: 'seed',
-    avatarSeed: 'student-4',
+    avatarSeed: 'Children-4',
     avatarUrl: null,
     avatarUpdatedAt: null,
     phoneE164: null,
@@ -119,7 +130,7 @@ export const MOCK_STUDENTS: StudentProfile[] = [
     userRoles: [
       {
         userId: '8f055dda-76e1-4a50-9e6e-34f0dc82e6f6',
-        roleKey: 'student',
+        roleKey: 'child',
         assignedAt: '2021-01-01T00:00:00.000Z',
       },
     ],
@@ -132,12 +143,12 @@ export const MOCK_STUDENTS: StudentProfile[] = [
     color: 'bg-red-500 text-white',
   },
   {
-    userId: MOCK_STUDENT_IDS.sophia,
+    userId: MOCK_CHILDREN_IDS.sophia,
     displayName: 'Sophia',
     firstName: 'Sophia',
     lastName: null,
     avatarSource: 'seed',
-    avatarSeed: 'student-5',
+    avatarSeed: 'Children-5',
     avatarUrl: null,
     avatarUpdatedAt: null,
     phoneE164: null,
@@ -148,7 +159,7 @@ export const MOCK_STUDENTS: StudentProfile[] = [
     userRoles: [
       {
         userId: 'f0c0ea47-e1c1-4f54-bb99-b1df83db9da4',
-        roleKey: 'student',
+        roleKey: 'child',
         assignedAt: '2021-01-01T00:00:00.000Z',
       },
     ],
@@ -162,11 +173,11 @@ export const MOCK_STUDENTS: StudentProfile[] = [
   },
 ];
 
-export const getMockStudentByUserId = (userId: UUID) =>
-  MOCK_STUDENTS.find((student) => student.userId === userId);
+export const getMockChildrenByUserId = (userId: UUID) =>
+  MOCK_CHILDREN.find((child) => child.userId === userId);
 
-export const getMockStudentNameByUserId = (userId: UUID) =>
-  getMockStudentByUserId(userId)?.displayName ?? 'Student';
+export const getMockChildrenNameByUserId = (userId: UUID) =>
+  getMockChildrenByUserId(userId)?.displayName ?? 'Children';
 
 export const toMessageUser = (profile: BaseUserProfile): User => ({
   id: profile.userId,
@@ -174,7 +185,7 @@ export const toMessageUser = (profile: BaseUserProfile): User => ({
   avatar: profile.avatarUrl ?? '',
 });
 
-const toRoleLabel = (roleKey: OrgRoleKey | undefined) => {
+const toRoleLabel = (roleKey: RoleKey | undefined) => {
   if (!roleKey) return undefined;
   return roleKey.charAt(0).toUpperCase() + roleKey.slice(1);
 };
@@ -258,6 +269,6 @@ export const MOCK_PARENT: ParentProfile = {
   notesInternal: null,
   createdAt: '2021-09-15T00:00:00.000Z',
   updatedAt: '2024-01-01T00:00:00.000Z',
-  students: MOCK_STUDENTS,
+  children: MOCK_CHILDREN,
   joinedDate: new Date(2021, 8, 15),
 };

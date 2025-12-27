@@ -1,5 +1,5 @@
 import type { SidebarLeftData } from '@iconicedu/shared-types';
-import { MOCK_PARENT, MOCK_STUDENTS, MOCK_STUDENT_IDS, MOCK_TEACHER } from './people';
+import { MOCK_CHILDREN, MOCK_CHILDREN_IDS, MOCK_PARENT, MOCK_TEACHER } from './people';
 export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
   user: {
     name: MOCK_PARENT.displayName,
@@ -30,7 +30,7 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
     {
       id: 1,
       name: 'ELA • Ms Norah  • Fri 5 pm',
-      participants: [MOCK_PARENT.userId, MOCK_TEACHER.userId, MOCK_STUDENT_IDS.sarah],
+      participants: [MOCK_PARENT.userId, MOCK_TEACHER.userId, MOCK_CHILDREN_IDS.sarah],
       url: '/dashboard/classroom',
       icon: 'languages',
       isFavorite: true,
@@ -39,7 +39,7 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
     {
       id: 2,
       name: 'ELA • Ms Norah (Fri 4 pm)',
-      participants: [MOCK_PARENT.userId, MOCK_TEACHER.userId, MOCK_STUDENT_IDS.zayne],
+      participants: [MOCK_PARENT.userId, MOCK_TEACHER.userId, MOCK_CHILDREN_IDS.zayne],
       url: '/dashboard/classroom',
       icon: 'languages',
       isFavorite: true,
@@ -48,7 +48,7 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
     {
       id: 3,
       name: 'ELA • Ms Norah (Fri 6 pm)',
-      participants: [MOCK_PARENT.userId, MOCK_TEACHER.userId, MOCK_STUDENT_IDS.sophia],
+      participants: [MOCK_PARENT.userId, MOCK_TEACHER.userId, MOCK_CHILDREN_IDS.sophia],
       url: '/dashboard/classroom',
       icon: 'languages',
       isFavorite: true,
@@ -57,7 +57,7 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
     {
       id: 4,
       name: 'Chess • Mr Rivi • Sat 10 am',
-      participants: [MOCK_PARENT.userId, MOCK_TEACHER.userId, MOCK_STUDENT_IDS.sarah],
+      participants: [MOCK_PARENT.userId, MOCK_TEACHER.userId, MOCK_CHILDREN_IDS.sarah],
       url: '/dashboard/classroom',
       icon: 'chef-hat',
       isFavorite: true,
@@ -66,7 +66,7 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
     {
       id: 5,
       name: 'Chess • Mr Rivi (Fri 6 pm)',
-      participants: [MOCK_PARENT.userId, MOCK_TEACHER.userId, MOCK_STUDENT_IDS.zayne],
+      participants: [MOCK_PARENT.userId, MOCK_TEACHER.userId, MOCK_CHILDREN_IDS.zayne],
       url: '/dashboard/classroom',
       icon: 'chef-hat',
       isFavorite: true,
@@ -75,7 +75,7 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
     {
       id: 6,
       name: 'Chess • Mr Rivi (Fri 6 pm)',
-      participants: [MOCK_PARENT.userId, MOCK_TEACHER.userId, MOCK_STUDENT_IDS.sophia],
+      participants: [MOCK_PARENT.userId, MOCK_TEACHER.userId, MOCK_CHILDREN_IDS.sophia],
       url: '/dashboard/classroom',
       icon: 'chef-hat',
       isFavorite: true,
@@ -84,7 +84,7 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
     {
       id: 7,
       name: 'Math • Mr Abhishek (Fri 6 pm)',
-      participants: [MOCK_PARENT.userId, MOCK_TEACHER.userId, MOCK_STUDENT_IDS.sarah],
+      participants: [MOCK_PARENT.userId, MOCK_TEACHER.userId, MOCK_CHILDREN_IDS.sarah],
       url: '/dashboard/classroom',
       icon: 'earth',
       isFavorite: true,
@@ -93,7 +93,7 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
     {
       id: 8,
       name: 'Math • Ms Wikramasingha (Fri 6 pm)',
-      participants: [MOCK_PARENT.userId, MOCK_TEACHER.userId, MOCK_STUDENT_IDS.zayne],
+      participants: [MOCK_PARENT.userId, MOCK_TEACHER.userId, MOCK_CHILDREN_IDS.zayne],
       url: '/dashboard/classroom',
       icon: 'square-pi',
       isFavorite: false,
@@ -102,7 +102,7 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
     {
       id: 9,
       name: 'Math • Ms Shenaly (Fri 6 pm)',
-      participants: [MOCK_PARENT.userId, MOCK_TEACHER.userId, MOCK_STUDENT_IDS.sophia],
+      participants: [MOCK_PARENT.userId, MOCK_TEACHER.userId, MOCK_CHILDREN_IDS.sophia],
       url: '/dashboard/classroom',
       icon: 'square-pi',
       isFavorite: false,
@@ -162,5 +162,5 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
       url: '/dashboard/dm',
     },
   ],
-  STUDENTS: MOCK_STUDENTS,
+  STUDENTS: MOCK_CHILDREN,
 };

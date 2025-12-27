@@ -1,5 +1,5 @@
 import type { InboxActivityInput } from '@iconicedu/shared-types';
-import { getMockStudentNameByUserId, MOCK_STUDENT_IDS } from './people';
+import { getMockChildrenNameByUserId, MOCK_CHILDREN_IDS } from './people';
 
 export const INBOX_ACTIVITIES: InboxActivityInput[] = [
   {
@@ -34,7 +34,7 @@ export const INBOX_ACTIVITIES: InboxActivityInput[] = [
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=dinesha',
     iconKey: 'GraduationCap',
     iconBg: 'bg-blue-500 text-white',
-    studentName: getMockStudentNameByUserId(MOCK_STUDENT_IDS.zayne),
+    studentName: getMockChildrenNameByUserId(MOCK_CHILDREN_IDS.zayne),
     participants: [
       {
         avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=dinesha',
@@ -62,7 +62,7 @@ export const INBOX_ACTIVITIES: InboxActivityInput[] = [
         initials: 'SY',
         iconKey: 'Video',
         iconBg: 'bg-green-100 text-green-700',
-        studentName: getMockStudentNameByUserId(MOCK_STUDENT_IDS.zayne),
+        studentName: getMockChildrenNameByUserId(MOCK_CHILDREN_IDS.zayne),
         category: 'class',
         date: 'Today',
         actionButton: {
@@ -83,7 +83,7 @@ export const INBOX_ACTIVITIES: InboxActivityInput[] = [
         avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=zayne',
         iconKey: 'Paperclip',
         iconBg: 'bg-orange-100 text-orange-700',
-        studentName: getMockStudentNameByUserId(MOCK_STUDENT_IDS.zayne),
+        studentName: getMockChildrenNameByUserId(MOCK_CHILDREN_IDS.zayne),
         category: 'class',
         date: 'Today',
         parentId: '1',
@@ -100,7 +100,7 @@ export const INBOX_ACTIVITIES: InboxActivityInput[] = [
         avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=dinesha',
         iconKey: 'FileText',
         iconBg: 'bg-amber-100 text-amber-700',
-        studentName: getMockStudentNameByUserId(MOCK_STUDENT_IDS.zayne),
+        studentName: getMockChildrenNameByUserId(MOCK_CHILDREN_IDS.zayne),
         category: 'class',
         date: 'Today',
         actionButton: {
@@ -120,7 +120,7 @@ export const INBOX_ACTIVITIES: InboxActivityInput[] = [
         initials: '🤖',
         iconKey: 'Sparkles',
         iconBg: 'bg-violet-100 text-violet-700',
-        studentName: getMockStudentNameByUserId(MOCK_STUDENT_IDS.zayne),
+        studentName: getMockChildrenNameByUserId(MOCK_CHILDREN_IDS.zayne),
         category: 'class',
         date: 'Today',
         expandedContent:
@@ -139,7 +139,7 @@ export const INBOX_ACTIVITIES: InboxActivityInput[] = [
         avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=dinesha',
         iconKey: 'Paperclip',
         iconBg: 'bg-orange-100 text-orange-700',
-        studentName: getMockStudentNameByUserId(MOCK_STUDENT_IDS.zayne),
+        studentName: getMockChildrenNameByUserId(MOCK_CHILDREN_IDS.zayne),
         category: 'class',
         date: 'Today',
         expandedContent:
@@ -162,7 +162,7 @@ export const INBOX_ACTIVITIES: InboxActivityInput[] = [
         avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=dinesha',
         iconKey: 'FileText',
         iconBg: 'bg-amber-100 text-amber-700',
-        studentName: getMockStudentNameByUserId(MOCK_STUDENT_IDS.zayne),
+        studentName: getMockChildrenNameByUserId(MOCK_CHILDREN_IDS.zayne),
         category: 'class',
         date: 'Today',
         actionButton: {
@@ -184,7 +184,7 @@ export const INBOX_ACTIVITIES: InboxActivityInput[] = [
     initials: '✓',
     iconKey: 'CheckCircle2',
     iconBg: 'bg-yellow-100 text-yellow-700',
-    studentName: getMockStudentNameByUserId(MOCK_STUDENT_IDS.zayne),
+    studentName: getMockChildrenNameByUserId(MOCK_CHILDREN_IDS.zayne),
     category: 'system',
     date: 'Today',
     expandedContent:
@@ -206,7 +206,7 @@ export const INBOX_ACTIVITIES: InboxActivityInput[] = [
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=mrkim',
     iconKey: 'GraduationCap',
     iconBg: 'bg-blue-500 text-white',
-    studentName: getMockStudentNameByUserId(MOCK_STUDENT_IDS.sophia),
+    studentName: getMockChildrenNameByUserId(MOCK_CHILDREN_IDS.sophia),
     participants: [
       { avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=mrkim', initials: 'MK' },
       { avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=sophia', initials: 'S' },
@@ -231,7 +231,7 @@ export const INBOX_ACTIVITIES: InboxActivityInput[] = [
         avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=sophia',
         iconKey: 'Paperclip',
         iconBg: 'bg-orange-100 text-orange-700',
-        studentName: getMockStudentNameByUserId(MOCK_STUDENT_IDS.sophia),
+        studentName: getMockChildrenNameByUserId(MOCK_CHILDREN_IDS.sophia),
         category: 'class',
         date: 'Today',
         parentId: '10',
@@ -248,7 +248,7 @@ export const INBOX_ACTIVITIES: InboxActivityInput[] = [
         avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=mrkim',
         iconKey: 'FileText',
         iconBg: 'bg-amber-100 text-amber-700',
-        studentName: getMockStudentNameByUserId(MOCK_STUDENT_IDS.sophia),
+        studentName: getMockChildrenNameByUserId(MOCK_CHILDREN_IDS.sophia),
         category: 'class',
         date: 'Today',
         actionButton: {
@@ -268,7 +268,7 @@ export const INBOX_ACTIVITIES: InboxActivityInput[] = [
         initials: '🤖',
         iconKey: 'Sparkles',
         iconBg: 'bg-violet-100 text-violet-700',
-        studentName: getMockStudentNameByUserId(MOCK_STUDENT_IDS.sophia),
+        studentName: getMockChildrenNameByUserId(MOCK_CHILDREN_IDS.sophia),
         category: 'class',
         date: 'Today',
         expandedContent:
@@ -288,7 +288,7 @@ export const INBOX_ACTIVITIES: InboxActivityInput[] = [
     initials: '⏰',
     iconKey: 'Bell',
     iconBg: 'bg-purple-500 text-white',
-    studentName: getMockStudentNameByUserId(MOCK_STUDENT_IDS.sophia),
+    studentName: getMockChildrenNameByUserId(MOCK_CHILDREN_IDS.sophia),
     category: 'system',
     date: 'Today',
     expandedContent:
@@ -310,7 +310,7 @@ export const INBOX_ACTIVITIES: InboxActivityInput[] = [
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=rodriguez',
     iconKey: 'Paperclip',
     iconBg: 'bg-orange-100 text-orange-700',
-    studentName: getMockStudentNameByUserId(MOCK_STUDENT_IDS.zayne),
+    studentName: getMockChildrenNameByUserId(MOCK_CHILDREN_IDS.zayne),
     category: 'class',
     date: 'Today',
     expandedContent:
@@ -352,7 +352,7 @@ export const INBOX_ACTIVITIES: InboxActivityInput[] = [
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=chen',
     iconKey: 'Paperclip',
     iconBg: 'bg-orange-100 text-orange-700',
-    studentName: getMockStudentNameByUserId(MOCK_STUDENT_IDS.zayne),
+    studentName: getMockChildrenNameByUserId(MOCK_CHILDREN_IDS.zayne),
     category: 'class',
     date: 'Today',
     expandedContent:
@@ -374,7 +374,7 @@ export const INBOX_ACTIVITIES: InboxActivityInput[] = [
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=dinesha',
     iconKey: 'MessageSquare',
     iconBg: 'bg-blue-500 text-white',
-    studentName: getMockStudentNameByUserId(MOCK_STUDENT_IDS.zayne),
+    studentName: getMockChildrenNameByUserId(MOCK_CHILDREN_IDS.zayne),
     category: 'class',
     date: 'Today',
     expandedContent:
@@ -392,7 +392,7 @@ export const INBOX_ACTIVITIES: InboxActivityInput[] = [
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=rodriguez',
     iconKey: 'FileText',
     iconBg: 'bg-amber-100 text-amber-700',
-    studentName: getMockStudentNameByUserId(MOCK_STUDENT_IDS.zayne),
+    studentName: getMockChildrenNameByUserId(MOCK_CHILDREN_IDS.zayne),
     category: 'class',
     date: 'Today',
     expandedContent:
@@ -409,7 +409,7 @@ export const INBOX_ACTIVITIES: InboxActivityInput[] = [
     initials: 'SY',
     iconKey: 'Video',
     iconBg: 'bg-green-100 text-green-700',
-    studentName: getMockStudentNameByUserId(MOCK_STUDENT_IDS.sophia),
+    studentName: getMockChildrenNameByUserId(MOCK_CHILDREN_IDS.sophia),
     category: 'class',
     date: 'Today',
     actionButton: {
@@ -429,7 +429,7 @@ export const INBOX_ACTIVITIES: InboxActivityInput[] = [
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=patel',
     iconKey: 'Paperclip',
     iconBg: 'bg-orange-100 text-orange-700',
-    studentName: getMockStudentNameByUserId(MOCK_STUDENT_IDS.sophia),
+    studentName: getMockChildrenNameByUserId(MOCK_CHILDREN_IDS.sophia),
     category: 'class',
     date: 'Yesterday',
     expandedContent:
@@ -451,7 +451,7 @@ export const INBOX_ACTIVITIES: InboxActivityInput[] = [
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=silva',
     iconKey: 'FileText',
     iconBg: 'bg-amber-100 text-amber-700',
-    studentName: getMockStudentNameByUserId(MOCK_STUDENT_IDS.sophia),
+    studentName: getMockChildrenNameByUserId(MOCK_CHILDREN_IDS.sophia),
     category: 'class',
     date: 'Yesterday',
     expandedContent:
@@ -468,7 +468,7 @@ export const INBOX_ACTIVITIES: InboxActivityInput[] = [
     initials: '⏰',
     iconKey: 'Bell',
     iconBg: 'bg-purple-500 text-white',
-    studentName: getMockStudentNameByUserId(MOCK_STUDENT_IDS.zayne),
+    studentName: getMockChildrenNameByUserId(MOCK_CHILDREN_IDS.zayne),
     category: 'system',
     date: 'Yesterday',
   },
@@ -484,7 +484,7 @@ export const INBOX_ACTIVITIES: InboxActivityInput[] = [
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=dinesha',
     iconKey: 'MessageSquare',
     iconBg: 'bg-blue-500 text-white',
-    studentName: getMockStudentNameByUserId(MOCK_STUDENT_IDS.zayne),
+    studentName: getMockChildrenNameByUserId(MOCK_CHILDREN_IDS.zayne),
     category: 'class',
     date: 'Yesterday',
     expandedContent:
@@ -502,7 +502,7 @@ export const INBOX_ACTIVITIES: InboxActivityInput[] = [
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=anderson',
     iconKey: 'MessageSquare',
     iconBg: 'bg-blue-500 text-white',
-    studentName: getMockStudentNameByUserId(MOCK_STUDENT_IDS.sophia),
+    studentName: getMockChildrenNameByUserId(MOCK_CHILDREN_IDS.sophia),
     category: 'class',
     date: 'Earlier',
     expandedContent:
@@ -519,7 +519,7 @@ export const INBOX_ACTIVITIES: InboxActivityInput[] = [
     initials: 'SY',
     iconKey: 'Video',
     iconBg: 'bg-green-100 text-green-700',
-    studentName: getMockStudentNameByUserId(MOCK_STUDENT_IDS.zayne),
+    studentName: getMockChildrenNameByUserId(MOCK_CHILDREN_IDS.zayne),
     category: 'class',
     date: 'Earlier',
     actionButton: {
@@ -559,7 +559,7 @@ export const INBOX_ACTIVITIES: InboxActivityInput[] = [
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=rodriguez',
     iconKey: 'Paperclip',
     iconBg: 'bg-orange-100 text-orange-700',
-    studentName: getMockStudentNameByUserId(MOCK_STUDENT_IDS.zayne),
+    studentName: getMockChildrenNameByUserId(MOCK_CHILDREN_IDS.zayne),
     category: 'class',
     date: 'Earlier',
     expandedContent:
@@ -580,7 +580,7 @@ export const INBOX_ACTIVITIES: InboxActivityInput[] = [
     initials: 'SY',
     iconKey: 'Bell',
     iconBg: 'bg-purple-500 text-white',
-    studentName: getMockStudentNameByUserId(MOCK_STUDENT_IDS.sophia),
+    studentName: getMockChildrenNameByUserId(MOCK_CHILDREN_IDS.sophia),
     category: 'system',
     date: 'Earlier',
   },
