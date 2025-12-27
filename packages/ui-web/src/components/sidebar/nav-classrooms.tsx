@@ -60,7 +60,7 @@ export function NavClassrooms({
         <CollapsibleTrigger asChild>
           <SidebarGroupLabel className="flex cursor-pointer items-center gap-2 rounded-md rounded-b-none px-2 py-1 uppercase">
             <AvatarWithStatus
-              name={student.name}
+              name={student.displayName}
               showStatus={false}
               sizeClassName="size-5"
               fallbackClassName={cn(

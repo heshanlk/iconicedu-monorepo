@@ -1,10 +1,8 @@
 import type { User } from '@iconicedu/shared-types';
 
-export type MemberState = 'active' | 'inactive' | 'invited';
 export type AvatarSource = 'seed' | 'upload' | 'external';
 export type ISODateTime = string;
 export type UUID = string;
-export type ContactMethod = 'email' | 'phone' | 'whatsapp' | 'none';
 export type GradeLevel = number | string;
 
 export interface BaseUserProfile {
@@ -25,8 +23,6 @@ export interface BaseUserProfile {
   userRoles?: UserRole[] | null;
   createdAt: ISODateTime;
   updatedAt: ISODateTime;
-  preferredContactMethod?: ContactMethod | null;
-  preferredLanguage?: string | null;
 }
 
 export type OrgRoleKey = 'owner' | 'admin' | 'teacher' | 'parent' | 'student';
@@ -36,33 +32,6 @@ export interface UserRole {
   roleKey: OrgRoleKey;
   assignedBy?: UUID | null;
   assignedAt: ISODateTime;
-}
-
-export interface Family {
-  id: UUID;
-  familyName?: string | null;
-  createdAt: ISODateTime;
-  updatedAt?: ISODateTime | null;
-}
-
-export type FamilyRole = 'parent' | 'guardian' | 'student';
-
-export interface FamilyMember {
-  familyId: UUID;
-  userId: UUID;
-  familyRole: FamilyRole;
-  relationship?: string | null;
-  isPrimary?: boolean | null;
-  createdAt: ISODateTime;
-}
-
-// Helpful computed shapes (not DB tables)
-export interface ParentChildLink {
-  familyId: UUID;
-  parentUserId: UUID;
-  studentUserId: UUID;
-  relationship?: string | null;
-  isPrimary?: boolean | null;
 }
 
 export interface TeacherProfile extends BaseUserProfile {
@@ -89,25 +58,23 @@ export interface ParentProfile extends BaseUserProfile {
   bio?: string | null;
 }
 
-export interface StaffProfile extends BaseUserProfile {
-  department?: string | null;
-  jobTitle?: string | null;
-  notesInternal?: string | null;
-  bio?: string | null;
-}
-
 export interface StudentProfile extends BaseUserProfile {
   gradeLevel?: GradeLevel | null;
   schoolName?: string | null;
   schoolYear?: string | null;
-  legacyId: number;
   color: string;
   notesInternal?: string | null;
 }
 
+export const MOCK_STUDENT_IDS = {
+  sarah: '1b9504c3-0e65-4d7a-a843-2d7169f73407',
+  zayne: '8f055dda-76e1-4a50-9e6e-34f0dc82e6f6',
+  sophia: 'f0c0ea47-e1c1-4f54-bb99-b1df83db9da4',
+} as const;
+
 export const MOCK_STUDENTS: StudentProfile[] = [
   {
-    userId: '1b9504c3-0e65-4d7a-a843-2d7169f73407',
+    userId: MOCK_STUDENT_IDS.sarah,
     displayName: 'Sarah',
     firstName: 'Sarah',
     lastName: 'Chen',
@@ -133,11 +100,10 @@ export const MOCK_STUDENTS: StudentProfile[] = [
     notesInternal: null,
     createdAt: '2020-09-01T00:00:00.000Z',
     updatedAt: '2024-01-01T00:00:00.000Z',
-    legacyId: 3,
     color: 'bg-green-500 text-white',
   },
   {
-    userId: '8f055dda-76e1-4a50-9e6e-34f0dc82e6f6',
+    userId: MOCK_STUDENT_IDS.zayne,
     displayName: 'Zayne',
     firstName: 'Zayne',
     lastName: null,
@@ -163,11 +129,10 @@ export const MOCK_STUDENTS: StudentProfile[] = [
     notesInternal: null,
     createdAt: '2021-01-01T00:00:00.000Z',
     updatedAt: '2024-01-01T00:00:00.000Z',
-    legacyId: 4,
     color: 'bg-red-500 text-white',
   },
   {
-    userId: 'f0c0ea47-e1c1-4f54-bb99-b1df83db9da4',
+    userId: MOCK_STUDENT_IDS.sophia,
     displayName: 'Sophia',
     firstName: 'Sophia',
     lastName: null,
@@ -193,22 +158,15 @@ export const MOCK_STUDENTS: StudentProfile[] = [
     notesInternal: null,
     createdAt: '2021-01-01T00:00:00.000Z',
     updatedAt: '2024-01-01T00:00:00.000Z',
-    legacyId: 5,
     color: 'bg-green-500 text-white',
   },
 ];
 
-export const getMockStudentById = (id: number) =>
-  MOCK_STUDENTS.find((student) => student.legacyId === id);
+export const getMockStudentByUserId = (userId: UUID) =>
+  MOCK_STUDENTS.find((student) => student.userId === userId);
 
-export const getMockStudentName = (id: number) =>
-  getMockStudentById(id)?.displayName ?? `Student ${id}`;
-
-const isMockStudent = (student: StudentProfile | undefined): student is StudentProfile =>
-  Boolean(student);
-
-export const getMockStudentsByIds = (ids: number[]): StudentProfile[] =>
-  ids.map((id) => getMockStudentById(id)).filter(isMockStudent);
+export const getMockStudentNameByUserId = (userId: UUID) =>
+  getMockStudentByUserId(userId)?.displayName ?? 'Student';
 
 export const toMessageUser = (profile: BaseUserProfile): User => ({
   id: profile.userId,
@@ -300,6 +258,6 @@ export const MOCK_PARENT: ParentProfile = {
   notesInternal: null,
   createdAt: '2021-09-15T00:00:00.000Z',
   updatedAt: '2024-01-01T00:00:00.000Z',
-  students: getMockStudentsByIds([3]),
+  students: MOCK_STUDENTS,
   joinedDate: new Date(2021, 8, 15),
 };

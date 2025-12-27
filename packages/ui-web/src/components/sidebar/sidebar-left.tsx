@@ -154,8 +154,8 @@ export function SidebarLeft({
         ) : (
           classroomsByStudent.map(({ student, classrooms }, index) => (
             <NavClassrooms
-              key={student.id}
-              title={student.name}
+              key={student.userId}
+              title={student.displayName}
               student={student}
               classrooms={classrooms}
               defaultOpen={index === 0}

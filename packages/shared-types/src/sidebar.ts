@@ -64,8 +64,8 @@ export type SidebarDirectMessageItem = {
 };
 
 export type SidebarStudent = {
-  id: number;
-  name: string;
+  userId: string;
+  displayName: string;
   color: string;
 };
 

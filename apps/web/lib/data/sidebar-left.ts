@@ -162,9 +162,5 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
       url: '/dashboard/dm',
     },
   ],
-  STUDENTS: MOCK_STUDENTS.map((student) => ({
-    id: student.legacyId,
-    name: student.displayName,
-    color: student.color,
-  })),
+  STUDENTS: MOCK_STUDENTS,
 };
