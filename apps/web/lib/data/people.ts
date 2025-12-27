@@ -1,12 +1,11 @@
 import type { User } from '@iconicedu/shared-types';
 
-export type MockStudentKey = 'sarahChen' | 'zayne' | 'sophia';
-
 export type MemberState = 'active' | 'inactive' | 'invited';
 export type AvatarSource = 'seed' | 'upload' | 'external';
 export type ISODateTime = string;
 export type UUID = string;
 export type ContactMethod = 'email' | 'phone' | 'whatsapp' | 'none';
+export type GradeLevel = number | string;
 
 export interface BaseUserProfile {
   userId: UUID;
@@ -70,40 +69,37 @@ export interface TeacherProfile extends BaseUserProfile {
   email: string;
   headline?: string | null;
   subjects?: string[] | null;
-  gradesSupported?: Array<number | string> | null;
-  languages?: string[] | null;
+  gradesSupported?: GradeLevel[] | null;
   experienceYears?: number | null;
   certifications?: Array<{
     name: string;
     issuer?: string;
     year?: number;
   }> | null;
-  school: string;
-  grade: string;
+  bio?: string | null;
   joinedDate: Date;
   notesInternal?: string | null;
 }
 
 export interface ParentProfile extends BaseUserProfile {
   email: string;
-  school: string;
-  grade: string;
   students: StudentProfile[];
   joinedDate: Date;
   notesInternal?: string | null;
+  bio?: string | null;
 }
 
 export interface StaffProfile extends BaseUserProfile {
   department?: string | null;
   jobTitle?: string | null;
   notesInternal?: string | null;
+  bio?: string | null;
 }
 
 export interface StudentProfile extends BaseUserProfile {
-  gradeLevel?: number | null;
+  gradeLevel?: GradeLevel | null;
   schoolName?: string | null;
   schoolYear?: string | null;
-  key: MockStudentKey;
   legacyId: number;
   color: string;
   notesInternal?: string | null;
@@ -112,7 +108,7 @@ export interface StudentProfile extends BaseUserProfile {
 export const MOCK_STUDENTS: StudentProfile[] = [
   {
     userId: '1b9504c3-0e65-4d7a-a843-2d7169f73407',
-    displayName: 'Sarah Chen',
+    displayName: 'Sarah',
     firstName: 'Sarah',
     lastName: 'Chen',
     avatarSource: 'seed',
@@ -137,7 +133,6 @@ export const MOCK_STUDENTS: StudentProfile[] = [
     notesInternal: null,
     createdAt: '2020-09-01T00:00:00.000Z',
     updatedAt: '2024-01-01T00:00:00.000Z',
-    key: 'sarahChen',
     legacyId: 3,
     color: 'bg-green-500 text-white',
   },
@@ -168,7 +163,6 @@ export const MOCK_STUDENTS: StudentProfile[] = [
     notesInternal: null,
     createdAt: '2021-01-01T00:00:00.000Z',
     updatedAt: '2024-01-01T00:00:00.000Z',
-    key: 'zayne',
     legacyId: 4,
     color: 'bg-red-500 text-white',
   },
@@ -199,7 +193,6 @@ export const MOCK_STUDENTS: StudentProfile[] = [
     notesInternal: null,
     createdAt: '2021-01-01T00:00:00.000Z',
     updatedAt: '2024-01-01T00:00:00.000Z',
-    key: 'sophia',
     legacyId: 5,
     color: 'bg-green-500 text-white',
   },
@@ -234,16 +227,12 @@ export const toProfileUser = (
   role?: string;
   email?: string | null;
   phone?: string | null;
-  school?: string;
-  grade?: string;
   joinedDate?: Date;
 } => ({
   ...toMessageUser(profile),
   role: toRoleLabel(profile.userRoles?.[0]?.roleKey),
   email: profile.email ?? null,
   phone: profile.phoneE164 ?? null,
-  school: profile.school,
-  grade: profile.grade,
   joinedDate: profile.joinedDate,
 });
 
@@ -273,16 +262,14 @@ export const MOCK_TEACHER: TeacherProfile = {
   headline: 'Helping 4th graders love math.',
   subjects: ['Mathematics'],
   gradesSupported: ['4th Grade', 5],
-  languages: ['English'],
   experienceYears: 8,
   certifications: [
     { name: 'Elementary Education Certification', issuer: 'State Board', year: 2016 },
   ],
+  bio: 'Passionate about building confidence and curiosity in young mathematicians.',
   notesInternal: null,
   createdAt: '2020-09-01T00:00:00.000Z',
   updatedAt: '2024-01-01T00:00:00.000Z',
-  school: 'Riverside Elementary School',
-  grade: '4th Grade',
   joinedDate: new Date(2020, 8, 1),
 };
 
@@ -309,11 +296,10 @@ export const MOCK_PARENT: ParentProfile = {
     },
   ],
   email: 'michael.chen@email.com',
+  bio: 'Focused on keeping learning consistent and positive at home.',
   notesInternal: null,
   createdAt: '2021-09-15T00:00:00.000Z',
   updatedAt: '2024-01-01T00:00:00.000Z',
-  school: 'Riverside Elementary School',
-  grade: '4th Grade',
   students: getMockStudentsByIds([3]),
   joinedDate: new Date(2021, 8, 15),
 };
