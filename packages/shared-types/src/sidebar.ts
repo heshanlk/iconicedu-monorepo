@@ -60,6 +60,7 @@ export type SidebarDirectMessageItem = {
   name: string;
   avatar: string;
   status: string;
+  participants: string[];
   url?: string;
 };
 

@@ -238,15 +238,18 @@ export const toProfileUser = (
   email: profile.email ?? null,
   phone: profile.phoneE164 ?? null,
   joinedDate: profile.joinedDate,
-  headline: 'headline' in profile ? profile.headline ?? null : null,
-  bio: 'bio' in profile ? profile.bio ?? null : null,
-  subjects: 'subjects' in profile ? profile.subjects ?? null : null,
-  gradesSupported: 'gradesSupported' in profile ? profile.gradesSupported ?? null : null,
-  experienceYears: 'experienceYears' in profile ? profile.experienceYears ?? null : null,
-  certifications: 'certifications' in profile ? profile.certifications ?? null : null,
-  childrenNames: 'children' in profile
-    ? profile.children.map((child) => child.displayName)
-    : undefined,
+  headline: 'headline' in profile ? (profile.headline ?? null) : null,
+  bio: 'bio' in profile ? (profile.bio ?? null) : null,
+  subjects: 'subjects' in profile ? (profile.subjects ?? null) : null,
+  gradesSupported:
+    'gradesSupported' in profile ? (profile.gradesSupported ?? null) : null,
+  experienceYears:
+    'experienceYears' in profile ? (profile.experienceYears ?? null) : null,
+  certifications: 'certifications' in profile ? (profile.certifications ?? null) : null,
+  childrenNames:
+    'children' in profile
+      ? profile.children.map((child) => child.displayName)
+      : undefined,
 });
 
 export const MOCK_TEACHER: TeacherProfile = {
@@ -285,6 +288,162 @@ export const MOCK_TEACHER: TeacherProfile = {
   updatedAt: '2024-01-01T00:00:00.000Z',
   joinedDate: new Date(2020, 8, 1),
 };
+
+export const MOCK_TEACHER_2: TeacherProfile = {
+  userId: '0b2b3d51-9a35-4b47-86b4-5fe9b9b5f8e4',
+  displayName: 'Mr. David Kim',
+  firstName: 'David',
+  lastName: 'Kim',
+  avatarSource: 'upload',
+  avatarSeed: 'teacher-2',
+  avatarUrl:
+    'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-jordan-ACflnHBYNP7M9crd5MtKL7WSpk3GiQ.jpg',
+  avatarUpdatedAt: '2024-01-01T00:00:00.000Z',
+  phoneE164: '+15551230001',
+  timezone: 'America/New_York',
+  locale: 'en-US',
+  prefs: null,
+  notificationDefaults: null,
+  userRoles: [
+    {
+      userId: '0b2b3d51-9a35-4b47-86b4-5fe9b9b5f8e4',
+      roleKey: 'teacher',
+      assignedAt: '2018-08-20T00:00:00.000Z',
+    },
+  ],
+  email: 'd.kim@school.edu',
+  headline: 'Science comes alive through experiments.',
+  subjects: ['Science'],
+  gradesSupported: [6, 7, 8],
+  experienceYears: 12,
+  certifications: [
+    { name: 'Secondary Science Certification', issuer: 'State Board', year: 2012 },
+  ],
+  bio: 'Hands-on labs and real-world examples keep students curious.',
+  notesInternal: null,
+  createdAt: '2018-08-20T00:00:00.000Z',
+  updatedAt: '2024-01-01T00:00:00.000Z',
+  joinedDate: new Date(2018, 7, 20),
+};
+
+export const MOCK_TEACHER_3: TeacherProfile = {
+  userId: '4a5fbb0f-4b74-4c48-a3d4-1f88b0a2d8e2',
+  displayName: 'Ms. Priya Desai',
+  firstName: 'Priya',
+  lastName: 'Desai',
+  avatarSource: 'upload',
+  avatarSeed: 'teacher-3',
+  avatarUrl:
+    'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-alex-UoI6qSVh9rZS9DvLOmhIY8pabZfAOq.png',
+  avatarUpdatedAt: '2024-01-01T00:00:00.000Z',
+  phoneE164: '+15551230002',
+  timezone: 'America/Chicago',
+  locale: 'en-US',
+  prefs: null,
+  notificationDefaults: null,
+  userRoles: [
+    {
+      userId: '4a5fbb0f-4b74-4c48-a3d4-1f88b0a2d8e2',
+      roleKey: 'teacher',
+      assignedAt: '2019-08-15T00:00:00.000Z',
+    },
+  ],
+  email: 'p.desai@school.edu',
+  headline: 'Literacy-first teaching with joyful reading.',
+  subjects: ['English Language Arts'],
+  gradesSupported: [3, 4, 5],
+  experienceYears: 9,
+  certifications: [
+    { name: 'Elementary Education Certification', issuer: 'State Board', year: 2015 },
+  ],
+  bio: 'Focuses on comprehension strategies and confident writing.',
+  notesInternal: null,
+  createdAt: '2019-08-15T00:00:00.000Z',
+  updatedAt: '2024-01-01T00:00:00.000Z',
+  joinedDate: new Date(2019, 7, 15),
+};
+
+export const MOCK_TEACHER_4: TeacherProfile = {
+  userId: '6b0a28a8-1f47-41b5-9a61-3f5c2fffb7f6',
+  displayName: 'Mr. Luis Hernandez',
+  firstName: 'Luis',
+  lastName: 'Hernandez',
+  avatarSource: 'upload',
+  avatarSeed: 'teacher-4',
+  avatarUrl:
+    'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-mike-T2UMe9BlbWWIxlq7z99cJWqwEagAuc.jpg',
+  avatarUpdatedAt: '2024-01-01T00:00:00.000Z',
+  phoneE164: '+15551230003',
+  timezone: 'America/Los_Angeles',
+  locale: 'en-US',
+  prefs: null,
+  notificationDefaults: null,
+  userRoles: [
+    {
+      userId: '6b0a28a8-1f47-41b5-9a61-3f5c2fffb7f6',
+      roleKey: 'teacher',
+      assignedAt: '2017-01-10T00:00:00.000Z',
+    },
+  ],
+  email: 'l.hernandez@school.edu',
+  headline: 'History lessons built on stories and debate.',
+  subjects: ['Social Studies'],
+  gradesSupported: [7, 8],
+  experienceYears: 14,
+  certifications: [
+    { name: 'Social Studies Certification', issuer: 'State Board', year: 2010 },
+  ],
+  bio: 'Encourages critical thinking and respectful discussion.',
+  notesInternal: null,
+  createdAt: '2017-01-10T00:00:00.000Z',
+  updatedAt: '2024-01-01T00:00:00.000Z',
+  joinedDate: new Date(2017, 0, 10),
+};
+
+export const MOCK_TEACHER_5: TeacherProfile = {
+  userId: 'a5b1c3d7-0f7f-4b47-8c6d-9fb2d9b0b3d1',
+  displayName: 'Ms. Chloe Rivera',
+  firstName: 'Chloe',
+  lastName: 'Rivera',
+  avatarSource: 'upload',
+  avatarSeed: 'teacher-5',
+  avatarUrl:
+    'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-sarah-Vsp1gZWstExMvD0Qce0ogsgN6nv2pC.png',
+  avatarUpdatedAt: '2024-01-01T00:00:00.000Z',
+  phoneE164: '+15551230004',
+  timezone: 'America/New_York',
+  locale: 'en-US',
+  prefs: null,
+  notificationDefaults: null,
+  userRoles: [
+    {
+      userId: 'a5b1c3d7-0f7f-4b47-8c6d-9fb2d9b0b3d1',
+      roleKey: 'teacher',
+      assignedAt: '2021-08-25T00:00:00.000Z',
+    },
+  ],
+  email: 'c.rivera@school.edu',
+  headline: 'Art and design that build confidence.',
+  subjects: ['Art'],
+  gradesSupported: ['K', 1, 2],
+  experienceYears: 6,
+  certifications: [
+    { name: 'Arts Education Certification', issuer: 'State Board', year: 2019 },
+  ],
+  bio: 'Uses project-based learning to spark creativity.',
+  notesInternal: null,
+  createdAt: '2021-08-25T00:00:00.000Z',
+  updatedAt: '2024-01-01T00:00:00.000Z',
+  joinedDate: new Date(2021, 7, 25),
+};
+
+export const MOCK_TEACHERS: TeacherProfile[] = [
+  MOCK_TEACHER,
+  MOCK_TEACHER_2,
+  MOCK_TEACHER_3,
+  MOCK_TEACHER_4,
+  MOCK_TEACHER_5,
+];
 
 export const MOCK_PARENT: ParentProfile = {
   userId: '2a0f3cbe-0b3b-470a-8a98-9381c1c9c6a7',

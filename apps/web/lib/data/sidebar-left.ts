@@ -1,5 +1,14 @@
 import type { SidebarLeftData } from '@iconicedu/shared-types';
-import { MOCK_CHILDREN, MOCK_CHILDREN_IDS, MOCK_PARENT, MOCK_TEACHER } from './people';
+import {
+  MOCK_CHILDREN,
+  MOCK_CHILDREN_IDS,
+  MOCK_PARENT,
+  MOCK_TEACHER,
+  MOCK_TEACHER_2,
+  MOCK_TEACHER_3,
+  MOCK_TEACHER_4,
+  MOCK_TEACHER_5,
+} from './people';
 export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
   user: {
     name: MOCK_PARENT.displayName,
@@ -29,7 +38,7 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
   CLASSROOMS: [
     {
       id: 1,
-      name: 'ELA • Ms Norah  • Fri 5 pm',
+      name: `ELA • ${MOCK_TEACHER.displayName} • Fri 5 pm`,
       participants: [MOCK_PARENT.userId, MOCK_TEACHER.userId, MOCK_CHILDREN_IDS.sarah],
       url: '/dashboard/classroom',
       icon: 'languages',
@@ -38,8 +47,8 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
     },
     {
       id: 2,
-      name: 'ELA • Ms Norah (Fri 4 pm)',
-      participants: [MOCK_PARENT.userId, MOCK_TEACHER.userId, MOCK_CHILDREN_IDS.zayne],
+      name: `ELA • ${MOCK_TEACHER_2.displayName} • Fri 4 pm`,
+      participants: [MOCK_PARENT.userId, MOCK_TEACHER_2.userId, MOCK_CHILDREN_IDS.zayne],
       url: '/dashboard/classroom',
       icon: 'languages',
       isFavorite: true,
@@ -47,8 +56,8 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
     },
     {
       id: 3,
-      name: 'ELA • Ms Norah (Fri 6 pm)',
-      participants: [MOCK_PARENT.userId, MOCK_TEACHER.userId, MOCK_CHILDREN_IDS.sophia],
+      name: `ELA • ${MOCK_TEACHER_3.displayName} • Fri 6 pm`,
+      participants: [MOCK_PARENT.userId, MOCK_TEACHER_3.userId, MOCK_CHILDREN_IDS.sophia],
       url: '/dashboard/classroom',
       icon: 'languages',
       isFavorite: true,
@@ -56,8 +65,8 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
     },
     {
       id: 4,
-      name: 'Chess • Mr Rivi • Sat 10 am',
-      participants: [MOCK_PARENT.userId, MOCK_TEACHER.userId, MOCK_CHILDREN_IDS.sarah],
+      name: `Chess • ${MOCK_TEACHER_4.displayName} • Sat 10 am`,
+      participants: [MOCK_PARENT.userId, MOCK_TEACHER_4.userId, MOCK_CHILDREN_IDS.sarah],
       url: '/dashboard/classroom',
       icon: 'chef-hat',
       isFavorite: true,
@@ -65,8 +74,8 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
     },
     {
       id: 5,
-      name: 'Chess • Mr Rivi (Fri 6 pm)',
-      participants: [MOCK_PARENT.userId, MOCK_TEACHER.userId, MOCK_CHILDREN_IDS.zayne],
+      name: `Chess • ${MOCK_TEACHER_5.displayName} • Fri 6 pm`,
+      participants: [MOCK_PARENT.userId, MOCK_TEACHER_5.userId, MOCK_CHILDREN_IDS.zayne],
       url: '/dashboard/classroom',
       icon: 'chef-hat',
       isFavorite: true,
@@ -74,8 +83,8 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
     },
     {
       id: 6,
-      name: 'Chess • Mr Rivi (Fri 6 pm)',
-      participants: [MOCK_PARENT.userId, MOCK_TEACHER.userId, MOCK_CHILDREN_IDS.sophia],
+      name: `Chess • ${MOCK_TEACHER_2.displayName} • Fri 6 pm`,
+      participants: [MOCK_PARENT.userId, MOCK_TEACHER_2.userId, MOCK_CHILDREN_IDS.sophia],
       url: '/dashboard/classroom',
       icon: 'chef-hat',
       isFavorite: true,
@@ -83,8 +92,8 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
     },
     {
       id: 7,
-      name: 'Math • Mr Abhishek (Fri 6 pm)',
-      participants: [MOCK_PARENT.userId, MOCK_TEACHER.userId, MOCK_CHILDREN_IDS.sarah],
+      name: `Math • ${MOCK_TEACHER_3.displayName} • Fri 6 pm`,
+      participants: [MOCK_PARENT.userId, MOCK_TEACHER_3.userId, MOCK_CHILDREN_IDS.sarah],
       url: '/dashboard/classroom',
       icon: 'earth',
       isFavorite: true,
@@ -92,8 +101,8 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
     },
     {
       id: 8,
-      name: 'Math • Ms Wikramasingha (Fri 6 pm)',
-      participants: [MOCK_PARENT.userId, MOCK_TEACHER.userId, MOCK_CHILDREN_IDS.zayne],
+      name: `Math • ${MOCK_TEACHER_4.displayName} • Fri 6 pm`,
+      participants: [MOCK_PARENT.userId, MOCK_TEACHER_4.userId, MOCK_CHILDREN_IDS.zayne],
       url: '/dashboard/classroom',
       icon: 'square-pi',
       isFavorite: false,
@@ -101,8 +110,8 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
     },
     {
       id: 9,
-      name: 'Math • Ms Shenaly (Fri 6 pm)',
-      participants: [MOCK_PARENT.userId, MOCK_TEACHER.userId, MOCK_CHILDREN_IDS.sophia],
+      name: `Math • ${MOCK_TEACHER_5.displayName} • Fri 6 pm`,
+      participants: [MOCK_PARENT.userId, MOCK_TEACHER_5.userId, MOCK_CHILDREN_IDS.sophia],
       url: '/dashboard/classroom',
       icon: 'square-pi',
       isFavorite: false,
@@ -124,41 +133,42 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
   DIRECT_MESSAGES: [
     {
       id: 1,
-      name: 'Ms Wikramasinghe',
-      avatar:
-        'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-alex-UoI6qSVh9rZS9DvLOmhIY8pabZfAOq.png',
+      name: MOCK_TEACHER.displayName,
+      avatar: MOCK_TEACHER.avatarUrl ?? '',
       status: 'online',
+      participants: [MOCK_PARENT.userId, MOCK_TEACHER.userId],
       url: '/dashboard/dm',
     },
     {
       id: 2,
-      name: 'Shenaly Prakash',
-      avatar: '',
+      name: MOCK_TEACHER_2.displayName,
+      avatar: MOCK_TEACHER_2.avatarUrl ?? '',
       status: 'away',
+      participants: [MOCK_PARENT.userId, MOCK_TEACHER_2.userId],
       url: '/dashboard/dm',
     },
     {
       id: 3,
-      name: 'Ms Marina Perera',
-      avatar:
-        'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-jordan-ACflnHBYNP7M9crd5MtKL7WSpk3GiQ.jpg',
+      name: MOCK_TEACHER_3.displayName,
+      avatar: MOCK_TEACHER_3.avatarUrl ?? '',
       status: 'online',
+      participants: [MOCK_PARENT.userId, MOCK_TEACHER_3.userId],
       url: '/dashboard/dm',
     },
     {
       id: 4,
-      name: 'Ms Mike Silva',
-      avatar:
-        'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-mike-T2UMe9BlbWWIxlq7z99cJWqwEagAuc.jpg',
+      name: MOCK_TEACHER_4.displayName,
+      avatar: MOCK_TEACHER_4.avatarUrl ?? '',
       status: 'offline',
+      participants: [MOCK_PARENT.userId, MOCK_TEACHER_4.userId],
       url: '/dashboard/dm',
     },
     {
       id: 5,
-      name: 'Mr Sarah Johnson',
-      avatar:
-        'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-sarah-Vsp1gZWstExMvD0Qce0ogsgN6nv2pC.png',
+      name: MOCK_TEACHER_5.displayName,
+      avatar: MOCK_TEACHER_5.avatarUrl ?? '',
       status: 'idle',
+      participants: [MOCK_PARENT.userId, MOCK_TEACHER_5.userId],
       url: '/dashboard/dm',
     },
   ],
