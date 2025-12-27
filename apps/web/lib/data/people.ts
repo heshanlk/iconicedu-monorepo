@@ -18,6 +18,8 @@ export interface BaseUserProfile {
   firstName?: string | null;
   lastName?: string | null;
 
+  bio?: string | null;
+
   avatarSource: AvatarSource;
   avatarSeed: string;
   avatarUrl?: string | null;
@@ -28,14 +30,18 @@ export interface BaseUserProfile {
 
   timezone: string;
   locale?: string | null;
+  languagesSpoken?: string[] | null;
 
   prefs?: Record<string, unknown> | null;
   notificationDefaults?: Record<string, unknown> | null;
+  preferredContactChannels?: string[] | null;
 
   userRoles?: UserRole[] | null;
 
   createdAt: ISODateTime;
   updatedAt: ISODateTime;
+
+  status?: 'active' | 'inactive' | 'suspended' | null;
 }
 
 export interface TeacherProfile extends BaseUserProfile {
@@ -43,15 +49,23 @@ export interface TeacherProfile extends BaseUserProfile {
   headline?: string | null;
   subjects?: string[] | null;
   gradesSupported?: GradeLevel[] | null;
+  education?: string | null;
   experienceYears?: number | null;
   certifications?: Array<{
     name: string;
     issuer?: string;
     year?: number;
   }> | null;
-  bio?: string | null;
   joinedDate: Date;
   notesInternal?: string | null;
+  ageGroupsComfortableWith?: string[] | null;
+  identityVerificationStatus?: 'unverified' | 'pending' | 'verified' | null;
+  curriculumTags?: string[] | null;
+  badges?: string[] | null;
+  averageRating?: number | null;
+  totalReviews?: number | null;
+  featuredVideoIntroUrl?: string | null;
+  leadSource?: string | null;
 }
 
 export interface ParentProfile extends BaseUserProfile {
@@ -59,7 +73,8 @@ export interface ParentProfile extends BaseUserProfile {
   children: ChildProfile[];
   joinedDate: Date;
   notesInternal?: string | null;
-  bio?: string | null;
+  sessionNotesVisibility?: 'private' | 'shared' | null;
+  leadSource?: string | null;
 }
 
 export interface ChildProfile extends BaseUserProfile {
@@ -68,13 +83,22 @@ export interface ChildProfile extends BaseUserProfile {
   schoolYear?: string | null;
   color: string;
   notesInternal?: string | null;
+  interests?: string[] | null;
+  strengths?: string[] | null;
+  learningPreferences?: string[] | null;
+  motivationStyles?: string[] | null;
+  confidenceLevel?: 'low' | 'medium' | 'high' | null;
+  communicationStyle?: 'chatty' | 'shy' | null;
 }
 
 export interface StaffProfile extends BaseUserProfile {
   department?: string | null;
+  managerStaffId?: UUID | null;
+  specialties?: string[] | null;
   jobTitle?: string | null;
   permissionsScope?: 'limited' | 'standard' | 'elevated' | null;
   notesInternal?: string | null;
+  workingHoursRules?: string[] | null;
 }
 
 export const MOCK_CHILDREN_IDS = {
