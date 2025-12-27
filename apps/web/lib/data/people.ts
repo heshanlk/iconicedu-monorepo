@@ -221,12 +221,32 @@ export const toProfileUser = (
   email?: string | null;
   phone?: string | null;
   joinedDate?: Date;
+  headline?: string | null;
+  bio?: string | null;
+  subjects?: string[] | null;
+  gradesSupported?: GradeLevel[] | null;
+  experienceYears?: number | null;
+  certifications?: Array<{
+    name: string;
+    issuer?: string;
+    year?: number;
+  }> | null;
+  childrenNames?: string[];
 } => ({
   ...toMessageUser(profile),
   role: toRoleLabel(profile.userRoles?.[0]?.roleKey),
   email: profile.email ?? null,
   phone: profile.phoneE164 ?? null,
   joinedDate: profile.joinedDate,
+  headline: 'headline' in profile ? profile.headline ?? null : null,
+  bio: 'bio' in profile ? profile.bio ?? null : null,
+  subjects: 'subjects' in profile ? profile.subjects ?? null : null,
+  gradesSupported: 'gradesSupported' in profile ? profile.gradesSupported ?? null : null,
+  experienceYears: 'experienceYears' in profile ? profile.experienceYears ?? null : null,
+  certifications: 'certifications' in profile ? profile.certifications ?? null : null,
+  childrenNames: 'children' in profile
+    ? profile.children.map((child) => child.displayName)
+    : undefined,
 });
 
 export const MOCK_TEACHER: TeacherProfile = {

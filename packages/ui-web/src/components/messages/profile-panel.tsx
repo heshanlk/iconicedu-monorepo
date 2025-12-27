@@ -1,6 +1,17 @@
 'use client';
 
-import { Mail, Phone, School, Calendar, UserIcon } from 'lucide-react';
+import {
+  Mail,
+  Phone,
+  Calendar,
+  BookOpen,
+  GraduationCap,
+  Award,
+  Clock,
+  Users,
+  FileText,
+  Megaphone,
+} from 'lucide-react';
 import { AvatarWithStatus } from '../shared/avatar-with-status';
 import { Badge } from '../../ui/badge';
 import { Separator } from '../../ui/separator';
@@ -11,10 +22,18 @@ interface ProfilePanelProps {
     role?: string;
     email?: string;
     phone?: string;
-    school?: string;
-    grade?: string;
-    studentName?: string;
     joinedDate?: Date;
+    headline?: string | null;
+    bio?: string | null;
+    subjects?: string[] | null;
+    gradesSupported?: Array<number | string> | null;
+    experienceYears?: number | null;
+    certifications?: Array<{
+      name: string;
+      issuer?: string;
+      year?: number;
+    }> | null;
+    childrenNames?: string[];
   };
 }
 
@@ -76,33 +95,86 @@ export function ProfilePanel({ user }: ProfilePanelProps) {
         <div className="space-y-4 p-4">
           <h3 className="text-sm font-semibold text-foreground">About</h3>
           <div className="space-y-3">
-            {user.studentName && (
+            {user.headline && (
               <div className="flex items-start gap-3">
-                <UserIcon className="mt-0.5 h-4 w-4 text-muted-foreground" />
+                <Megaphone className="mt-0.5 h-4 w-4 text-muted-foreground" />
                 <div className="flex-1">
-                  <p className="text-xs text-muted-foreground">Student</p>
-                  <p className="text-sm text-foreground">{user.studentName}</p>
+                  <p className="text-xs text-muted-foreground">Headline</p>
+                  <p className="text-sm text-foreground">{user.headline}</p>
                 </div>
               </div>
             )}
-            {user.grade && (
+            {user.bio && (
               <div className="flex items-start gap-3">
-                <School className="mt-0.5 h-4 w-4 text-muted-foreground" />
+                <FileText className="mt-0.5 h-4 w-4 text-muted-foreground" />
                 <div className="flex-1">
-                  <p className="text-xs text-muted-foreground">Grade</p>
-                  <p className="text-sm text-foreground">{user.grade}</p>
+                  <p className="text-xs text-muted-foreground">Bio</p>
+                  <p className="text-sm text-foreground">{user.bio}</p>
                 </div>
               </div>
             )}
-            {user.school && (
+            {user.subjects?.length ? (
               <div className="flex items-start gap-3">
-                <School className="mt-0.5 h-4 w-4 text-muted-foreground" />
+                <BookOpen className="mt-0.5 h-4 w-4 text-muted-foreground" />
                 <div className="flex-1">
-                  <p className="text-xs text-muted-foreground">School</p>
-                  <p className="text-sm text-foreground">{user.school}</p>
+                  <p className="text-xs text-muted-foreground">Subjects</p>
+                  <p className="text-sm text-foreground">{user.subjects.join(', ')}</p>
                 </div>
               </div>
-            )}
+            ) : null}
+            {user.gradesSupported?.length ? (
+              <div className="flex items-start gap-3">
+                <GraduationCap className="mt-0.5 h-4 w-4 text-muted-foreground" />
+                <div className="flex-1">
+                  <p className="text-xs text-muted-foreground">Grades supported</p>
+                  <p className="text-sm text-foreground">
+                    {user.gradesSupported.join(', ')}
+                  </p>
+                </div>
+              </div>
+            ) : null}
+            {typeof user.experienceYears === 'number' ? (
+              <div className="flex items-start gap-3">
+                <Clock className="mt-0.5 h-4 w-4 text-muted-foreground" />
+                <div className="flex-1">
+                  <p className="text-xs text-muted-foreground">Experience</p>
+                  <p className="text-sm text-foreground">
+                    {user.experienceYears} years
+                  </p>
+                </div>
+              </div>
+            ) : null}
+            {user.certifications?.length ? (
+              <div className="flex items-start gap-3">
+                <Award className="mt-0.5 h-4 w-4 text-muted-foreground" />
+                <div className="flex-1">
+                  <p className="text-xs text-muted-foreground">Certifications</p>
+                  <p className="text-sm text-foreground">
+                    {user.certifications
+                      .map((cert) => {
+                        if (cert.issuer && cert.year) {
+                          return `${cert.name} (${cert.issuer}, ${cert.year})`;
+                        }
+                        if (cert.issuer) return `${cert.name} (${cert.issuer})`;
+                        if (cert.year) return `${cert.name} (${cert.year})`;
+                        return cert.name;
+                      })
+                      .join(', ')}
+                  </p>
+                </div>
+              </div>
+            ) : null}
+            {user.childrenNames?.length ? (
+              <div className="flex items-start gap-3">
+                <Users className="mt-0.5 h-4 w-4 text-muted-foreground" />
+                <div className="flex-1">
+                  <p className="text-xs text-muted-foreground">Children</p>
+                  <p className="text-sm text-foreground">
+                    {user.childrenNames.join(', ')}
+                  </p>
+                </div>
+              </div>
+            ) : null}
             {user.joinedDate && (
               <div className="flex items-start gap-3">
                 <Calendar className="mt-0.5 h-4 w-4 text-muted-foreground" />
