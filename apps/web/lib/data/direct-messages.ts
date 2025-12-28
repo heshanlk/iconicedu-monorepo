@@ -5,24 +5,11 @@ import type {
   FileMessage,
   LinkPreviewMessage,
 } from '@iconicedu/shared-types';
+import { MOCK_PARENT, MOCK_TEACHER, MOCK_TEACHER_2, toMessageUser } from './people';
 
-export const DIRECT_CONTACT = {
-  id: 'contact-1',
-  name: 'Avery Johnson',
-  avatar:
-    'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-sarah-Vsp1gZWstExMvD0Qce0ogsgN6nv2pC.png',
-  isOnline: true,
-  status: 'Math Tutor',
-};
-
-export const DIRECT_USER = {
-  id: 'user-1',
-  name: 'Heshan Wanigasooriya',
-  avatar:
-    'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-mike-T2UMe9BlbWWIxlq7z99cJWqwEagAuc.jpg',
-  isOnline: true,
-  status: 'Parent',
-};
+export const DIRECT_USER = toMessageUser(MOCK_PARENT);
+export const DIRECT_CONTACT = toMessageUser(MOCK_TEACHER);
+export const DIRECT_ALT_CONTACT = toMessageUser(MOCK_TEACHER_2);
 
 export const DIRECT_LAST_READ_MESSAGE_ID = 'dm-6';
 
@@ -43,7 +30,9 @@ export const DIRECT_MESSAGES: Message[] = [
     content: 'Yes — 4:30 PM works great. I will share the Zoom link soon.',
     sender: DIRECT_CONTACT,
     timestamp: new Date(Date.now() - 1000 * 60 * 60 * 4.5),
-    reactions: [{ emoji: '✅', count: 1, users: ['user-1'] }],
+    reactions: [
+      { emoji: '✅', count: 1, users: [MOCK_PARENT.userId] },
+    ],
     visibility: { type: 'all' },
     isRead: true,
   } as TextMessage,
@@ -85,7 +74,7 @@ export const DIRECT_MESSAGES: Message[] = [
     id: 'dm-5',
     type: 'link-preview',
     content: "Here is a quick reference for today's topic.",
-    sender: DIRECT_CONTACT,
+    sender: DIRECT_ALT_CONTACT,
     timestamp: new Date(Date.now() - 1000 * 60 * 60 * 1.5),
     reactions: [],
     visibility: { type: 'all' },
@@ -105,7 +94,9 @@ export const DIRECT_MESSAGES: Message[] = [
     content: "Got it -- thanks! I'll join a few minutes early.",
     sender: DIRECT_USER,
     timestamp: new Date(Date.now() - 1000 * 60 * 15),
-    reactions: [{ emoji: '👍', count: 1, users: ['contact-1'] }],
+    reactions: [
+      { emoji: '👍', count: 1, users: [MOCK_TEACHER.userId] },
+    ],
     visibility: { type: 'all' },
     isRead: false,
   } as TextMessage,

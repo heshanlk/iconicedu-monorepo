@@ -7,6 +7,8 @@ export type GradeLevel = number | string;
 export type RoleKey = 'owner' | 'admin' | 'teacher' | 'parent' | 'child';
 export type AccountStatus = 'active' | 'invited' | 'suspended' | 'deleted';
 
+export const MOCK_ORG_ID = '4fca0d16-5d72-4a24-9a0d-6f8c0bf2b652';
+
 export interface UserRole {
   userId: UUID;
   roleKey: RoleKey;
@@ -45,6 +47,18 @@ export interface UserContact {
   verifiedAt?: ISODateTime | null;
 }
 
+export interface UserAccount {
+  orgId: UUID;
+  userId: UUID;
+  contacts: UserContact;
+  userRoles?: UserRole[] | null;
+  status?: AccountStatus;
+  presence?: Presence | null;
+  createdAt: ISODateTime;
+  updatedAt: ISODateTime;
+  archivedAt?: ISODateTime | null;
+}
+
 export interface BaseUserProfile {
   orgId: UUID;
   userId: UUID;
@@ -57,8 +71,6 @@ export interface BaseUserProfile {
 
   avatar: Avatar;
 
-  contacts: UserContact;
-
   timezone: string;
   locale?: string | null;
   languagesSpoken?: string[] | null;
@@ -67,19 +79,11 @@ export interface BaseUserProfile {
   notificationDefaults?: Record<string, unknown> | null;
   preferredContactChannels?: string[] | null;
 
-  userRoles?: UserRole[] | null;
-
   createdAt: ISODateTime;
   updatedAt: ISODateTime;
-  archivedAt?: ISODateTime | null;
-
-  status?: AccountStatus;
-
-  presence?: Presence | null;
 }
 
 export interface TeacherProfile extends BaseUserProfile {
-  email: string;
   headline?: string | null;
   subjects?: string[] | null;
   gradesSupported?: GradeLevel[] | null;
@@ -103,7 +107,6 @@ export interface TeacherProfile extends BaseUserProfile {
 }
 
 export interface ParentProfile extends BaseUserProfile {
-  email: string;
   children: ChildProfile[];
   joinedDate: Date;
   notesInternal?: string | null;
@@ -143,26 +146,21 @@ export const MOCK_CHILDREN_IDS = {
 
 export const MOCK_CHILDREN: ChildProfile[] = [
   {
+    orgId: MOCK_ORG_ID,
     userId: MOCK_CHILDREN_IDS.sarah,
     displayName: 'Sarah',
     firstName: 'Sarah',
     lastName: 'Chen',
-    avatarSource: 'seed',
-    avatarSeed: 'Children-3',
-    avatarUrl: null,
-    avatarUpdatedAt: null,
-    phoneE164: null,
+    avatar: {
+      source: 'seed',
+      seed: 'Children-3',
+      url: null,
+      updatedAt: null,
+    },
     timezone: 'America/New_York',
     locale: 'en-US',
     prefs: null,
     notificationDefaults: null,
-    userRoles: [
-      {
-        userId: '1b9504c3-0e65-4d7a-a843-2d7169f73407',
-        roleKey: 'child',
-        assignedAt: '2020-09-01T00:00:00.000Z',
-      },
-    ],
     gradeLevel: 4,
     schoolName: 'Riverside Elementary School',
     schoolYear: '2024-2025',
@@ -172,26 +170,21 @@ export const MOCK_CHILDREN: ChildProfile[] = [
     color: 'bg-green-500 text-white',
   },
   {
+    orgId: MOCK_ORG_ID,
     userId: MOCK_CHILDREN_IDS.zayne,
     displayName: 'Zayne',
     firstName: 'Zayne',
     lastName: null,
-    avatarSource: 'seed',
-    avatarSeed: 'Children-4',
-    avatarUrl: null,
-    avatarUpdatedAt: null,
-    phoneE164: null,
+    avatar: {
+      source: 'seed',
+      seed: 'Children-4',
+      url: null,
+      updatedAt: null,
+    },
     timezone: 'America/New_York',
     locale: 'en-US',
     prefs: null,
     notificationDefaults: null,
-    userRoles: [
-      {
-        userId: '8f055dda-76e1-4a50-9e6e-34f0dc82e6f6',
-        roleKey: 'child',
-        assignedAt: '2021-01-01T00:00:00.000Z',
-      },
-    ],
     gradeLevel: 7,
     schoolName: 'Riverside Middle School',
     schoolYear: '2024-2025',
@@ -201,26 +194,21 @@ export const MOCK_CHILDREN: ChildProfile[] = [
     color: 'bg-red-500 text-white',
   },
   {
+    orgId: MOCK_ORG_ID,
     userId: MOCK_CHILDREN_IDS.sophia,
     displayName: 'Sophia',
     firstName: 'Sophia',
     lastName: null,
-    avatarSource: 'seed',
-    avatarSeed: 'Children-5',
-    avatarUrl: null,
-    avatarUpdatedAt: null,
-    phoneE164: null,
+    avatar: {
+      source: 'seed',
+      seed: 'Children-5',
+      url: null,
+      updatedAt: null,
+    },
     timezone: 'America/New_York',
     locale: 'en-US',
     prefs: null,
     notificationDefaults: null,
-    userRoles: [
-      {
-        userId: 'f0c0ea47-e1c1-4f54-bb99-b1df83db9da4',
-        roleKey: 'child',
-        assignedAt: '2021-01-01T00:00:00.000Z',
-      },
-    ],
     gradeLevel: 7,
     schoolName: 'Riverside Middle School',
     schoolYear: '2024-2025',
@@ -240,7 +228,7 @@ export const getMockChildrenNameByUserId = (userId: UUID) =>
 export const toMessageUser = (profile: BaseUserProfile): User => ({
   id: profile.userId,
   name: profile.displayName,
-  avatar: profile.avatarUrl ?? '',
+  avatar: profile.avatar.url ?? '',
 });
 
 const toRoleLabel = (roleKey: RoleKey | undefined) => {
@@ -250,6 +238,7 @@ const toRoleLabel = (roleKey: RoleKey | undefined) => {
 
 export const toProfileUser = (
   profile: TeacherProfile | ParentProfile,
+  account?: UserAccount,
 ): User & {
   role?: string;
   email?: string | null;
@@ -268,9 +257,9 @@ export const toProfileUser = (
   childrenNames?: string[];
 } => ({
   ...toMessageUser(profile),
-  role: toRoleLabel(profile.userRoles?.[0]?.roleKey),
-  email: profile.email ?? null,
-  phone: profile.phoneE164 ?? null,
+  role: toRoleLabel(account?.userRoles?.[0]?.roleKey),
+  email: account?.contacts.email ?? null,
+  phone: account?.contacts.phoneE164 ?? null,
   joinedDate: profile.joinedDate,
   headline: 'headline' in profile ? (profile.headline ?? null) : null,
   bio: 'bio' in profile ? (profile.bio ?? null) : null,
@@ -287,28 +276,22 @@ export const toProfileUser = (
 });
 
 export const MOCK_TEACHER: TeacherProfile = {
+  orgId: MOCK_ORG_ID,
   userId: 'a21b9c5f-0906-4f04-9b7f-6f7b4a6fb1c5',
   displayName: 'Ms. Jennifer Williams',
   firstName: 'Jennifer',
   lastName: 'Williams',
-  avatarSource: 'upload',
-  avatarSeed: 'teacher-1',
-  avatarUrl:
-    'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-sarah-Vsp1gZWstExMvD0Qce0ogsgN6nv2pC.png',
-  avatarUpdatedAt: '2024-01-01T00:00:00.000Z',
-  phoneE164: '+15551234567',
+  avatar: {
+    source: 'upload',
+    seed: 'teacher-1',
+    url:
+      'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-sarah-Vsp1gZWstExMvD0Qce0ogsgN6nv2pC.png',
+    updatedAt: '2024-01-01T00:00:00.000Z',
+  },
   timezone: 'America/New_York',
   locale: 'en-US',
   prefs: null,
   notificationDefaults: null,
-  userRoles: [
-    {
-      userId: 'a21b9c5f-0906-4f04-9b7f-6f7b4a6fb1c5',
-      roleKey: 'teacher',
-      assignedAt: '2020-09-01T00:00:00.000Z',
-    },
-  ],
-  email: 'j.williams@school.edu',
   headline: 'Helping 4th graders love math.',
   subjects: ['Mathematics'],
   gradesSupported: ['4th Grade', 5],
@@ -324,28 +307,22 @@ export const MOCK_TEACHER: TeacherProfile = {
 };
 
 export const MOCK_TEACHER_2: TeacherProfile = {
+  orgId: MOCK_ORG_ID,
   userId: '0b2b3d51-9a35-4b47-86b4-5fe9b9b5f8e4',
   displayName: 'Mr. David Kim',
   firstName: 'David',
   lastName: 'Kim',
-  avatarSource: 'upload',
-  avatarSeed: 'teacher-2',
-  avatarUrl:
-    'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-jordan-ACflnHBYNP7M9crd5MtKL7WSpk3GiQ.jpg',
-  avatarUpdatedAt: '2024-01-01T00:00:00.000Z',
-  phoneE164: '+15551230001',
+  avatar: {
+    source: 'upload',
+    seed: 'teacher-2',
+    url:
+      'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-jordan-ACflnHBYNP7M9crd5MtKL7WSpk3GiQ.jpg',
+    updatedAt: '2024-01-01T00:00:00.000Z',
+  },
   timezone: 'America/New_York',
   locale: 'en-US',
   prefs: null,
   notificationDefaults: null,
-  userRoles: [
-    {
-      userId: '0b2b3d51-9a35-4b47-86b4-5fe9b9b5f8e4',
-      roleKey: 'teacher',
-      assignedAt: '2018-08-20T00:00:00.000Z',
-    },
-  ],
-  email: 'd.kim@school.edu',
   headline: 'Science comes alive through experiments.',
   subjects: ['Science'],
   gradesSupported: [6, 7, 8],
@@ -361,28 +338,22 @@ export const MOCK_TEACHER_2: TeacherProfile = {
 };
 
 export const MOCK_TEACHER_3: TeacherProfile = {
+  orgId: MOCK_ORG_ID,
   userId: '4a5fbb0f-4b74-4c48-a3d4-1f88b0a2d8e2',
   displayName: 'Ms. Priya Desai',
   firstName: 'Priya',
   lastName: 'Desai',
-  avatarSource: 'upload',
-  avatarSeed: 'teacher-3',
-  avatarUrl:
-    'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-alex-UoI6qSVh9rZS9DvLOmhIY8pabZfAOq.png',
-  avatarUpdatedAt: '2024-01-01T00:00:00.000Z',
-  phoneE164: '+15551230002',
+  avatar: {
+    source: 'upload',
+    seed: 'teacher-3',
+    url:
+      'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-alex-UoI6qSVh9rZS9DvLOmhIY8pabZfAOq.png',
+    updatedAt: '2024-01-01T00:00:00.000Z',
+  },
   timezone: 'America/Chicago',
   locale: 'en-US',
   prefs: null,
   notificationDefaults: null,
-  userRoles: [
-    {
-      userId: '4a5fbb0f-4b74-4c48-a3d4-1f88b0a2d8e2',
-      roleKey: 'teacher',
-      assignedAt: '2019-08-15T00:00:00.000Z',
-    },
-  ],
-  email: 'p.desai@school.edu',
   headline: 'Literacy-first teaching with joyful reading.',
   subjects: ['English Language Arts'],
   gradesSupported: [3, 4, 5],
@@ -398,28 +369,22 @@ export const MOCK_TEACHER_3: TeacherProfile = {
 };
 
 export const MOCK_TEACHER_4: TeacherProfile = {
+  orgId: MOCK_ORG_ID,
   userId: '6b0a28a8-1f47-41b5-9a61-3f5c2fffb7f6',
   displayName: 'Mr. Luis Hernandez',
   firstName: 'Luis',
   lastName: 'Hernandez',
-  avatarSource: 'upload',
-  avatarSeed: 'teacher-4',
-  avatarUrl:
-    'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-mike-T2UMe9BlbWWIxlq7z99cJWqwEagAuc.jpg',
-  avatarUpdatedAt: '2024-01-01T00:00:00.000Z',
-  phoneE164: '+15551230003',
+  avatar: {
+    source: 'upload',
+    seed: 'teacher-4',
+    url:
+      'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-mike-T2UMe9BlbWWIxlq7z99cJWqwEagAuc.jpg',
+    updatedAt: '2024-01-01T00:00:00.000Z',
+  },
   timezone: 'America/Los_Angeles',
   locale: 'en-US',
   prefs: null,
   notificationDefaults: null,
-  userRoles: [
-    {
-      userId: '6b0a28a8-1f47-41b5-9a61-3f5c2fffb7f6',
-      roleKey: 'teacher',
-      assignedAt: '2017-01-10T00:00:00.000Z',
-    },
-  ],
-  email: 'l.hernandez@school.edu',
   headline: 'History lessons built on stories and debate.',
   subjects: ['Social Studies'],
   gradesSupported: [7, 8],
@@ -435,28 +400,22 @@ export const MOCK_TEACHER_4: TeacherProfile = {
 };
 
 export const MOCK_TEACHER_5: TeacherProfile = {
+  orgId: MOCK_ORG_ID,
   userId: 'a5b1c3d7-0f7f-4b47-8c6d-9fb2d9b0b3d1',
   displayName: 'Ms. Chloe Rivera',
   firstName: 'Chloe',
   lastName: 'Rivera',
-  avatarSource: 'upload',
-  avatarSeed: 'teacher-5',
-  avatarUrl:
-    'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-sarah-Vsp1gZWstExMvD0Qce0ogsgN6nv2pC.png',
-  avatarUpdatedAt: '2024-01-01T00:00:00.000Z',
-  phoneE164: '+15551230004',
+  avatar: {
+    source: 'upload',
+    seed: 'teacher-5',
+    url:
+      'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-sarah-Vsp1gZWstExMvD0Qce0ogsgN6nv2pC.png',
+    updatedAt: '2024-01-01T00:00:00.000Z',
+  },
   timezone: 'America/New_York',
   locale: 'en-US',
   prefs: null,
   notificationDefaults: null,
-  userRoles: [
-    {
-      userId: 'a5b1c3d7-0f7f-4b47-8c6d-9fb2d9b0b3d1',
-      roleKey: 'teacher',
-      assignedAt: '2021-08-25T00:00:00.000Z',
-    },
-  ],
-  email: 'c.rivera@school.edu',
   headline: 'Art and design that build confidence.',
   subjects: ['Art'],
   gradesSupported: ['K', 1, 2],
@@ -480,28 +439,22 @@ export const MOCK_TEACHERS: TeacherProfile[] = [
 ];
 
 export const MOCK_PARENT: ParentProfile = {
+  orgId: MOCK_ORG_ID,
   userId: '2a0f3cbe-0b3b-470a-8a98-9381c1c9c6a7',
   displayName: 'Michael Chen',
   firstName: 'Michael',
   lastName: 'Chen',
-  avatarSource: 'upload',
-  avatarSeed: 'parent-1',
-  avatarUrl:
-    'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-mike-T2UMe9BlbWWIxlq7z99cJWqwEagAuc.jpg',
-  avatarUpdatedAt: '2024-01-01T00:00:00.000Z',
-  phoneE164: '+15559876543',
+  avatar: {
+    source: 'upload',
+    seed: 'parent-1',
+    url:
+      'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-mike-T2UMe9BlbWWIxlq7z99cJWqwEagAuc.jpg',
+    updatedAt: '2024-01-01T00:00:00.000Z',
+  },
   timezone: 'America/New_York',
   locale: 'en-US',
   prefs: null,
   notificationDefaults: null,
-  userRoles: [
-    {
-      userId: '2a0f3cbe-0b3b-470a-8a98-9381c1c9c6a7',
-      roleKey: 'parent',
-      assignedAt: '2021-09-15T00:00:00.000Z',
-    },
-  ],
-  email: 'michael.chen@email.com',
   bio: 'Focused on keeping learning consistent and positive at home.',
   notesInternal: null,
   createdAt: '2021-09-15T00:00:00.000Z',
@@ -509,3 +462,153 @@ export const MOCK_PARENT: ParentProfile = {
   children: MOCK_CHILDREN,
   joinedDate: new Date(2021, 8, 15),
 };
+
+export const MOCK_USER_ACCOUNTS: UserAccount[] = [
+  {
+    orgId: MOCK_ORG_ID,
+    userId: MOCK_TEACHER.userId,
+    contacts: { email: 'j.williams@school.edu', phoneE164: '+15551234567' },
+    userRoles: [
+      {
+        userId: MOCK_TEACHER.userId,
+        roleKey: 'teacher',
+        assignedAt: '2020-09-01T00:00:00.000Z',
+      },
+    ],
+    status: 'active',
+    presence: null,
+    createdAt: '2020-09-01T00:00:00.000Z',
+    updatedAt: '2024-01-01T00:00:00.000Z',
+  },
+  {
+    orgId: MOCK_ORG_ID,
+    userId: MOCK_TEACHER_2.userId,
+    contacts: { email: 'd.kim@school.edu', phoneE164: '+15551230001' },
+    userRoles: [
+      {
+        userId: MOCK_TEACHER_2.userId,
+        roleKey: 'teacher',
+        assignedAt: '2018-08-20T00:00:00.000Z',
+      },
+    ],
+    status: 'active',
+    presence: null,
+    createdAt: '2018-08-20T00:00:00.000Z',
+    updatedAt: '2024-01-01T00:00:00.000Z',
+  },
+  {
+    orgId: MOCK_ORG_ID,
+    userId: MOCK_TEACHER_3.userId,
+    contacts: { email: 'p.desai@school.edu', phoneE164: '+15551230002' },
+    userRoles: [
+      {
+        userId: MOCK_TEACHER_3.userId,
+        roleKey: 'teacher',
+        assignedAt: '2019-08-15T00:00:00.000Z',
+      },
+    ],
+    status: 'active',
+    presence: null,
+    createdAt: '2019-08-15T00:00:00.000Z',
+    updatedAt: '2024-01-01T00:00:00.000Z',
+  },
+  {
+    orgId: MOCK_ORG_ID,
+    userId: MOCK_TEACHER_4.userId,
+    contacts: { email: 'l.hernandez@school.edu', phoneE164: '+15551230003' },
+    userRoles: [
+      {
+        userId: MOCK_TEACHER_4.userId,
+        roleKey: 'teacher',
+        assignedAt: '2017-01-10T00:00:00.000Z',
+      },
+    ],
+    status: 'active',
+    presence: null,
+    createdAt: '2017-01-10T00:00:00.000Z',
+    updatedAt: '2024-01-01T00:00:00.000Z',
+  },
+  {
+    orgId: MOCK_ORG_ID,
+    userId: MOCK_TEACHER_5.userId,
+    contacts: { email: 'c.rivera@school.edu', phoneE164: '+15551230004' },
+    userRoles: [
+      {
+        userId: MOCK_TEACHER_5.userId,
+        roleKey: 'teacher',
+        assignedAt: '2021-08-25T00:00:00.000Z',
+      },
+    ],
+    status: 'active',
+    presence: null,
+    createdAt: '2021-08-25T00:00:00.000Z',
+    updatedAt: '2024-01-01T00:00:00.000Z',
+  },
+  {
+    orgId: MOCK_ORG_ID,
+    userId: MOCK_PARENT.userId,
+    contacts: { email: 'michael.chen@email.com', phoneE164: '+15559876543' },
+    userRoles: [
+      {
+        userId: MOCK_PARENT.userId,
+        roleKey: 'parent',
+        assignedAt: '2021-09-15T00:00:00.000Z',
+      },
+    ],
+    status: 'active',
+    presence: null,
+    createdAt: '2021-09-15T00:00:00.000Z',
+    updatedAt: '2024-01-01T00:00:00.000Z',
+  },
+  {
+    orgId: MOCK_ORG_ID,
+    userId: MOCK_CHILDREN_IDS.sarah,
+    contacts: {},
+    userRoles: [
+      {
+        userId: MOCK_CHILDREN_IDS.sarah,
+        roleKey: 'child',
+        assignedAt: '2020-09-01T00:00:00.000Z',
+      },
+    ],
+    status: 'active',
+    presence: null,
+    createdAt: '2020-09-01T00:00:00.000Z',
+    updatedAt: '2024-01-01T00:00:00.000Z',
+  },
+  {
+    orgId: MOCK_ORG_ID,
+    userId: MOCK_CHILDREN_IDS.zayne,
+    contacts: {},
+    userRoles: [
+      {
+        userId: MOCK_CHILDREN_IDS.zayne,
+        roleKey: 'child',
+        assignedAt: '2021-01-01T00:00:00.000Z',
+      },
+    ],
+    status: 'active',
+    presence: null,
+    createdAt: '2021-01-01T00:00:00.000Z',
+    updatedAt: '2024-01-01T00:00:00.000Z',
+  },
+  {
+    orgId: MOCK_ORG_ID,
+    userId: MOCK_CHILDREN_IDS.sophia,
+    contacts: {},
+    userRoles: [
+      {
+        userId: MOCK_CHILDREN_IDS.sophia,
+        roleKey: 'child',
+        assignedAt: '2021-01-01T00:00:00.000Z',
+      },
+    ],
+    status: 'active',
+    presence: null,
+    createdAt: '2021-01-01T00:00:00.000Z',
+    updatedAt: '2024-01-01T00:00:00.000Z',
+  },
+];
+
+export const getMockUserAccountByUserId = (userId: UUID) =>
+  MOCK_USER_ACCOUNTS.find((account) => account.userId === userId);

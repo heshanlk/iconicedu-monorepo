@@ -8,12 +8,15 @@ import {
   MOCK_TEACHER_3,
   MOCK_TEACHER_4,
   MOCK_TEACHER_5,
+  getMockUserAccountByUserId,
 } from './people';
+
+const parentAccount = getMockUserAccountByUserId(MOCK_PARENT.userId);
 export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
   user: {
     name: MOCK_PARENT.displayName,
-    email: MOCK_PARENT.email ?? '',
-    avatar: MOCK_PARENT.avatarUrl ?? '',
+    email: parentAccount?.contacts.email ?? '',
+    avatar: MOCK_PARENT.avatar.url ?? '',
   },
   navMain: [
     {
@@ -134,7 +137,7 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
     {
       id: 1,
       name: MOCK_TEACHER.displayName,
-      avatar: MOCK_TEACHER.avatarUrl ?? '',
+      avatar: MOCK_TEACHER.avatar.url ?? '',
       status: 'online',
       participants: [MOCK_PARENT.userId, MOCK_TEACHER.userId],
       url: '/dashboard/dm',
@@ -142,7 +145,7 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
     {
       id: 2,
       name: MOCK_TEACHER_2.displayName,
-      avatar: MOCK_TEACHER_2.avatarUrl ?? '',
+      avatar: MOCK_TEACHER_2.avatar.url ?? '',
       status: 'away',
       participants: [MOCK_PARENT.userId, MOCK_TEACHER_2.userId],
       url: '/dashboard/dm',
@@ -150,7 +153,7 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
     {
       id: 3,
       name: MOCK_TEACHER_3.displayName,
-      avatar: MOCK_TEACHER_3.avatarUrl ?? '',
+      avatar: MOCK_TEACHER_3.avatar.url ?? '',
       status: 'online',
       participants: [MOCK_PARENT.userId, MOCK_TEACHER_3.userId],
       url: '/dashboard/dm',
@@ -158,7 +161,7 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
     {
       id: 4,
       name: MOCK_TEACHER_4.displayName,
-      avatar: MOCK_TEACHER_4.avatarUrl ?? '',
+      avatar: MOCK_TEACHER_4.avatar.url ?? '',
       status: 'offline',
       participants: [MOCK_PARENT.userId, MOCK_TEACHER_4.userId],
       url: '/dashboard/dm',
@@ -166,7 +169,7 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
     {
       id: 5,
       name: MOCK_TEACHER_5.displayName,
-      avatar: MOCK_TEACHER_5.avatarUrl ?? '',
+      avatar: MOCK_TEACHER_5.avatar.url ?? '',
       status: 'idle',
       participants: [MOCK_PARENT.userId, MOCK_TEACHER_5.userId],
       url: '/dashboard/dm',
