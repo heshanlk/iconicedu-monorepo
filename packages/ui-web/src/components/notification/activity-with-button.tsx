@@ -2,13 +2,13 @@
 
 import { Button } from '../../ui/button';
 import { cn } from '../../lib/utils';
-import type { ActivityFeedItem } from '@iconicedu/shared-types';
+import type { ActivityFeedItemVM } from '@iconicedu/shared-types';
 
 export function ActivityWithButton({
   activity,
   className,
 }: {
-  activity: ActivityFeedItem;
+  activity: ActivityFeedItemVM;
   className?: string;
 }) {
   const actionButton = activity.actionButton;

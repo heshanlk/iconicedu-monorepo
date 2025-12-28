@@ -9,7 +9,7 @@ import { ActivityBasic } from '../notification/activity-basic';
 import { ActivityBasicWithActionButton } from '../notification/activity-basic-with-action-button';
 import { ActivityBasicWithExpandedContent } from '../notification/activity-basic-with-expanded-content';
 import { ActivityWithSubitems } from '../notification/activity-with-subitems';
-import type { ActivityFeedItem, ActivityFeedVM, InboxTabKey } from '@iconicedu/shared-types';
+import type { ActivityFeedItemVM, ActivityFeedVM, InboxTabKeyVM } from '@iconicedu/shared-types';
 
 export function InboxContainer({
   feed,
@@ -17,7 +17,7 @@ export function InboxContainer({
   feed: ActivityFeedVM;
 }) {
   const [sections, setSections] = useState(feed.sections);
-  const [activeTab, setActiveTab] = useState<InboxTabKey>(feed.activeTab);
+  const [activeTab, setActiveTab] = useState<InboxTabKeyVM>(feed.activeTab);
 
   const tabCounts = feed.tabs.reduce(
     (acc, tab) => {
@@ -31,7 +31,7 @@ export function InboxContainer({
       acc[tab.key] = tab.badgeCount ?? count;
       return acc;
     },
-    {} as Record<InboxTabKey, number>,
+    {} as Record<InboxTabKeyVM, number>,
   );
 
   const filteredSections = sections
@@ -44,7 +44,7 @@ export function InboxContainer({
     .filter((section) => section.items.length > 0);
 
   const handleTabChange = (value: string) => {
-    setActiveTab(value as InboxTabKey);
+    setActiveTab(value as InboxTabKeyVM);
   };
 
   const markAsRead = (id: string, e: React.MouseEvent) => {
@@ -73,7 +73,7 @@ export function InboxContainer({
     );
   };
 
-  const renderActivity = (activity: ActivityFeedItem) => {
+  const renderActivity = (activity: ActivityFeedItemVM) => {
     if (activity.kind === 'group') {
       return <ActivityWithSubitems activity={activity} onMarkRead={markAsRead} />;
     }

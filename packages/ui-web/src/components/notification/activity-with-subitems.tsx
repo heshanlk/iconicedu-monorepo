@@ -7,12 +7,12 @@ import { ActivityBasicWithActionButton } from './activity-basic-with-action-butt
 import { ActivityBasicWithExpandedContent } from './activity-basic-with-expanded-content';
 import { ActivityItemBase } from './activity-item-base';
 import type {
-  ActivityFeedGroupItem,
-  ActivityFeedLeafItem,
+  ActivityFeedGroupItemVM,
+  ActivityFeedLeafItemVM,
 } from '@iconicedu/shared-types';
 
 type ActivityWithSubitemsProps = {
-  activity: ActivityFeedGroupItem;
+  activity: ActivityFeedGroupItemVM;
   isSubActivity?: boolean;
   parentExpanded?: boolean;
   onMarkRead: (id: string, event: React.MouseEvent) => void;
@@ -57,7 +57,7 @@ export function ActivityWithSubitems({
 
       {hasSubActivities && !isCollapsed && (
         <div className="relative ml-6 md:ml-[42px] animate-in slide-in-from-top-2 fade-in duration-300">
-          {subActivities.map((sub: ActivityFeedLeafItem) => (
+          {subActivities.map((sub: ActivityFeedLeafItemVM) => (
             <div key={sub.id} className="relative">
               {sub.expandedContent ? (
                 <ActivityBasicWithExpandedContent

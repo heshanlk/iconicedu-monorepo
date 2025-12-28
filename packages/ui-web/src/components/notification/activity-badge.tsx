@@ -3,10 +3,10 @@
 import { AvatarWithStatus } from '../shared/avatar-with-status';
 import { cn } from '../../lib/utils';
 import { AvatarGroup, AvatarGroupCount } from '../../ui/avatar';
-import type { ActivityFeedItem } from '@iconicedu/shared-types';
+import type { ActivityFeedItemVM } from '@iconicedu/shared-types';
 
 type ActivityBadgeProps = {
-  activity: ActivityFeedItem;
+  activity: ActivityFeedItemVM;
   className?: string;
 };
 

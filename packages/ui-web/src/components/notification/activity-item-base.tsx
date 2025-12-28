@@ -20,10 +20,10 @@ import { Button } from '../../ui/button';
 import { cn } from '../../lib/utils';
 import { ActivityBadge } from './activity-badge';
 import { ActivityWithButton } from './activity-with-button';
-import type { ActivityFeedItem, InboxIconKey } from '@iconicedu/shared-types';
+import type { ActivityFeedItemVM, InboxIconKeyVM } from '@iconicedu/shared-types';
 
 type ActivityItemBaseProps = {
-  activity: ActivityFeedItem;
+  activity: ActivityFeedItemVM;
   onMarkRead: (id: string, event: React.MouseEvent) => void;
   onToggle?: (event: React.MouseEvent) => void;
   isSubActivity?: boolean;
@@ -37,7 +37,7 @@ type ActivityItemBaseProps = {
 };
 
 const READ_ICON_CLASS = 'bg-muted text-muted-foreground';
-const INBOX_ICON_MAP: Record<InboxIconKey, React.ComponentType<{ className?: string }>> =
+const INBOX_ICON_MAP: Record<InboxIconKeyVM, React.ComponentType<{ className?: string }>> =
   {
     Bell,
     CheckCircle2,
@@ -59,7 +59,7 @@ const TONE_CLASSNAMES = {
   info: 'bg-blue-100 text-blue-700',
 };
 
-const getDefaultIconKey = (activity: ActivityFeedItem): InboxIconKey => {
+const getDefaultIconKey = (activity: ActivityFeedItemVM): InboxIconKeyVM => {
   if (activity.kind === 'group') {
     switch (activity.groupType) {
       case 'payment':

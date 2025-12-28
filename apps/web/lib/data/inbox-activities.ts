@@ -1,9 +1,9 @@
 import type {
-  ActivityFeedGroupItem,
-  ActivityFeedLeafItem,
+  ActivityFeedGroupItemVM,
+  ActivityFeedLeafItemVM,
   ActivityFeedVM,
   ActorVM,
-  FeedScope,
+  FeedScopeVM,
 } from '@iconicedu/shared-types';
 import {
   MOCK_CHILDREN,
@@ -20,7 +20,7 @@ const hours = (value: number) => value * 60 * 60 * 1000;
 const days = (value: number) => value * 24 * 60 * 60 * 1000;
 const iso = (msAgo: number) => new Date(now - msAgo).toISOString();
 
-const userScope: FeedScope = {
+const userScope: FeedScopeVM = {
   kind: 'user',
   userId: MOCK_GUARDIAN.accountId,
 };
@@ -64,7 +64,7 @@ const getChildById = (id: string) =>
 const zayne = getChildById(MOCK_CHILDREN_IDS.zayne);
 const sophia = getChildById(MOCK_CHILDREN_IDS.sophia);
 
-const classGroupActivities: ActivityFeedLeafItem[] = [
+const classGroupActivities: ActivityFeedLeafItemVM[] = [
   {
     kind: 'leaf',
     id: '2f1f6e8e-7a9d-4e44-9b69-8c9b6b5b174c',
@@ -176,7 +176,7 @@ const classGroupActivities: ActivityFeedLeafItem[] = [
   },
 ];
 
-const classGroup: ActivityFeedGroupItem = {
+const classGroup: ActivityFeedGroupItemVM = {
   kind: 'group',
   id: '0f0f61b6-bd40-4df2-9d7e-bb8dd4e4d1d5',
   occurredAt: iso(minutes(15)),
@@ -212,7 +212,7 @@ const classGroup: ActivityFeedGroupItem = {
   isRead: false,
 };
 
-const paymentReminder: ActivityFeedLeafItem = {
+const paymentReminder: ActivityFeedLeafItemVM = {
   kind: 'leaf',
   id: '8a4d2e47-bf9c-4b3a-8e2d-2a9c1c2f7c3b',
   occurredAt: iso(minutes(5)),
@@ -237,7 +237,7 @@ const paymentReminder: ActivityFeedLeafItem = {
   isRead: false,
 };
 
-const completeClassReminder: ActivityFeedLeafItem = {
+const completeClassReminder: ActivityFeedLeafItemVM = {
   kind: 'leaf',
   id: 'f0b5b6b2-8d19-4fa1-9f86-8a3f712a4c77',
   occurredAt: iso(minutes(20)),
@@ -262,7 +262,7 @@ const completeClassReminder: ActivityFeedLeafItem = {
   isRead: false,
 };
 
-const sophiaReminder: ActivityFeedLeafItem = {
+const sophiaReminder: ActivityFeedLeafItemVM = {
   kind: 'leaf',
   id: '4f996e3a-4f2b-4d48-9a71-2685a6e4a38d',
   occurredAt: iso(minutes(35)),
@@ -286,7 +286,7 @@ const sophiaReminder: ActivityFeedLeafItem = {
   isRead: false,
 };
 
-const messageActivity: ActivityFeedLeafItem = {
+const messageActivity: ActivityFeedLeafItemVM = {
   kind: 'leaf',
   id: '5a2a9b4a-8a26-44a4-8c72-97f4a0b0c0db',
   occurredAt: iso(hours(3)),
@@ -307,7 +307,7 @@ const messageActivity: ActivityFeedLeafItem = {
   isRead: false,
 };
 
-const homeworkAssigned: ActivityFeedLeafItem = {
+const homeworkAssigned: ActivityFeedLeafItemVM = {
   kind: 'leaf',
   id: '6a6efb93-35a5-4ec2-9c83-c7f09c3f9fd7',
   occurredAt: iso(hours(1)),
@@ -332,7 +332,67 @@ const homeworkAssigned: ActivityFeedLeafItem = {
   isRead: false,
 };
 
-const recordingReady: ActivityFeedLeafItem = {
+const rescheduledSession: ActivityFeedLeafItemVM = {
+  kind: 'leaf',
+  id: 'b5c5f9b2-20e5-4b3c-8bfe-7a0f3f42c5f8',
+  occurredAt: iso(hours(2.5)),
+  createdAt: iso(hours(2.5)),
+  tabKey: 'classes',
+  scope: userScope,
+  visibility: 'direct',
+  verb: 'session.rescheduled',
+  actor: educatorActor,
+  leading: { kind: 'icon', iconKey: 'GraduationCap', tone: 'info' },
+  headline: {
+    primary: educatorActor.displayName,
+    secondary: 'rescheduled',
+    emphasis: 'Math coaching session',
+  },
+  summary: 'New time: Friday at 6:30 PM.',
+  isRead: false,
+};
+
+const canceledSession: ActivityFeedLeafItemVM = {
+  kind: 'leaf',
+  id: 'fe0b63c1-6a52-4a9c-9f3a-1b7b9b0a12d4',
+  occurredAt: iso(hours(4)),
+  createdAt: iso(hours(4)),
+  tabKey: 'classes',
+  scope: userScope,
+  visibility: 'direct',
+  verb: 'session.canceled',
+  actor: educatorTwoActor,
+  leading: { kind: 'icon', iconKey: 'Bell', tone: 'warning' },
+  headline: {
+    primary: educatorTwoActor.displayName,
+    secondary: 'canceled',
+    emphasis: 'Science lab session',
+  },
+  summary: 'A makeup session will be scheduled soon.',
+  isRead: false,
+};
+
+const classUpdated: ActivityFeedLeafItemVM = {
+  kind: 'leaf',
+  id: 'd92e7f9c-4c8e-46b2-9e5b-2c7f4d5a1a99',
+  occurredAt: iso(hours(6)),
+  createdAt: iso(hours(6)),
+  tabKey: 'classes',
+  scope: userScope,
+  visibility: 'scope_only',
+  verb: 'class.updated',
+  actor: educatorThreeActor,
+  leading: { kind: 'icon', iconKey: 'GraduationCap', tone: 'info' },
+  headline: {
+    primary: 'Class update',
+    secondary: 'for',
+    emphasis: 'Social studies cohort',
+  },
+  summary: 'New reading materials were added to this week’s lesson.',
+  isRead: true,
+};
+
+const recordingReady: ActivityFeedLeafItemVM = {
   kind: 'leaf',
   id: '8d98f4f3-7f1d-4a1f-8e6c-1a8c2c2f6d3b',
   occurredAt: iso(days(1)),
@@ -355,7 +415,33 @@ const recordingReady: ActivityFeedLeafItem = {
   isRead: true,
 };
 
-const gradedHomework: ActivityFeedLeafItem = {
+const notesPosted: ActivityFeedLeafItemVM = {
+  kind: 'leaf',
+  id: '2b9c7f1c-9f45-4f6a-9b6a-2b0e1a4c9d7b',
+  occurredAt: iso(days(1)),
+  createdAt: iso(days(1)),
+  tabKey: 'classes',
+  scope: userScope,
+  visibility: 'direct',
+  verb: 'notes.posted',
+  actor: educatorTwoActor,
+  leading: { kind: 'icon', iconKey: 'FileText', tone: 'info' },
+  headline: {
+    primary: educatorTwoActor.displayName,
+    secondary: 'posted notes for',
+    emphasis: 'Biology lab review',
+  },
+  preview: {
+    text: 'Lab safety, organelles, and microscope calibration checklist...',
+  },
+  actionButton: {
+    label: 'Open notes',
+    variant: 'outline',
+  },
+  isRead: true,
+};
+
+const gradedHomework: ActivityFeedLeafItemVM = {
   kind: 'leaf',
   id: '0c1e2b73-2b8e-4c6e-9cc7-bc0a60f0a7b2',
   occurredAt: iso(days(1)),
@@ -380,7 +466,111 @@ const gradedHomework: ActivityFeedLeafItem = {
   isRead: true,
 };
 
-const feedbackSurvey: ActivityFeedLeafItem = {
+const messageEdited: ActivityFeedLeafItemVM = {
+  kind: 'leaf',
+  id: 'c842a1d0-4f21-46ae-9f9f-7a6b1a3c9f90',
+  occurredAt: iso(days(1.5)),
+  createdAt: iso(days(1.5)),
+  tabKey: 'classes',
+  scope: userScope,
+  visibility: 'direct',
+  verb: 'message.edited',
+  actor: educatorActor,
+  leading: { kind: 'icon', iconKey: 'MessageSquare', tone: 'info' },
+  headline: {
+    primary: educatorActor.displayName,
+    secondary: 'edited a message in',
+    emphasis: 'Algebra I chat',
+  },
+  preview: {
+    text: 'Updated the homework due date to Friday.',
+  },
+  isRead: true,
+};
+
+const reactionAdded: ActivityFeedLeafItemVM = {
+  kind: 'leaf',
+  id: '5f8c4e21-8d1a-4d7a-9b0f-2d1c9f8a5b6c',
+  occurredAt: iso(days(2)),
+  createdAt: iso(days(2)),
+  tabKey: 'classes',
+  scope: userScope,
+  visibility: 'direct',
+  verb: 'reaction.added',
+  actor: educatorThreeActor,
+  leading: { kind: 'icon', iconKey: 'MessageSquare', tone: 'neutral' },
+  headline: {
+    primary: educatorThreeActor.displayName,
+    secondary: 'reacted to a message in',
+    emphasis: 'Class announcements',
+  },
+  preview: {
+    text: '👍 “Great work on the quiz!”',
+  },
+  isRead: true,
+};
+
+const fileDeleted: ActivityFeedLeafItemVM = {
+  kind: 'leaf',
+  id: 'a9f0b4d1-3f6e-4a98-9c0f-3a1b8c7d9e5f',
+  occurredAt: iso(days(2.5)),
+  createdAt: iso(days(2.5)),
+  tabKey: 'classes',
+  scope: userScope,
+  visibility: 'scope_only',
+  verb: 'file.deleted',
+  actor: educatorTwoActor,
+  leading: { kind: 'icon', iconKey: 'FileText', tone: 'warning' },
+  headline: {
+    primary: educatorTwoActor.displayName,
+    secondary: 'removed',
+    emphasis: 'Old lab worksheet',
+  },
+  summary: 'An updated worksheet has been uploaded.',
+  isRead: true,
+};
+
+const memberInvited: ActivityFeedLeafItemVM = {
+  kind: 'leaf',
+  id: 'd1f2b3c4-5e6f-7a89-9b0c-1d2e3f4a5b6c',
+  occurredAt: iso(days(3)),
+  createdAt: iso(days(3)),
+  tabKey: 'system',
+  scope: userScope,
+  visibility: 'public',
+  verb: 'member.invited',
+  actor: systemActor,
+  leading: { kind: 'icon', iconKey: 'CheckCircle2', tone: 'success' },
+  headline: {
+    primary: 'Invitation sent',
+    secondary: 'to join',
+    emphasis: 'Family portal',
+  },
+  summary: 'Invite delivered to parent2@example.com.',
+  isRead: true,
+};
+
+const roleChanged: ActivityFeedLeafItemVM = {
+  kind: 'leaf',
+  id: 'f3a6b7c8-9d0e-4f1a-8b2c-3d4e5f6a7b8c',
+  occurredAt: iso(days(3.5)),
+  createdAt: iso(days(3.5)),
+  tabKey: 'system',
+  scope: userScope,
+  visibility: 'public',
+  verb: 'role.changed',
+  actor: systemActor,
+  leading: { kind: 'icon', iconKey: 'CheckCircle2', tone: 'info' },
+  headline: {
+    primary: 'Role updated',
+    secondary: 'for',
+    emphasis: 'Jamie Chen',
+  },
+  summary: 'Account role set to Guardian.',
+  isRead: true,
+};
+
+const feedbackSurvey: ActivityFeedLeafItemVM = {
   kind: 'leaf',
   id: 'c1a8c9c3-4b0b-4b6f-92f1-2d3e44e7f4ab',
   occurredAt: iso(days(3)),
@@ -405,7 +595,51 @@ const feedbackSurvey: ActivityFeedLeafItem = {
   isRead: true,
 };
 
-const scheduleReminder: ActivityFeedLeafItem = {
+const archivedMessageGroup: ActivityFeedGroupItemVM = {
+  kind: 'group',
+  id: 'b1b2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d',
+  occurredAt: iso(days(4)),
+  createdAt: iso(days(4)),
+  tabKey: 'system',
+  scope: userScope,
+  visibility: 'scope_only',
+  verb: 'message.deleted',
+  actor: educatorActor,
+  leading: { kind: 'icon', iconKey: 'MessageSquare', tone: 'neutral' },
+  headline: {
+    primary: 'Messages archived',
+    secondary: 'from',
+    emphasis: 'Spring cohort chat',
+  },
+  summary: 'Older messages were archived automatically.',
+  groupType: 'message',
+  groupKey: `channel:${MOCK_EDUCATOR.id}:archive`,
+  subActivityCount: 3,
+  subActivities: { items: [], total: 3 },
+  isRead: true,
+};
+
+const homeworkSubmitted: ActivityFeedLeafItemVM = {
+  kind: 'leaf',
+  id: 'e3d4c5b6-a7f8-49c0-9b1a-2c3d4e5f6a7b',
+  occurredAt: iso(days(4.5)),
+  createdAt: iso(days(4.5)),
+  tabKey: 'classes',
+  scope: userScope,
+  visibility: 'direct',
+  verb: 'homework.submitted',
+  actor: systemActor,
+  leading: { kind: 'icon', iconKey: 'Paperclip', tone: 'warning' },
+  headline: {
+    primary: sophia?.displayName ?? 'Child',
+    secondary: 'submitted',
+    emphasis: 'Chemistry worksheet',
+  },
+  summary: 'Submitted 2 minutes before the deadline.',
+  isRead: true,
+};
+
+const scheduleReminder: ActivityFeedLeafItemVM = {
   kind: 'leaf',
   id: 'a8d43262-0197-4c1d-9a3f-0b2db7d0d2f3',
   occurredAt: iso(days(2)),
@@ -443,15 +677,32 @@ export const INBOX_ACTIVITY_FEED: ActivityFeedVM = {
         sophiaReminder,
         messageActivity,
         homeworkAssigned,
+        rescheduledSession,
+        canceledSession,
       ],
     },
     {
       label: 'Yesterday',
-      items: [recordingReady, gradedHomework],
+      items: [
+        recordingReady,
+        notesPosted,
+        gradedHomework,
+        messageEdited,
+        classUpdated,
+      ],
     },
     {
       label: 'Earlier',
-      items: [feedbackSurvey, scheduleReminder],
+      items: [
+        feedbackSurvey,
+        archivedMessageGroup,
+        reactionAdded,
+        fileDeleted,
+        memberInvited,
+        roleChanged,
+        homeworkSubmitted,
+        scheduleReminder,
+      ],
     },
   ],
 };

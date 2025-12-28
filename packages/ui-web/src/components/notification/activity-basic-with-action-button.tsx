@@ -2,10 +2,10 @@
 
 import type React from 'react';
 import { ActivityItemBase } from './activity-item-base';
-import type { ActivityFeedItem } from '@iconicedu/shared-types';
+import type { ActivityFeedItemVM } from '@iconicedu/shared-types';
 
 type ActivityBasicWithActionButtonProps = {
-  activity: ActivityFeedItem;
+  activity: ActivityFeedItemVM;
   onMarkRead: (id: string, event: React.MouseEvent) => void;
   isSubActivity?: boolean;
   parentExpanded?: boolean;

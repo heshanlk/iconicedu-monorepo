@@ -1,7 +1,7 @@
-import { AvatarVM } from './vm/profile';
-import { ConnectionVM, ISODateTime, UUID } from './vm/shared';
+import { AvatarVM } from './profile';
+import { ConnectionVM, ISODateTime, UUID } from './shared';
 
-export type ActivityGroupKey =
+export type ActivityGroupKeyVM =
   | 'homework'
   | 'message'
   | 'class'
@@ -13,7 +13,7 @@ export type ActivityGroupKey =
   | 'survey'
   | 'complete-class';
 
-export type FeedScope =
+export type FeedScopeVM =
   | { kind: 'global' } // e.g., staff dashboard
   | { kind: 'class_space'; classSpaceId: UUID }
   | { kind: 'channel'; channelId: UUID }
@@ -27,7 +27,7 @@ export type ActorVM = {
   roleKey?: 'owner' | 'admin' | 'educator' | 'guardian' | 'child' | 'staff' | string;
 };
 
-export type EntityRef =
+export type EntityRefVM =
   | { type: 'class_space'; id: UUID }
   | { type: 'session'; id: UUID }
   | { type: 'homework'; id: UUID }
@@ -40,16 +40,16 @@ export type EntityRef =
   | { type: 'child'; id: UUID }
   | { type: 'staff'; id: UUID };
 
-export type ActivityVisibility = 'public' | 'scope_only' | 'direct';
-export type AudienceRule =
+export type ActivityVisibilityVM = 'public' | 'scope_only' | 'direct';
+export type AudienceRuleVM =
   | { kind: 'all_in_scope' }
   | { kind: 'roles_only'; roleKeys: string[] }
   | { kind: 'users_only'; userIds: UUID[] }
   | { kind: 'exclude_users'; userIds: UUID[] };
 
-export type ActivityImportance = 'normal' | 'important' | 'urgent';
+export type ActivityImportanceVM = 'normal' | 'important' | 'urgent';
 
-export type ActivityVerb =
+export type ActivityVerbVM =
   // class / scheduling
   | 'class.created'
   | 'class.updated'
@@ -80,9 +80,9 @@ export type ActivityVerb =
   | 'member.removed'
   | 'role.changed';
 
-export type InboxTabKey = 'all' | 'classes' | 'payment' | 'system';
+export type InboxTabKeyVM = 'all' | 'classes' | 'payment' | 'system';
 
-export type InboxIconKey =
+export type InboxIconKeyVM =
   | 'Bell'
   | 'CheckCircle2'
   | 'ClipboardCheck'
@@ -97,7 +97,7 @@ export type InboxIconKey =
 export type InboxLeadingVM =
   | {
       kind: 'icon';
-      iconKey: InboxIconKey;
+      iconKey: InboxIconKeyVM;
       // optional tint key for UI
       tone?: 'neutral' | 'success' | 'warning' | 'danger' | 'info';
     }
@@ -126,7 +126,7 @@ export type InboxActionButtonVM = {
   onClick?: () => void;
 };
 
-export interface ActivityFeedItemBase {
+export interface ActivityFeedItemBaseVM {
   id: UUID;
 
   // time
@@ -134,26 +134,26 @@ export interface ActivityFeedItemBase {
   createdAt: ISODateTime; // when stored (can differ for imports)
 
   // inbox categorization (tabs)
-  tabKey: InboxTabKey;
+  tabKey: InboxTabKeyVM;
 
   // where it belongs
-  scope: FeedScope;
-  visibility: ActivityVisibility;
-  audience?: AudienceRule[]; // extra filtering within a scope
+  scope: FeedScopeVM;
+  visibility: ActivityVisibilityVM;
+  audience?: AudienceRuleVM[]; // extra filtering within a scope
 
   // what happened
-  verb: ActivityVerb;
+  verb: ActivityVerbVM;
 
   // who did it
   actor: ActorVM | { kind: 'system' };
 
   // what it happened to
-  object?: EntityRef; // primary object (e.g., homework, message, session)
-  target?: EntityRef; // secondary (e.g., channel/class_space/session)
+  object?: EntityRefVM; // primary object (e.g., homework, message, session)
+  target?: EntityRefVM; // secondary (e.g., channel/class_space/session)
 
   // optional structure
   groupKey?: string; // e.g., "session:<uuid>" to group multiple events
-  groupType?: ActivityGroupKey;
+  groupType?: ActivityGroupKeyVM;
 
   // content for UI (keep it small; fetch full objects separately)
   leading?: InboxLeadingVM; // e.g., "Homework assigned"
@@ -165,7 +165,7 @@ export interface ActivityFeedItemBase {
   };
   actionButton?: InboxActionButtonVM;
   expandedContent?: string;
-  importance?: ActivityImportance;
+  importance?: ActivityImportanceVM;
   isRead?: boolean; // for per-user feeds/notifications
 
   // extensible payload for backend-driven details
@@ -175,7 +175,7 @@ export interface ActivityFeedItemBase {
 /** ---------------------------
  * Leaf: single row activity
  * -------------------------- */
-export type ActivityFeedLeafItem = ActivityFeedItemBase & {
+export type ActivityFeedLeafItemVM = ActivityFeedItemBaseVM & {
   kind: 'leaf';
 
   // no children
@@ -189,11 +189,11 @@ export type ActivityFeedLeafItem = ActivityFeedItemBase & {
  * - shows badge count (e.g. 6)
  * - expands to reveal children (paged)
  * -------------------------- */
-export type ActivityFeedGroupItem = ActivityFeedItemBase & {
+export type ActivityFeedGroupItemVM = ActivityFeedItemBaseVM & {
   kind: 'group';
 
   // stable grouping identifiers
-  groupType: ActivityGroupKey;
+  groupType: ActivityGroupKeyVM;
   groupKey: string; // e.g. "class_space:<id>:upcoming" OR "session:<id>"
 
   // UI state
@@ -208,27 +208,27 @@ export type ActivityFeedGroupItem = ActivityFeedItemBase & {
    * Example collapsed:
    *   subActivities: { items: [], total: 6 }
    */
-  subActivities?: ConnectionVM<ActivityFeedLeafItem>;
+  subActivities?: ConnectionVM<ActivityFeedLeafItemVM>;
 };
 
-export type ActivityFeedItem = ActivityFeedLeafItem | ActivityFeedGroupItem;
+export type ActivityFeedItemVM = ActivityFeedLeafItemVM | ActivityFeedGroupItemVM;
 
 /** ---------------------------
  * Sections like TODAY / YESTERDAY
  * -------------------------- */
 export type ActivityFeedSectionVM = {
   label: string; // "TODAY"
-  items: ActivityFeedItem[];
+  items: ActivityFeedItemVM[];
 };
 
 /** ---------------------------
  * Entire inbox screen VM
  * -------------------------- */
 export type ActivityFeedVM = {
-  activeTab: InboxTabKey;
+  activeTab: InboxTabKeyVM;
 
   tabs: Array<{
-    key: InboxTabKey;
+    key: InboxTabKeyVM;
     label: string;
     badgeCount?: number; // All(11), Classes(7), Payment(1), System(3)
   }>;
