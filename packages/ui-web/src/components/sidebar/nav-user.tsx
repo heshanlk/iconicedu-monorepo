@@ -31,6 +31,10 @@ export function NavUser({
   user: UserProfileVM;
 }) {
   const { isMobile } = useSidebar();
+  const isOnline =
+    user.presence?.liveStatus !== undefined
+      ? user.presence.liveStatus !== 'none'
+      : undefined;
   const secondaryLabel = user.locale ?? user.timezone ?? '';
 
   return (
@@ -42,6 +46,7 @@ export function NavUser({
               <AvatarWithStatus
                 name={user.displayName}
                 avatar={user.avatar.url ?? ''}
+                isOnline={isOnline}
                 sizeClassName="h-8 w-8 rounded-xl"
                 fallbackClassName="rounded-xl"
                 initialsLength={2}
@@ -66,6 +71,7 @@ export function NavUser({
                 <AvatarWithStatus
                   name={user.displayName}
                   avatar={user.avatar.url ?? ''}
+                  isOnline={isOnline}
                   sizeClassName="h-8 w-8 rounded-xl"
                   fallbackClassName="rounded-xl"
                   initialsLength={2}

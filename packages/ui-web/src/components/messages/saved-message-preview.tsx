@@ -44,6 +44,10 @@ export function SavedMessagePreview({ message, onClick }: SavedMessagePreviewPro
 
   const preview = getMessagePreview(message);
   const truncatedPreview = preview.length > 80 ? `${preview.slice(0, 80)}...` : preview;
+  const isOnline =
+    message.sender.presence?.liveStatus !== undefined
+      ? message.sender.presence.liveStatus !== 'none'
+      : undefined;
 
   return (
     <button
@@ -57,7 +61,7 @@ export function SavedMessagePreview({ message, onClick }: SavedMessagePreviewPro
       <AvatarWithStatus
         name={message.sender.displayName}
         avatar={message.sender.avatar.url ?? ''}
-        showStatus={false}
+        isOnline={isOnline}
         sizeClassName="h-10 w-10 flex-shrink-0"
         initialsLength={1}
       />

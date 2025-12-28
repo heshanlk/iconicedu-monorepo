@@ -38,6 +38,8 @@ interface ProfilePanelProps {
 }
 
 export function ProfilePanel({ user }: ProfilePanelProps) {
+  const isOnline =
+    user.presence?.liveStatus !== undefined ? user.presence.liveStatus !== 'none' : undefined;
   return (
     <>
       <div className="flex-1 overflow-y-auto">
@@ -45,7 +47,7 @@ export function ProfilePanel({ user }: ProfilePanelProps) {
           <AvatarWithStatus
             name={user.displayName}
             avatar={user.avatar.url ?? ''}
-            showStatus={false}
+            isOnline={isOnline}
             sizeClassName="h-20 w-20"
             statusClassName="bottom-1 right-1 h-4 w-4"
             fallbackClassName="text-2xl"

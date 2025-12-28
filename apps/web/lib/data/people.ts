@@ -3,6 +3,8 @@ import type {
   EducatorProfileVM,
   GradeLevelOption,
   GuardianProfileVM,
+  LiveStatus,
+  PresenceVM,
   RoleKey,
   UserAccountVM,
   UserProfileVM,
@@ -13,6 +15,17 @@ export const MOCK_ORG_ID = '4fca0d16-5d72-4a24-9a0d-6f8c0bf2b652';
 const makeGradeLevel = (label: string, id: string | number): GradeLevelOption => ({
   id,
   label,
+});
+const makePresence = (
+  liveStatus: LiveStatus,
+  text?: string,
+  emoji?: string,
+  lastSeenAt?: string,
+): PresenceVM => ({
+  state: { text, emoji },
+  liveStatus,
+  lastSeenAt: lastSeenAt ?? new Date().toISOString(),
+  presenceLoaded: true,
 });
 
 export const MOCK_CHILDREN_IDS = {
@@ -38,6 +51,7 @@ export const MOCK_CHILDREN: ChildProfileVM[] = [
     timezone: 'America/New_York',
     locale: 'en-US',
     notificationDefaults: null,
+    presence: makePresence('none', 'Offline', undefined, '2024-02-01T09:15:00.000Z'),
     gradeLevel: makeGradeLevel('Grade 3', 3),
     schoolName: 'Cedar Grove Elementary',
     schoolYear: '2024-2025',
@@ -62,6 +76,7 @@ export const MOCK_CHILDREN: ChildProfileVM[] = [
     timezone: 'America/New_York',
     locale: 'en-US',
     notificationDefaults: null,
+    presence: makePresence('reviewing_work', 'Reviewing homework'),
     gradeLevel: makeGradeLevel('Grade 6', 6),
     schoolName: 'Maple Ridge Middle School',
     schoolYear: '2024-2025',
@@ -86,6 +101,7 @@ export const MOCK_CHILDREN: ChildProfileVM[] = [
     timezone: 'America/New_York',
     locale: 'en-US',
     notificationDefaults: null,
+    presence: makePresence('busy', 'In class'),
     gradeLevel: makeGradeLevel('Grade 5', 5),
     schoolName: 'Maple Ridge Middle School',
     schoolYear: '2024-2025',
@@ -162,6 +178,7 @@ export const MOCK_EDUCATOR: EducatorProfileVM = {
   timezone: 'America/New_York',
   locale: 'en-US',
   notificationDefaults: null,
+  presence: makePresence('teaching', 'Teaching now'),
   headline: 'Building confident readers and writers.',
   subjects: ['English Language Arts'],
   gradesSupported: [makeGradeLevel('Grade 4', 4), makeGradeLevel('Grade 5', 5)],
@@ -192,6 +209,7 @@ export const MOCK_EDUCATOR_2: EducatorProfileVM = {
   timezone: 'America/New_York',
   locale: 'en-US',
   notificationDefaults: null,
+  presence: makePresence('in_class', 'In a lab session'),
   headline: 'Hands-on science for curious minds.',
   subjects: ['Science'],
   gradesSupported: [
@@ -226,6 +244,7 @@ export const MOCK_EDUCATOR_3: EducatorProfileVM = {
   timezone: 'America/Chicago',
   locale: 'en-US',
   notificationDefaults: null,
+  presence: makePresence('busy', 'Planning lessons'),
   headline: 'Project-based social studies and history.',
   subjects: ['Social Studies'],
   gradesSupported: [makeGradeLevel('Grade 6', 6), makeGradeLevel('Grade 7', 7)],
@@ -256,6 +275,7 @@ export const MOCK_EDUCATOR_4: EducatorProfileVM = {
   timezone: 'America/Los_Angeles',
   locale: 'en-US',
   notificationDefaults: null,
+  presence: makePresence('reviewing_work', 'Reviewing work'),
   headline: 'Math foundations for confident problem solving.',
   subjects: ['Mathematics'],
   gradesSupported: [makeGradeLevel('Grade 6', 6), makeGradeLevel('Grade 7', 7)],
@@ -286,6 +306,7 @@ export const MOCK_EDUCATOR_5: EducatorProfileVM = {
   timezone: 'America/New_York',
   locale: 'en-US',
   notificationDefaults: null,
+  presence: makePresence('in_class', 'Design lab in session'),
   headline: 'STEM creativity through design challenges.',
   subjects: ['STEM'],
   gradesSupported: [
@@ -328,6 +349,7 @@ export const MOCK_GUARDIAN: GuardianProfileVM = {
   timezone: 'America/New_York',
   locale: 'en-US',
   notificationDefaults: null,
+  presence: makePresence('busy', 'Wrapping up a call'),
   bio: 'Focused on consistent routines and supporting progress at home.',
   notesInternal: null,
   createdAt: '2022-01-05T00:00:00.000Z',
