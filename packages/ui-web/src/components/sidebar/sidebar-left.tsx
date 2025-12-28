@@ -85,7 +85,7 @@ export function SidebarLeft({
   const classroomsByChild = data.CHILDREN.map((child) => ({
     child,
     classrooms: classrooms.filter((classroom) =>
-      classroom.participants.includes(child.userId),
+      classroom.participants.includes(child.accountId),
     ),
   }));
 
@@ -154,7 +154,7 @@ export function SidebarLeft({
         ) : (
           classroomsByChild.map(({ child, classrooms }, index) => (
             <NavClassrooms
-              key={child.userId}
+              key={child.accountId}
               title={child.displayName}
               child={child}
               classrooms={classrooms}

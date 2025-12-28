@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import type { UserProfile } from './user';
+import type { UserProfileVM } from './user';
 
 export interface Reaction {
   emoji: string;
@@ -49,7 +49,7 @@ export interface Thread {
   id: string;
   messageCount: number;
   lastReply: Date;
-  participants: UserProfile[];
+  participants: UserProfileVM[];
   parentMessage?: Message;
   unreadCount?: number;
 }
@@ -97,7 +97,7 @@ export type MessageType =
 // Base message interface with common properties
 interface BaseMessage {
   id: string;
-  sender: UserProfile;
+  sender: UserProfileVM;
   timestamp: Date;
   reactions: Reaction[];
   thread?: Thread;
@@ -163,7 +163,7 @@ export interface EventReminderMessage extends BaseMessage {
     endTime?: Date;
     location?: string;
     meetingLink?: string;
-    attendees?: UserProfile[];
+    attendees?: UserProfileVM[];
     isAllDay?: boolean;
   };
 }
@@ -368,7 +368,7 @@ export function isMessageVisibleToUser(message: Message, userId: string): boolea
 export const createMessage = {
   text: (
     id: string,
-    sender: UserProfile,
+    sender: UserProfileVM,
     content: string,
     options?: Partial<Omit<TextMessage, 'id' | 'sender' | 'content' | 'type'>>,
   ): TextMessage => ({
@@ -384,7 +384,7 @@ export const createMessage = {
 
   paymentReminder: (
     id: string,
-    sender: UserProfile,
+    sender: UserProfileVM,
     payment: PaymentReminderMessage['payment'],
     visibleTo: string,
     content?: string,
@@ -401,7 +401,7 @@ export const createMessage = {
 
   eventReminder: (
     id: string,
-    sender: UserProfile,
+    sender: UserProfileVM,
     event: EventReminderMessage['event'],
     visibility: MessageVisibility = { type: 'all' },
   ): EventReminderMessage => ({
@@ -417,7 +417,7 @@ export const createMessage = {
 
   designFileUpdate: (
     id: string,
-    sender: UserProfile,
+    sender: UserProfileVM,
     attachment: DesignFileAttachment,
     content?: string,
     changesSummary?: string[],

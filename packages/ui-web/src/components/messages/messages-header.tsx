@@ -14,11 +14,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '../../ui/tooltip';
-import type { UserProfile } from '@iconicedu/shared-types';
+import type { UserProfileVM } from '@iconicedu/shared-types';
 import { AvatarWithStatus } from '../shared/avatar-with-status';
 
 interface MessageHeaderProps {
-  user: UserProfile;
+  user: UserProfileVM;
   onProfileClick?: () => void;
   onSavedMessagesClick?: () => void;
 }

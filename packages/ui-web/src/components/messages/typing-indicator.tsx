@@ -2,10 +2,10 @@
 
 import { AvatarWithStatus } from '../shared/avatar-with-status';
 import { cn } from '../../lib/utils';
-import type { UserProfile } from '@iconicedu/shared-types';
+import type { UserProfileVM } from '@iconicedu/shared-types';
 
 interface TypingIndicatorProps {
-  user: UserProfile;
+  user: UserProfileVM;
   className?: string;
 }
 

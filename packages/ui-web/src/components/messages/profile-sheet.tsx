@@ -13,18 +13,18 @@ import {
 import { AvatarWithStatus } from '../shared/avatar-with-status';
 import { Badge } from '../../ui/badge';
 import { Separator } from '../../ui/separator';
-import type { GradeLevel, UserProfile } from '@iconicedu/shared-types';
+import type { GradeLevelOption, UserProfileVM } from '@iconicedu/shared-types';
 
 interface ProfileSheetProps {
-  user: UserProfile & {
+  user: UserProfileVM & {
     role?: string;
     email?: string;
     phone?: string;
-    joinedDate?: Date;
+    joinedDate?: string;
     headline?: string | null;
     bio?: string | null;
     subjects?: string[] | null;
-    gradesSupported?: GradeLevel[] | null;
+    gradesSupported?: GradeLevelOption[] | null;
     experienceYears?: number | null;
     certifications?: Array<{
       name: string;
@@ -184,7 +184,7 @@ export function ProfileSheet({ user }: ProfileSheetProps) {
                 <div className="flex-1">
                   <p className="text-xs text-muted-foreground">Member since</p>
                   <p className="text-sm text-foreground">
-                    {user.joinedDate.toLocaleDateString('en-US', {
+                    {new Date(user.joinedDate).toLocaleDateString('en-US', {
                       month: 'long',
                       year: 'numeric',
                     })}

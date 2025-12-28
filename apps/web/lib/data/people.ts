@@ -1,18 +1,18 @@
 import type {
-  ChildProfile,
-  EducatorProfile,
-  GradeLevel,
-  GuardianProfile,
+  ChildProfileVM,
+  EducatorProfileVM,
+  GradeLevelOption,
+  GuardianProfileVM,
   RoleKey,
-  UserAccount,
-  UserProfile,
+  UserAccountVM,
+  UserProfileVM,
   UUID,
 } from '@iconicedu/shared-types';
 
 export const MOCK_ORG_ID = '4fca0d16-5d72-4a24-9a0d-6f8c0bf2b652';
-const makeGradeLevel = (label: string, value: string | number): GradeLevel => ({
+const makeGradeLevel = (label: string, id: string | number): GradeLevelOption => ({
+  id,
   label,
-  value,
 });
 
 export const MOCK_CHILDREN_IDS = {
@@ -21,7 +21,7 @@ export const MOCK_CHILDREN_IDS = {
   sophia: 'f0c0ea47-e1c1-4f54-bb99-b1df83db9da4',
 } as const;
 
-export const MOCK_CHILDREN: ChildProfile[] = [
+export const MOCK_CHILDREN: ChildProfileVM[] = [
   {
     orgId: MOCK_ORG_ID,
     id: MOCK_CHILDREN_IDS.sarah,
@@ -108,17 +108,17 @@ const toRoleLabel = (roleKey: RoleKey | undefined) => {
 };
 
 export const toProfileUser = (
-  profile: EducatorProfile | GuardianProfile,
-  account?: UserAccount,
-): UserProfile & {
+  profile: EducatorProfileVM | GuardianProfileVM,
+  account?: UserAccountVM,
+): UserProfileVM & {
   role?: string;
   email?: string | null;
   phone?: string | null;
-  joinedDate?: Date;
+  joinedDate?: string;
   headline?: string | null;
   bio?: string | null;
   subjects?: string[] | null;
-  gradesSupported?: GradeLevel[] | null;
+  gradesSupported?: GradeLevelOption[] | null;
   experienceYears?: number | null;
   certifications?: Array<{
     name: string;
@@ -142,11 +142,11 @@ export const toProfileUser = (
   certifications: 'certifications' in profile ? (profile.certifications ?? null) : null,
   childrenNames:
     'children' in profile
-      ? profile.children.map((child) => child.displayName)
+      ? profile.children?.items?.map((child) => child.displayName)
       : undefined,
 });
 
-export const MOCK_EDUCATOR: EducatorProfile = {
+export const MOCK_EDUCATOR: EducatorProfileVM = {
   orgId: MOCK_ORG_ID,
   id: 'a21b9c5f-0906-4f04-9b7f-6f7b4a6fb1c5',
   accountId: 'a21b9c5f-0906-4f04-9b7f-6f7b4a6fb1c5',
@@ -173,10 +173,10 @@ export const MOCK_EDUCATOR: EducatorProfile = {
   notesInternal: null,
   createdAt: '2020-09-01T00:00:00.000Z',
   updatedAt: '2024-01-01T00:00:00.000Z',
-  joinedDate: new Date(2020, 8, 1),
+  joinedDate: '2020-09-01T00:00:00.000Z',
 };
 
-export const MOCK_EDUCATOR_2: EducatorProfile = {
+export const MOCK_EDUCATOR_2: EducatorProfileVM = {
   orgId: MOCK_ORG_ID,
   id: '0b2b3d51-9a35-4b47-86b4-5fe9b9b5f8e4',
   accountId: '0b2b3d51-9a35-4b47-86b4-5fe9b9b5f8e4',
@@ -207,10 +207,10 @@ export const MOCK_EDUCATOR_2: EducatorProfile = {
   notesInternal: null,
   createdAt: '2018-08-20T00:00:00.000Z',
   updatedAt: '2024-01-01T00:00:00.000Z',
-  joinedDate: new Date(2018, 7, 20),
+  joinedDate: '2018-08-20T00:00:00.000Z',
 };
 
-export const MOCK_EDUCATOR_3: EducatorProfile = {
+export const MOCK_EDUCATOR_3: EducatorProfileVM = {
   orgId: MOCK_ORG_ID,
   id: '4a5fbb0f-4b74-4c48-a3d4-1f88b0a2d8e2',
   accountId: '4a5fbb0f-4b74-4c48-a3d4-1f88b0a2d8e2',
@@ -241,10 +241,10 @@ export const MOCK_EDUCATOR_3: EducatorProfile = {
   notesInternal: null,
   createdAt: '2019-08-15T00:00:00.000Z',
   updatedAt: '2024-01-01T00:00:00.000Z',
-  joinedDate: new Date(2019, 7, 15),
+  joinedDate: '2019-08-15T00:00:00.000Z',
 };
 
-export const MOCK_EDUCATOR_4: EducatorProfile = {
+export const MOCK_EDUCATOR_4: EducatorProfileVM = {
   orgId: MOCK_ORG_ID,
   id: '6b0a28a8-1f47-41b5-9a61-3f5c2fffb7f6',
   accountId: '6b0a28a8-1f47-41b5-9a61-3f5c2fffb7f6',
@@ -271,10 +271,10 @@ export const MOCK_EDUCATOR_4: EducatorProfile = {
   notesInternal: null,
   createdAt: '2017-01-10T00:00:00.000Z',
   updatedAt: '2024-01-01T00:00:00.000Z',
-  joinedDate: new Date(2017, 0, 10),
+  joinedDate: '2017-01-10T00:00:00.000Z',
 };
 
-export const MOCK_EDUCATOR_5: EducatorProfile = {
+export const MOCK_EDUCATOR_5: EducatorProfileVM = {
   orgId: MOCK_ORG_ID,
   id: 'a5b1c3d7-0f7f-4b47-8c6d-9fb2d9b0b3d1',
   accountId: 'a5b1c3d7-0f7f-4b47-8c6d-9fb2d9b0b3d1',
@@ -305,10 +305,10 @@ export const MOCK_EDUCATOR_5: EducatorProfile = {
   notesInternal: null,
   createdAt: '2021-08-25T00:00:00.000Z',
   updatedAt: '2024-01-01T00:00:00.000Z',
-  joinedDate: new Date(2021, 7, 25),
+  joinedDate: '2021-08-25T00:00:00.000Z',
 };
 
-export const MOCK_EDUCATORS: EducatorProfile[] = [
+export const MOCK_EDUCATORS: EducatorProfileVM[] = [
   MOCK_EDUCATOR,
   MOCK_EDUCATOR_2,
   MOCK_EDUCATOR_3,
@@ -316,7 +316,7 @@ export const MOCK_EDUCATORS: EducatorProfile[] = [
   MOCK_EDUCATOR_5,
 ];
 
-export const MOCK_GUARDIAN: GuardianProfile = {
+export const MOCK_GUARDIAN: GuardianProfileVM = {
   orgId: MOCK_ORG_ID,
   id: '2a0f3cbe-0b3b-470a-8a98-9381c1c9c6a7',
   accountId: '2a0f3cbe-0b3b-470a-8a98-9381c1c9c6a7',
@@ -336,11 +336,11 @@ export const MOCK_GUARDIAN: GuardianProfile = {
   notesInternal: null,
   createdAt: '2021-09-15T00:00:00.000Z',
   updatedAt: '2024-01-01T00:00:00.000Z',
-  children: MOCK_CHILDREN,
-  joinedDate: new Date(2021, 8, 15),
+  children: { items: MOCK_CHILDREN, total: MOCK_CHILDREN.length },
+  joinedDate: '2021-09-15T00:00:00.000Z',
 };
 
-export const MOCK_USER_ACCOUNTS: UserAccount[] = [
+export const MOCK_USER_ACCOUNTS: UserAccountVM[] = [
   {
     orgId: MOCK_ORG_ID,
     id: MOCK_EDUCATOR.accountId,

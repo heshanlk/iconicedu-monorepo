@@ -1,4 +1,5 @@
 import type React from 'react';
+import type { ChildProfileVM } from './user';
 
 export type SidebarIconKey =
   | 'home'
@@ -64,11 +65,7 @@ export type SidebarDirectMessageItem = {
   url?: string;
 };
 
-export type SidebarChild = {
-  userId: string;
-  displayName: string;
-  color: string;
-};
+export type SidebarChild = Pick<ChildProfileVM, 'accountId' | 'displayName' | 'color'>;
 
 export type SidebarUser = {
   name: string;

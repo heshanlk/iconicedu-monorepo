@@ -1,7 +1,7 @@
 import type {
-  EducatorProfile,
-  GuardianProfile,
-  GradeLevel,
+  EducatorProfileVM,
+  GuardianProfileVM,
+  GradeLevelOption,
   Message,
   TextMessage,
   LessonAssignmentMessage,
@@ -13,12 +13,12 @@ import type {
 } from '@iconicedu/shared-types';
 
 const MOCK_ORG_ID = '4fca0d16-5d72-4a24-9a0d-6f8c0bf2b652';
-const makeGradeLevel = (label: string, value: string | number): GradeLevel => ({
+const makeGradeLevel = (label: string, id: string | number): GradeLevelOption => ({
+  id,
   label,
-  value,
 });
 
-export const MOCK_EDUCATOR: EducatorProfile & {
+export const MOCK_EDUCATOR: EducatorProfileVM & {
   role: 'Educator';
   email: string;
   phone: string;
@@ -51,7 +51,7 @@ export const MOCK_EDUCATOR: EducatorProfile & {
   certifications: [
     { name: 'Elementary Education Certification', issuer: 'State Board', year: 2016 },
   ],
-  joinedDate: new Date(2020, 8, 1),
+  joinedDate: '2020-09-01T00:00:00.000Z',
   role: 'Educator',
   email: 'j.williams@school.edu',
   phone: '(555) 123-4567',
@@ -60,7 +60,7 @@ export const MOCK_EDUCATOR: EducatorProfile & {
   childName: 'Sarah Chen',
 };
 
-export const MOCK_GUARDIAN: GuardianProfile & {
+export const MOCK_GUARDIAN: GuardianProfileVM & {
   role: 'Guardian';
   email: string;
   phone: string;
@@ -86,8 +86,8 @@ export const MOCK_GUARDIAN: GuardianProfile & {
   status: 'active',
   createdAt: '2021-09-15T00:00:00.000Z',
   updatedAt: '2024-01-01T00:00:00.000Z',
-  children: [],
-  joinedDate: new Date(2021, 8, 15),
+  children: { items: [], total: 0 },
+  joinedDate: '2021-09-15T00:00:00.000Z',
   role: 'Guardian',
   email: 'michael.chen@email.com',
   phone: '(555) 987-6543',
