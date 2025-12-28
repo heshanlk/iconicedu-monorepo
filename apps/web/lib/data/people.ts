@@ -44,7 +44,7 @@ export const MOCK_CHILDREN: ChildProfileVM[] = [
     notesInternal: null,
     createdAt: '2021-08-20T00:00:00.000Z',
     updatedAt: '2024-02-01T00:00:00.000Z',
-    color: 'bg-amber-500 text-white',
+    color: 'bg-green-500 text-white',
   },
   {
     orgId: MOCK_ORG_ID,
@@ -68,7 +68,7 @@ export const MOCK_CHILDREN: ChildProfileVM[] = [
     notesInternal: null,
     createdAt: '2020-01-15T00:00:00.000Z',
     updatedAt: '2024-02-01T00:00:00.000Z',
-    color: 'bg-sky-500 text-white',
+    color: 'bg-green-500 text-white',
   },
   {
     orgId: MOCK_ORG_ID,
@@ -92,7 +92,7 @@ export const MOCK_CHILDREN: ChildProfileVM[] = [
     notesInternal: null,
     createdAt: '2020-03-10T00:00:00.000Z',
     updatedAt: '2024-02-01T00:00:00.000Z',
-    color: 'bg-fuchsia-500 text-white',
+    color: 'bg-green-500 text-white',
   },
 ];
 
@@ -228,10 +228,7 @@ export const MOCK_EDUCATOR_3: EducatorProfileVM = {
   notificationDefaults: null,
   headline: 'Project-based social studies and history.',
   subjects: ['Social Studies'],
-  gradesSupported: [
-    makeGradeLevel('Grade 6', 6),
-    makeGradeLevel('Grade 7', 7),
-  ],
+  gradesSupported: [makeGradeLevel('Grade 6', 6), makeGradeLevel('Grade 7', 7)],
   experienceYears: 7,
   certifications: [
     { name: 'Social Studies Certification', issuer: 'State Board', year: 2016 },

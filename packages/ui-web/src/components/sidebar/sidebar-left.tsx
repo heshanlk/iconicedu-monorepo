@@ -82,7 +82,9 @@ export function SidebarLeft({
     icon: ICONS[item.icon],
   }));
 
-  const classroomsByChild = data.CHILDREN.map((child) => ({
+  const children =
+    'children' in data.user ? data.user.children?.items ?? [] : [];
+  const classroomsByChild = children.map((child) => ({
     child,
     classrooms: classrooms.filter((classroom) =>
       classroom.participants.includes(child.accountId),
@@ -104,64 +106,68 @@ export function SidebarLeft({
       <SidebarContent>
         <NavMain items={navMain} />
         <SidebarSeparator className="mx-2 group-data-[collapsible=icon]:hidden" />
-        <SidebarGroup className="pb-0">
-          <SidebarGroupLabel asChild className="uppercase">
-            <span>Learning spaces</span>
-          </SidebarGroupLabel>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <SidebarGroupAction title="Classroom actions">
-                <MoreHorizontal />
-                <span className="sr-only">Classroom actions</span>
-              </SidebarGroupAction>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              className="w-56"
-              side={isMobile ? 'bottom' : 'right'}
-              align={isMobile ? 'end' : 'start'}
-            >
-              <DropdownMenuItem>
-                <UserPlus className="text-muted-foreground" />
-                <span>Add a child</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <MessageSquarePlus className="text-muted-foreground" />
-                <span>Request a class</span>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <Settings className="text-muted-foreground" />
-                <span>Manage classes</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <SidebarGroupContent />
-        </SidebarGroup>
-        {classroomsByChild.length === 0 ? (
-          <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-            <SidebarGroupContent>
-              <Empty>
-                <EmptyContent>
-                  <div className="flex">
-                    <Button size={'lg'}>
-                      <UserPlus /> Add a Child
-                    </Button>
-                  </div>
-                </EmptyContent>
-              </Empty>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        ) : (
-          classroomsByChild.map(({ child, classrooms }, index) => (
-            <NavClassrooms
-              key={child.accountId}
-              title={child.displayName}
-              child={child}
-              classrooms={classrooms}
-              defaultOpen={index === 0}
-            />
-          ))
-        )}
+        {'children' in data.user ? (
+          <>
+            <SidebarGroup className="pb-0">
+              <SidebarGroupLabel asChild className="uppercase">
+                <span>Learning spaces</span>
+              </SidebarGroupLabel>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <SidebarGroupAction title="Classroom actions">
+                    <MoreHorizontal />
+                    <span className="sr-only">Classroom actions</span>
+                  </SidebarGroupAction>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  className="w-56"
+                  side={isMobile ? 'bottom' : 'right'}
+                  align={isMobile ? 'end' : 'start'}
+                >
+                  <DropdownMenuItem>
+                    <UserPlus className="text-muted-foreground" />
+                    <span>Add a child</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <MessageSquarePlus className="text-muted-foreground" />
+                    <span>Request a class</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <Settings className="text-muted-foreground" />
+                    <span>Manage classes</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <SidebarGroupContent />
+            </SidebarGroup>
+            {classroomsByChild.length === 0 ? (
+              <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+                <SidebarGroupContent>
+                  <Empty>
+                    <EmptyContent>
+                      <div className="flex">
+                        <Button size="lg">
+                          <UserPlus /> Add a Child
+                        </Button>
+                      </div>
+                    </EmptyContent>
+                  </Empty>
+                </SidebarGroupContent>
+              </SidebarGroup>
+            ) : (
+              classroomsByChild.map(({ child, classrooms }, index) => (
+                <NavClassrooms
+                  key={child.accountId}
+                  title={child.displayName}
+                  child={child}
+                  classrooms={classrooms}
+                  defaultOpen={index === 0}
+                />
+              ))
+            )}
+          </>
+        ) : null}
         <SidebarSeparator className="mx-2" />
         <NavDirectMessages dms={data.DIRECT_MESSAGES} />
         <NavSecondary items={navSecondary} className="mt-auto" />

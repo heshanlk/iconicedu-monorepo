@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 
 import { AvatarWithStatus } from '../shared/avatar-with-status';
-import type { SidebarUser } from '@iconicedu/shared-types';
+import type { UserProfileVM } from '@iconicedu/shared-types';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,9 +28,10 @@ import {
 export function NavUser({
   user,
 }: {
-  user: SidebarUser;
+  user: UserProfileVM;
 }) {
   const { isMobile } = useSidebar();
+  const secondaryLabel = user.locale ?? user.timezone ?? '';
 
   return (
     <SidebarMenu>
@@ -39,16 +40,17 @@ export function NavUser({
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton size="lg">
               <AvatarWithStatus
-                name={user.name}
-                avatar={user.avatar}
-                isOnline={user.isOnline}
+                name={user.displayName}
+                avatar={user.avatar.url ?? ''}
                 sizeClassName="h-8 w-8 rounded-xl"
                 fallbackClassName="rounded-xl"
                 initialsLength={2}
               />
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+                <span className="truncate font-medium">{user.displayName}</span>
+                {secondaryLabel ? (
+                  <span className="truncate text-xs">{secondaryLabel}</span>
+                ) : null}
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -62,16 +64,17 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <AvatarWithStatus
-                  name={user.name}
-                  avatar={user.avatar}
-                  isOnline={user.isOnline}
+                  name={user.displayName}
+                  avatar={user.avatar.url ?? ''}
                   sizeClassName="h-8 w-8 rounded-xl"
                   fallbackClassName="rounded-xl"
                   initialsLength={2}
                 />
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
+                  <span className="truncate font-medium">{user.displayName}</span>
+                  {secondaryLabel ? (
+                    <span className="truncate text-xs">{secondaryLabel}</span>
+                  ) : null}
                 </div>
               </div>
             </DropdownMenuLabel>

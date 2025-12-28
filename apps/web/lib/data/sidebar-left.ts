@@ -1,6 +1,5 @@
 import type { SidebarLeftData } from '@iconicedu/shared-types';
 import {
-  MOCK_CHILDREN,
   MOCK_CHILDREN_IDS,
   MOCK_GUARDIAN,
   MOCK_EDUCATOR,
@@ -8,16 +7,10 @@ import {
   MOCK_EDUCATOR_3,
   MOCK_EDUCATOR_4,
   MOCK_EDUCATOR_5,
-  getMockUserAccountById,
 } from './people';
 
-const guardianAccount = getMockUserAccountById(MOCK_GUARDIAN.accountId);
 export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
-  user: {
-    name: MOCK_GUARDIAN.displayName,
-    email: guardianAccount?.contacts.email ?? '',
-    avatar: MOCK_GUARDIAN.avatar.url ?? '',
-  },
+  user: MOCK_GUARDIAN,
   navMain: [
     {
       title: 'Home',
@@ -42,7 +35,11 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
     {
       id: 1,
       name: `ELA • ${MOCK_EDUCATOR.displayName} • Fri 5 pm`,
-      participants: [MOCK_GUARDIAN.accountId, MOCK_EDUCATOR.accountId, MOCK_CHILDREN_IDS.sarah],
+      participants: [
+        MOCK_GUARDIAN.accountId,
+        MOCK_EDUCATOR.accountId,
+        MOCK_CHILDREN_IDS.sarah,
+      ],
       url: '/dashboard/classroom',
       icon: 'languages',
       isFavorite: true,
@@ -207,5 +204,4 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
       url: '/dashboard/dm',
     },
   ],
-  CHILDREN: MOCK_CHILDREN,
 };

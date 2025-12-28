@@ -1,5 +1,5 @@
 import type React from 'react';
-import type { ChildProfileVM } from './vm/profile';
+import type { ChildProfileVM, UserProfileVM } from './vm/profile';
 
 export type SidebarIconKey =
   | 'home'
@@ -67,18 +67,10 @@ export type SidebarDirectMessageItem = {
 
 export type SidebarChild = Pick<ChildProfileVM, 'accountId' | 'displayName' | 'color'>;
 
-export type SidebarUser = {
-  name: string;
-  email: string;
-  avatar: string;
-  isOnline?: boolean;
-};
-
 export type SidebarLeftData = {
-  user: SidebarUser;
+  user: UserProfileVM;
   navMain: SidebarNavItemData[];
   CLASSROOMS: SidebarClassroomItemData[];
   navSecondary: SidebarSecondaryItemData[];
   DIRECT_MESSAGES: SidebarDirectMessageItem[];
-  CHILDREN: SidebarChild[];
 };
