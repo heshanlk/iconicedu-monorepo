@@ -212,6 +212,103 @@ const classGroup: ActivityFeedGroupItemVM = {
   isRead: false,
 };
 
+const scienceGroupActivities: ActivityFeedLeafItemVM[] = [
+  {
+    kind: 'leaf',
+    id: '9a6b7c8d-1e2f-4a5b-9c0d-1e2f3a4b5c6d',
+    occurredAt: iso(minutes(55)),
+    createdAt: iso(minutes(55)),
+    tabKey: 'classes',
+    scope: userScope,
+    visibility: 'direct',
+    verb: 'message.posted',
+    actor: educatorTwoActor,
+    leading: { kind: 'icon', iconKey: 'MessageSquare', tone: 'info' },
+    headline: {
+      primary: educatorTwoActor.displayName,
+      secondary: 'posted in',
+      emphasis: 'Biology lab chat',
+    },
+    preview: {
+      text: 'Bring your lab notebook and safety goggles.',
+    },
+    isRead: false,
+  },
+  {
+    kind: 'leaf',
+    id: '1c2d3e4f-5a6b-7c8d-9e0f-1a2b3c4d5e6f',
+    occurredAt: iso(hours(1.2)),
+    createdAt: iso(hours(1.2)),
+    tabKey: 'classes',
+    scope: userScope,
+    visibility: 'direct',
+    verb: 'file.uploaded',
+    actor: educatorTwoActor,
+    leading: { kind: 'icon', iconKey: 'FileText', tone: 'info' },
+    headline: {
+      primary: educatorTwoActor.displayName,
+      secondary: 'uploaded',
+      emphasis: 'Lab instructions',
+    },
+    summary: 'Microscope setup, observation steps, and rubric.',
+    actionButton: {
+      label: 'Open file',
+      variant: 'outline',
+    },
+    isRead: false,
+  },
+  {
+    kind: 'leaf',
+    id: '7f8e9d0c-1b2a-3c4d-5e6f-7a8b9c0d1e2f',
+    occurredAt: iso(hours(1.8)),
+    createdAt: iso(hours(1.8)),
+    tabKey: 'classes',
+    scope: userScope,
+    visibility: 'direct',
+    verb: 'session.scheduled',
+    actor: educatorTwoActor,
+    leading: { kind: 'icon', iconKey: 'GraduationCap', tone: 'success' },
+    headline: {
+      primary: 'Lab session scheduled',
+      secondary: 'for',
+      emphasis: `${sophia?.displayName ?? 'Child'} • Biology`,
+    },
+    summary: 'Starts today at 4:00 PM.',
+    isRead: false,
+  },
+];
+
+const scienceGroup: ActivityFeedGroupItemVM = {
+  kind: 'group',
+  id: '6e5d4c3b-2a1f-4b5c-9d8e-7f6a5b4c3d2e',
+  occurredAt: iso(minutes(50)),
+  createdAt: iso(minutes(50)),
+  tabKey: 'classes',
+  scope: userScope,
+  visibility: 'direct',
+  verb: 'session.scheduled',
+  actor: educatorTwoActor,
+  leading: {
+    kind: 'avatars',
+    avatars: [MOCK_EDUCATOR_2.avatar, sophia?.avatar ?? MOCK_EDUCATOR.avatar],
+  },
+  headline: {
+    primary: educatorTwoActor.displayName,
+    secondary: 'upcoming class for',
+    emphasis: `${sophia?.displayName ?? 'Child'} • Biology lab`,
+  },
+  summary: 'Lab starts in 50 minutes.',
+  actionButton: {
+    label: 'Join now',
+    variant: 'default',
+  },
+  groupType: 'class',
+  groupKey: `class_space:${MOCK_EDUCATOR_2.id}:bio-lab`,
+  subActivityCount: scienceGroupActivities.length,
+  subActivities: { items: scienceGroupActivities, total: scienceGroupActivities.length },
+  isRead: false,
+};
+
 const paymentReminder: ActivityFeedLeafItemVM = {
   kind: 'leaf',
   id: '8a4d2e47-bf9c-4b3a-8e2d-2a9c1c2f7c3b',
@@ -673,6 +770,7 @@ export const INBOX_ACTIVITY_FEED: ActivityFeedVM = {
       items: [
         paymentReminder,
         classGroup,
+        scienceGroup,
         completeClassReminder,
         sophiaReminder,
         messageActivity,

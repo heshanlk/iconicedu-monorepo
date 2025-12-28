@@ -14,11 +14,11 @@ export type ActivityGroupKeyVM =
   | 'complete-class';
 
 export type FeedScopeVM =
-  | { kind: 'global' } // e.g., staff dashboard
+  | { kind: 'global' }
   | { kind: 'class_space'; classSpaceId: UUID }
   | { kind: 'channel'; channelId: UUID }
-  | { kind: 'dm'; threadId: UUID } // optional, if you model DMs as a thread
-  | { kind: 'user'; userId: UUID }; // "your notifications/activity"
+  | { kind: 'dm'; threadId: UUID }
+  | { kind: 'user'; userId: UUID };
 
 export type ActorVM = {
   id: UUID;
@@ -98,22 +98,14 @@ export type InboxLeadingVM =
   | {
       kind: 'icon';
       iconKey: InboxIconKeyVM;
-      // optional tint key for UI
       tone?: 'neutral' | 'success' | 'warning' | 'danger' | 'info';
     }
   | {
       kind: 'avatars';
-      avatars: AvatarVM[]; // FE can render first N
-      overflowCount?: number; // e.g., +2
+      avatars: AvatarVM[];
+      overflowCount?: number;
     };
 
-/** ---------------------------
- * Headline pieces so you can bold parts
- * Example:
- *  primary: "Ms. Dinesha"
- *  secondary: "upcoming class for"
- *  emphasis: "Zayne Algebra I"
- * -------------------------- */
 export type InboxHeadlineVM = {
   primary: string;
   secondary?: string;
@@ -129,116 +121,80 @@ export type InboxActionButtonVM = {
 export interface ActivityFeedItemBaseVM {
   id: UUID;
 
-  // time
-  occurredAt: ISODateTime; // when it happened
-  createdAt: ISODateTime; // when stored (can differ for imports)
+  occurredAt: ISODateTime;
+  createdAt: ISODateTime;
 
-  // inbox categorization (tabs)
   tabKey: InboxTabKeyVM;
 
-  // where it belongs
   scope: FeedScopeVM;
   visibility: ActivityVisibilityVM;
-  audience?: AudienceRuleVM[]; // extra filtering within a scope
+  audience?: AudienceRuleVM[];
 
-  // what happened
   verb: ActivityVerbVM;
 
-  // who did it
   actor: ActorVM | { kind: 'system' };
 
-  // what it happened to
-  object?: EntityRefVM; // primary object (e.g., homework, message, session)
-  target?: EntityRefVM; // secondary (e.g., channel/class_space/session)
+  object?: EntityRefVM;
+  target?: EntityRefVM;
 
-  // optional structure
-  groupKey?: string; // e.g., "session:<uuid>" to group multiple events
+  groupKey?: string;
   groupType?: ActivityGroupKeyVM;
 
-  // content for UI (keep it small; fetch full objects separately)
-  leading?: InboxLeadingVM; // e.g., "Homework assigned"
+  leading?: InboxLeadingVM;
   headline: InboxHeadlineVM;
-  summary?: string; // e.g., "Fractions worksheet (IXL skill: ...)"
+  summary?: string;
   preview?: {
-    text?: string; // message snippet
+    text?: string;
     attachmentsCount?: number;
   };
   actionButton?: InboxActionButtonVM;
   expandedContent?: string;
   importance?: ActivityImportanceVM;
-  isRead?: boolean; // for per-user feeds/notifications
+  isRead?: boolean;
 
-  // extensible payload for backend-driven details
   metadata?: Record<string, unknown>;
 }
 
-/** ---------------------------
- * Leaf: single row activity
- * -------------------------- */
 export type ActivityFeedLeafItemVM = ActivityFeedItemBaseVM & {
   kind: 'leaf';
 
-  // no children
   groupKey?: never;
   groupType?: never;
   subActivities?: never;
 };
 
-/** ---------------------------
- * Group: a single row representing multiple class-specific activities
- * - shows badge count (e.g. 6)
- * - expands to reveal children (paged)
- * -------------------------- */
 export type ActivityFeedGroupItemVM = ActivityFeedItemBaseVM & {
   kind: 'group';
 
-  // stable grouping identifiers
   groupType: ActivityGroupKeyVM;
-  groupKey: string; // e.g. "class_space:<id>:upcoming" OR "session:<id>"
+  groupKey: string;
 
-  // UI state
   isCollapsed?: boolean;
 
-  // badge count shown on the right (e.g. "6")
-  // if omitted, FE can fall back to subActivities.totalCount if your ConnectionVM has it
   subActivityCount?: number;
 
-  /**
-   * Children (paged). When collapsed you can omit items but still provide total.
-   * Example collapsed:
-   *   subActivities: { items: [], total: 6 }
-   */
   subActivities?: ConnectionVM<ActivityFeedLeafItemVM>;
 };
 
 export type ActivityFeedItemVM = ActivityFeedLeafItemVM | ActivityFeedGroupItemVM;
 
-/** ---------------------------
- * Sections like TODAY / YESTERDAY
- * -------------------------- */
 export type ActivityFeedSectionVM = {
-  label: string; // "TODAY"
+  label: string;
   items: ActivityFeedItemVM[];
 };
 
-/** ---------------------------
- * Entire inbox screen VM
- * -------------------------- */
 export type ActivityFeedVM = {
   activeTab: InboxTabKeyVM;
 
   tabs: Array<{
     key: InboxTabKeyVM;
     label: string;
-    badgeCount?: number; // All(11), Classes(7), Payment(1), System(3)
+    badgeCount?: number;
   }>;
 
-  // inbox-style date sections
   sections: ActivityFeedSectionVM[];
 
-  // overall paging (scroll)
   nextCursor?: string | null;
 
-  // optional: unread count for the whole feed
   unreadCount?: number;
 };
