@@ -106,7 +106,7 @@ export function SidebarLeft({
         <SidebarSeparator className="mx-2 group-data-[collapsible=icon]:hidden" />
         <SidebarGroup className="pb-0">
           <SidebarGroupLabel asChild className="uppercase">
-            <span>Classrooms</span>
+            <span>Learning spaces</span>
           </SidebarGroupLabel>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

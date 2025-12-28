@@ -34,7 +34,7 @@ export const DIRECT_MESSAGES: Message[] = [
     sender: DIRECT_USER,
     timestamp: new Date(Date.now() - 1000 * 60 * 60 * 5),
     reactions: [],
-    visibility: { type: 'all' },
+    visibility: { type: 'sender-only' },
     isRead: true,
   } as TextMessage,
   {

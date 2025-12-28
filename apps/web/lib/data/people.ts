@@ -5,13 +5,48 @@ export type ISODateTime = string;
 export type UUID = string;
 export type GradeLevel = number | string;
 export type RoleKey = 'owner' | 'admin' | 'teacher' | 'parent' | 'child';
+export type AccountStatus = 'active' | 'invited' | 'suspended' | 'deleted';
+
 export interface UserRole {
   userId: UUID;
   roleKey: RoleKey;
   assignedBy?: UUID | null;
   assignedAt: ISODateTime;
 }
+
+export interface Family {
+  familyId: UUID;
+  displayName: string;
+}
+
+export interface Avatar {
+  source: AvatarSource;
+  url?: string | null;
+  seed?: string | null;
+  updatedAt?: ISODateTime | null;
+}
+
+export type PresenceState = 'online' | 'offline' | 'away' | 'do_not_disturb' | 'idle';
+export type LiveStatus = 'none' | 'in_class' | 'teaching' | 'busy' | 'reviewing_work';
+export interface Presence {
+  state: PresenceState;
+  liveStatus: LiveStatus;
+  lastSeenAt?: ISODateTime | null;
+}
+
+export interface UserContact {
+  email?: string | null;
+  phoneE164?: string | null;
+  whatsappE164?: string | null;
+
+  emailVerified?: boolean;
+  phoneVerified?: boolean;
+  whatsappVerified?: boolean;
+  verifiedAt?: ISODateTime | null;
+}
+
 export interface BaseUserProfile {
+  orgId: UUID;
   userId: UUID;
 
   displayName: string;
@@ -20,13 +55,9 @@ export interface BaseUserProfile {
 
   bio?: string | null;
 
-  avatarSource: AvatarSource;
-  avatarSeed: string;
-  avatarUrl?: string | null;
-  avatarUpdatedAt?: string | null;
+  avatar: Avatar;
 
-  email?: string | null;
-  phoneE164?: string | null;
+  contacts: UserContact;
 
   timezone: string;
   locale?: string | null;
@@ -40,8 +71,11 @@ export interface BaseUserProfile {
 
   createdAt: ISODateTime;
   updatedAt: ISODateTime;
+  archivedAt?: ISODateTime | null;
 
-  status?: 'active' | 'inactive' | 'suspended' | null;
+  status?: AccountStatus;
+
+  presence?: Presence | null;
 }
 
 export interface TeacherProfile extends BaseUserProfile {
