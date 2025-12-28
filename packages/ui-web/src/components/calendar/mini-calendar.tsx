@@ -2,9 +2,9 @@
 
 import { Button } from '../../ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { getDaysInMonth, isSameDay } from '../../lib/calendar-utils';
+import { getDaysInMonth, getEventDate, isSameDay } from '../../lib/calendar-utils';
 import { cn } from '../../lib/utils';
-import type { CalendarEvent } from '@iconicedu/shared-types';
+import type { CalendarEventVM } from '@iconicedu/shared-types';
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader } from '../../ui/card';
 
@@ -12,7 +12,7 @@ interface MiniCalendarProps {
   currentDate: Date;
   selectedDate: Date;
   onDateSelect: (date: Date) => void;
-  events?: CalendarEvent[];
+  events?: CalendarEventVM[];
   onMonthChange?: (date: Date) => void;
 }
 
@@ -64,7 +64,7 @@ export function MiniCalendar({
   };
 
   const dayHasEvents = (day: Date) => {
-    return events.some((event) => isSameDay(event.date, day));
+    return events.some((event) => isSameDay(getEventDate(event), day));
   };
 
   return (

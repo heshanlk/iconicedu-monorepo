@@ -1,10 +1,11 @@
 'use client';
 
-import type { CalendarEvent } from '@iconicedu/shared-types';
+import type { CalendarEventVM } from '@iconicedu/shared-types';
 import {
   getWeekDays,
   formatDayName,
   isSameDay,
+  getEventDate,
   getTimeSlots,
   timeToMinutes,
   getEventLayout,
@@ -16,8 +17,8 @@ import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
 
 interface WeekViewProps {
   currentDate: Date;
-  events: CalendarEvent[];
-  onEventClick: (event: CalendarEvent) => void;
+  events: CalendarEventVM[];
+  onEventClick: (event: CalendarEventVM) => void;
   onDateSelect?: (date: Date) => void;
   onSwitchToDay?: () => void;
 }
@@ -47,18 +48,18 @@ export function WeekView({
     if (!scrollContainerRef.current) return;
 
     const todayEvents = events.filter((event) => {
-      return weekDays.some((day) => isSameDay(event.date, day));
+      return weekDays.some((day) => isSameDay(getEventDate(event), day));
     });
 
     let scrollTop: number;
     if (todayEvents.length > 0) {
       const earliestEvent = todayEvents.reduce((earliest, event) => {
-        const eventMinutes = timeToMinutes(event.startTime);
-        const earliestMinutes = timeToMinutes(earliest.startTime);
+        const eventMinutes = timeToMinutes(event.startAt);
+        const earliestMinutes = timeToMinutes(earliest.startAt);
         return eventMinutes < earliestMinutes ? event : earliest;
       });
 
-      const eventMinutes = timeToMinutes(earliestEvent.startTime);
+      const eventMinutes = timeToMinutes(earliestEvent.startAt);
       const scrollToMinutes = Math.max(0, eventMinutes - 60);
       scrollTop = (scrollToMinutes / 30) * 32;
     } else {
@@ -76,10 +77,10 @@ export function WeekView({
     }
   }, [currentDate, events, weekDays]);
 
-  const handleEventClick = (event: CalendarEvent) => {
+  const handleEventClick = (event: CalendarEventVM) => {
     onEventClick(event);
     if (onDateSelect) {
-      onDateSelect(event.date);
+      onDateSelect(getEventDate(event));
     }
   };
 
@@ -154,11 +155,13 @@ export function WeekView({
 
             {/* Day columns */}
             {weekDays.map((day, dayIndex) => {
-              const dayEvents = events.filter((event) => isSameDay(event.date, day));
+              const dayEvents = events.filter((event) =>
+                isSameDay(getEventDate(event), day),
+              );
               const dayLayout = getEventLayout(dayEvents);
               const clusterInfo = new Map<
                 number,
-                { startMinutes: number; hiddenEvents: CalendarEvent[]; columns: number }
+                { startMinutes: number; hiddenEvents: CalendarEventVM[]; columns: number }
               >();
               const isToday = isSameDay(day, today);
               const isSelected = isSameDay(day, currentDate);
@@ -166,7 +169,7 @@ export function WeekView({
               dayEvents.forEach((event) => {
                 const layout = dayLayout.get(event.id);
                 if (!layout) return;
-                const startMinutes = timeToMinutes(event.startTime);
+                const startMinutes = timeToMinutes(event.startAt);
                 const info = clusterInfo.get(layout.clusterId);
                 const nextInfo = {
                   startMinutes: info ? Math.min(info.startMinutes, startMinutes) : startMinutes,
@@ -199,8 +202,8 @@ export function WeekView({
 
                   {/* Events */}
                   {dayEvents.map((event) => {
-                    const startMinutes = timeToMinutes(event.startTime);
-                    const endMinutes = timeToMinutes(event.endTime);
+                    const startMinutes = timeToMinutes(event.startAt);
+                    const endMinutes = timeToMinutes(event.endAt);
                     const top = (startMinutes / 30) * 32;
                     const height = ((endMinutes - startMinutes) / 30) * 32;
                     const layout = dayLayout.get(event.id);

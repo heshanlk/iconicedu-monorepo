@@ -1,5 +1,6 @@
 export type UUID = string;
 export type ISODateTime = string;
+export type IANATimezone = string;
 
 export type AvatarSource = 'seed' | 'upload' | 'external';
 export type AccountStatus = 'active' | 'invited' | 'suspended' | 'deleted';

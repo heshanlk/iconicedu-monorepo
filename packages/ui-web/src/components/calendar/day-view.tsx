@@ -1,8 +1,10 @@
 'use client';
 
-import type { CalendarEvent } from '@iconicedu/shared-types';
+import type { CalendarEventVM } from '@iconicedu/shared-types';
 import {
   isSameDay,
+  getEventDate,
+  formatEventTime,
   getTimeSlots,
   timeToMinutes,
   getEventLayout,
@@ -17,11 +19,11 @@ import { useEffect, useRef } from 'react';
 
 interface DayViewProps {
   currentDate: Date;
-  events: CalendarEvent[];
-  calendarEvents?: CalendarEvent[];
+  events: CalendarEventVM[];
+  calendarEvents?: CalendarEventVM[];
   childrenCount?: number;
-  selectedEvent: CalendarEvent | null;
-  onEventClick: (event: CalendarEvent) => void;
+  selectedEvent: CalendarEventVM | null;
+  onEventClick: (event: CalendarEventVM) => void;
   onDateSelect: (date: Date) => void;
   onMonthChange?: (date: Date) => void;
 }
@@ -37,28 +39,30 @@ export function DayView({
   onMonthChange,
 }: DayViewProps) {
   const timeSlots = getTimeSlots();
-  const dayEvents = events.filter((event) => isSameDay(event.date, currentDate));
+  const dayEvents = events.filter((event) =>
+    isSameDay(getEventDate(event), currentDate),
+  );
   const miniCalendarEvents = calendarEvents ?? events;
   const hasChildren = childrenCount === undefined ? true : childrenCount > 0;
   const hasClasses = miniCalendarEvents.length > 0;
   const nextEvent = [...miniCalendarEvents]
-    .filter((event) => event.date > currentDate)
+    .filter((event) => getEventDate(event) > currentDate)
     .sort((a, b) => {
-      const dateDiff = a.date.getTime() - b.date.getTime();
+      const dateDiff = getEventDate(a).getTime() - getEventDate(b).getTime();
       if (dateDiff !== 0) return dateDiff;
-      return timeToMinutes(a.startTime) - timeToMinutes(b.startTime);
+      return timeToMinutes(a.startAt) - timeToMinutes(b.startAt);
     })[0];
   const dayLayout = getEventLayout(dayEvents);
   const maxVisibleColumns = 3;
   const clusterInfo = new Map<
     number,
-    { startMinutes: number; hiddenEvents: CalendarEvent[]; columns: number }
+    { startMinutes: number; hiddenEvents: CalendarEventVM[]; columns: number }
   >();
 
   dayEvents.forEach((event) => {
     const layout = dayLayout.get(event.id);
     if (!layout) return;
-    const startMinutes = timeToMinutes(event.startTime);
+    const startMinutes = timeToMinutes(event.startAt);
     const info = clusterInfo.get(layout.clusterId);
     const nextInfo = {
       startMinutes: info ? Math.min(info.startMinutes, startMinutes) : startMinutes,
@@ -95,12 +99,12 @@ export function DayView({
 
     if (dayEvents.length > 0) {
       const earliestEvent = dayEvents.reduce((earliest, event) => {
-        const eventMinutes = timeToMinutes(event.startTime);
-        const earliestMinutes = timeToMinutes(earliest.startTime);
+        const eventMinutes = timeToMinutes(event.startAt);
+        const earliestMinutes = timeToMinutes(earliest.startAt);
         return eventMinutes < earliestMinutes ? event : earliest;
       });
 
-      const eventMinutes = timeToMinutes(earliestEvent.startTime);
+      const eventMinutes = timeToMinutes(earliestEvent.startAt);
       const scrollToMinutes = Math.max(0, eventMinutes - 60);
       scrollTop = (scrollToMinutes / 30) * 32;
     }
@@ -144,8 +148,8 @@ export function DayView({
 
               {/* Events */}
               {dayEvents.map((event) => {
-                const startMinutes = timeToMinutes(event.startTime);
-                const endMinutes = timeToMinutes(event.endTime);
+                const startMinutes = timeToMinutes(event.startAt);
+                const endMinutes = timeToMinutes(event.endAt);
                 const top = (startMinutes / 30) * 32;
                 const height = ((endMinutes - startMinutes) / 30) * 32;
                 const layout = dayLayout.get(event.id);
@@ -279,14 +283,17 @@ export function DayView({
                     </div>
                     <div className="text-xs text-muted-foreground">
                       {nextEvent
-                        ? `Next up: ${nextEvent.title} at ${nextEvent.startTime}`
+                        ? `Next up: ${nextEvent.title} at ${formatEventTime(nextEvent.startAt)}`
                         : 'No upcoming events scheduled'}
                     </div>
                     {nextEvent && (
-                      <Button size="sm" onClick={() => onDateSelect(nextEvent.date)}>
+                      <Button
+                        size="sm"
+                        onClick={() => onDateSelect(getEventDate(nextEvent))}
+                      >
                         <ArrowRight className="mr-2 size-4" />
                         Next up:{' '}
-                        {nextEvent.date.toLocaleDateString('en-US', {
+                        {getEventDate(nextEvent).toLocaleDateString('en-US', {
                           month: 'short',
                           day: 'numeric',
                           year: 'numeric',

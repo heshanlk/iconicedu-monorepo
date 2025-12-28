@@ -1,12 +1,18 @@
-import type { CalendarEvent } from '@iconicedu/shared-types';
+import type { CalendarEventVM } from '@iconicedu/shared-types';
 import { Separator } from '@iconicedu/ui-web/ui/separator';
 import { User, MapPin, Globe } from 'lucide-react';
 
 interface EventDetailsInfoProps {
-  event: CalendarEvent;
+  event: CalendarEventVM;
 }
 
 export function EventDetailsInfo({ event }: EventDetailsInfoProps) {
+  const organizer =
+    event.participants.find((participant) =>
+      participant.role === 'educator' || participant.role === 'staff',
+    )?.displayName ?? 'Organizer';
+  const visibilityLabel = event.visibility.replace('-', ' ');
+
   return (
     <>
       <div className="flex items-center gap-2">
@@ -14,7 +20,7 @@ export function EventDetailsInfo({ event }: EventDetailsInfoProps) {
           <User className="h-4 w-4" />
         </div>
         <span className="text-sm">
-          Event by <span className="font-medium">{event.organizer}</span>
+          Event by <span className="font-medium">{organizer}</span>
         </span>
       </div>
 
@@ -22,14 +28,14 @@ export function EventDetailsInfo({ event }: EventDetailsInfoProps) {
         <div className="flex items-center justify-center rounded-full bg-muted">
           <MapPin className="h-4 w-4" />
         </div>
-        <span className="text-sm font-medium">{event.location}</span>
+        <span className="text-sm font-medium">{event.location ?? 'Online'}</span>
       </div>
 
       <div className="flex items-center gap-2">
         <div className="flex items-center justify-center rounded-full bg-muted">
           <Globe className="h-4 w-4" />
         </div>
-        <span className="text-sm">{event.visibility}</span>
+        <span className="text-sm">{visibilityLabel}</span>
       </div>
       <Separator />
       <div className="text-sm font-semibold">About this event</div>

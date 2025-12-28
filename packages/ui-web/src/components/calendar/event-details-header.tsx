@@ -1,27 +1,29 @@
-import type { CalendarEvent } from '@iconicedu/shared-types';
+import type { CalendarEventVM } from '@iconicedu/shared-types';
 import { cn } from '../../lib/utils';
 import { AvatarGroup, AvatarGroupCount } from '../../ui/avatar';
 import { AvatarWithStatus } from '../shared/avatar-with-status';
+import { formatEventTime } from '../../lib/calendar-utils';
 
 interface EventDetailsHeaderProps {
-  event: CalendarEvent;
+  event: CalendarEventVM;
 }
 
 export function EventDetailsHeader({ event }: EventDetailsHeaderProps) {
   const maxVisibleGuests = 2;
-  const visibleGuests = event.guests.avatars.slice(0, maxVisibleGuests);
-  const remainingGuests = event.guests.count - visibleGuests.length;
+  const visibleGuests = event.participants.slice(0, maxVisibleGuests);
+  const remainingGuests = Math.max(0, event.participants.length - visibleGuests.length);
+  const startDate = new Date(event.startAt);
 
   return (
     <div className="bg-background border rounded-xl shadow-sm p-4 space-y-3">
       <p className="text-sm font-medium">
-        {event.date.toLocaleDateString('en-US', {
+        {startDate.toLocaleDateString('en-US', {
           weekday: 'long',
           month: 'long',
           day: 'numeric',
           year: 'numeric',
         })}{' '}
-        at {event.startTime} +06
+        at {formatEventTime(event.startAt)}
       </p>
 
       <h2 className="font-semibold">{event.title}</h2>
@@ -30,11 +32,11 @@ export function EventDetailsHeader({ event }: EventDetailsHeaderProps) {
 
       <div className="flex items-center gap-2">
         <AvatarGroup>
-          {visibleGuests.map((avatar, index) => (
+          {visibleGuests.map((participant, index) => (
             <AvatarWithStatus
               key={index}
-              name={`Guest ${index + 1}`}
-              avatar={avatar}
+              name={participant.displayName ?? `Guest ${index + 1}`}
+              avatar={participant.avatarUrl ?? ''}
               showStatus={false}
               sizeClassName={cn('border-2 border-background')}
             />

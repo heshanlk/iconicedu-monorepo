@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import type { CalendarEvent, CalendarView } from '@iconicedu/shared-types';
+import type { CalendarEventVM, CalendarViewVM } from '@iconicedu/shared-types';
 import { CalendarHeader } from './calendar-header';
 import { WeekView } from './week-view';
 import { DayView } from './day-view';
@@ -12,10 +12,10 @@ import {
 
 interface CalendarContainerProps {
   currentDate: Date;
-  view: CalendarView;
-  onViewChange: (view: CalendarView) => void;
+  view: CalendarViewVM;
+  onViewChange: (view: CalendarViewVM) => void;
   onDateSelect: (date: Date) => void;
-  events: CalendarEvent[];
+  events: CalendarEventVM[];
   childrenCount?: number;
 }
 
@@ -27,7 +27,7 @@ export function CalendarContainer({
   events,
   childrenCount,
 }: CalendarContainerProps) {
-  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEventVM | null>(null);
   const [calendarMonthAnchor, setCalendarMonthAnchor] = useState(
     new Date(currentDate.getFullYear(), currentDate.getMonth(), 1),
   );
@@ -54,7 +54,7 @@ export function CalendarContainer({
     onDateSelect(newDate);
   };
 
-  const handleEventClick = (event: CalendarEvent) => {
+  const handleEventClick = (event: CalendarEventVM) => {
     setSelectedEvent(event);
   };
 

@@ -6,14 +6,14 @@ import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '../../ui/dial
 import { Drawer, DrawerContent, DrawerTitle, DrawerTrigger } from '../../ui/drawer';
 import { ScrollArea } from '../../ui/scroll-area';
 import { Separator } from '../../ui/separator';
-import type { CalendarEvent } from '@iconicedu/shared-types';
+import type { CalendarEventVM } from '@iconicedu/shared-types';
 import { EventDetailsHeader } from './event-details-header';
 import { EventDetailsInfo } from './event-details-info';
 import { EventActions } from './event-actions';
 import { useIsMobile } from '../../hooks/use-mobile';
 
 interface EventDialogProps {
-  event: CalendarEvent;
+  event: CalendarEventVM;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   children: React.ReactNode;

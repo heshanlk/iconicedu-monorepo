@@ -1,4 +1,8 @@
-import type { CalendarEvent, CalendarView } from '@iconicedu/shared-types';
+import type {
+  CalendarEventVM,
+  CalendarViewVM,
+  WeekdayVM,
+} from '@iconicedu/shared-types';
 
 export function getWeekDays(date: Date): Date[] {
   const startOfWeek = new Date(date);
@@ -33,6 +37,17 @@ export function formatMonthYear(date: Date): string {
   });
 }
 
+export function formatEventTime(isoTime: string): string {
+  return new Date(isoTime).toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+  });
+}
+
+export function getEventDate(event: CalendarEventVM): Date {
+  return new Date(event.startAt);
+}
+
 export function isSameDay(date1: Date, date2: Date): boolean {
   return (
     date1.getDate() === date2.getDate() &&
@@ -41,12 +56,9 @@ export function isSameDay(date1: Date, date2: Date): boolean {
   );
 }
 
-export function timeToMinutes(time: string): number {
-  const [timeStr, period] = time.split(' ');
-  const [hours, minutes] = timeStr.split(':').map(Number);
-  let totalMinutes = (hours % 12) * 60 + (minutes || 0);
-  if (period === 'PM') totalMinutes += 12 * 60;
-  return totalMinutes;
+export function timeToMinutes(isoTime: string): number {
+  const date = new Date(isoTime);
+  return date.getHours() * 60 + date.getMinutes();
 }
 
 export function getTimeSlots(): string[] {
@@ -87,21 +99,21 @@ export function getDaysInMonth(year: number, month: number): Date[] {
   return days;
 }
 
-export function getEventLayout(events: CalendarEvent[]) {
+export function getEventLayout(events: CalendarEventVM[]) {
   const sorted = [...events].sort((a, b) => {
-    const aStart = timeToMinutes(a.startTime);
-    const bStart = timeToMinutes(b.startTime);
+    const aStart = timeToMinutes(a.startAt);
+    const bStart = timeToMinutes(b.startAt);
     if (aStart !== bStart) return aStart - bStart;
-    return timeToMinutes(a.endTime) - timeToMinutes(b.endTime);
+    return timeToMinutes(a.endAt) - timeToMinutes(b.endAt);
   });
 
-  const clusters: CalendarEvent[][] = [];
-  let currentCluster: CalendarEvent[] = [];
+  const clusters: CalendarEventVM[][] = [];
+  let currentCluster: CalendarEventVM[] = [];
   let currentEnd = -1;
 
   sorted.forEach((event) => {
-    const start = timeToMinutes(event.startTime);
-    const end = timeToMinutes(event.endTime);
+    const start = timeToMinutes(event.startAt);
+    const end = timeToMinutes(event.endAt);
 
     if (currentCluster.length === 0 || start < currentEnd) {
       currentCluster.push(event);
@@ -128,8 +140,8 @@ export function getEventLayout(events: CalendarEvent[]) {
     const assignments: Array<{ id: string; column: number }> = [];
 
     cluster.forEach((event) => {
-      const start = timeToMinutes(event.startTime);
-      const end = timeToMinutes(event.endTime);
+      const start = timeToMinutes(event.startAt);
+      const end = timeToMinutes(event.endAt);
       let columnIndex = columnEndTimes.findIndex((time) => time <= start);
 
       if (columnIndex === -1) {
@@ -160,14 +172,7 @@ const addDays = (date: Date, days: number) => {
   return next;
 };
 
-const getISODate = (date: Date) => {
-  const year = date.getFullYear();
-  const month = `${date.getMonth() + 1}`.padStart(2, '0');
-  const day = `${date.getDate()}`.padStart(2, '0');
-  return `${year}-${month}-${day}`;
-};
-
-const weekdayTokens = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'] as const;
+const weekdayTokens: WeekdayVM[] = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
 
 const isWithinRange = (date: Date, rangeStart: Date, rangeEnd: Date) => {
   const day = startOfDay(date).getTime();
@@ -189,27 +194,36 @@ const getMonthRange = (date: Date) => {
 };
 
 export const expandRecurringEvents = (
-  events: CalendarEvent[],
+  events: CalendarEventVM[],
   rangeStart: Date,
   rangeEnd: Date,
 ) => {
-  const expanded: CalendarEvent[] = [];
+  const expanded: CalendarEventVM[] = [];
   const rangeStartDay = startOfDay(rangeStart);
   const rangeEndDay = startOfDay(rangeEnd);
 
   events.forEach((event) => {
     if (!event.recurrence) {
-      if (isWithinRange(event.date, rangeStartDay, rangeEndDay)) {
+      const eventDate = startOfDay(new Date(event.startAt));
+      if (isWithinRange(eventDate, rangeStartDay, rangeEndDay)) {
         expanded.push(event);
       }
       return;
     }
 
-    const rule = event.recurrence;
+    const recurrence = event.recurrence;
+    const rule = recurrence.rule;
     const interval = rule.interval ?? 1;
-    const baseDate = startOfDay(event.date);
-    const exceptions = new Set(rule.exceptions ?? []);
-    const overrides = rule.overrides ?? {};
+    const baseStart = new Date(event.startAt);
+    const baseDate = startOfDay(baseStart);
+    const durationMs = new Date(event.endAt).getTime() - baseStart.getTime();
+    const exceptions = new Set(
+      recurrence.exceptions?.map((exception) => exception.occurrenceKey) ?? [],
+    );
+    const overrides = new Map(
+      recurrence.overrides?.map((override) => [override.occurrenceKey, override.patch]) ??
+        [],
+    );
     const byWeekday = rule.byWeekday?.length
       ? rule.byWeekday
       : [weekdayTokens[baseDate.getDay()]];
@@ -238,24 +252,32 @@ export const expandRecurringEvents = (
           byWeekday.includes(weekdayTokens[current.getDay()]);
       }
 
-      const isoDate = getISODate(current);
-      const override = overrides[isoDate];
+      const occurrenceStart = new Date(current);
+      occurrenceStart.setHours(
+        baseStart.getHours(),
+        baseStart.getMinutes(),
+        baseStart.getSeconds(),
+        baseStart.getMilliseconds(),
+      );
+      const occurrenceKey = occurrenceStart.toISOString();
+      const override = overrides.get(occurrenceKey);
       const hasOverride = Boolean(override);
 
       if (!matches && !hasOverride) continue;
-      if (exceptions.has(isoDate) && !hasOverride) continue;
+      if (exceptions.has(occurrenceKey) && !hasOverride) continue;
 
       if (rule.count && occurrenceCount >= rule.count) break;
 
-      const occurrence: CalendarEvent = {
+      const occurrenceEnd = new Date(occurrenceStart.getTime() + durationMs);
+      const occurrence: CalendarEventVM = {
         ...event,
         ...override,
-        id: `${event.id}__${isoDate}`,
-        recurrenceId: event.id,
-        date: new Date(current),
+        id: `${event.id}__${occurrenceKey}`,
+        startAt: override?.startAt ?? occurrenceStart.toISOString(),
+        endAt: override?.endAt ?? occurrenceEnd.toISOString(),
+        recurrence: undefined,
       };
 
-      delete (occurrence as Partial<CalendarEvent>).recurrence;
       expanded.push(occurrence);
       occurrenceCount += 1;
     }
@@ -265,9 +287,9 @@ export const expandRecurringEvents = (
 };
 
 export const getCalendarEventsForView = (
-  events: CalendarEvent[],
+  events: CalendarEventVM[],
   currentDate: Date,
-  view: CalendarView,
+  view: CalendarViewVM,
 ) => {
   const rangeStart =
     view === 'week' ? getWeekStart(currentDate) : startOfDay(currentDate);
@@ -275,13 +297,16 @@ export const getCalendarEventsForView = (
   return expandRecurringEvents(events, rangeStart, rangeEnd);
 };
 
-export const getCalendarEventsForMonth = (events: CalendarEvent[], currentDate: Date) => {
+export const getCalendarEventsForMonth = (
+  events: CalendarEventVM[],
+  currentDate: Date,
+) => {
   const { start, end } = getMonthRange(currentDate);
   return expandRecurringEvents(events, start, end);
 };
 
 export const getCalendarEventsForMonthRange = (
-  events: CalendarEvent[],
+  events: CalendarEventVM[],
   currentDate: Date,
   monthsBefore = 1,
   monthsAfter = 1,
@@ -299,27 +324,10 @@ export const getCalendarEventsForMonthRange = (
   return expandRecurringEvents(events, startOfDay(start), startOfDay(end));
 };
 
-const parseTimeToDate = (timeString: string, baseDate: Date): Date => {
-  const [timeStr, period] = timeString.split(' ');
-  const [hours, minutes] = timeStr.split(':').map(Number);
-
-  const date = new Date(baseDate);
-  let hour = hours;
-
-  if (period === 'PM' && hour !== 12) {
-    hour += 12;
-  } else if (period === 'AM' && hour === 12) {
-    hour = 0;
-  }
-
-  date.setHours(hour, minutes || 0, 0, 0);
-  return date;
-};
-
-export const isEventLive = (event: CalendarEvent): boolean => {
+export const isEventLive = (event: CalendarEventVM): boolean => {
   const now = new Date();
-  const startTime = parseTimeToDate(event.startTime, event.date);
-  const endTime = parseTimeToDate(event.endTime, event.date);
+  const startTime = new Date(event.startAt);
+  const endTime = new Date(event.endAt);
 
   return now >= startTime && now <= endTime;
 };
@@ -335,6 +343,7 @@ export const colorVariants = {
     'border-orange-200 bg-orange-50 text-orange-900 hover:bg-orange-100 dark:border-orange-400/40 dark:bg-orange-500/20 dark:text-orange-100 dark:hover:bg-orange-500/30',
   purple:
     'border-purple-200 bg-purple-50 text-purple-900 hover:bg-purple-100 dark:border-purple-400/40 dark:bg-purple-500/20 dark:text-purple-100 dark:hover:bg-purple-500/30',
+  gray: 'border-slate-200 bg-slate-50 text-slate-900 hover:bg-slate-100 dark:border-slate-400/40 dark:bg-slate-500/20 dark:text-slate-100 dark:hover:bg-slate-500/30',
 } as const;
 
 export const accentColorVariants = {
@@ -344,4 +353,5 @@ export const accentColorVariants = {
   yellow: 'text-yellow-600',
   orange: 'text-orange-600',
   purple: 'text-purple-600',
+  gray: 'text-slate-600',
 } as const;

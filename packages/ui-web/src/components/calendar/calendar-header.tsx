@@ -3,12 +3,12 @@
 import { Button } from '../../ui/button';
 import { ButtonGroup } from '../../ui/button-group';
 import { ChevronLeft, ChevronRight, Columns4, Columns } from 'lucide-react';
-import type { CalendarView } from '@iconicedu/shared-types';
+import type { CalendarViewVM } from '@iconicedu/shared-types';
 
 interface CalendarHeaderProps {
   currentDate: Date;
-  view: CalendarView;
-  onViewChange: (view: CalendarView) => void;
+  view: CalendarViewVM;
+  onViewChange: (view: CalendarViewVM) => void;
   onNavigate: (direction: 'prev' | 'next' | 'today') => void;
 }
 

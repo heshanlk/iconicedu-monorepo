@@ -2,12 +2,12 @@
 
 import { useState } from 'react';
 import { CalendarContainer, DashboardHeader } from '@iconicedu/ui-web';
-import type { CalendarView } from '@iconicedu/shared-types';
+import type { CalendarViewVM } from '@iconicedu/shared-types';
 import { baseEvents } from '../../../lib/data/calendar-events';
 
 export default function CalendarPage() {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [view, setView] = useState<CalendarView>('day');
+  const [view, setView] = useState<CalendarViewVM>('day');
 
   return (
     <div className="flex flex-col h-[calc(100vh-3.5rem)]">
