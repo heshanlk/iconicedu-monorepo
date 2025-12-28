@@ -1,16 +1,29 @@
 'use client';
 
 import type React from 'react';
-import { Check, ChevronDown } from 'lucide-react';
+import {
+  Bell,
+  Check,
+  CheckCircle2,
+  ChevronDown,
+  ClipboardCheck,
+  CreditCard,
+  FileText,
+  GraduationCap,
+  MessageSquare,
+  Paperclip,
+  Sparkles,
+  Video,
+} from 'lucide-react';
 import { Badge } from '../../ui/badge';
 import { Button } from '../../ui/button';
 import { cn } from '../../lib/utils';
 import { ActivityBadge } from './activity-badge';
 import { ActivityWithButton } from './activity-with-button';
-import type { Activity } from '@iconicedu/shared-types';
+import type { ActivityFeedItem, InboxIconKey } from '@iconicedu/shared-types';
 
 type ActivityItemBaseProps = {
-  activity: Activity;
+  activity: ActivityFeedItem;
   onMarkRead: (id: string, event: React.MouseEvent) => void;
   onToggle?: (event: React.MouseEvent) => void;
   isSubActivity?: boolean;
@@ -18,11 +31,116 @@ type ActivityItemBaseProps = {
   isCollapsed?: boolean;
   showSubActivityToggle?: boolean;
   showActionButton?: boolean;
+  subActivityCount?: number;
   footer?: React.ReactNode;
   className?: string;
 };
 
 const READ_ICON_CLASS = 'bg-muted text-muted-foreground';
+const INBOX_ICON_MAP: Record<InboxIconKey, React.ComponentType<{ className?: string }>> =
+  {
+    Bell,
+    CheckCircle2,
+    ClipboardCheck,
+    CreditCard,
+    FileText,
+    GraduationCap,
+    MessageSquare,
+    Paperclip,
+    Sparkles,
+    Video,
+  };
+
+const TONE_CLASSNAMES = {
+  neutral: 'bg-muted text-muted-foreground',
+  success: 'bg-emerald-100 text-emerald-700',
+  warning: 'bg-amber-100 text-amber-700',
+  danger: 'bg-rose-100 text-rose-700',
+  info: 'bg-blue-100 text-blue-700',
+};
+
+const getDefaultIconKey = (activity: ActivityFeedItem): InboxIconKey => {
+  if (activity.kind === 'group') {
+    switch (activity.groupType) {
+      case 'payment':
+        return 'CreditCard';
+      case 'survey':
+        return 'ClipboardCheck';
+      case 'complete-class':
+        return 'CheckCircle2';
+      case 'reminder':
+        return 'Bell';
+      case 'recording':
+        return 'Video';
+      case 'notes':
+        return 'FileText';
+      case 'ai-summary':
+        return 'Sparkles';
+      case 'homework':
+        return 'Paperclip';
+      case 'message':
+        return 'MessageSquare';
+      case 'class':
+        return 'GraduationCap';
+      default:
+        return 'Bell';
+    }
+  }
+
+  switch (activity.verb) {
+    case 'homework.assigned':
+    case 'homework.submitted':
+    case 'homework.reviewed':
+      return 'Paperclip';
+    case 'summary.posted':
+      return 'Sparkles';
+    case 'notes.posted':
+    case 'file.uploaded':
+    case 'file.deleted':
+      return 'FileText';
+    case 'message.posted':
+    case 'message.edited':
+    case 'message.deleted':
+      return 'MessageSquare';
+    case 'reaction.added':
+    case 'reaction.removed':
+      return 'Bell';
+    case 'session.scheduled':
+    case 'session.rescheduled':
+    case 'session.canceled':
+    case 'session.completed':
+    case 'class.created':
+    case 'class.updated':
+      return 'GraduationCap';
+    case 'member.invited':
+    case 'member.joined':
+    case 'member.removed':
+    case 'role.changed':
+      return 'CheckCircle2';
+    default:
+      return 'Bell';
+  }
+};
+
+const formatRelativeTime = (occurredAt: string) => {
+  const timestamp = new Date(occurredAt).getTime();
+  if (Number.isNaN(timestamp)) return '';
+
+  const diffMs = Math.max(0, Date.now() - timestamp);
+  const diffMinutes = Math.floor(diffMs / 60000);
+
+  if (diffMinutes < 60) {
+    return `${Math.max(1, diffMinutes)}m`;
+  }
+
+  const diffHours = Math.floor(diffMinutes / 60);
+  if (diffHours < 24) {
+    return `${diffHours}h`;
+  }
+
+  const diffDays = Math.floor(diffHours / 24);
+  return `${diffDays}d`;
+};
 
 export function ActivityItemBase({
   activity,
@@ -33,10 +151,20 @@ export function ActivityItemBase({
   isCollapsed = false,
   showSubActivityToggle = false,
   showActionButton = false,
+  subActivityCount,
   footer,
   className,
 }: ActivityItemBaseProps) {
-  const Icon = activity.icon;
+  const iconKey =
+    activity.leading?.kind === 'icon'
+      ? activity.leading.iconKey
+      : getDefaultIconKey(activity);
+  const toneClassName =
+    activity.leading?.kind === 'icon' && activity.leading.tone
+      ? TONE_CLASSNAMES[activity.leading.tone]
+      : undefined;
+  const Icon = INBOX_ICON_MAP[iconKey];
+  const timestampLabel = formatRelativeTime(activity.occurredAt);
 
   return (
     <div
@@ -50,7 +178,8 @@ export function ActivityItemBase({
           <div
             className={cn(
               'z-10 flex size-6 items-center justify-center rounded-full',
-              activity.isRead ? READ_ICON_CLASS : activity.iconBg,
+              activity.isRead ? READ_ICON_CLASS : toneClassName,
+              !toneClassName && !activity.isRead && READ_ICON_CLASS,
             )}
           >
             {Icon ? <Icon className="size-3" /> : null}
@@ -58,7 +187,7 @@ export function ActivityItemBase({
         </div>
 
         <div className="text-xs text-muted-foreground md:pt-0.5 md:w-12 md:shrink-0 text-center">
-          {activity.timestamp}
+          {timestampLabel}
         </div>
         {!isSubActivity && <div className="h-px flex-1 bg-border md:hidden" />}
       </div>
@@ -72,15 +201,23 @@ export function ActivityItemBase({
           isSubActivity && parentExpanded && 'bg-muted/30',
         )}
       >
-        <ActivityBadge variant={activity} />
+        <ActivityBadge activity={activity} />
 
         <div className="flex min-w-0 flex-1 flex-col gap-2">
           <div className="flex items-center gap-1.5">
             <p className="text-sm leading-tight text-pretty">
-              <span className="font-semibold text-foreground">{activity.actor}</span>{' '}
-              <span className="text-muted-foreground">{activity.action}</span>{' '}
-              {activity.target && (
-                <span className="font-medium text-foreground">{activity.target}</span>
+              <span className="font-semibold text-foreground">
+                {activity.headline.primary}
+              </span>{' '}
+              {activity.headline.secondary && (
+                <span className="text-muted-foreground">
+                  {activity.headline.secondary}
+                </span>
+              )}{' '}
+              {activity.headline.emphasis && (
+                <span className="font-medium text-foreground">
+                  {activity.headline.emphasis}
+                </span>
               )}
             </p>
 
@@ -99,7 +236,7 @@ export function ActivityItemBase({
             {showSubActivityToggle && (
               <>
                 <Badge variant="secondary" className="shrink-0 text-[10px] h-4 px-1.5">
-                  {activity.subActivities?.length ?? 0}
+                  {subActivityCount ?? 0}
                 </Badge>
                 <ChevronDown
                   className={cn(
@@ -112,6 +249,10 @@ export function ActivityItemBase({
           </div>
 
           {showActionButton && <ActivityWithButton activity={activity} />}
+
+          {activity.summary && !footer ? (
+            <p className="text-xs text-muted-foreground">{activity.summary}</p>
+          ) : null}
 
           {footer}
         </div>

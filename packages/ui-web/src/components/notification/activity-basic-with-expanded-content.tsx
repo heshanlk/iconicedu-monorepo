@@ -3,10 +3,10 @@
 import type React from 'react';
 import { useState } from 'react';
 import { ActivityItemBase } from './activity-item-base';
-import type { Activity } from '@iconicedu/shared-types';
+import type { ActivityFeedItem } from '@iconicedu/shared-types';
 
 type ActivityBasicWithExpandedContentProps = {
-  activity: Activity;
+  activity: ActivityFeedItem;
   onMarkRead: (id: string, event: React.MouseEvent) => void;
   showActionButton?: boolean;
   isSubActivity?: boolean;

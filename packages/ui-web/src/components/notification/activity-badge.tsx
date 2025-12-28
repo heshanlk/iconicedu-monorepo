@@ -3,68 +3,64 @@
 import { AvatarWithStatus } from '../shared/avatar-with-status';
 import { cn } from '../../lib/utils';
 import { AvatarGroup, AvatarGroupCount } from '../../ui/avatar';
-import type { Activity } from '@iconicedu/shared-types';
+import type { ActivityFeedItem } from '@iconicedu/shared-types';
 
 type ActivityBadgeProps = {
-  variant: Activity;
+  activity: ActivityFeedItem;
   className?: string;
 };
 
-const ALERT_BADGE_STYLES: Partial<Record<Activity['type'], string>> = {
-  payment: 'bg-red-100 text-red-600',
-  survey: 'bg-cyan-100 text-cyan-600',
-  'complete-class': 'bg-yellow-100 text-yellow-600',
-  reminder: 'bg-purple-100 text-purple-600',
-  'ai-summary': 'bg-violet-100 text-violet-600',
-};
+const getInitials = (name: string) =>
+  name
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join('')
+    .toUpperCase();
 
-export function ActivityBadge({ variant, className }: ActivityBadgeProps) {
-  const alertClassName = ALERT_BADGE_STYLES[variant.type];
+export function ActivityBadge({ activity, className }: ActivityBadgeProps) {
+  const leading = activity.leading;
 
-  if (alertClassName) {
-    return (
-      <div
-        className={cn(
-          'flex size-6 shrink-0 items-center justify-center rounded-full text-sm',
-          alertClassName,
-          className,
-        )}
-      >
-        {variant.initials}
-      </div>
-    );
-  }
+  if (leading?.kind === 'avatars' && leading.avatars.length > 0) {
+    const avatars = leading.avatars.slice(0, 2);
+    const overflowCount =
+      leading.overflowCount ?? Math.max(0, leading.avatars.length - avatars.length);
 
-  if (variant.participants && variant.participants.length > 1) {
     return (
       <AvatarGroup className={cn('shrink-0 pt-0.5', className)}>
-        {variant.participants.slice(0, 2).map((participant, idx) => (
+        {avatars.map((avatar, idx) => (
           <AvatarWithStatus
-            key={idx}
-            name={participant.initials}
-            avatar={participant.avatar}
+            key={`${avatar.seed ?? 'avatar'}-${idx}`}
+            name={avatar.seed ?? 'Avatar'}
+            avatar={avatar.url ?? ''}
             showStatus={false}
             sizeClassName="size-6 border-2 border-background"
             initialsLength={2}
           />
         ))}
-        {variant.participants.length > 2 && (
+        {overflowCount > 0 && (
           <AvatarGroupCount className="text-[10px] size-6">
-            +{variant.participants.length - 2}
+            +{overflowCount}
           </AvatarGroupCount>
         )}
       </AvatarGroup>
     );
   }
 
+  const actor = activity.actor;
+  const actorName = 'kind' in actor ? 'System' : actor.displayName;
+  const actorAvatar = 'kind' in actor ? '' : actor.avatarUrl ?? '';
+  const initials = getInitials(actorName);
+
   return (
     <AvatarWithStatus
-      name={variant.initials}
-      avatar={variant.avatar}
+      name={actorName}
+      avatar={actorAvatar}
       showStatus={false}
       sizeClassName={cn('size-6 shrink-0', className)}
       fallbackClassName="text-[10px]"
-      fallbackText={variant.initials}
+      fallbackText={initials}
       initialsLength={2}
     />
   );

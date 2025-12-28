@@ -6,10 +6,13 @@ import { cn } from '../../lib/utils';
 import { ActivityBasicWithActionButton } from './activity-basic-with-action-button';
 import { ActivityBasicWithExpandedContent } from './activity-basic-with-expanded-content';
 import { ActivityItemBase } from './activity-item-base';
-import type { Activity } from '@iconicedu/shared-types';
+import type {
+  ActivityFeedGroupItem,
+  ActivityFeedLeafItem,
+} from '@iconicedu/shared-types';
 
 type ActivityWithSubitemsProps = {
-  activity: Activity;
+  activity: ActivityFeedGroupItem;
   isSubActivity?: boolean;
   parentExpanded?: boolean;
   onMarkRead: (id: string, event: React.MouseEvent) => void;
@@ -23,7 +26,10 @@ export function ActivityWithSubitems({
   onMarkRead,
   className,
 }: ActivityWithSubitemsProps) {
-  const hasSubActivities = Boolean(activity.subActivities?.length);
+  const subActivities = activity.subActivities?.items ?? [];
+  const subActivityCount =
+    activity.subActivityCount ?? activity.subActivities?.total ?? subActivities.length;
+  const hasSubActivities = subActivityCount > 0;
   const [isCollapsed, setIsCollapsed] = useState(hasSubActivities);
 
   const handleToggle = (event: React.MouseEvent) => {
@@ -46,11 +52,12 @@ export function ActivityWithSubitems({
         isCollapsed={isCollapsed}
         showSubActivityToggle={hasSubActivities}
         showActionButton={Boolean(activity.actionButton)}
+        subActivityCount={subActivityCount}
       />
 
       {hasSubActivities && !isCollapsed && (
         <div className="relative ml-6 md:ml-[42px] animate-in slide-in-from-top-2 fade-in duration-300">
-          {activity.subActivities?.map((sub) => (
+          {subActivities.map((sub: ActivityFeedLeafItem) => (
             <div key={sub.id} className="relative">
               {sub.expandedContent ? (
                 <ActivityBasicWithExpandedContent

@@ -2,13 +2,13 @@
 
 import { Button } from '../../ui/button';
 import { cn } from '../../lib/utils';
-import type { Activity } from '@iconicedu/shared-types';
+import type { ActivityFeedItem } from '@iconicedu/shared-types';
 
 export function ActivityWithButton({
   activity,
   className,
 }: {
-  activity: Activity;
+  activity: ActivityFeedItem;
   className?: string;
 }) {
   const actionButton = activity.actionButton;
@@ -24,7 +24,7 @@ export function ActivityWithButton({
         variant={actionButton.variant}
         onClick={(e) => {
           e.stopPropagation();
-          actionButton.onClick();
+          actionButton.onClick?.();
         }}
         data-action-button="true"
         className="h-7 text-xs"

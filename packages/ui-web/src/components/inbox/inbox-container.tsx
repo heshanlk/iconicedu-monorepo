@@ -2,18 +2,6 @@
 
 import type React from 'react';
 import { useState } from 'react';
-import {
-  Bell,
-  CheckCircle2,
-  ClipboardCheck,
-  CreditCard,
-  FileText,
-  GraduationCap,
-  MessageSquare,
-  Paperclip,
-  Sparkles,
-  Video,
-} from 'lucide-react';
 import { Badge } from '../../ui/badge';
 import { ScrollArea } from '../../ui/scroll-area';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../../ui/tabs';
@@ -21,125 +9,72 @@ import { ActivityBasic } from '../notification/activity-basic';
 import { ActivityBasicWithActionButton } from '../notification/activity-basic-with-action-button';
 import { ActivityBasicWithExpandedContent } from '../notification/activity-basic-with-expanded-content';
 import { ActivityWithSubitems } from '../notification/activity-with-subitems';
-import type { Activity, InboxActivityInput, InboxIconKey } from '@iconicedu/shared-types';
-
-const INBOX_ICON_MAP: Record<InboxIconKey, React.ComponentType<{ className?: string }>> = {
-  Bell,
-  CheckCircle2,
-  ClipboardCheck,
-  CreditCard,
-  FileText,
-  GraduationCap,
-  MessageSquare,
-  Paperclip,
-  Sparkles,
-  Video,
-};
-
-const mapActivityInput = (activity: InboxActivityInput): Activity => {
-  const { iconKey, actionButton, subActivities, ...rest } = activity;
-  const icon = iconKey ? INBOX_ICON_MAP[iconKey] : undefined;
-  const actionLabel = actionButton?.label;
-  const mappedActionButton = actionButton
-    ? {
-        ...actionButton,
-        onClick: () => {
-          console.log(`Action: ${actionLabel}`);
-        },
-      }
-    : undefined;
-
-  return {
-    ...rest,
-    icon,
-    actionButton: mappedActionButton,
-    subActivities: subActivities?.map(mapActivityInput),
-  };
-};
-
-const TAB_FILTERS = {
-  all: (_activity: Activity) => true,
-  classes: (activity: Activity) => activity.category === 'class',
-  payment: (activity: Activity) => activity.category === 'payment',
-  system: (activity: Activity) => activity.category === 'system',
-} as const;
-type TabKey = keyof typeof TAB_FILTERS;
-
-const groupActivitiesByDate = (items: Activity[]): Array<[string, Activity[]]> =>
-  Object.entries(
-    items.reduce(
-      (acc, activity) => {
-        if (!acc[activity.date]) {
-          acc[activity.date] = [];
-        }
-        acc[activity.date].push(activity);
-        return acc;
-      },
-      {} as Record<string, Activity[]>,
-    ),
-  ) as Array<[string, Activity[]]>;
+import type { ActivityFeedItem, ActivityFeedVM, InboxTabKey } from '@iconicedu/shared-types';
 
 export function InboxContainer({
-  activities: activityInputs,
+  feed,
 }: {
-  activities: InboxActivityInput[];
+  feed: ActivityFeedVM;
 }) {
-  const [activities, setActivities] = useState<Activity[]>(() =>
-    activityInputs.map(mapActivityInput),
+  const [sections, setSections] = useState(feed.sections);
+  const [activeTab, setActiveTab] = useState<InboxTabKey>(feed.activeTab);
+
+  const tabCounts = feed.tabs.reduce(
+    (acc, tab) => {
+      const count = sections.reduce((total, section) => {
+        const sectionCount = section.items.filter(
+          (item) =>
+            (tab.key === 'all' || item.tabKey === tab.key) && !item.isRead,
+        ).length;
+        return total + sectionCount;
+      }, 0);
+      acc[tab.key] = tab.badgeCount ?? count;
+      return acc;
+    },
+    {} as Record<InboxTabKey, number>,
   );
-  const [activeTab, setActiveTab] = useState<TabKey>('all');
 
-  const groupedActivities = groupActivitiesByDate(activities);
-  const tabFilter = TAB_FILTERS[activeTab];
-  const tabCounts = {
-    all: activities.filter((activity) => !activity.isRead).length,
-    classes: activities.filter(
-      (activity) => activity.category === 'class' && !activity.isRead,
-    ).length,
-    payment: activities.filter(
-      (activity) => activity.category === 'payment' && !activity.isRead,
-    ).length,
-    system: activities.filter(
-      (activity) => activity.category === 'system' && !activity.isRead,
-    ).length,
-  };
-
-  const filteredGroupedActivities = groupedActivities
-    .map(([date, dateActivities]) => {
-      const filtered = dateActivities.filter(tabFilter);
-      return [date, filtered] as const;
-    })
-    .filter(([, dateActivities]) => dateActivities.length > 0);
+  const filteredSections = sections
+    .map((section) => ({
+      ...section,
+      items: section.items.filter(
+        (item) => activeTab === 'all' || item.tabKey === activeTab,
+      ),
+    }))
+    .filter((section) => section.items.length > 0);
 
   const handleTabChange = (value: string) => {
-    if (value in TAB_FILTERS) {
-      setActiveTab(value as TabKey);
-    }
+    setActiveTab(value as InboxTabKey);
   };
 
   const markAsRead = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    setActivities((prev) =>
-      prev.map((activity) => {
-        if (activity.id === id) {
-          return { ...activity, isRead: true };
-        }
-        // Also mark sub-activities as read
-        if (activity.subActivities) {
-          return {
-            ...activity,
-            subActivities: activity.subActivities.map((sub: Activity) =>
-              sub.id === id ? { ...sub, isRead: true } : sub,
-            ),
-          };
-        }
-        return activity;
-      }),
+    setSections((prev) =>
+      prev.map((section) => ({
+        ...section,
+        items: section.items.map((item) => {
+          if (item.id === id) {
+            return { ...item, isRead: true };
+          }
+          if (item.kind === 'group' && item.subActivities?.items) {
+            return {
+              ...item,
+              subActivities: {
+                ...item.subActivities,
+                items: item.subActivities.items.map((sub) =>
+                  sub.id === id ? { ...sub, isRead: true } : sub,
+                ),
+              },
+            };
+          }
+          return item;
+        }),
+      })),
     );
   };
 
-  const renderActivity = (activity: Activity) => {
-    if (activity.subActivities?.length) {
+  const renderActivity = (activity: ActivityFeedItem) => {
+    if (activity.kind === 'group') {
       return <ActivityWithSubitems activity={activity} onMarkRead={markAsRead} />;
     }
 
@@ -171,50 +106,28 @@ export function InboxContainer({
     >
       <div className="px-4 py-2">
         <TabsList>
-          <TabsTrigger value="all" className="gap-2">
-            <span>All</span>
-            {tabCounts.all > 0 && (
-              <Badge className="h-4 px-1.5 text-[10px] bg-rose-500 text-white">
-                {tabCounts.all}
-              </Badge>
-            )}
-          </TabsTrigger>
-          <TabsTrigger value="classes" className="gap-2">
-            <span>Classes</span>
-            {tabCounts.classes > 0 && (
-              <Badge className="h-4 px-1.5 text-[10px] bg-rose-500 text-white">
-                {tabCounts.classes}
-              </Badge>
-            )}
-          </TabsTrigger>
-          <TabsTrigger value="payment" className="gap-2">
-            <span>Payment</span>
-            {tabCounts.payment > 0 && (
-              <Badge className="h-4 px-1.5 text-[10px] bg-rose-500 text-white">
-                {tabCounts.payment}
-              </Badge>
-            )}
-          </TabsTrigger>
-          <TabsTrigger value="system" className="gap-2">
-            <span>System</span>
-            {tabCounts.system > 0 && (
-              <Badge className="h-4 px-1.5 text-[10px] bg-rose-500 text-white">
-                {tabCounts.system}
-              </Badge>
-            )}
-          </TabsTrigger>
+          {feed.tabs.map((tab) => (
+            <TabsTrigger key={tab.key} value={tab.key} className="gap-2">
+              <span>{tab.label}</span>
+              {tabCounts[tab.key] > 0 && (
+                <Badge className="h-4 px-1.5 text-[10px] bg-rose-500 text-white">
+                  {tabCounts[tab.key]}
+                </Badge>
+              )}
+            </TabsTrigger>
+          ))}
         </TabsList>
       </div>
       <TabsContent value={activeTab} className="mt-0">
         <ScrollArea className="h-[calc(100vh-180px)]">
           <div className="p-4 space-y-8">
-            {filteredGroupedActivities.map(([date, dateActivities]) => (
-              <div key={date} className="space-y-1">
+            {filteredSections.map((section) => (
+              <div key={section.label} className="space-y-1">
                 <h2 className="sticky top-0 z-30 -mx-4 mb-4 bg-background/95 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground shadow-sm backdrop-blur">
-                  {date}
+                  {section.label}
                 </h2>
                 <div className="space-y-1">
-                  {dateActivities.map((activity) => (
+                  {section.items.map((activity) => (
                     <div key={activity.id} className="relative">
                       {renderActivity(activity)}
                     </div>
