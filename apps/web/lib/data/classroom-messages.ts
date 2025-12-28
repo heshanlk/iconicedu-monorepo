@@ -11,12 +11,12 @@ import type {
 import { MOCK_PARENT, MOCK_TEACHER } from './people';
 
 const MOCK_TEACHER_USER = {
-  id: MOCK_TEACHER.userId,
+  id: MOCK_TEACHER.accountId,
   name: MOCK_TEACHER.displayName,
   avatar: MOCK_TEACHER.avatar.url ?? '',
 };
 const MOCK_PARENT_USER = {
-  id: MOCK_PARENT.userId,
+  id: MOCK_PARENT.accountId,
   name: MOCK_PARENT.displayName,
   avatar: MOCK_PARENT.avatar.url ?? '',
 };

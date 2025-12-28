@@ -8,10 +8,10 @@ import {
   MOCK_TEACHER_3,
   MOCK_TEACHER_4,
   MOCK_TEACHER_5,
-  getMockUserAccountByUserId,
+  getMockUserAccountById,
 } from './people';
 
-const parentAccount = getMockUserAccountByUserId(MOCK_PARENT.userId);
+const parentAccount = getMockUserAccountById(MOCK_PARENT.accountId);
 export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
   user: {
     name: MOCK_PARENT.displayName,
@@ -42,7 +42,7 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
     {
       id: 1,
       name: `ELA • ${MOCK_TEACHER.displayName} • Fri 5 pm`,
-      participants: [MOCK_PARENT.userId, MOCK_TEACHER.userId, MOCK_CHILDREN_IDS.sarah],
+      participants: [MOCK_PARENT.accountId, MOCK_TEACHER.accountId, MOCK_CHILDREN_IDS.sarah],
       url: '/dashboard/classroom',
       icon: 'languages',
       isFavorite: true,
@@ -51,7 +51,11 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
     {
       id: 2,
       name: `ELA • ${MOCK_TEACHER_2.displayName} • Fri 4 pm`,
-      participants: [MOCK_PARENT.userId, MOCK_TEACHER_2.userId, MOCK_CHILDREN_IDS.zayne],
+      participants: [
+        MOCK_PARENT.accountId,
+        MOCK_TEACHER_2.accountId,
+        MOCK_CHILDREN_IDS.zayne,
+      ],
       url: '/dashboard/classroom',
       icon: 'languages',
       isFavorite: true,
@@ -60,7 +64,11 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
     {
       id: 3,
       name: `ELA • ${MOCK_TEACHER_3.displayName} • Fri 6 pm`,
-      participants: [MOCK_PARENT.userId, MOCK_TEACHER_3.userId, MOCK_CHILDREN_IDS.sophia],
+      participants: [
+        MOCK_PARENT.accountId,
+        MOCK_TEACHER_3.accountId,
+        MOCK_CHILDREN_IDS.sophia,
+      ],
       url: '/dashboard/classroom',
       icon: 'languages',
       isFavorite: true,
@@ -69,7 +77,11 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
     {
       id: 4,
       name: `Chess • ${MOCK_TEACHER_4.displayName} • Sat 10 am`,
-      participants: [MOCK_PARENT.userId, MOCK_TEACHER_4.userId, MOCK_CHILDREN_IDS.sarah],
+      participants: [
+        MOCK_PARENT.accountId,
+        MOCK_TEACHER_4.accountId,
+        MOCK_CHILDREN_IDS.sarah,
+      ],
       url: '/dashboard/classroom',
       icon: 'chef-hat',
       isFavorite: true,
@@ -78,7 +90,11 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
     {
       id: 5,
       name: `Chess • ${MOCK_TEACHER_5.displayName} • Fri 6 pm`,
-      participants: [MOCK_PARENT.userId, MOCK_TEACHER_5.userId, MOCK_CHILDREN_IDS.zayne],
+      participants: [
+        MOCK_PARENT.accountId,
+        MOCK_TEACHER_5.accountId,
+        MOCK_CHILDREN_IDS.zayne,
+      ],
       url: '/dashboard/classroom',
       icon: 'chef-hat',
       isFavorite: true,
@@ -87,7 +103,11 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
     {
       id: 6,
       name: `Chess • ${MOCK_TEACHER_2.displayName} • Fri 6 pm`,
-      participants: [MOCK_PARENT.userId, MOCK_TEACHER_2.userId, MOCK_CHILDREN_IDS.sophia],
+      participants: [
+        MOCK_PARENT.accountId,
+        MOCK_TEACHER_2.accountId,
+        MOCK_CHILDREN_IDS.sophia,
+      ],
       url: '/dashboard/classroom',
       icon: 'chef-hat',
       isFavorite: true,
@@ -96,7 +116,11 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
     {
       id: 7,
       name: `Math • ${MOCK_TEACHER_3.displayName} • Fri 6 pm`,
-      participants: [MOCK_PARENT.userId, MOCK_TEACHER_3.userId, MOCK_CHILDREN_IDS.sarah],
+      participants: [
+        MOCK_PARENT.accountId,
+        MOCK_TEACHER_3.accountId,
+        MOCK_CHILDREN_IDS.sarah,
+      ],
       url: '/dashboard/classroom',
       icon: 'earth',
       isFavorite: true,
@@ -105,7 +129,11 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
     {
       id: 8,
       name: `Math • ${MOCK_TEACHER_4.displayName} • Fri 6 pm`,
-      participants: [MOCK_PARENT.userId, MOCK_TEACHER_4.userId, MOCK_CHILDREN_IDS.zayne],
+      participants: [
+        MOCK_PARENT.accountId,
+        MOCK_TEACHER_4.accountId,
+        MOCK_CHILDREN_IDS.zayne,
+      ],
       url: '/dashboard/classroom',
       icon: 'square-pi',
       isFavorite: false,
@@ -114,7 +142,11 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
     {
       id: 9,
       name: `Math • ${MOCK_TEACHER_5.displayName} • Fri 6 pm`,
-      participants: [MOCK_PARENT.userId, MOCK_TEACHER_5.userId, MOCK_CHILDREN_IDS.sophia],
+      participants: [
+        MOCK_PARENT.accountId,
+        MOCK_TEACHER_5.accountId,
+        MOCK_CHILDREN_IDS.sophia,
+      ],
       url: '/dashboard/classroom',
       icon: 'square-pi',
       isFavorite: false,
@@ -139,7 +171,7 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
       name: MOCK_TEACHER.displayName,
       avatar: MOCK_TEACHER.avatar.url ?? '',
       status: 'online',
-      participants: [MOCK_PARENT.userId, MOCK_TEACHER.userId],
+      participants: [MOCK_PARENT.accountId, MOCK_TEACHER.accountId],
       url: '/dashboard/dm',
     },
     {
@@ -147,7 +179,7 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
       name: MOCK_TEACHER_2.displayName,
       avatar: MOCK_TEACHER_2.avatar.url ?? '',
       status: 'away',
-      participants: [MOCK_PARENT.userId, MOCK_TEACHER_2.userId],
+      participants: [MOCK_PARENT.accountId, MOCK_TEACHER_2.accountId],
       url: '/dashboard/dm',
     },
     {
@@ -155,7 +187,7 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
       name: MOCK_TEACHER_3.displayName,
       avatar: MOCK_TEACHER_3.avatar.url ?? '',
       status: 'online',
-      participants: [MOCK_PARENT.userId, MOCK_TEACHER_3.userId],
+      participants: [MOCK_PARENT.accountId, MOCK_TEACHER_3.accountId],
       url: '/dashboard/dm',
     },
     {
@@ -163,7 +195,7 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
       name: MOCK_TEACHER_4.displayName,
       avatar: MOCK_TEACHER_4.avatar.url ?? '',
       status: 'offline',
-      participants: [MOCK_PARENT.userId, MOCK_TEACHER_4.userId],
+      participants: [MOCK_PARENT.accountId, MOCK_TEACHER_4.accountId],
       url: '/dashboard/dm',
     },
     {
@@ -171,7 +203,7 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
       name: MOCK_TEACHER_5.displayName,
       avatar: MOCK_TEACHER_5.avatar.url ?? '',
       status: 'idle',
-      participants: [MOCK_PARENT.userId, MOCK_TEACHER_5.userId],
+      participants: [MOCK_PARENT.accountId, MOCK_TEACHER_5.accountId],
       url: '/dashboard/dm',
     },
   ],

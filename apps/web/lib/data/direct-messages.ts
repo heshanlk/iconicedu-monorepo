@@ -8,17 +8,17 @@ import type {
 import { MOCK_PARENT, MOCK_TEACHER, MOCK_TEACHER_2 } from './people';
 
 export const DIRECT_USER = {
-  id: MOCK_PARENT.userId,
+  id: MOCK_PARENT.accountId,
   name: MOCK_PARENT.displayName,
   avatar: MOCK_PARENT.avatar.url ?? '',
 };
 export const DIRECT_CONTACT = {
-  id: MOCK_TEACHER.userId,
+  id: MOCK_TEACHER.accountId,
   name: MOCK_TEACHER.displayName,
   avatar: MOCK_TEACHER.avatar.url ?? '',
 };
 export const DIRECT_ALT_CONTACT = {
-  id: MOCK_TEACHER_2.userId,
+  id: MOCK_TEACHER_2.accountId,
   name: MOCK_TEACHER_2.displayName,
   avatar: MOCK_TEACHER_2.avatar.url ?? '',
 };
@@ -43,7 +43,7 @@ export const DIRECT_MESSAGES: Message[] = [
     sender: DIRECT_CONTACT,
     timestamp: new Date(Date.now() - 1000 * 60 * 60 * 4.5),
     reactions: [
-      { emoji: '✅', count: 1, users: [MOCK_PARENT.userId] },
+      { emoji: '✅', count: 1, users: [MOCK_PARENT.accountId] },
     ],
     visibility: { type: 'all' },
     isRead: true,
@@ -107,7 +107,7 @@ export const DIRECT_MESSAGES: Message[] = [
     sender: DIRECT_USER,
     timestamp: new Date(Date.now() - 1000 * 60 * 15),
     reactions: [
-      { emoji: '👍', count: 1, users: [MOCK_TEACHER.userId] },
+      { emoji: '👍', count: 1, users: [MOCK_TEACHER.accountId] },
     ],
     visibility: { type: 'all' },
     isRead: false,

@@ -11,6 +11,10 @@ export type RoleKey = 'owner' | 'admin' | 'teacher' | 'parent' | 'child';
 export type AccountStatus = 'active' | 'invited' | 'suspended' | 'deleted';
 
 export const MOCK_ORG_ID = '4fca0d16-5d72-4a24-9a0d-6f8c0bf2b652';
+const makeGradeLevel = (label: string, value: string | number): GradeLevel => ({
+  label,
+  value,
+});
 
 export interface UserRole {
   orgId: UUID;
@@ -116,7 +120,7 @@ export interface BaseUserProfile {
   updatedAt: ISODateTime;
 }
 
-export interface TeacherProfile extends BaseUserProfile {
+export interface EducatorProfile extends BaseUserProfile {
   headline?: string | null;
   subjects: string[] | null;
   gradesSupported: GradeLevel[] | null;
@@ -180,7 +184,8 @@ export const MOCK_CHILDREN_IDS = {
 export const MOCK_CHILDREN: ChildProfile[] = [
   {
     orgId: MOCK_ORG_ID,
-    userId: MOCK_CHILDREN_IDS.sarah,
+    id: MOCK_CHILDREN_IDS.sarah,
+    accountId: MOCK_CHILDREN_IDS.sarah,
     displayName: 'Sarah',
     firstName: 'Sarah',
     lastName: 'Chen',
@@ -192,9 +197,8 @@ export const MOCK_CHILDREN: ChildProfile[] = [
     },
     timezone: 'America/New_York',
     locale: 'en-US',
-    prefs: null,
     notificationDefaults: null,
-    gradeLevel: 4,
+    gradeLevel: makeGradeLevel('Grade 4', 4),
     schoolName: 'Riverside Elementary School',
     schoolYear: '2024-2025',
     notesInternal: null,
@@ -204,7 +208,8 @@ export const MOCK_CHILDREN: ChildProfile[] = [
   },
   {
     orgId: MOCK_ORG_ID,
-    userId: MOCK_CHILDREN_IDS.zayne,
+    id: MOCK_CHILDREN_IDS.zayne,
+    accountId: MOCK_CHILDREN_IDS.zayne,
     displayName: 'Zayne',
     firstName: 'Zayne',
     lastName: null,
@@ -216,9 +221,8 @@ export const MOCK_CHILDREN: ChildProfile[] = [
     },
     timezone: 'America/New_York',
     locale: 'en-US',
-    prefs: null,
     notificationDefaults: null,
-    gradeLevel: 7,
+    gradeLevel: makeGradeLevel('Grade 7', 7),
     schoolName: 'Riverside Middle School',
     schoolYear: '2024-2025',
     notesInternal: null,
@@ -228,7 +232,8 @@ export const MOCK_CHILDREN: ChildProfile[] = [
   },
   {
     orgId: MOCK_ORG_ID,
-    userId: MOCK_CHILDREN_IDS.sophia,
+    id: MOCK_CHILDREN_IDS.sophia,
+    accountId: MOCK_CHILDREN_IDS.sophia,
     displayName: 'Sophia',
     firstName: 'Sophia',
     lastName: null,
@@ -240,9 +245,8 @@ export const MOCK_CHILDREN: ChildProfile[] = [
     },
     timezone: 'America/New_York',
     locale: 'en-US',
-    prefs: null,
     notificationDefaults: null,
-    gradeLevel: 7,
+    gradeLevel: makeGradeLevel('Grade 7', 7),
     schoolName: 'Riverside Middle School',
     schoolYear: '2024-2025',
     notesInternal: null,
@@ -252,14 +256,14 @@ export const MOCK_CHILDREN: ChildProfile[] = [
   },
 ];
 
-export const getMockChildrenByUserId = (userId: UUID) =>
-  MOCK_CHILDREN.find((child) => child.userId === userId);
+export const getMockChildByAccountId = (accountId: UUID) =>
+  MOCK_CHILDREN.find((child) => child.accountId === accountId);
 
-export const getMockChildrenNameByUserId = (userId: UUID) =>
-  getMockChildrenByUserId(userId)?.displayName ?? 'Children';
+export const getMockChildNameByAccountId = (accountId: UUID) =>
+  getMockChildByAccountId(accountId)?.displayName ?? 'Child';
 
 export const toMessageUser = (profile: BaseUserProfile): User => ({
-  id: profile.userId,
+  id: profile.accountId,
   name: profile.displayName,
   avatar: profile.avatar.url ?? '',
 });
@@ -270,7 +274,7 @@ const toRoleLabel = (roleKey: RoleKey | undefined) => {
 };
 
 export const toProfileUser = (
-  profile: TeacherProfile | GuardianProfile,
+  profile: EducatorProfile | GuardianProfile,
   account?: UserAccount,
 ): User & {
   role?: string;
@@ -308,9 +312,10 @@ export const toProfileUser = (
       : undefined,
 });
 
-export const MOCK_TEACHER: TeacherProfile = {
+export const MOCK_TEACHER: EducatorProfile = {
   orgId: MOCK_ORG_ID,
-  userId: 'a21b9c5f-0906-4f04-9b7f-6f7b4a6fb1c5',
+  id: 'a21b9c5f-0906-4f04-9b7f-6f7b4a6fb1c5',
+  accountId: 'a21b9c5f-0906-4f04-9b7f-6f7b4a6fb1c5',
   displayName: 'Ms. Jennifer Williams',
   firstName: 'Jennifer',
   lastName: 'Williams',
@@ -322,11 +327,10 @@ export const MOCK_TEACHER: TeacherProfile = {
   },
   timezone: 'America/New_York',
   locale: 'en-US',
-  prefs: null,
   notificationDefaults: null,
   headline: 'Helping 4th graders love math.',
   subjects: ['Mathematics'],
-  gradesSupported: ['4th Grade', 5],
+  gradesSupported: [makeGradeLevel('Grade 4', 4), makeGradeLevel('Grade 5', 5)],
   experienceYears: 8,
   certifications: [
     { name: 'Elementary Education Certification', issuer: 'State Board', year: 2016 },
@@ -338,9 +342,10 @@ export const MOCK_TEACHER: TeacherProfile = {
   joinedDate: new Date(2020, 8, 1),
 };
 
-export const MOCK_TEACHER_2: TeacherProfile = {
+export const MOCK_TEACHER_2: EducatorProfile = {
   orgId: MOCK_ORG_ID,
-  userId: '0b2b3d51-9a35-4b47-86b4-5fe9b9b5f8e4',
+  id: '0b2b3d51-9a35-4b47-86b4-5fe9b9b5f8e4',
+  accountId: '0b2b3d51-9a35-4b47-86b4-5fe9b9b5f8e4',
   displayName: 'Mr. David Kim',
   firstName: 'David',
   lastName: 'Kim',
@@ -352,11 +357,14 @@ export const MOCK_TEACHER_2: TeacherProfile = {
   },
   timezone: 'America/New_York',
   locale: 'en-US',
-  prefs: null,
   notificationDefaults: null,
   headline: 'Science comes alive through experiments.',
   subjects: ['Science'],
-  gradesSupported: [6, 7, 8],
+  gradesSupported: [
+    makeGradeLevel('Grade 6', 6),
+    makeGradeLevel('Grade 7', 7),
+    makeGradeLevel('Grade 8', 8),
+  ],
   experienceYears: 12,
   certifications: [
     { name: 'Secondary Science Certification', issuer: 'State Board', year: 2012 },
@@ -368,9 +376,10 @@ export const MOCK_TEACHER_2: TeacherProfile = {
   joinedDate: new Date(2018, 7, 20),
 };
 
-export const MOCK_TEACHER_3: TeacherProfile = {
+export const MOCK_TEACHER_3: EducatorProfile = {
   orgId: MOCK_ORG_ID,
-  userId: '4a5fbb0f-4b74-4c48-a3d4-1f88b0a2d8e2',
+  id: '4a5fbb0f-4b74-4c48-a3d4-1f88b0a2d8e2',
+  accountId: '4a5fbb0f-4b74-4c48-a3d4-1f88b0a2d8e2',
   displayName: 'Ms. Priya Desai',
   firstName: 'Priya',
   lastName: 'Desai',
@@ -382,11 +391,14 @@ export const MOCK_TEACHER_3: TeacherProfile = {
   },
   timezone: 'America/Chicago',
   locale: 'en-US',
-  prefs: null,
   notificationDefaults: null,
   headline: 'Literacy-first teaching with joyful reading.',
   subjects: ['English Language Arts'],
-  gradesSupported: [3, 4, 5],
+  gradesSupported: [
+    makeGradeLevel('Grade 3', 3),
+    makeGradeLevel('Grade 4', 4),
+    makeGradeLevel('Grade 5', 5),
+  ],
   experienceYears: 9,
   certifications: [
     { name: 'Elementary Education Certification', issuer: 'State Board', year: 2015 },
@@ -398,9 +410,10 @@ export const MOCK_TEACHER_3: TeacherProfile = {
   joinedDate: new Date(2019, 7, 15),
 };
 
-export const MOCK_TEACHER_4: TeacherProfile = {
+export const MOCK_TEACHER_4: EducatorProfile = {
   orgId: MOCK_ORG_ID,
-  userId: '6b0a28a8-1f47-41b5-9a61-3f5c2fffb7f6',
+  id: '6b0a28a8-1f47-41b5-9a61-3f5c2fffb7f6',
+  accountId: '6b0a28a8-1f47-41b5-9a61-3f5c2fffb7f6',
   displayName: 'Mr. Luis Hernandez',
   firstName: 'Luis',
   lastName: 'Hernandez',
@@ -412,11 +425,10 @@ export const MOCK_TEACHER_4: TeacherProfile = {
   },
   timezone: 'America/Los_Angeles',
   locale: 'en-US',
-  prefs: null,
   notificationDefaults: null,
   headline: 'History lessons built on stories and debate.',
   subjects: ['Social Studies'],
-  gradesSupported: [7, 8],
+  gradesSupported: [makeGradeLevel('Grade 7', 7), makeGradeLevel('Grade 8', 8)],
   experienceYears: 14,
   certifications: [
     { name: 'Social Studies Certification', issuer: 'State Board', year: 2010 },
@@ -428,9 +440,10 @@ export const MOCK_TEACHER_4: TeacherProfile = {
   joinedDate: new Date(2017, 0, 10),
 };
 
-export const MOCK_TEACHER_5: TeacherProfile = {
+export const MOCK_TEACHER_5: EducatorProfile = {
   orgId: MOCK_ORG_ID,
-  userId: 'a5b1c3d7-0f7f-4b47-8c6d-9fb2d9b0b3d1',
+  id: 'a5b1c3d7-0f7f-4b47-8c6d-9fb2d9b0b3d1',
+  accountId: 'a5b1c3d7-0f7f-4b47-8c6d-9fb2d9b0b3d1',
   displayName: 'Ms. Chloe Rivera',
   firstName: 'Chloe',
   lastName: 'Rivera',
@@ -442,11 +455,14 @@ export const MOCK_TEACHER_5: TeacherProfile = {
   },
   timezone: 'America/New_York',
   locale: 'en-US',
-  prefs: null,
   notificationDefaults: null,
   headline: 'Art and design that build confidence.',
   subjects: ['Art'],
-  gradesSupported: ['K', 1, 2],
+  gradesSupported: [
+    makeGradeLevel('Kindergarten', 'K'),
+    makeGradeLevel('Grade 1', 1),
+    makeGradeLevel('Grade 2', 2),
+  ],
   experienceYears: 6,
   certifications: [
     { name: 'Arts Education Certification', issuer: 'State Board', year: 2019 },
@@ -458,7 +474,7 @@ export const MOCK_TEACHER_5: TeacherProfile = {
   joinedDate: new Date(2021, 7, 25),
 };
 
-export const MOCK_TEACHERS: TeacherProfile[] = [
+export const MOCK_TEACHERS: EducatorProfile[] = [
   MOCK_TEACHER,
   MOCK_TEACHER_2,
   MOCK_TEACHER_3,
@@ -468,7 +484,8 @@ export const MOCK_TEACHERS: TeacherProfile[] = [
 
 export const MOCK_PARENT: GuardianProfile = {
   orgId: MOCK_ORG_ID,
-  userId: '2a0f3cbe-0b3b-470a-8a98-9381c1c9c6a7',
+  id: '2a0f3cbe-0b3b-470a-8a98-9381c1c9c6a7',
+  accountId: '2a0f3cbe-0b3b-470a-8a98-9381c1c9c6a7',
   displayName: 'Michael Chen',
   firstName: 'Michael',
   lastName: 'Chen',
@@ -480,7 +497,6 @@ export const MOCK_PARENT: GuardianProfile = {
   },
   timezone: 'America/New_York',
   locale: 'en-US',
-  prefs: null,
   notificationDefaults: null,
   bio: 'Focused on keeping learning consistent and positive at home.',
   notesInternal: null,
@@ -493,149 +509,149 @@ export const MOCK_PARENT: GuardianProfile = {
 export const MOCK_USER_ACCOUNTS: UserAccount[] = [
   {
     orgId: MOCK_ORG_ID,
-    userId: MOCK_TEACHER.userId,
+    id: MOCK_TEACHER.accountId,
     contacts: { email: 'j.williams@school.edu', phoneE164: '+15551234567' },
     userRoles: [
       {
-        userId: MOCK_TEACHER.userId,
+        orgId: MOCK_ORG_ID,
+        id: `role-${MOCK_TEACHER.accountId}`,
         roleKey: 'teacher',
         assignedAt: '2020-09-01T00:00:00.000Z',
       },
     ],
     status: 'active',
-    presence: null,
     createdAt: '2020-09-01T00:00:00.000Z',
     updatedAt: '2024-01-01T00:00:00.000Z',
   },
   {
     orgId: MOCK_ORG_ID,
-    userId: MOCK_TEACHER_2.userId,
+    id: MOCK_TEACHER_2.accountId,
     contacts: { email: 'd.kim@school.edu', phoneE164: '+15551230001' },
     userRoles: [
       {
-        userId: MOCK_TEACHER_2.userId,
+        orgId: MOCK_ORG_ID,
+        id: `role-${MOCK_TEACHER_2.accountId}`,
         roleKey: 'teacher',
         assignedAt: '2018-08-20T00:00:00.000Z',
       },
     ],
     status: 'active',
-    presence: null,
     createdAt: '2018-08-20T00:00:00.000Z',
     updatedAt: '2024-01-01T00:00:00.000Z',
   },
   {
     orgId: MOCK_ORG_ID,
-    userId: MOCK_TEACHER_3.userId,
+    id: MOCK_TEACHER_3.accountId,
     contacts: { email: 'p.desai@school.edu', phoneE164: '+15551230002' },
     userRoles: [
       {
-        userId: MOCK_TEACHER_3.userId,
+        orgId: MOCK_ORG_ID,
+        id: `role-${MOCK_TEACHER_3.accountId}`,
         roleKey: 'teacher',
         assignedAt: '2019-08-15T00:00:00.000Z',
       },
     ],
     status: 'active',
-    presence: null,
     createdAt: '2019-08-15T00:00:00.000Z',
     updatedAt: '2024-01-01T00:00:00.000Z',
   },
   {
     orgId: MOCK_ORG_ID,
-    userId: MOCK_TEACHER_4.userId,
+    id: MOCK_TEACHER_4.accountId,
     contacts: { email: 'l.hernandez@school.edu', phoneE164: '+15551230003' },
     userRoles: [
       {
-        userId: MOCK_TEACHER_4.userId,
+        orgId: MOCK_ORG_ID,
+        id: `role-${MOCK_TEACHER_4.accountId}`,
         roleKey: 'teacher',
         assignedAt: '2017-01-10T00:00:00.000Z',
       },
     ],
     status: 'active',
-    presence: null,
     createdAt: '2017-01-10T00:00:00.000Z',
     updatedAt: '2024-01-01T00:00:00.000Z',
   },
   {
     orgId: MOCK_ORG_ID,
-    userId: MOCK_TEACHER_5.userId,
+    id: MOCK_TEACHER_5.accountId,
     contacts: { email: 'c.rivera@school.edu', phoneE164: '+15551230004' },
     userRoles: [
       {
-        userId: MOCK_TEACHER_5.userId,
+        orgId: MOCK_ORG_ID,
+        id: `role-${MOCK_TEACHER_5.accountId}`,
         roleKey: 'teacher',
         assignedAt: '2021-08-25T00:00:00.000Z',
       },
     ],
     status: 'active',
-    presence: null,
     createdAt: '2021-08-25T00:00:00.000Z',
     updatedAt: '2024-01-01T00:00:00.000Z',
   },
   {
     orgId: MOCK_ORG_ID,
-    userId: MOCK_PARENT.userId,
+    id: MOCK_PARENT.accountId,
     contacts: { email: 'michael.chen@email.com', phoneE164: '+15559876543' },
     userRoles: [
       {
-        userId: MOCK_PARENT.userId,
+        orgId: MOCK_ORG_ID,
+        id: `role-${MOCK_PARENT.accountId}`,
         roleKey: 'parent',
         assignedAt: '2021-09-15T00:00:00.000Z',
       },
     ],
     status: 'active',
-    presence: null,
     createdAt: '2021-09-15T00:00:00.000Z',
     updatedAt: '2024-01-01T00:00:00.000Z',
   },
   {
     orgId: MOCK_ORG_ID,
-    userId: MOCK_CHILDREN_IDS.sarah,
+    id: MOCK_CHILDREN_IDS.sarah,
     contacts: {},
     userRoles: [
       {
-        userId: MOCK_CHILDREN_IDS.sarah,
+        orgId: MOCK_ORG_ID,
+        id: `role-${MOCK_CHILDREN_IDS.sarah}`,
         roleKey: 'child',
         assignedAt: '2020-09-01T00:00:00.000Z',
       },
     ],
     status: 'active',
-    presence: null,
     createdAt: '2020-09-01T00:00:00.000Z',
     updatedAt: '2024-01-01T00:00:00.000Z',
   },
   {
     orgId: MOCK_ORG_ID,
-    userId: MOCK_CHILDREN_IDS.zayne,
+    id: MOCK_CHILDREN_IDS.zayne,
     contacts: {},
     userRoles: [
       {
-        userId: MOCK_CHILDREN_IDS.zayne,
+        orgId: MOCK_ORG_ID,
+        id: `role-${MOCK_CHILDREN_IDS.zayne}`,
         roleKey: 'child',
         assignedAt: '2021-01-01T00:00:00.000Z',
       },
     ],
     status: 'active',
-    presence: null,
     createdAt: '2021-01-01T00:00:00.000Z',
     updatedAt: '2024-01-01T00:00:00.000Z',
   },
   {
     orgId: MOCK_ORG_ID,
-    userId: MOCK_CHILDREN_IDS.sophia,
+    id: MOCK_CHILDREN_IDS.sophia,
     contacts: {},
     userRoles: [
       {
-        userId: MOCK_CHILDREN_IDS.sophia,
+        orgId: MOCK_ORG_ID,
+        id: `role-${MOCK_CHILDREN_IDS.sophia}`,
         roleKey: 'child',
         assignedAt: '2021-01-01T00:00:00.000Z',
       },
     ],
     status: 'active',
-    presence: null,
     createdAt: '2021-01-01T00:00:00.000Z',
     updatedAt: '2024-01-01T00:00:00.000Z',
   },
 ];
 
-export const getMockUserAccountByUserId = (userId: UUID) =>
-  MOCK_USER_ACCOUNTS.find((account) => account.userId === userId);
+export const getMockUserAccountById = (accountId: UUID) =>
+  MOCK_USER_ACCOUNTS.find((account) => account.id === accountId);

@@ -7,7 +7,7 @@ import {
 import {
   MOCK_PARENT,
   MOCK_TEACHER,
-  getMockUserAccountByUserId,
+  getMockUserAccountById,
   toProfileUser,
 } from '../../../lib/data/people';
 
@@ -21,11 +21,11 @@ export default function Page() {
           initialThreadMessages={MOCK_THREAD_MESSAGES}
           teacher={toProfileUser(
             MOCK_TEACHER,
-            getMockUserAccountByUserId(MOCK_TEACHER.userId),
+            getMockUserAccountById(MOCK_TEACHER.accountId),
           )}
           parent={toProfileUser(
             MOCK_PARENT,
-            getMockUserAccountByUserId(MOCK_PARENT.userId),
+            getMockUserAccountById(MOCK_PARENT.accountId),
           )}
           lastReadMessageId={LAST_READ_MESSAGE_ID}
         />
