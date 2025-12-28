@@ -10,14 +10,11 @@ interface TypingIndicatorProps {
 }
 
 export function TypingIndicator({ user, className }: TypingIndicatorProps) {
-  const isOnline =
-    user.presence?.liveStatus !== undefined ? user.presence.liveStatus !== 'none' : undefined;
   return (
     <div className={cn('flex items-start gap-3 px-4 py-2', className)}>
       <AvatarWithStatus
         name={user.displayName}
         avatar={user.avatar.url ?? ''}
-        isOnline={isOnline}
         sizeClassName="h-8 w-8"
         initialsLength={1}
       />

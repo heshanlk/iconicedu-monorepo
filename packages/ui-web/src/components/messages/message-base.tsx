@@ -62,10 +62,6 @@ export const MessageBase = memo(function MessageBase({
       onOpenThread(message.thread, message);
     }
   }, [message, onOpenThread]);
-  const isOnline =
-    message.sender.presence?.liveStatus !== undefined
-      ? message.sender.presence.liveStatus !== 'none'
-      : undefined;
 
   if (message.isHidden) {
     return (
@@ -78,7 +74,6 @@ export const MessageBase = memo(function MessageBase({
           <AvatarWithStatus
             name={message.sender.displayName}
             avatar={message.sender.avatar.url ?? ''}
-            isOnline={isOnline}
             sizeClassName="h-9 w-9"
             initialsLength={1}
           />
@@ -132,7 +127,6 @@ export const MessageBase = memo(function MessageBase({
         <AvatarWithStatus
           name={message.sender.displayName}
           avatar={message.sender.avatar.url ?? ''}
-          isOnline={isOnline}
           sizeClassName="h-9 w-9"
           initialsLength={1}
         />
