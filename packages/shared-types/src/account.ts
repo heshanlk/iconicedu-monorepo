@@ -1,0 +1,42 @@
+import type { AccountRoleContextVM, UserRoleVM } from './roles';
+import type { AccountStatus, ISODateTime, UUID } from './shared';
+
+// =====================
+// Contacts (VM)
+// =====================
+
+export interface UserContactVM {
+  email?: string | null;
+  phoneE164?: string | null;
+  whatsappE164?: string | null;
+
+  emailVerified?: boolean;
+  phoneVerified?: boolean;
+  whatsappVerified?: boolean;
+  verifiedAt?: ISODateTime | null;
+
+  preferredContactChannels?: string[] | null;
+}
+
+// =====================
+// Account (VM)
+// =====================
+
+export interface UserAccountVM {
+  orgId: UUID;
+  id: UUID;
+
+  contacts: UserContactVM;
+
+  // VM convenience: populated from user_roles join
+  userRoles?: UserRoleVM[] | null;
+
+  status?: AccountStatus;
+
+  createdAt: ISODateTime;
+  updatedAt: ISODateTime;
+  archivedAt?: ISODateTime | null;
+
+  // Active role context for "single login → multiple roles"
+  activeContext?: AccountRoleContextVM | null;
+}
