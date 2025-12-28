@@ -1,16 +1,16 @@
 import { useState, useCallback } from 'react';
-import type { Message } from '@iconicedu/shared-types';
+import type { MessageVM } from '@iconicedu/shared-types';
 
-export function useMessages(initialMessages: Message[]) {
-  const [messages, setMessages] = useState<Message[]>(initialMessages);
+export function useMessages(initialMessages: MessageVM[]) {
+  const [messages, setMessages] = useState<MessageVM[]>(initialMessages);
 
-  const addMessage = useCallback((message: Message) => {
+  const addMessage = useCallback((message: MessageVM) => {
     setMessages((prev) => [...prev, message]);
   }, []);
 
-  const updateMessage = useCallback((id: string, updates: Partial<Message>) => {
+  const updateMessage = useCallback((id: string, updates: Partial<MessageVM>) => {
     setMessages((prev) =>
-      prev.map((msg) => (msg.id === id ? ({ ...msg, ...updates } as Message) : msg)),
+      prev.map((msg) => (msg.id === id ? ({ ...msg, ...updates } as MessageVM) : msg)),
     );
   }, []);
 

@@ -14,11 +14,16 @@ import { useIsMobile } from '../../hooks/use-mobile';
 import { useMessages } from '../../hooks/use-messages';
 import { useDMSidebar } from '../../hooks/use-messages-sidebar';
 import { useThread } from '../../hooks/use-thread';
-import type { Thread, TextMessage, Message, UserProfileVM } from '@iconicedu/shared-types';
+import type {
+  ThreadVM,
+  TextMessageVM,
+  MessageVM,
+  UserProfileVM,
+} from '@iconicedu/shared-types';
 
 export interface MessagesContainerProps {
-  messages: Message[];
-  initialThreadMessages: Record<string, Message[]>;
+  messages: MessageVM[];
+  initialThreadMessages: Record<string, MessageVM[]>;
   educator: UserProfileVM;
   guardian: UserProfileVM;
   lastReadMessageId?: string;
@@ -54,7 +59,7 @@ export function MessagesContainer({
   } = useThread();
 
   const handleOpenThread = useCallback(
-    (thread: Thread, parentMessage: Message) => {
+    (thread: ThreadVM, parentMessage: MessageVM) => {
       if (sidebarContent === 'thread' && activeThread?.id === thread.id) {
         closeSidebar();
         return;
@@ -77,12 +82,12 @@ export function MessagesContainer({
 
   const handleSendMessage = useCallback(
     (content: string) => {
-      const newMessage: TextMessage = {
+      const newMessage: TextMessageVM = {
         id: `msg-${Date.now()}`,
         type: 'text',
         content,
         sender: guardian,
-        timestamp: new Date(),
+        timestamp: new Date().toISOString(),
         reactions: [],
         visibility: { type: 'all' },
         isSaved: false,
@@ -95,12 +100,12 @@ export function MessagesContainer({
 
   const handleSendThreadReply = useCallback(
     (content: string) => {
-      const newReply: TextMessage = {
+      const newReply: TextMessageVM = {
         id: `reply-${Date.now()}`,
         type: 'text',
         content,
         sender: guardian,
-        timestamp: new Date(),
+        timestamp: new Date().toISOString(),
         reactions: [],
         visibility: { type: 'all' },
         isSaved: false,

@@ -2,7 +2,7 @@ import { memo } from 'react';
 import { FileText, Clock, Download, Award, Send, AlertCircle } from 'lucide-react';
 import { Button } from '../../../ui/button';
 import { Badge } from '../../../ui/badge';
-import type { HomeworkSubmissionMessage as HomeworkSubmissionMessageType } from '@iconicedu/shared-types';
+import type { HomeworkSubmissionMessageVM as HomeworkSubmissionMessageType } from '@iconicedu/shared-types';
 import { MessageBase, type MessageBaseProps } from '../message-base';
 import { cn } from '../../../lib/utils';
 
@@ -39,8 +39,8 @@ export const HomeworkSubmissionMessage = memo(function HomeworkSubmissionMessage
   const statusInfo = homeworkStatusConfig[homework.status];
   const StatusIcon = statusInfo.icon;
 
-  const formatDate = (date: Date) => {
-    return date.toLocaleString('en-US', {
+  const formatDate = (date: string) => {
+    return new Date(date).toLocaleString('en-US', {
       month: 'short',
       day: 'numeric',
       year: 'numeric',

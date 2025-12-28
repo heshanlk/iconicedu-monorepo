@@ -4,7 +4,7 @@ import { memo } from 'react';
 import { CreditCard, Clock, CheckCircle2, AlertCircle } from 'lucide-react';
 import { Button } from '../../../ui/button';
 import { Badge } from '../../../ui/badge';
-import type { PaymentReminderMessage as PaymentReminderMessageType } from '@iconicedu/shared-types';
+import type { PaymentReminderMessageVM as PaymentReminderMessageType } from '@iconicedu/shared-types';
 import { MessageBase, type MessageBaseProps } from '../message-base';
 import { cn } from '../../../lib/utils';
 
@@ -41,8 +41,8 @@ export const PaymentReminderMessage = memo(function PaymentReminderMessage(
   const status = statusConfig[payment.status];
   const StatusIcon = status.icon;
 
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-US', {
+  const formatDate = (date: string) => {
+    return new Date(date).toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
       year: 'numeric',

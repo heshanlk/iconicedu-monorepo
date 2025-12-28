@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { TrendingUp } from 'lucide-react';
 import { Badge } from '../../../ui/badge';
-import type { ProgressUpdateMessage as ProgressUpdateMessageType } from '@iconicedu/shared-types';
+import type { ProgressUpdateMessageVM as ProgressUpdateMessageType } from '@iconicedu/shared-types';
 import { MessageBase, type MessageBaseProps } from '../message-base';
 import { cn } from '../../../lib/utils';
 

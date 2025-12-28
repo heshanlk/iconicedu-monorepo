@@ -1,55 +1,62 @@
 import type {
-  Message,
-  TextMessage,
-  LessonAssignmentMessage,
-  ProgressUpdateMessage,
-  SessionBookingMessage,
-  HomeworkSubmissionMessage,
-  LinkPreviewMessage,
-  AudioRecordingMessage,
+  MessageVM,
+  TextMessageVM,
+  LessonAssignmentMessageVM,
+  ProgressUpdateMessageVM,
+  SessionBookingMessageVM,
+  HomeworkSubmissionMessageVM,
+  LinkPreviewMessageVM,
+  AudioRecordingMessageVM,
 } from '@iconicedu/shared-types';
 import { MOCK_GUARDIAN, MOCK_EDUCATOR } from './people';
 
 export const LAST_READ_MESSAGE_ID = '4';
 
-export const MOCK_MESSAGES: Message[] = [
+const hoursAgo = (hours: number) =>
+  new Date(Date.now() - 3600000 * hours).toISOString();
+const minutesAgo = (minutes: number) =>
+  new Date(Date.now() - 60000 * minutes).toISOString();
+const hoursFromNow = (hours: number) =>
+  new Date(Date.now() + 3600000 * hours).toISOString();
+
+export const MOCK_MESSAGES: MessageVM[] = [
   {
     id: '1',
     type: 'text',
     content:
       "Good morning! Thank you for scheduling this guardian-educator conference. I wanted to discuss Sarah's progress in math this semester.",
     sender: MOCK_EDUCATOR,
-    timestamp: new Date(Date.now() - 3600000 * 24),
+    timestamp: hoursAgo(24),
     reactions: [{ emoji: '👋', count: 1, users: [MOCK_GUARDIAN.id] }],
     visibility: { type: 'all' },
     isRead: true,
     isSaved: true,
-  } as TextMessage,
+  } as TextMessageVM,
   {
     id: '2',
     type: 'text',
     content:
       "Good morning, Ms. Williams! Yes, I've been wanting to talk about her recent test results. Is everything okay?",
     sender: MOCK_GUARDIAN,
-    timestamp: new Date(Date.now() - 3600000 * 23.5),
+    timestamp: hoursAgo(23.5),
     reactions: [],
     visibility: { type: 'all' },
     isRead: true,
     thread: {
       id: 'thread-1',
       messageCount: 3,
-      lastReply: new Date(Date.now() - 3600000 * 2),
+      lastReply: hoursAgo(2),
       participants: [MOCK_EDUCATOR, MOCK_GUARDIAN],
       unreadCount: 1,
     },
-  } as TextMessage,
+  } as TextMessageVM,
   {
     id: '3',
     type: 'lesson-assignment',
     content:
       "Here's the homework assignment for next week. Sarah will need to complete these problems for Monday.",
     sender: MOCK_EDUCATOR,
-    timestamp: new Date(Date.now() - 3600000 * 20),
+    timestamp: hoursAgo(20),
     reactions: [{ emoji: '📚', count: 1, users: [MOCK_GUARDIAN.id] }],
     visibility: { type: 'all' },
     isRead: true,
@@ -58,19 +65,19 @@ export const MOCK_MESSAGES: Message[] = [
       title: 'Fractions and Decimals Practice',
       description:
         'Complete problems 1-20 in the workbook. Focus on converting fractions to decimals and vice versa.',
-      dueDate: new Date(Date.now() + 3600000 * 96),
+      dueDate: hoursFromNow(96),
       subject: 'Mathematics',
       estimatedDuration: 30,
       difficulty: 'intermediate',
     },
-  } as LessonAssignmentMessage,
+  } as LessonAssignmentMessageVM,
   {
     id: '4',
     type: 'session-booking',
     content:
       "I've scheduled our next guardian-educator meeting to discuss Sarah's semester progress.",
     sender: MOCK_EDUCATOR,
-    timestamp: new Date(Date.now() - 3600000 * 18),
+    timestamp: hoursAgo(18),
     reactions: [{ emoji: '✅', count: 1, users: [MOCK_GUARDIAN.id] }],
     visibility: { type: 'all' },
     isRead: true,
@@ -78,26 +85,26 @@ export const MOCK_MESSAGES: Message[] = [
     session: {
       title: "Guardian-Educator Conference: Sarah's Progress",
       subject: 'General Academic Review',
-      startTime: new Date(Date.now() + 3600000 * 72),
-      duration: 30,
+      startTime: hoursFromNow(72),
+      durationMinutes: 30,
       meetingLink: 'https://meet.google.com/abc-defg-hij',
       status: 'confirmed',
       topics: ['Math Progress', 'Reading Comprehension', 'Social Development'],
     },
-  } as SessionBookingMessage,
+  } as SessionBookingMessageVM,
   {
     id: '5',
     type: 'homework-submission',
     content:
       'Sarah completed her homework assignment last night. I helped her review the problems she found challenging.',
     sender: MOCK_GUARDIAN,
-    timestamp: new Date(Date.now() - 3600000 * 4),
+    timestamp: hoursAgo(4),
     reactions: [],
     visibility: { type: 'all' },
     isRead: false,
     homework: {
       assignmentTitle: 'Fractions and Decimals Practice',
-      submittedAt: new Date(Date.now() - 3600000 * 4),
+      submittedAt: hoursAgo(4),
       attachments: [
         {
           type: 'file',
@@ -108,14 +115,14 @@ export const MOCK_MESSAGES: Message[] = [
       ],
       status: 'submitted',
     },
-  } as HomeworkSubmissionMessage,
+  } as HomeworkSubmissionMessageVM,
   {
     id: '6',
     type: 'progress-update',
     content:
       'Great news! Sarah has shown significant improvement in her math skills this month!',
     sender: MOCK_EDUCATOR,
-    timestamp: new Date(Date.now() - 3600000 * 2),
+    timestamp: hoursAgo(2),
     reactions: [
       { emoji: '🎉', count: 1, users: [MOCK_GUARDIAN.id] },
       { emoji: '💪', count: 1, users: [MOCK_GUARDIAN.id] },
@@ -132,24 +139,24 @@ export const MOCK_MESSAGES: Message[] = [
       improvement: 22.2,
       summary: "Sarah's quiz average has improved from 72% to 88% this month!",
     },
-  } as ProgressUpdateMessage,
+  } as ProgressUpdateMessageVM,
   {
     id: '7',
     type: 'text',
     content:
       "That's wonderful to hear! We've been working on math together at home. Thank you for your support and guidance.",
     sender: MOCK_GUARDIAN,
-    timestamp: new Date(Date.now() - 300000),
+    timestamp: minutesAgo(5),
     reactions: [{ emoji: '🙏', count: 1, users: [MOCK_EDUCATOR.id] }],
     visibility: { type: 'all' },
     isRead: false,
-  } as TextMessage,
+  } as TextMessageVM,
   {
     id: '8',
     type: 'link-preview',
     content: 'I found this helpful resource for practicing fractions at home!',
     sender: MOCK_GUARDIAN,
-    timestamp: new Date(Date.now() - 60000),
+    timestamp: minutesAgo(1),
     reactions: [],
     visibility: { type: 'all' },
     isRead: false,
@@ -163,13 +170,13 @@ export const MOCK_MESSAGES: Message[] = [
       siteName: 'Khan Academy',
       favicon: 'https://picsum.photos/seed/picsum/16/16',
     },
-  } as LinkPreviewMessage,
+  } as LinkPreviewMessageVM,
   {
     id: '9',
     type: 'audio-recording',
     content: "Quick voice note about Sarah's science project",
     sender: MOCK_EDUCATOR,
-    timestamp: new Date(Date.now() - 30000),
+    timestamp: minutesAgo(0.5),
     reactions: [],
     visibility: { type: 'all' },
     isRead: false,
@@ -186,35 +193,35 @@ export const MOCK_MESSAGES: Message[] = [
       fileSize: 128000,
       mimeType: 'audio/wav',
     },
-  } as AudioRecordingMessage,
+  } as AudioRecordingMessageVM,
   {
     id: '10',
     type: 'text',
     content:
       "Hi Mr. Chen! Just a quick reminder that Sarah's quiz is on Thursday. Please make sure she reviews chapters 6 and 7.",
     sender: MOCK_EDUCATOR,
-    timestamp: new Date(Date.now() - 3600000 * 26),
+    timestamp: hoursAgo(26),
     reactions: [{ emoji: '✅', count: 1, users: [MOCK_GUARDIAN.id] }],
     visibility: { type: 'all' },
     isRead: true,
-  } as TextMessage,
+  } as TextMessageVM,
   {
     id: '11',
     type: 'text',
     content:
       "Thanks for the heads-up! We'll review those chapters tonight. Appreciate it.",
     sender: MOCK_GUARDIAN,
-    timestamp: new Date(Date.now() - 3600000 * 25.5),
+    timestamp: hoursAgo(25.5),
     reactions: [],
     visibility: { type: 'all' },
     isRead: true,
-  } as TextMessage,
+  } as TextMessageVM,
   {
     id: '12',
     type: 'progress-update',
     content: 'Sarah reached her reading goal for the week.',
     sender: MOCK_EDUCATOR,
-    timestamp: new Date(Date.now() - 3600000 * 12),
+    timestamp: hoursAgo(12),
     reactions: [{ emoji: '👏', count: 1, users: [MOCK_GUARDIAN.id] }],
     visibility: { type: 'all' },
     isRead: false,
@@ -227,13 +234,13 @@ export const MOCK_MESSAGES: Message[] = [
       improvement: 100,
       summary: 'Sarah completed all assigned readings this week.',
     },
-  } as ProgressUpdateMessage,
+  } as ProgressUpdateMessageVM,
   {
     id: '13',
     type: 'link-preview',
     content: 'Optional enrichment: math games for fractions.',
     sender: MOCK_EDUCATOR,
-    timestamp: new Date(Date.now() - 3600000 * 10),
+    timestamp: hoursAgo(10),
     reactions: [],
     visibility: { type: 'all' },
     isRead: false,
@@ -245,56 +252,56 @@ export const MOCK_MESSAGES: Message[] = [
       siteName: 'Maths is Fun',
       favicon: '/placeholder.svg?height=16&width=16',
     },
-  } as LinkPreviewMessage,
+  } as LinkPreviewMessageVM,
   {
     id: '14',
     type: 'lesson-assignment',
     content: 'New practice worksheet assigned for Friday.',
     sender: MOCK_EDUCATOR,
-    timestamp: new Date(Date.now() - 3600000 * 6),
+    timestamp: hoursAgo(6),
     reactions: [{ emoji: '📝', count: 1, users: [MOCK_GUARDIAN.id] }],
     visibility: { type: 'all' },
     isRead: false,
     assignment: {
       title: 'Multiplication Fluency',
       description: 'Complete the 25-question worksheet and submit a photo.',
-      dueDate: new Date(Date.now() + 3600000 * 48),
+      dueDate: hoursFromNow(48),
       subject: 'Mathematics',
       estimatedDuration: 20,
       difficulty: 'beginner',
     },
-  } as LessonAssignmentMessage,
+  } as LessonAssignmentMessageVM,
   {
     id: '15',
     type: 'session-booking',
     content: 'Scheduling a short check-in call next week.',
     sender: MOCK_GUARDIAN,
-    timestamp: new Date(Date.now() - 3600000 * 3),
+    timestamp: hoursAgo(3),
     reactions: [],
     visibility: { type: 'all' },
     isRead: false,
     session: {
       title: 'Check-in: Progress Review',
       subject: 'General',
-      startTime: new Date(Date.now() + 3600000 * 96),
-      duration: 15,
+      startTime: hoursFromNow(96),
+      durationMinutes: 15,
       meetingLink: 'https://meet.google.com/check-in-123',
       status: 'scheduled',
       topics: ['Math progress', 'Homework routines'],
     },
-  } as SessionBookingMessage,
+  } as SessionBookingMessageVM,
   {
     id: '16',
     type: 'homework-submission',
     content: 'Attached the completed worksheet.',
     sender: MOCK_GUARDIAN,
-    timestamp: new Date(Date.now() - 3600000),
+    timestamp: hoursAgo(1),
     reactions: [],
     visibility: { type: 'all' },
     isRead: false,
     homework: {
       assignmentTitle: 'Multiplication Fluency',
-      submittedAt: new Date(Date.now() - 3600000),
+      submittedAt: hoursAgo(1),
       attachments: [
         {
           type: 'file',
@@ -305,10 +312,10 @@ export const MOCK_MESSAGES: Message[] = [
       ],
       status: 'submitted',
     },
-  } as HomeworkSubmissionMessage,
+  } as HomeworkSubmissionMessageVM,
 ];
 
-export const MOCK_THREAD_MESSAGES: Record<string, Message[]> = {
+export const MOCK_THREAD_MESSAGES: Record<string, MessageVM[]> = {
   'thread-1': [
     {
       id: 't1-1',
@@ -316,7 +323,7 @@ export const MOCK_THREAD_MESSAGES: Record<string, Message[]> = {
       content:
         "Good morning, Ms. Williams! Yes, I've been wanting to talk about her recent test results. Is everything okay?",
       sender: MOCK_GUARDIAN,
-      timestamp: new Date(Date.now() - 3600000 * 23.5),
+      timestamp: hoursAgo(23.5),
       reactions: [],
       visibility: { type: 'all' },
       isRead: true,
@@ -327,7 +334,7 @@ export const MOCK_THREAD_MESSAGES: Record<string, Message[]> = {
       content:
         'Everything is going well overall! Sarah is a bright child. I just wanted to go over some areas where we can help her improve even more.',
       sender: MOCK_EDUCATOR,
-      timestamp: new Date(Date.now() - 3600000 * 23),
+      timestamp: hoursAgo(23),
       reactions: [{ emoji: '👍', count: 1, users: [MOCK_GUARDIAN.id] }],
       visibility: { type: 'all' },
       isRead: true,
@@ -338,19 +345,19 @@ export const MOCK_THREAD_MESSAGES: Record<string, Message[]> = {
       content:
         'That sounds great! I appreciate you taking the time to help Sarah succeed.',
       sender: MOCK_GUARDIAN,
-      timestamp: new Date(Date.now() - 3600000 * 2),
+      timestamp: hoursAgo(2),
       reactions: [],
       visibility: { type: 'all' },
       isRead: false,
     },
-  ] as TextMessage[],
+  ] as TextMessageVM[],
   'thread-2': [
     {
       id: 't2-1',
       type: 'text',
       content: 'Do you have any recommendations for extra reading materials?',
       sender: MOCK_GUARDIAN,
-      timestamp: new Date(Date.now() - 3600000 * 5),
+      timestamp: hoursAgo(5),
       reactions: [],
       visibility: { type: 'all' },
       isRead: true,
@@ -361,10 +368,10 @@ export const MOCK_THREAD_MESSAGES: Record<string, Message[]> = {
       content:
         'Absolutely! I will share a short list this evening with a few great options.',
       sender: MOCK_EDUCATOR,
-      timestamp: new Date(Date.now() - 3600000 * 4.5),
+      timestamp: hoursAgo(4.5),
       reactions: [{ emoji: '👍', count: 1, users: [MOCK_GUARDIAN.id] }],
       visibility: { type: 'all' },
       isRead: false,
     },
-  ] as TextMessage[],
+  ] as TextMessageVM[],
 };

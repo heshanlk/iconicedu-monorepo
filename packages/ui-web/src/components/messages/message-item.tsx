@@ -1,7 +1,7 @@
 'use client';
 
 import { memo } from 'react';
-import type { Message, Thread } from '@iconicedu/shared-types';
+import type { MessageVM, ThreadVM, UUID } from '@iconicedu/shared-types';
 import {
   isTextMessage,
   isImageMessage,
@@ -33,11 +33,11 @@ import {
 } from './message-types';
 
 interface MessageItemProps {
-  message: Message;
-  onOpenThread: (thread: Thread, parentMessage: Message) => void;
+  message: MessageVM;
+  onOpenThread: (thread: ThreadVM, parentMessage: MessageVM) => void;
   isThreadReply?: boolean;
-  currentUserId?: string;
-  onProfileClick: (userId: string) => void;
+  currentUserId?: UUID;
+  onProfileClick: (userId: UUID) => void;
   onToggleReaction?: (messageId: string, emoji: string) => void;
   onToggleSaved?: (messageId: string) => void;
   onToggleHidden?: (messageId: string) => void;

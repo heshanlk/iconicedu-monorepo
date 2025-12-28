@@ -3,11 +3,11 @@ import { Button } from '../../../ui/button';
 import { AvatarWithStatus } from '../../shared/avatar-with-status';
 import { Badge } from '../../../ui/badge';
 import { MessageCircle } from 'lucide-react';
-import type { Thread } from '@iconicedu/shared-types';
+import type { ThreadVM } from '@iconicedu/shared-types';
 import { formatThreadTime } from '../../../lib/message-utils';
 
 interface ThreadIndicatorProps {
-  thread: Thread;
+  thread: ThreadVM;
   onClick: () => void;
   unreadCount?: number;
 }

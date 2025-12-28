@@ -2,7 +2,7 @@
 
 import { useRef, useEffect, memo } from 'react';
 import { MessageInput } from './message-input';
-import type { ThreadPanelProps } from '@iconicedu/shared-types';
+import type { ThreadPanelPropsVM } from '@iconicedu/shared-types';
 import { ScrollArea } from '../../ui/scroll-area';
 import { ThreadMessageList } from './shared/thread-message-list';
 
@@ -16,7 +16,7 @@ export const ThreadPanel = memo(function ThreadPanel({
   onToggleHidden,
   currentUserId,
   lastReadMessageId,
-}: ThreadPanelProps) {
+}: ThreadPanelPropsVM) {
   const bottomRef = useRef<HTMLDivElement>(null);
   const messageCountRef = useRef(messages.length);
 

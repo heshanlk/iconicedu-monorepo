@@ -4,10 +4,10 @@ import { useMemo, memo } from 'react';
 import { ScrollArea } from '../../ui/scroll-area';
 import { SavedMessagePreview } from './saved-message-preview';
 import { Bookmark } from 'lucide-react';
-import type { Message } from '@iconicedu/shared-types';
+import type { MessageVM } from '@iconicedu/shared-types';
 
 interface SavedMessagesPanelProps {
-  messages: Message[];
+  messages: MessageVM[];
   onMessageClick: (messageId: string) => void;
 }
 

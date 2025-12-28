@@ -1,4 +1,4 @@
-export * from './messages';
+export * from './vm/messages';
 export * from './sidebar';
 export * from './vm/shared';
 export * from './vm/calendar';

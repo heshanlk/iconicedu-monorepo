@@ -1,11 +1,11 @@
 'use client';
 
 import { memo } from 'react';
-import type { Message } from '@iconicedu/shared-types';
+import type { MessageVM } from '@iconicedu/shared-types';
 import { MessageItem } from '../message-item';
 
 interface ThreadMessageListProps {
-  messages: Message[];
+  messages: MessageVM[];
   onProfileClick: (userId: string) => void;
   onToggleReaction?: (messageId: string, emoji: string) => void;
   onToggleSaved?: (messageId: string) => void;

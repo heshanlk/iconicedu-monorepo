@@ -4,7 +4,7 @@ import { memo } from 'react';
 import { BookOpen, Calendar, Clock, FileText, Download } from 'lucide-react';
 import { Button } from '../../../ui/button';
 import { Badge } from '../../../ui/badge';
-import type { LessonAssignmentMessage as LessonAssignmentMessageType } from '@iconicedu/shared-types';
+import type { LessonAssignmentMessageVM as LessonAssignmentMessageType } from '@iconicedu/shared-types';
 import { MessageBase, type MessageBaseProps } from '../message-base';
 import { cn } from '../../../lib/utils';
 
@@ -39,8 +39,8 @@ export const LessonAssignmentMessage = memo(function LessonAssignmentMessage(
     ? difficultyConfig[assignment.difficulty]
     : null;
 
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-US', {
+  const formatDate = (date: string) => {
+    return new Date(date).toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
       year: 'numeric',

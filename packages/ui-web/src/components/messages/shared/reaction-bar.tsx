@@ -8,13 +8,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '../../../ui/tooltip';
-import type { Reaction } from '@iconicedu/shared-types';
+import type { ReactionVM, UUID } from '@iconicedu/shared-types';
 import { ANIMATION_DELAYS } from '../../../constants/message-constants';
 
 interface ReactionBarProps {
-  reactions: Reaction[];
+  reactions: ReactionVM[];
   onToggleReaction?: (emoji: string) => void;
-  currentUserId?: string;
+  currentUserId?: UUID;
 }
 
 export const ReactionBar = memo(function ReactionBar({

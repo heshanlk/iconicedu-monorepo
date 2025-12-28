@@ -1,13 +1,13 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import type { Message, Thread } from '@iconicedu/shared-types';
+import type { MessageVM, ThreadVM } from '@iconicedu/shared-types';
 
 export function useThread() {
-  const [activeThread, setActiveThread] = useState<Thread | null>(null);
-  const [threadMessages, setThreadMessages] = useState<Message[]>([]);
+  const [activeThread, setActiveThread] = useState<ThreadVM | null>(null);
+  const [threadMessages, setThreadMessages] = useState<MessageVM[]>([]);
 
-  const openThread = useCallback((thread: Thread, messages: Message[]) => {
+  const openThread = useCallback((thread: ThreadVM, messages: MessageVM[]) => {
     setActiveThread(thread);
     setThreadMessages(messages);
   }, []);
@@ -17,7 +17,7 @@ export function useThread() {
     setThreadMessages([]);
   }, []);
 
-  const addThreadMessage = useCallback((message: Message) => {
+  const addThreadMessage = useCallback((message: MessageVM) => {
     setThreadMessages((prev) => [...prev, message]);
   }, []);
 

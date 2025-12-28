@@ -3,10 +3,10 @@
 import { memo } from 'react';
 import { Badge } from '../../../ui/badge';
 import { EyeOff } from 'lucide-react';
-import type { Message } from '@iconicedu/shared-types';
+import type { MessageVM } from '@iconicedu/shared-types';
 
 interface VisibilityBadgeProps {
-  message: Message;
+  message: MessageVM;
 }
 
 export const VisibilityBadge = memo(function VisibilityBadge({

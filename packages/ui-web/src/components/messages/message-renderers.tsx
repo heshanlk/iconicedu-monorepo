@@ -47,21 +47,21 @@ import {
 } from 'lucide-react';
 import { EmojiPicker } from './emoji-picker';
 import type {
-  Message,
-  Thread,
-  Reaction,
-  TextMessage as TextMessageType,
-  ImageMessage as ImageMessageType,
-  FileMessage as FileMessageType,
-  DesignFileUpdateMessage,
-  PaymentReminderMessage as PaymentReminderMessageType,
-  EventReminderMessage as EventReminderMessageType,
-  LessonAssignmentMessage as LessonAssignmentMessageType,
-  ProgressUpdateMessage as ProgressUpdateMessageType,
-  SessionBookingMessage as SessionBookingMessageType,
-  HomeworkSubmissionMessage as HomeworkSubmissionMessageType,
-  LinkPreviewMessage as LinkPreviewMessageType, // Added link preview type import
-  AudioRecordingMessage as AudioRecordingMessageType, // Added for AudioRecording
+  MessageVM,
+  ThreadVM,
+  ReactionVM,
+  TextMessageVM as TextMessageType,
+  ImageMessageVM as ImageMessageType,
+  FileMessageVM as FileMessageType,
+  DesignFileUpdateMessageVM,
+  PaymentReminderMessageVM as PaymentReminderMessageType,
+  EventReminderMessageVM as EventReminderMessageType,
+  LessonAssignmentMessageVM as LessonAssignmentMessageType,
+  ProgressUpdateMessageVM as ProgressUpdateMessageType,
+  SessionBookingMessageVM as SessionBookingMessageType,
+  HomeworkSubmissionMessageVM as HomeworkSubmissionMessageType,
+  LinkPreviewMessageVM as LinkPreviewMessageType,
+  AudioRecordingMessageVM as AudioRecordingMessageType,
 } from '@iconicedu/shared-types';
 import { cn } from '../../lib/utils';
 import { formatTime, formatFullDate, formatThreadTime } from '../../lib/message-utils';
@@ -85,8 +85,8 @@ import {
 // ===========================================
 
 interface MessageBaseProps {
-  message: Message;
-  onOpenThread: (thread: Thread, parentMessage: Message) => void;
+  message: MessageVM;
+  onOpenThread: (thread: ThreadVM, parentMessage: MessageVM) => void;
   isThreadReply?: boolean;
   children: ReactNode;
   className?: string;
@@ -103,7 +103,7 @@ export const ReactionBar = React.memo(function ReactionBar({
   onToggleReaction,
   currentUserId,
 }: {
-  reactions: Reaction[];
+  reactions: ReactionVM[];
   onToggleReaction?: (emoji: string) => void;
   currentUserId?: string;
 }) {
@@ -154,9 +154,9 @@ export const ThreadIndicator = React.memo(function ThreadIndicator({
   onOpenThread,
   parentMessage,
 }: {
-  thread: Thread;
-  onOpenThread: (thread: Thread, parentMessage: Message) => void;
-  parentMessage: Message;
+  thread: ThreadVM;
+  onOpenThread: (thread: ThreadVM, parentMessage: MessageVM) => void;
+  parentMessage: MessageVM;
 }) {
   const handleClick = useCallback(() => {
     onOpenThread(thread, parentMessage);
@@ -204,8 +204,8 @@ export const MessageActions = React.memo(function MessageActions({
   onToggleHidden,
   isThreadReply,
 }: {
-  message: Message;
-  onOpenThread: (thread: Thread, parentMessage: Message) => void;
+  message: MessageVM;
+  onOpenThread: (thread: ThreadVM, parentMessage: MessageVM) => void;
   onAddReaction?: (emoji: string) => void;
   onToggleSaved?: () => void;
   onToggleHidden?: () => void;
@@ -218,11 +218,11 @@ export const MessageActions = React.memo(function MessageActions({
       onOpenThread(message.thread, message);
     } else {
       // Create a new thread
-      const newThread: Thread = {
+      const newThread: ThreadVM = {
         id: `thread-${message.id}`,
         messageCount: 1,
         participants: [message.sender],
-        lastReply: new Date(),
+        lastReply: new Date().toISOString(),
       };
       onOpenThread(newThread, message);
     }
@@ -360,7 +360,7 @@ export const MessageActions = React.memo(function MessageActions({
 export const VisibilityBadge = React.memo(function VisibilityBadge({
   message,
 }: {
-  message: Message;
+  message: MessageVM;
 }) {
   if (message.visibility.type === 'all') return null;
 
@@ -387,7 +387,7 @@ export const HiddenMessagePlaceholder = React.memo(function HiddenMessagePlaceho
   return (
     <div className="flex items-center gap-2 rounded-xl border border-dashed border-muted-foreground/30 bg-muted/20 px-3 py-2">
       <EyeOff className="h-4 w-4 text-muted-foreground" />
-      <span className="text-sm text-muted-foreground">Message hidden</span>
+      <span className="text-sm text-muted-foreground">MessageVM hidden</span>
       <Button
         variant="link"
         size="sm"
@@ -559,7 +559,7 @@ export function MessageBase({
 // ===========================================
 
 interface BaseMessageRendererProps {
-  onOpenThread: (thread: Thread, parentMessage: Message) => void;
+  onOpenThread: (thread: ThreadVM, parentMessage: MessageVM) => void;
   isThreadReply?: boolean;
   onProfileClick: (userId: string) => void;
   onToggleReaction?: (emoji: string) => void;
@@ -568,7 +568,7 @@ interface BaseMessageRendererProps {
   currentUserId?: string;
 }
 
-// Text Message
+// Text MessageVM
 interface TextMessageProps extends BaseMessageRendererProps {
   message: TextMessageType;
 }
@@ -601,7 +601,7 @@ export function TextMessage({
   );
 }
 
-// Image Message
+// Image MessageVM
 interface ImageMessageProps extends BaseMessageRendererProps {
   message: ImageMessageType;
 }
@@ -643,7 +643,7 @@ export function ImageMessage({
   );
 }
 
-// File Message
+// File MessageVM
 interface FileMessageProps extends BaseMessageRendererProps {
   message: FileMessageType;
 }
@@ -708,9 +708,9 @@ export function FileMessage({
   );
 }
 
-// Design File Message
+// Design File MessageVM
 interface DesignFileMessageProps extends BaseMessageRendererProps {
-  message: DesignFileUpdateMessage;
+  message: DesignFileUpdateMessageVM;
 }
 
 const toolIcons = {
@@ -824,7 +824,7 @@ export function DesignFileMessage({
   );
 }
 
-// Payment Reminder Message
+// Payment Reminder MessageVM
 interface PaymentReminderMessageProps extends BaseMessageRendererProps {
   message: PaymentReminderMessageType;
 }
@@ -861,8 +861,8 @@ export function PaymentReminderMessage({
   const status = statusConfig[payment.status];
   const StatusIcon = status.icon;
 
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-US', {
+  const formatDate = (date: string) => {
+    return new Date(date).toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
       year: 'numeric',
@@ -936,7 +936,7 @@ export function PaymentReminderMessage({
   );
 }
 
-// Event Reminder Message
+// Event Reminder MessageVM
 interface EventReminderMessageProps extends BaseMessageRendererProps {
   message: EventReminderMessageType;
 }
@@ -952,6 +952,8 @@ export function EventReminderMessage({
   currentUserId,
 }: EventReminderMessageProps) {
   const { event } = message;
+  const eventStart = new Date(event.startTime);
+  const eventEnd = event.endTime ? new Date(event.endTime) : undefined;
 
   const formatEventTime = (start: Date, end?: Date, isAllDay?: boolean) => {
     if (isAllDay) return 'All day';
@@ -1006,21 +1008,21 @@ export function EventReminderMessage({
             <div className="flex items-center gap-3">
               <div className="flex h-12 w-12 flex-col items-center justify-center rounded-xl bg-primary/10 text-primary">
                 <span className="text-[10px] font-medium uppercase leading-none">
-                  {event.startTime.toLocaleDateString('en-US', { month: 'short' })}
+                  {eventStart.toLocaleDateString('en-US', { month: 'short' })}
                 </span>
                 <span className="text-lg font-bold leading-tight">
-                  {event.startTime.getDate()}
+                  {eventStart.getDate()}
                 </span>
               </div>
               <div>
                 <p className="text-sm font-semibold text-foreground">{event.title}</p>
                 <div className="flex items-center gap-1.5 mt-1 text-xs text-muted-foreground">
                   <Calendar className="h-3 w-3" />
-                  <span>{formatEventDate(event.startTime)}</span>
+                  <span>{formatEventDate(eventStart)}</span>
                   <span>•</span>
                   <Clock className="h-3 w-3" />
                   <span>
-                    {formatEventTime(event.startTime, event.endTime, event.isAllDay)}
+                    {formatEventTime(eventStart, eventEnd, event.isAllDay)}
                   </span>
                 </div>
               </div>
@@ -1082,7 +1084,7 @@ export function EventReminderMessage({
   );
 }
 
-// Lesson Assignment Message
+// Lesson Assignment MessageVM
 interface LessonAssignmentMessageProps extends BaseMessageRendererProps {
   message: LessonAssignmentMessageType;
 }
@@ -1117,8 +1119,8 @@ export function LessonAssignmentMessage({
     ? difficultyConfig[assignment.difficulty]
     : null;
 
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-US', {
+  const formatDate = (date: string) => {
+    return new Date(date).toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
       year: 'numeric',
@@ -1225,7 +1227,7 @@ export function LessonAssignmentMessage({
   );
 }
 
-// Progress Update Message
+// Progress Update MessageVM
 interface ProgressUpdateMessageProps extends BaseMessageRendererProps {
   message: ProgressUpdateMessageType;
 }
@@ -1325,7 +1327,7 @@ export function ProgressUpdateMessage({
   );
 }
 
-// Session Booking Message
+// Session Booking MessageVM
 interface SessionBookingMessageProps extends BaseMessageRendererProps {
   message: SessionBookingMessageType;
 }
@@ -1367,8 +1369,8 @@ export function SessionBookingMessage({
   const statusInfo = sessionStatusConfig[session.status];
   const StatusIcon = statusInfo.icon;
 
-  const formatSessionTime = (date: Date) => {
-    return date.toLocaleString('en-US', {
+  const formatSessionTime = (date: string) => {
+    return new Date(date).toLocaleString('en-US', {
       weekday: 'short',
       month: 'short',
       day: 'numeric',
@@ -1422,7 +1424,7 @@ export function SessionBookingMessage({
             </div>
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <Clock className="h-3 w-3" />
-              <span>{session.duration} minutes</span>
+              <span>{session.durationMinutes} minutes</span>
             </div>
             {session.meetingLink && (
               <div className="flex items-center gap-2 text-xs text-primary">
@@ -1486,7 +1488,7 @@ export function SessionBookingMessage({
   );
 }
 
-// Homework Submission Message
+// Homework Submission MessageVM
 interface HomeworkSubmissionMessageProps extends BaseMessageRendererProps {
   message: HomeworkSubmissionMessageType;
 }
@@ -1523,8 +1525,8 @@ export function HomeworkSubmissionMessage({
   const statusInfo = homeworkStatusConfig[homework.status];
   const StatusIcon = statusInfo.icon;
 
-  const formatDate = (date: Date) => {
-    return date.toLocaleString('en-US', {
+  const formatDate = (date: string) => {
+    return new Date(date).toLocaleString('en-US', {
       month: 'short',
       day: 'numeric',
       year: 'numeric',
@@ -1629,7 +1631,7 @@ export function HomeworkSubmissionMessage({
   );
 }
 
-// Link Preview Message
+// Link Preview MessageVM
 interface LinkPreviewMessageProps extends BaseMessageRendererProps {
   message: LinkPreviewMessageType;
 }
@@ -1726,7 +1728,7 @@ export function LinkPreviewMessage({
   );
 }
 
-// Audio Recording Message
+// Audio Recording MessageVM
 interface AudioRecordingMessageProps extends BaseMessageRendererProps {
   message: AudioRecordingMessageType;
 }

@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { Button } from '../../../ui/button';
 import { Badge } from '../../../ui/badge';
-import type { SessionBookingMessage as SessionBookingMessageType } from '@iconicedu/shared-types';
+import type { SessionBookingMessageVM as SessionBookingMessageType } from '@iconicedu/shared-types';
 import { MessageBase, type MessageBaseProps } from '../message-base';
 import { cn } from '../../../lib/utils';
 
@@ -54,8 +54,8 @@ export const SessionBookingMessage = memo(function SessionBookingMessage(
   const statusInfo = sessionStatusConfig[session.status];
   const StatusIcon = statusInfo.icon;
 
-  const formatSessionTime = (date: Date) => {
-    return date.toLocaleString('en-US', {
+  const formatSessionTime = (date: string) => {
+    return new Date(date).toLocaleString('en-US', {
       weekday: 'short',
       month: 'short',
       day: 'numeric',
@@ -99,7 +99,7 @@ export const SessionBookingMessage = memo(function SessionBookingMessage(
             </div>
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <Clock className="h-3 w-3" />
-              <span>{session.duration} minutes</span>
+              <span>{session.durationMinutes} minutes</span>
             </div>
             {session.meetingLink && (
               <div className="flex items-center gap-2 text-xs text-primary">

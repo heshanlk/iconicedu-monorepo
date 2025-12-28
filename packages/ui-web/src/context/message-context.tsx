@@ -1,9 +1,9 @@
 import { createContext, useContext, type ReactNode } from 'react';
-import type { Message } from '@iconicedu/shared-types';
+import type { MessageVM, ThreadVM } from '@iconicedu/shared-types';
 
 interface MessageContextValue {
   currentUserId: string;
-  onOpenThread: (thread: any, parentMessage: Message) => void;
+  onOpenThread: (thread: ThreadVM, parentMessage: MessageVM) => void;
   onProfileClick: (userId: string) => void;
   onToggleReaction: (messageId: string, emoji: string) => void;
   onToggleSaved: (messageId: string) => void;

@@ -2,16 +2,16 @@
 
 import { AvatarWithStatus } from '../shared/avatar-with-status';
 import { formatDistanceToNow } from 'date-fns';
-import type { Message } from '@iconicedu/shared-types';
+import type { MessageVM } from '@iconicedu/shared-types';
 import { cn } from '../../lib/utils';
 
 interface SavedMessagePreviewProps {
-  message: Message;
+  message: MessageVM;
   onClick: () => void;
 }
 
 export function SavedMessagePreview({ message, onClick }: SavedMessagePreviewProps) {
-  const getMessagePreview = (msg: Message): string => {
+  const getMessagePreview = (msg: MessageVM): string => {
     switch (msg.type) {
       case 'text':
         return msg.content;
@@ -67,7 +67,7 @@ export function SavedMessagePreview({ message, onClick }: SavedMessagePreviewPro
             {message.sender.displayName}
           </span>
           <span className="text-xs text-muted-foreground flex-shrink-0">
-            {formatDistanceToNow(message.timestamp, { addSuffix: true })}
+            {formatDistanceToNow(new Date(message.timestamp), { addSuffix: true })}
           </span>
         </div>
         <p className="text-sm text-muted-foreground line-clamp-2">{truncatedPreview}</p>

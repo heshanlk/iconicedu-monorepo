@@ -26,11 +26,11 @@ import {
 } from 'lucide-react';
 import { EmojiPicker } from './emoji-picker';
 import { cn } from '../../lib/utils';
-import type { Message, Thread } from '@iconicedu/shared-types';
+import type { MessageVM, ThreadVM } from '@iconicedu/shared-types';
 
 interface MessageActionsProps {
-  message: Message;
-  onOpenThread: (thread: Thread, parentMessage: Message) => void;
+  message: MessageVM;
+  onOpenThread: (thread: ThreadVM, parentMessage: MessageVM) => void;
   onAddReaction?: (emoji: string) => void;
   onToggleSaved?: () => void;
   onToggleHidden?: () => void;
@@ -61,11 +61,11 @@ export const MessageActions = memo(function MessageActions({
     if (message.thread) {
       onOpenThread(message.thread, message);
     } else {
-      const newThread: Thread = {
+      const newThread: ThreadVM = {
         id: `thread-${message.id}`,
         messageCount: 1,
         participants: [message.sender],
-        lastReply: new Date(),
+        lastReply: new Date().toISOString(),
       };
       onOpenThread(newThread, message);
     }

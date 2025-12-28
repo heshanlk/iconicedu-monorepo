@@ -1,7 +1,7 @@
 'use client';
 
 import { memo } from 'react';
-import type { ImageMessage as ImageMessageType } from '@iconicedu/shared-types';
+import type { ImageMessageVM as ImageMessageType } from '@iconicedu/shared-types';
 import { MessageBase, type MessageBaseProps } from '../message-base';
 
 interface ImageMessageProps extends Omit<MessageBaseProps, 'message' | 'children'> {

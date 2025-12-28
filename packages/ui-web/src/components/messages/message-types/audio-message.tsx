@@ -4,12 +4,12 @@ import { memo, useState, useRef, useEffect, useCallback } from 'react';
 import { Play, Pause } from 'lucide-react';
 import { Button } from '../../../ui/button';
 import { Slider } from '../../../ui/slider';
-import type { AudioRecordingMessage } from '@iconicedu/shared-types';
+import type { AudioRecordingMessageVM } from '@iconicedu/shared-types';
 import { MessageBase, type MessageBaseProps } from '../message-base';
 import { cn } from '../../../lib/utils';
 
 interface AudioMessageProps extends Omit<MessageBaseProps, 'message' | 'children'> {
-  message: AudioRecordingMessage;
+  message: AudioRecordingMessageVM;
 }
 
 export const AudioMessage = memo(function AudioMessage(props: AudioMessageProps) {
@@ -78,7 +78,7 @@ export const AudioMessage = memo(function AudioMessage(props: AudioMessageProps)
       <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent p-4 max-w-sm border border-primary/20">
         <audio
           ref={audioRef}
-          src={message.audioUrl}
+          src={message.audioUrl ?? message.audio?.url}
           preload="metadata"
           aria-label="Audio message"
         />
@@ -113,7 +113,7 @@ export const AudioMessage = memo(function AudioMessage(props: AudioMessageProps)
             />
             <div className="flex items-center justify-between text-xs text-muted-foreground">
               <span>{formatTime(currentTime)}</span>
-              <span>{message.duration || formatTime(duration)}</span>
+              <span>{message.duration || formatTime(message.audio.duration || duration)}</span>
             </div>
           </div>
         </div>

@@ -2,12 +2,12 @@ import { memo } from 'react';
 import { Figma, PenTool, Layers, ExternalLink } from 'lucide-react';
 import { Button } from '../../../ui/button';
 import { Badge } from '../../../ui/badge';
-import type { DesignFileUpdateMessage } from '@iconicedu/shared-types';
+import type { DesignFileUpdateMessageVM } from '@iconicedu/shared-types';
 import { MessageBase, type MessageBaseProps } from '../message-base';
 import { cn } from '../../../lib/utils';
 
 interface DesignFileMessageProps extends Omit<MessageBaseProps, 'message' | 'children'> {
-  message: DesignFileUpdateMessage;
+  message: DesignFileUpdateMessageVM;
 }
 
 const toolIcons = {

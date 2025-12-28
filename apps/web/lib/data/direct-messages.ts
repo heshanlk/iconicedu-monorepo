@@ -1,9 +1,9 @@
 import type {
-  Message,
-  TextMessage,
-  ImageMessage,
-  FileMessage,
-  LinkPreviewMessage,
+  MessageVM,
+  TextMessageVM,
+  ImageMessageVM,
+  FileMessageVM,
+  LinkPreviewMessageVM,
 } from '@iconicedu/shared-types';
 import { MOCK_GUARDIAN, MOCK_EDUCATOR, MOCK_EDUCATOR_2 } from './people';
 
@@ -13,33 +13,38 @@ export const DIRECT_ALT_EDUCATOR = MOCK_EDUCATOR_2;
 
 export const DIRECT_LAST_READ_MESSAGE_ID = 'dm-6';
 
-export const DIRECT_MESSAGES: Message[] = [
+const hoursAgo = (hours: number) =>
+  new Date(Date.now() - 1000 * 60 * 60 * hours).toISOString();
+const minutesAgo = (minutes: number) =>
+  new Date(Date.now() - 1000 * 60 * minutes).toISOString();
+
+export const DIRECT_MESSAGES: MessageVM[] = [
   {
     id: 'dm-1',
     type: 'text',
     content: 'Hey! Are we still on for the session this afternoon?',
     sender: DIRECT_GUARDIAN,
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 5),
+    timestamp: hoursAgo(5),
     reactions: [],
     visibility: { type: 'sender-only' },
     isRead: true,
-  } as TextMessage,
+  } as TextMessageVM,
   {
     id: 'dm-2',
     type: 'text',
     content: 'Yes — 4:30 PM works great. I will share the Zoom link soon.',
     sender: DIRECT_EDUCATOR,
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 4.5),
+    timestamp: hoursAgo(4.5),
     reactions: [{ emoji: '✅', count: 1, users: [MOCK_GUARDIAN.id] }],
     visibility: { type: 'all' },
     isRead: true,
-  } as TextMessage,
+  } as TextMessageVM,
   {
     id: 'dm-3',
     type: 'image',
     content: 'Here is the worksheet photo from today.',
     sender: DIRECT_GUARDIAN,
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 3),
+    timestamp: hoursAgo(3),
     reactions: [],
     visibility: { type: 'all' },
     isRead: true,
@@ -50,13 +55,13 @@ export const DIRECT_MESSAGES: Message[] = [
       width: 800,
       height: 600,
     },
-  } as ImageMessage,
+  } as ImageMessageVM,
   {
     id: 'dm-4',
     type: 'file',
     content: 'Sharing the notes PDF before class.',
     sender: DIRECT_EDUCATOR,
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2),
+    timestamp: hoursAgo(2),
     reactions: [],
     visibility: { type: 'all' },
     isRead: true,
@@ -67,13 +72,13 @@ export const DIRECT_MESSAGES: Message[] = [
       size: 320000,
       mimeType: 'application/pdf',
     },
-  } as FileMessage,
+  } as FileMessageVM,
   {
     id: 'dm-5',
     type: 'link-preview',
     content: "Here is a quick reference for today's topic.",
     sender: DIRECT_ALT_EDUCATOR,
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 1.5),
+    timestamp: hoursAgo(1.5),
     reactions: [],
     visibility: { type: 'all' },
     isRead: false,
@@ -85,17 +90,17 @@ export const DIRECT_MESSAGES: Message[] = [
       siteName: 'Khan Academy',
       favicon: 'https://picsum.photos/seed/favicon/16/16',
     },
-  } as LinkPreviewMessage,
+  } as LinkPreviewMessageVM,
   {
     id: 'dm-6',
     type: 'text',
     content: "Got it -- thanks! I'll join a few minutes early.",
     sender: DIRECT_GUARDIAN,
-    timestamp: new Date(Date.now() - 1000 * 60 * 15),
+    timestamp: minutesAgo(15),
     reactions: [{ emoji: '👍', count: 1, users: [MOCK_EDUCATOR.id] }],
     visibility: { type: 'all' },
     isRead: false,
-  } as TextMessage,
+  } as TextMessageVM,
 ];
 
-export const DIRECT_THREAD_MESSAGES: Record<string, Message[]> = {};
+export const DIRECT_THREAD_MESSAGES: Record<string, MessageVM[]> = {};

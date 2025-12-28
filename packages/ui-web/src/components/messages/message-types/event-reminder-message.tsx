@@ -2,7 +2,7 @@ import { memo } from 'react';
 import { Calendar, Clock, MapPin, Video, Users } from 'lucide-react';
 import { Button } from '../../../ui/button';
 import { AvatarWithStatus } from '../../shared/avatar-with-status';
-import type { EventReminderMessage as EventReminderMessageType } from '@iconicedu/shared-types';
+import type { EventReminderMessageVM as EventReminderMessageType } from '@iconicedu/shared-types';
 import { MessageBase, type MessageBaseProps } from '../message-base';
 
 interface EventReminderMessageProps extends Omit<
@@ -53,6 +53,9 @@ export const EventReminderMessage = memo(function EventReminderMessage(
     });
   };
 
+  const startTime = new Date(event.startTime);
+  const endTime = event.endTime ? new Date(event.endTime) : undefined;
+
   return (
     <MessageBase message={message} {...baseProps} className="bg-primary/5">
       <div className="rounded-xl border border-primary/20 bg-card overflow-hidden max-w-sm">
@@ -61,21 +64,21 @@ export const EventReminderMessage = memo(function EventReminderMessage(
             <div className="flex items-center gap-3">
               <div className="flex h-12 w-12 flex-col items-center justify-center rounded-xl bg-primary/10 text-primary">
                 <span className="text-[10px] font-medium uppercase leading-none">
-                  {event.startTime.toLocaleDateString('en-US', { month: 'short' })}
+                  {startTime.toLocaleDateString('en-US', { month: 'short' })}
                 </span>
                 <span className="text-lg font-bold leading-tight">
-                  {event.startTime.getDate()}
+                  {startTime.getDate()}
                 </span>
               </div>
               <div>
                 <p className="text-sm font-semibold text-foreground">{event.title}</p>
                 <div className="flex items-center gap-1.5 mt-1 text-xs text-muted-foreground">
                   <Calendar className="h-3 w-3" />
-                  <span>{formatEventDate(event.startTime)}</span>
+                  <span>{formatEventDate(startTime)}</span>
                   <span>•</span>
                   <Clock className="h-3 w-3" />
                   <span>
-                    {formatEventTime(event.startTime, event.endTime, event.isAllDay)}
+                    {formatEventTime(startTime, endTime, event.isAllDay)}
                   </span>
                 </div>
               </div>

@@ -1,12 +1,12 @@
 import { useRef, useEffect, useImperativeHandle, forwardRef, useMemo } from 'react';
 import { MessageItem } from './message-item';
-import type { Message, Thread, UserProfileVM } from '@iconicedu/shared-types';
+import type { MessageVM, ThreadVM, UserProfileVM } from '@iconicedu/shared-types';
 import { ScrollArea } from '../../ui/scroll-area';
 import { formatDateHeader } from '../../lib/message-utils';
 
 interface MessageListProps {
-  messages: Message[];
-  onOpenThread: (thread: Thread, parentMessage: Message) => void;
+  messages: MessageVM[];
+  onOpenThread: (thread: ThreadVM, parentMessage: MessageVM) => void;
   onProfileClick: (userId: string) => void;
   onToggleReaction?: (messageId: string, emoji: string) => void;
   onToggleSaved?: (messageId: string) => void;
@@ -63,11 +63,11 @@ export const MessageList = forwardRef<MessageListRef, MessageListProps>(
     }, [messages]);
 
     const groupedMessages = useMemo(() => {
-      const groups: { date: string; messages: Message[] }[] = [];
+      const groups: { date: string; messages: MessageVM[] }[] = [];
       let currentDate = '';
 
       const sortedMessages = [...messages].sort(
-        (a, b) => a.timestamp.getTime() - b.timestamp.getTime(),
+        (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
       );
 
       sortedMessages.forEach((message) => {

@@ -9,7 +9,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '../../ui/tooltip';
-import type { Message, Thread } from '@iconicedu/shared-types';
+import type { MessageVM, ThreadVM, UUID } from '@iconicedu/shared-types';
 import { cn } from '../../lib/utils';
 import { formatTime, formatFullDate } from '../../lib/message-utils';
 import { ReactionBar } from './shared/reaction-bar';
@@ -19,16 +19,16 @@ import { HiddenMessagePlaceholder } from './shared/hidden-message-placeholder';
 import { MessageActions } from './message-actions';
 
 export interface MessageBaseProps {
-  message: Message;
-  onOpenThread: (thread: Thread, parentMessage: Message) => void;
+  message: MessageVM;
+  onOpenThread: (thread: ThreadVM, parentMessage: MessageVM) => void;
   isThreadReply?: boolean;
   children?: ReactNode;
   className?: string;
-  onProfileClick: (userId: string) => void;
+  onProfileClick: (userId: UUID) => void;
   onToggleReaction?: (emoji: string) => void;
   onToggleSaved?: () => void;
   onToggleHidden?: () => void;
-  currentUserId?: string;
+  currentUserId?: UUID;
 }
 
 export const MessageBase = memo(function MessageBase({
