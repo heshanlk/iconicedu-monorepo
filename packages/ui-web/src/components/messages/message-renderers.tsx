@@ -172,8 +172,8 @@ export const ThreadIndicator = React.memo(function ThreadIndicator({
         {thread.participants.slice(0, 3).map((participant) => (
           <AvatarWithStatus
             key={participant.id}
-            name={participant.name}
-            avatar={participant.avatar}
+            name={participant.displayName}
+            avatar={participant.avatar.url ?? ''}
             showStatus={false}
             sizeClassName="h-5 w-5 border-2 border-background"
             fallbackClassName="text-[8px]"
@@ -432,11 +432,11 @@ export function MessageBase({
         <button
           onClick={handleProfileClick}
           className="flex-shrink-0 transition-opacity hover:opacity-80"
-          aria-label={`View ${message.sender.name}'s profile`}
+          aria-label={`View ${message.sender.displayName}'s profile`}
         >
           <AvatarWithStatus
-            name={message.sender.name}
-            avatar={message.sender.avatar}
+            name={message.sender.displayName}
+            avatar={message.sender.avatar.url ?? ''}
             showStatus={false}
             sizeClassName="h-9 w-9"
             initialsLength={1}
@@ -448,7 +448,7 @@ export function MessageBase({
               onClick={handleProfileClick}
               className="text-sm font-semibold text-foreground hover:underline"
             >
-              {message.sender.name}
+              {message.sender.displayName}
             </button>
             <TooltipProvider>
               <Tooltip>
@@ -486,11 +486,11 @@ export function MessageBase({
       <button
         onClick={handleProfileClick}
         className="flex-shrink-0 transition-opacity hover:opacity-80"
-        aria-label={`View ${message.sender.name}'s profile`}
+        aria-label={`View ${message.sender.displayName}'s profile`}
       >
         <AvatarWithStatus
-          name={message.sender.name}
-          avatar={message.sender.avatar}
+          name={message.sender.displayName}
+          avatar={message.sender.avatar.url ?? ''}
           showStatus={false}
           sizeClassName="h-9 w-9"
           initialsLength={1}
@@ -503,7 +503,7 @@ export function MessageBase({
             onClick={handleProfileClick}
             className="text-sm font-semibold text-foreground hover:underline"
           >
-            {message.sender.name}
+            {message.sender.displayName}
           </button>
           <TooltipProvider>
             <Tooltip>
@@ -1053,8 +1053,8 @@ export function EventReminderMessage({
                 {event.attendees.slice(0, 4).map((attendee) => (
                   <AvatarWithStatus
                     key={attendee.id}
-                    name={attendee.name}
-                    avatar={attendee.avatar}
+                    name={attendee.displayName}
+                    avatar={attendee.avatar.url ?? ''}
                     showStatus={false}
                     sizeClassName="h-5 w-5 border-2 border-background"
                     fallbackClassName="text-[8px]"

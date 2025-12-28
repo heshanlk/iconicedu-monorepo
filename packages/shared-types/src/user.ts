@@ -166,3 +166,9 @@ export interface StaffProfile extends BaseUserProfile {
   notesInternal?: string | null;
   workingHoursRules?: string[] | null;
 }
+
+export type UserProfile =
+  | EducatorProfile
+  | GuardianProfile
+  | ChildProfile
+  | StaffProfile;

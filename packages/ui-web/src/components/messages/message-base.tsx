@@ -69,11 +69,11 @@ export const MessageBase = memo(function MessageBase({
         <button
           onClick={handleProfileClick}
           className="flex-shrink-0 transition-opacity hover:opacity-80"
-          aria-label={`View ${message.sender.name}'s profile`}
+          aria-label={`View ${message.sender.displayName}'s profile`}
         >
           <AvatarWithStatus
-            name={message.sender.name}
-            avatar={message.sender.avatar}
+            name={message.sender.displayName}
+            avatar={message.sender.avatar.url ?? ''}
             showStatus={false}
             sizeClassName="h-9 w-9"
             initialsLength={1}
@@ -85,7 +85,7 @@ export const MessageBase = memo(function MessageBase({
               onClick={handleProfileClick}
               className="text-sm font-semibold text-foreground hover:underline"
             >
-              {message.sender.name}
+              {message.sender.displayName}
             </button>
             <TooltipProvider>
               <Tooltip>
@@ -123,11 +123,11 @@ export const MessageBase = memo(function MessageBase({
       <button
         onClick={handleProfileClick}
         className="flex-shrink-0 transition-opacity hover:opacity-80"
-        aria-label={`View ${message.sender.name}'s profile`}
+        aria-label={`View ${message.sender.displayName}'s profile`}
       >
         <AvatarWithStatus
-          name={message.sender.name}
-          avatar={message.sender.avatar}
+          name={message.sender.displayName}
+          avatar={message.sender.avatar.url ?? ''}
           showStatus={false}
           sizeClassName="h-9 w-9"
           initialsLength={1}
@@ -137,11 +137,11 @@ export const MessageBase = memo(function MessageBase({
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
           <button
-            onClick={handleProfileClick}
-            className="text-sm font-semibold text-foreground hover:underline"
-          >
-            {message.sender.name}
-          </button>
+          onClick={handleProfileClick}
+          className="text-sm font-semibold text-foreground hover:underline"
+        >
+          {message.sender.displayName}
+        </button>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>

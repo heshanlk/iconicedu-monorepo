@@ -7,21 +7,9 @@ import type {
 } from '@iconicedu/shared-types';
 import { MOCK_PARENT, MOCK_TEACHER, MOCK_TEACHER_2 } from './people';
 
-export const DIRECT_USER = {
-  id: MOCK_PARENT.accountId,
-  name: MOCK_PARENT.displayName,
-  avatar: MOCK_PARENT.avatar.url ?? '',
-};
-export const DIRECT_CONTACT = {
-  id: MOCK_TEACHER.accountId,
-  name: MOCK_TEACHER.displayName,
-  avatar: MOCK_TEACHER.avatar.url ?? '',
-};
-export const DIRECT_ALT_CONTACT = {
-  id: MOCK_TEACHER_2.accountId,
-  name: MOCK_TEACHER_2.displayName,
-  avatar: MOCK_TEACHER_2.avatar.url ?? '',
-};
+export const DIRECT_USER = MOCK_PARENT;
+export const DIRECT_CONTACT = MOCK_TEACHER;
+export const DIRECT_ALT_CONTACT = MOCK_TEACHER_2;
 
 export const DIRECT_LAST_READ_MESSAGE_ID = 'dm-6';
 
@@ -42,9 +30,7 @@ export const DIRECT_MESSAGES: Message[] = [
     content: 'Yes — 4:30 PM works great. I will share the Zoom link soon.',
     sender: DIRECT_CONTACT,
     timestamp: new Date(Date.now() - 1000 * 60 * 60 * 4.5),
-    reactions: [
-      { emoji: '✅', count: 1, users: [MOCK_PARENT.accountId] },
-    ],
+    reactions: [{ emoji: '✅', count: 1, users: [MOCK_PARENT.id] }],
     visibility: { type: 'all' },
     isRead: true,
   } as TextMessage,
@@ -106,9 +92,7 @@ export const DIRECT_MESSAGES: Message[] = [
     content: "Got it -- thanks! I'll join a few minutes early.",
     sender: DIRECT_USER,
     timestamp: new Date(Date.now() - 1000 * 60 * 15),
-    reactions: [
-      { emoji: '👍', count: 1, users: [MOCK_TEACHER.accountId] },
-    ],
+    reactions: [{ emoji: '👍', count: 1, users: [MOCK_TEACHER.id] }],
     visibility: { type: 'all' },
     isRead: false,
   } as TextMessage,

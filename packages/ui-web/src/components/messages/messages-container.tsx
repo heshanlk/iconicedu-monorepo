@@ -14,13 +14,13 @@ import { useIsMobile } from '../../hooks/use-mobile';
 import { useMessages } from '../../hooks/use-messages';
 import { useDMSidebar } from '../../hooks/use-messages-sidebar';
 import { useThread } from '../../hooks/use-thread';
-import type { Thread, TextMessage, Message, User } from '@iconicedu/shared-types';
+import type { Thread, TextMessage, Message, UserProfile } from '@iconicedu/shared-types';
 
 export interface MessagesContainerProps {
   messages: Message[];
   initialThreadMessages: Record<string, Message[]>;
-  teacher: User;
-  parent: User;
+  teacher: UserProfile;
+  parent: UserProfile;
   lastReadMessageId?: string;
 }
 

@@ -1,12 +1,11 @@
 import type {
-  BaseUserProfile,
   ChildProfile,
   EducatorProfile,
   GradeLevel,
   GuardianProfile,
   RoleKey,
-  User,
   UserAccount,
+  UserProfile,
   UUID,
 } from '@iconicedu/shared-types';
 
@@ -103,12 +102,6 @@ export const getMockChildByAccountId = (accountId: UUID) =>
 export const getMockChildNameByAccountId = (accountId: UUID) =>
   getMockChildByAccountId(accountId)?.displayName ?? 'Child';
 
-export const toMessageUser = (profile: BaseUserProfile): User => ({
-  id: profile.accountId,
-  name: profile.displayName,
-  avatar: profile.avatar.url ?? '',
-});
-
 const toRoleLabel = (roleKey: RoleKey | undefined) => {
   if (!roleKey) return undefined;
   return roleKey.charAt(0).toUpperCase() + roleKey.slice(1);
@@ -117,7 +110,7 @@ const toRoleLabel = (roleKey: RoleKey | undefined) => {
 export const toProfileUser = (
   profile: EducatorProfile | GuardianProfile,
   account?: UserAccount,
-): User & {
+): UserProfile & {
   role?: string;
   email?: string | null;
   phone?: string | null;
@@ -134,7 +127,7 @@ export const toProfileUser = (
   }> | null;
   childrenNames?: string[];
 } => ({
-  ...toMessageUser(profile),
+  ...profile,
   role: toRoleLabel(account?.userRoles?.[0]?.roleKey),
   email: account?.contacts.email ?? null,
   phone: account?.contacts.phoneE164 ?? null,

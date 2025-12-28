@@ -55,8 +55,8 @@ export function SavedMessagePreview({ message, onClick }: SavedMessagePreviewPro
       )}
     >
       <AvatarWithStatus
-        name={message.sender.name}
-        avatar={message.sender.avatar}
+        name={message.sender.displayName}
+        avatar={message.sender.avatar.url ?? ''}
         showStatus={false}
         sizeClassName="h-10 w-10 flex-shrink-0"
         initialsLength={1}
@@ -65,7 +65,7 @@ export function SavedMessagePreview({ message, onClick }: SavedMessagePreviewPro
       <div className="flex-1 min-w-0">
         <div className="flex items-baseline justify-between gap-2 mb-1">
           <span className="font-semibold text-sm text-foreground truncate">
-            {message.sender.name}
+            {message.sender.displayName}
           </span>
           <span className="text-xs text-muted-foreground flex-shrink-0">
             {formatDistanceToNow(message.timestamp, { addSuffix: true })}

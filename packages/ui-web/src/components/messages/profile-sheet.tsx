@@ -13,10 +13,10 @@ import {
 import { AvatarWithStatus } from '../shared/avatar-with-status';
 import { Badge } from '../../ui/badge';
 import { Separator } from '../../ui/separator';
-import type { User } from '@iconicedu/shared-types';
+import type { GradeLevel, UserProfile } from '@iconicedu/shared-types';
 
 interface ProfileSheetProps {
-  user: User & {
+  user: UserProfile & {
     role?: string;
     email?: string;
     phone?: string;
@@ -24,7 +24,7 @@ interface ProfileSheetProps {
     headline?: string | null;
     bio?: string | null;
     subjects?: string[] | null;
-    gradesSupported?: Array<number | string> | null;
+    gradesSupported?: GradeLevel[] | null;
     experienceYears?: number | null;
     certifications?: Array<{
       name: string;
@@ -41,8 +41,8 @@ export function ProfileSheet({ user }: ProfileSheetProps) {
       <div className="flex-1 overflow-y-auto">
         <div className="flex flex-col items-center gap-3 p-6">
           <AvatarWithStatus
-            name={user.name}
-            avatar={user.avatar}
+            name={user.displayName}
+            avatar={user.avatar.url ?? ''}
             showStatus={false}
             sizeClassName="h-20 w-20"
             statusClassName="bottom-1 right-1 h-4 w-4"
@@ -50,7 +50,9 @@ export function ProfileSheet({ user }: ProfileSheetProps) {
             initialsLength={1}
           />
           <div className="text-center">
-            <h2 className="text-lg font-semibold text-foreground">{user.name}</h2>
+            <h2 className="text-lg font-semibold text-foreground">
+              {user.displayName}
+            </h2>
             {user.status && (
               <p className="text-sm text-muted-foreground">{user.status}</p>
             )}
@@ -126,7 +128,10 @@ export function ProfileSheet({ user }: ProfileSheetProps) {
                 <div className="flex-1">
                   <p className="text-xs text-muted-foreground">Grades supported</p>
                   <p className="text-sm text-foreground">
-                    {user.gradesSupported.join(', ')}
+                    {user.gradesSupported
+                      .map((grade) => grade?.label)
+                      .filter(Boolean)
+                      .join(', ')}
                   </p>
                 </div>
               </div>

@@ -14,11 +14,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '../../ui/tooltip';
-import type { User } from '@iconicedu/shared-types';
+import type { UserProfile } from '@iconicedu/shared-types';
 import { AvatarWithStatus } from '../shared/avatar-with-status';
 
 interface MessageHeaderProps {
-  user: User;
+  user: UserProfile;
   onProfileClick?: () => void;
   onSavedMessagesClick?: () => void;
 }
@@ -58,6 +58,10 @@ export const MessageHeader = memo(function MessageHeader({
   onProfileClick,
   onSavedMessagesClick,
 }: MessageHeaderProps) {
+  const isOnline =
+    user.presence?.liveStatus !== undefined
+      ? user.presence.liveStatus !== 'none'
+      : undefined;
   const handleProfileClick = useCallback(() => {
     onProfileClick?.();
   }, [onProfileClick]);
@@ -73,15 +77,17 @@ export const MessageHeader = memo(function MessageHeader({
         className="flex items-center gap-3 hover:opacity-80 transition-opacity"
       >
         <AvatarWithStatus
-          name={user.name}
-          avatar={user.avatar}
-          isOnline={user.isOnline}
+          name={user.displayName}
+          avatar={user.avatar.url ?? ''}
+          isOnline={isOnline}
           sizeClassName="h-8 w-8"
           initialsLength={1}
         />
         <div className="flex flex-col">
           <div className="flex items-center gap-1.5">
-            <span className="text-sm font-semibold text-foreground">{user.name}</span>
+            <span className="text-sm font-semibold text-foreground">
+              {user.displayName}
+            </span>
           </div>
           {user.status && (
             <span className="text-xs text-muted-foreground">{user.status}</span>

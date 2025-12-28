@@ -1,6 +1,6 @@
 import { useRef, useEffect, useImperativeHandle, forwardRef, useMemo } from 'react';
 import { MessageItem } from './message-item';
-import type { Message, Thread, User } from '@iconicedu/shared-types';
+import type { Message, Thread, UserProfile } from '@iconicedu/shared-types';
 import { ScrollArea } from '../../ui/scroll-area';
 import { formatDateHeader } from '../../lib/message-utils';
 
@@ -13,7 +13,7 @@ interface MessageListProps {
   onToggleHidden?: (messageId: string) => void;
   currentUserId?: string;
   lastReadMessageId?: string;
-  typingUser?: User;
+  typingUser?: UserProfile;
   isTyping?: boolean;
 }
 

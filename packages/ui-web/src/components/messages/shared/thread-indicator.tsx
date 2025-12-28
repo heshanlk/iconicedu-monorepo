@@ -37,8 +37,8 @@ export const ThreadIndicator = memo(function ThreadIndicator({
         {thread.participants.slice(0, 3).map((participant) => (
           <AvatarWithStatus
             key={participant.id}
-            name={participant.name}
-            avatar={participant.avatar}
+            name={participant.displayName}
+            avatar={participant.avatar.url ?? ''}
             showStatus={false}
             sizeClassName="h-5 w-5 border-2 border-background"
             fallbackClassName="text-[10px]"
