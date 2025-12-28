@@ -1,6 +1,6 @@
 export * from './components/sidebar/sidebar-left';
 export * from './components/login-form';
-export * from './components/sidebar/nav-classrooms';
+export * from './components/sidebar/nav-learning-spaces';
 export * from './components/sidebar/nav-secondary';
 export * from './components/sidebar/nav-user';
 export * from './components/otp-form';
@@ -24,7 +24,7 @@ export * from './components/site-logo';
 export * from './components/site-logo-wt-name';
 export * from './components/messages/messages-container';
 export * from './components/messages/direct-messages-container';
-export * from './components/classroom/classroom-container';
+export * from './components/learning-space/learning-space-container';
 export * from './components/error-boundary';
 export * from './components/inbox/inbox-container';
 export * from './components/calendar/calendar-header';

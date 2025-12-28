@@ -40,7 +40,7 @@ import { cn } from '../../lib/utils';
 import { Empty, EmptyContent } from '../../ui/empty';
 import { AvatarWithStatus } from '../shared/avatar-with-status';
 
-export function NavClassrooms({
+export function NavLearningSpaces({
   classrooms,
   title,
   child,
@@ -83,7 +83,7 @@ export function NavClassrooms({
               <EmptyContent>
                 <div className="flex">
                   <Button size={'lg'}>
-                    <MessageSquarePlus /> Request a class
+                    <MessageSquarePlus /> Request a learning space
                   </Button>
                 </div>
               </EmptyContent>

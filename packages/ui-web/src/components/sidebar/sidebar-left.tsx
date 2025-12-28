@@ -14,7 +14,7 @@ import {
   SquarePi,
 } from 'lucide-react';
 
-import { NavClassrooms } from './nav-classrooms';
+import { NavLearningSpaces } from './nav-learning-spaces';
 import { NavSecondary } from './nav-secondary';
 import { NavUser } from './nav-user';
 import {
@@ -114,9 +114,9 @@ export function SidebarLeft({
               </SidebarGroupLabel>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <SidebarGroupAction title="Classroom actions">
+                  <SidebarGroupAction title="Learning space actions">
                     <MoreHorizontal />
-                    <span className="sr-only">Classroom actions</span>
+                    <span className="sr-only">Learning space actions</span>
                   </SidebarGroupAction>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
@@ -130,12 +130,12 @@ export function SidebarLeft({
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <MessageSquarePlus className="text-muted-foreground" />
-                    <span>Request a class</span>
+                    <span>Request a learning space</span>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>
                     <Settings className="text-muted-foreground" />
-                    <span>Manage classes</span>
+                    <span>Manage learning spaces</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -157,7 +157,7 @@ export function SidebarLeft({
               </SidebarGroup>
             ) : (
               classroomsByChild.map(({ child, classrooms }, index) => (
-                <NavClassrooms
+                <NavLearningSpaces
                   key={child.accountId}
                   title={child.displayName}
                   child={child}

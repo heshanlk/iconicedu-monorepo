@@ -1,9 +1,9 @@
-import { ClassroomContainer, DashboardHeader } from '@iconicedu/ui-web';
+import { LearningSpaceContainer, DashboardHeader } from '@iconicedu/ui-web';
 import {
   LAST_READ_MESSAGE_ID,
   MOCK_MESSAGES,
   MOCK_THREAD_MESSAGES,
-} from '../../../lib/data/classroom-messages';
+} from '../../../lib/data/learning-space-messages';
 import {
   MOCK_GUARDIAN,
   MOCK_EDUCATOR,
@@ -16,7 +16,7 @@ export default function Page() {
     <>
       <div className="flex h-[calc(100vh-1.0rem)] flex-col">
         <DashboardHeader />
-        <ClassroomContainer
+        <LearningSpaceContainer
           messages={MOCK_MESSAGES}
           initialThreadMessages={MOCK_THREAD_MESSAGES}
           educator={toProfileUser(
