@@ -1,6 +1,7 @@
 import { LearningSpaceContainer, DashboardHeader } from '@iconicedu/ui-web';
 import {
   LAST_READ_MESSAGE_ID,
+  LEARNING_SPACE,
   MOCK_MESSAGES,
   MOCK_THREAD_MESSAGES,
 } from '../../../lib/data/learning-space-messages';
@@ -19,6 +20,7 @@ export default function Page() {
         <LearningSpaceContainer
           messages={MOCK_MESSAGES}
           initialThreadMessages={MOCK_THREAD_MESSAGES}
+          space={LEARNING_SPACE}
           educator={toProfileUser(
             MOCK_EDUCATOR,
             getMockUserAccountById(MOCK_EDUCATOR.accountId),

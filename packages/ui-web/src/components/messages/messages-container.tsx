@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useMemo, useRef } from 'react';
+import type { ReactNode } from 'react';
 import { MessageList, type MessageListRef } from './message-list';
 import { ThreadPanel } from './thread-panel';
 import { ThreadSheet } from './thread-sheet';
@@ -27,6 +28,18 @@ export interface MessagesContainerProps {
   educator: UserProfileVM;
   guardian: UserProfileVM;
   lastReadMessageId?: string;
+  renderHeader?: (props: MessagesHeaderRenderProps) => ReactNode;
+  infoPanel?: ReactNode;
+  infoPanelMeta?: { title: string; subtitle?: string };
+}
+
+export interface MessagesHeaderRenderProps {
+  educator: UserProfileVM;
+  guardian: UserProfileVM;
+  savedCount: number;
+  onProfileClick: (userId: string) => void;
+  onSavedMessagesClick: () => void;
+  onOpenInfo: () => void;
 }
 
 export function MessagesContainer({
@@ -35,6 +48,9 @@ export function MessagesContainer({
   educator,
   guardian,
   lastReadMessageId,
+  renderHeader,
+  infoPanel,
+  infoPanelMeta,
 }: MessagesContainerProps) {
   const isMobile = useIsMobile();
   const messageListRef = useRef<MessageListRef>(null);
@@ -42,6 +58,7 @@ export function MessagesContainer({
     openThread: openThreadSidebar,
     openProfile,
     openSavedMessages,
+    openInfo,
     closeSidebar,
     profileUserId,
     sidebarContent,
@@ -135,6 +152,15 @@ export function MessagesContainer({
     openSavedMessages();
   }, [sidebarContent, closeSidebar, openSavedMessages]);
 
+  const handleOpenInfo = useCallback(() => {
+    if (!infoPanel) return;
+    if (sidebarContent === 'space-info') {
+      closeSidebar();
+      return;
+    }
+    openInfo();
+  }, [infoPanel, sidebarContent, closeSidebar, openInfo]);
+
   const handleCloseSidebar = useCallback(() => {
     closeSidebar();
   }, [closeSidebar]);
@@ -214,8 +240,32 @@ export function MessagesContainer({
         subtitle: `${savedCount} ${savedCount === 1 ? 'message' : 'messages'}`,
       };
     }
+    if (sidebarContent === 'space-info') {
+      return infoPanelMeta ?? { title: 'Details', subtitle: undefined };
+    }
     return { title: '', subtitle: undefined };
-  }, [sidebarContent, activeThread, messages]);
+  }, [sidebarContent, activeThread, messages, infoPanelMeta]);
+
+  const savedCount = useMemo(() => messages.filter((m) => m.isSaved).length, [
+    messages,
+  ]);
+
+  const headerNode = renderHeader ? (
+    renderHeader({
+      educator,
+      guardian,
+      savedCount,
+      onProfileClick: handleProfileClick,
+      onSavedMessagesClick: handleSavedMessagesClick,
+      onOpenInfo: handleOpenInfo,
+    })
+  ) : (
+    <MessageHeader
+      user={educator}
+      onProfileClick={() => handleProfileClick(educator.id)}
+      onSavedMessagesClick={handleSavedMessagesClick}
+    />
+  );
 
   const messageListProps = useMemo(
     () => ({
@@ -276,11 +326,7 @@ export function MessagesContainer({
   return (
     <div className="flex h-full min-h-0">
       <div className="flex flex-1 flex-col">
-        <MessageHeader
-          user={educator}
-          onProfileClick={() => handleProfileClick(educator.id)}
-          onSavedMessagesClick={handleSavedMessagesClick}
-        />
+        {headerNode}
         <div className="flex flex-1 overflow-hidden">
           <div className="flex flex-1 min-h-0 flex-col">
             <MessageList ref={messageListRef} {...messageListProps} />
@@ -314,6 +360,7 @@ export function MessagesContainer({
             {sidebarContent === 'saved-messages' && (
               <SavedMessagesPanel {...savedMessagesPanelProps} />
             )}
+            {sidebarContent === 'space-info' && infoPanel}
           </MessagesSidebar>
         </div>
       </div>

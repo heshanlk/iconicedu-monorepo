@@ -1,6 +1,11 @@
 import { useState, useCallback } from 'react';
 
-export type SidebarContent = 'thread' | 'profile' | 'saved-messages' | null;
+export type SidebarContent =
+  | 'thread'
+  | 'profile'
+  | 'saved-messages'
+  | 'space-info'
+  | null;
 
 export function useDMSidebar() {
   const [sidebarContent, setSidebarContent] = useState<SidebarContent>(null);
@@ -19,6 +24,10 @@ export function useDMSidebar() {
     setSidebarContent('saved-messages');
   }, []);
 
+  const openInfo = useCallback(() => {
+    setSidebarContent('space-info');
+  }, []);
+
   const closeSidebar = useCallback(() => {
     setSidebarContent(null);
     setProfileUserId(null);
@@ -30,6 +39,7 @@ export function useDMSidebar() {
     openProfile,
     openThread,
     openSavedMessages,
+    openInfo,
     closeSidebar,
   };
 }
