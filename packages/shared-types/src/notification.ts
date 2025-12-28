@@ -26,7 +26,7 @@ export interface Activity {
   initials: string;
   icon?: React.ComponentType<{ className?: string }>;
   iconBg?: string;
-  studentName?: string;
+  childName?: string;
   participants?: Array<{ avatar?: string; initials: string }>;
   expandedContent?: string;
   actionButton?: {
@@ -35,7 +35,7 @@ export interface Activity {
     onClick: () => void;
   };
   subActivities?: Activity[];
-  parentId?: string;
+  guardianId?: string;
   category: string;
   date: string;
 }

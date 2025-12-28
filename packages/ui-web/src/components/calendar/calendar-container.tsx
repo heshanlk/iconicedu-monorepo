@@ -16,7 +16,7 @@ interface CalendarContainerProps {
   onViewChange: (view: CalendarView) => void;
   onDateSelect: (date: Date) => void;
   events: CalendarEvent[];
-  studentsCount?: number;
+  childrenCount?: number;
 }
 
 export function CalendarContainer({
@@ -25,7 +25,7 @@ export function CalendarContainer({
   onViewChange,
   onDateSelect,
   events,
-  studentsCount,
+  childrenCount,
 }: CalendarContainerProps) {
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
   const [calendarMonthAnchor, setCalendarMonthAnchor] = useState(
@@ -80,7 +80,7 @@ export function CalendarContainer({
           currentDate={currentDate}
           events={calendarEventsForView}
           calendarEvents={calendarEventsForDots}
-          studentsCount={studentsCount}
+          childrenCount={childrenCount}
           selectedEvent={selectedEvent}
           onEventClick={handleEventClick}
           onDateSelect={onDateSelect}

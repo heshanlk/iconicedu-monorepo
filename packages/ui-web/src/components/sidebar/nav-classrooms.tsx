@@ -11,7 +11,7 @@ import {
   StarOff,
   UserPlus,
 } from 'lucide-react';
-import type { SidebarClassroomItem, SidebarStudent } from '@iconicedu/shared-types';
+import type { SidebarClassroomItem, SidebarChild } from '@iconicedu/shared-types';
 
 import {
   Collapsible,
@@ -43,12 +43,12 @@ import { AvatarWithStatus } from '../shared/avatar-with-status';
 export function NavClassrooms({
   classrooms,
   title,
-  student,
+  child,
   defaultOpen = false,
 }: {
   classrooms: SidebarClassroomItem[];
   title: string;
-  student: SidebarStudent;
+  child: SidebarChild;
   defaultOpen?: boolean;
 }) {
   const { isMobile } = useSidebar();
@@ -60,12 +60,12 @@ export function NavClassrooms({
         <CollapsibleTrigger asChild>
           <SidebarGroupLabel className="flex cursor-pointer items-center gap-2 rounded-md rounded-b-none px-2 py-1 uppercase">
             <AvatarWithStatus
-              name={student.displayName}
+              name={child.displayName}
               showStatus={false}
               sizeClassName="size-5"
               fallbackClassName={cn(
                 'text-[10px] font-semibold leading-none uppercase',
-                student.color,
+                child.color,
               )}
               initialsLength={1}
             />

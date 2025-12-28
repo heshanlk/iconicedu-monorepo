@@ -1,10 +1,10 @@
 import { DirectMessagesContainer, DashboardHeader } from '@iconicedu/ui-web';
 import {
-  DIRECT_CONTACT,
+  DIRECT_EDUCATOR,
   DIRECT_LAST_READ_MESSAGE_ID,
   DIRECT_MESSAGES,
   DIRECT_THREAD_MESSAGES,
-  DIRECT_USER,
+  DIRECT_GUARDIAN,
 } from '../../../lib/data/direct-messages';
 
 export default function Page() {
@@ -15,8 +15,8 @@ export default function Page() {
         <DirectMessagesContainer
           messages={DIRECT_MESSAGES}
           initialThreadMessages={DIRECT_THREAD_MESSAGES}
-          teacher={DIRECT_CONTACT}
-          parent={DIRECT_USER}
+          educator={DIRECT_EDUCATOR}
+          guardian={DIRECT_GUARDIAN}
           lastReadMessageId={DIRECT_LAST_READ_MESSAGE_ID}
         />
       </div>

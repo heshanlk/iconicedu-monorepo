@@ -1,6 +1,6 @@
 # 📘 ICONIC EDU — Monorepo
 
-A communication-first education platform connecting **parents, teachers, students, advisors, and staff** through:
+A communication-first education platform connecting **guardians, educators, children, advisors, and staff** through:
 
 * Modern chat & channels
 * Scheduling & classes

@@ -1,7 +1,7 @@
 create type app_role as enum (
-  'parent',
-  'teacher',
-  'student',
+  'guardian',
+  'educator',
+  'child',
   'advisor',
   'staff',
   'admin'
@@ -10,7 +10,7 @@ create type app_role as enum (
 create table if not exists public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   full_name text,
-  app_role app_role not null default 'parent',
+  app_role app_role not null default 'guardian',
   created_at timestamptz not null default now()
 );
 
@@ -89,7 +89,7 @@ create table if not exists public.homework (
 create table if not exists public.homework_submissions (
   id uuid primary key default gen_random_uuid(),
   homework_id uuid not null references public.homework(id) on delete cascade,
-  student_id uuid not null references public.profiles(id),
+  child_id uuid not null references public.profiles(id),
   submitted_at timestamptz not null default now(),
   content text,
   status text not null default 'submitted'
@@ -102,7 +102,7 @@ stable
 as $$
   select coalesce(
     current_setting('request.jwt.claims', true)::jsonb->>'app_role',
-    'parent'
+    'guardian'
   )::app_role;
 $$;
 

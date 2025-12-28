@@ -5,11 +5,11 @@ import type {
   FileMessage,
   LinkPreviewMessage,
 } from '@iconicedu/shared-types';
-import { MOCK_PARENT, MOCK_TEACHER, MOCK_TEACHER_2 } from './people';
+import { MOCK_GUARDIAN, MOCK_EDUCATOR, MOCK_EDUCATOR_2 } from './people';
 
-export const DIRECT_USER = MOCK_PARENT;
-export const DIRECT_CONTACT = MOCK_TEACHER;
-export const DIRECT_ALT_CONTACT = MOCK_TEACHER_2;
+export const DIRECT_GUARDIAN = MOCK_GUARDIAN;
+export const DIRECT_EDUCATOR = MOCK_EDUCATOR;
+export const DIRECT_ALT_EDUCATOR = MOCK_EDUCATOR_2;
 
 export const DIRECT_LAST_READ_MESSAGE_ID = 'dm-6';
 
@@ -18,7 +18,7 @@ export const DIRECT_MESSAGES: Message[] = [
     id: 'dm-1',
     type: 'text',
     content: 'Hey! Are we still on for the session this afternoon?',
-    sender: DIRECT_USER,
+    sender: DIRECT_GUARDIAN,
     timestamp: new Date(Date.now() - 1000 * 60 * 60 * 5),
     reactions: [],
     visibility: { type: 'sender-only' },
@@ -28,9 +28,9 @@ export const DIRECT_MESSAGES: Message[] = [
     id: 'dm-2',
     type: 'text',
     content: 'Yes — 4:30 PM works great. I will share the Zoom link soon.',
-    sender: DIRECT_CONTACT,
+    sender: DIRECT_EDUCATOR,
     timestamp: new Date(Date.now() - 1000 * 60 * 60 * 4.5),
-    reactions: [{ emoji: '✅', count: 1, users: [MOCK_PARENT.id] }],
+    reactions: [{ emoji: '✅', count: 1, users: [MOCK_GUARDIAN.id] }],
     visibility: { type: 'all' },
     isRead: true,
   } as TextMessage,
@@ -38,7 +38,7 @@ export const DIRECT_MESSAGES: Message[] = [
     id: 'dm-3',
     type: 'image',
     content: 'Here is the worksheet photo from today.',
-    sender: DIRECT_USER,
+    sender: DIRECT_GUARDIAN,
     timestamp: new Date(Date.now() - 1000 * 60 * 60 * 3),
     reactions: [],
     visibility: { type: 'all' },
@@ -55,7 +55,7 @@ export const DIRECT_MESSAGES: Message[] = [
     id: 'dm-4',
     type: 'file',
     content: 'Sharing the notes PDF before class.',
-    sender: DIRECT_CONTACT,
+    sender: DIRECT_EDUCATOR,
     timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2),
     reactions: [],
     visibility: { type: 'all' },
@@ -72,7 +72,7 @@ export const DIRECT_MESSAGES: Message[] = [
     id: 'dm-5',
     type: 'link-preview',
     content: "Here is a quick reference for today's topic.",
-    sender: DIRECT_ALT_CONTACT,
+    sender: DIRECT_ALT_EDUCATOR,
     timestamp: new Date(Date.now() - 1000 * 60 * 60 * 1.5),
     reactions: [],
     visibility: { type: 'all' },
@@ -90,9 +90,9 @@ export const DIRECT_MESSAGES: Message[] = [
     id: 'dm-6',
     type: 'text',
     content: "Got it -- thanks! I'll join a few minutes early.",
-    sender: DIRECT_USER,
+    sender: DIRECT_GUARDIAN,
     timestamp: new Date(Date.now() - 1000 * 60 * 15),
-    reactions: [{ emoji: '👍', count: 1, users: [MOCK_TEACHER.id] }],
+    reactions: [{ emoji: '👍', count: 1, users: [MOCK_EDUCATOR.id] }],
     visibility: { type: 'all' },
     isRead: false,
   } as TextMessage,

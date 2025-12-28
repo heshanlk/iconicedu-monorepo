@@ -19,16 +19,16 @@ import type { Thread, TextMessage, Message, UserProfile } from '@iconicedu/share
 export interface MessagesContainerProps {
   messages: Message[];
   initialThreadMessages: Record<string, Message[]>;
-  teacher: UserProfile;
-  parent: UserProfile;
+  educator: UserProfile;
+  guardian: UserProfile;
   lastReadMessageId?: string;
 }
 
 export function MessagesContainer({
   messages: initialMessages,
   initialThreadMessages,
-  teacher,
-  parent,
+  educator,
+  guardian,
   lastReadMessageId,
 }: MessagesContainerProps) {
   const isMobile = useIsMobile();
@@ -81,7 +81,7 @@ export function MessagesContainer({
         id: `msg-${Date.now()}`,
         type: 'text',
         content,
-        sender: parent,
+        sender: guardian,
         timestamp: new Date(),
         reactions: [],
         visibility: { type: 'all' },
@@ -90,7 +90,7 @@ export function MessagesContainer({
       };
       addMessage(newMessage);
     },
-    [addMessage, parent],
+    [addMessage, guardian],
   );
 
   const handleSendThreadReply = useCallback(
@@ -99,7 +99,7 @@ export function MessagesContainer({
         id: `reply-${Date.now()}`,
         type: 'text',
         content,
-        sender: parent,
+        sender: guardian,
         timestamp: new Date(),
         reactions: [],
         visibility: { type: 'all' },
@@ -108,7 +108,7 @@ export function MessagesContainer({
       };
       addThreadMessage(newReply);
     },
-    [addThreadMessage, parent],
+    [addThreadMessage, guardian],
   );
 
   const handleProfileClick = useCallback(
@@ -136,16 +136,16 @@ export function MessagesContainer({
 
   const handleToggleReaction = useCallback(
     (messageId: string, emoji: string) => {
-      toggleReaction(messageId, emoji, parent.id);
+      toggleReaction(messageId, emoji, guardian.id);
     },
-    [toggleReaction, parent.id],
+    [toggleReaction, guardian.id],
   );
 
   const handleToggleThreadReaction = useCallback(
     (messageId: string, emoji: string) => {
-      toggleThreadReaction(messageId, emoji, parent.id);
+      toggleThreadReaction(messageId, emoji, guardian.id);
     },
-    [toggleThreadReaction, parent.id],
+    [toggleThreadReaction, guardian.id],
   );
 
   const handleToggleSaved = useCallback(
@@ -187,10 +187,10 @@ export function MessagesContainer({
   );
 
   const profileUser = useMemo(() => {
-    if (profileUserId === teacher.id) return teacher;
-    if (profileUserId === parent.id) return parent;
-    return teacher;
-  }, [profileUserId, teacher, parent]);
+    if (profileUserId === educator.id) return educator;
+    if (profileUserId === guardian.id) return guardian;
+    return educator;
+  }, [profileUserId, educator, guardian]);
 
   const sidebarMeta = useMemo(() => {
     if (sidebarContent === 'thread' && activeThread) {
@@ -220,7 +220,7 @@ export function MessagesContainer({
       onToggleReaction: handleToggleReaction,
       onToggleSaved: handleToggleSaved,
       onToggleHidden: handleToggleHidden,
-      currentUserId: parent.id,
+      currentUserId: guardian.id,
       lastReadMessageId,
     }),
     [
@@ -230,7 +230,7 @@ export function MessagesContainer({
       handleToggleReaction,
       handleToggleSaved,
       handleToggleHidden,
-      parent.id,
+      guardian.id,
       lastReadMessageId,
     ],
   );
@@ -244,7 +244,7 @@ export function MessagesContainer({
       onToggleReaction: handleToggleThreadReaction,
       onToggleSaved: handleToggleThreadSaved,
       onToggleHidden: handleToggleThreadHidden,
-      currentUserId: parent.id,
+      currentUserId: guardian.id,
       lastReadMessageId,
     }),
     [
@@ -255,7 +255,7 @@ export function MessagesContainer({
       handleToggleThreadReaction,
       handleToggleThreadSaved,
       handleToggleThreadHidden,
-      parent.id,
+      guardian.id,
       lastReadMessageId,
     ],
   );
@@ -272,8 +272,8 @@ export function MessagesContainer({
     <div className="flex h-full min-h-0">
       <div className="flex flex-1 flex-col">
         <MessageHeader
-          user={teacher}
-          onProfileClick={() => handleProfileClick(teacher.id)}
+          user={educator}
+          onProfileClick={() => handleProfileClick(educator.id)}
           onSavedMessagesClick={handleSavedMessagesClick}
         />
         <div className="flex flex-1 overflow-hidden">
@@ -281,7 +281,7 @@ export function MessagesContainer({
             <MessageList ref={messageListRef} {...messageListProps} />
             <MessageInput
               onSend={handleSendMessage}
-              placeholder={`Message ${teacher.name}`}
+              placeholder={`Message ${educator.displayName}`}
             />
           </div>
           <MessagesSidebar

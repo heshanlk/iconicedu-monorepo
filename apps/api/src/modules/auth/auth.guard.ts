@@ -24,7 +24,7 @@ export class AuthGuard implements CanActivate {
 
     req.user = {
       id: decoded.sub,
-      role: decoded.user_metadata?.app_role ?? 'parent',
+      role: decoded.user_metadata?.app_role ?? 'guardian',
     };
 
     return true;

@@ -1,4 +1,7 @@
 import type {
+  EducatorProfile,
+  GuardianProfile,
+  GradeLevel,
   Message,
   TextMessage,
   LessonAssignmentMessage,
@@ -9,34 +12,88 @@ import type {
   AudioRecordingMessage, // Added audio recording import
 } from '@iconicedu/shared-types';
 
-export const MOCK_TEACHER = {
-  id: 'teacher-1',
-  name: 'Ms. Jennifer Williams',
-  avatar: '/professional-woman-avatar.png',
-  isOnline: true,
-  status: '4th Grade Math Teacher',
-  role: 'Teacher' as const,
+const MOCK_ORG_ID = '4fca0d16-5d72-4a24-9a0d-6f8c0bf2b652';
+const makeGradeLevel = (label: string, value: string | number): GradeLevel => ({
+  label,
+  value,
+});
+
+export const MOCK_EDUCATOR: EducatorProfile & {
+  role: 'Educator';
+  email: string;
+  phone: string;
+  school: string;
+  grade: string;
+  childName: string;
+} = {
+  orgId: MOCK_ORG_ID,
+  id: 'educator-1',
+  accountId: 'educator-1',
+  displayName: 'Ms. Jennifer Williams',
+  firstName: 'Jennifer',
+  lastName: 'Williams',
+  avatar: {
+    source: 'upload',
+    url: '/professional-woman-avatar.png',
+    seed: 'educator-1',
+    updatedAt: '2024-01-01T00:00:00.000Z',
+  },
+  timezone: 'America/New_York',
+  locale: 'en-US',
+  notificationDefaults: null,
+  status: 'active',
+  createdAt: '2020-09-01T00:00:00.000Z',
+  updatedAt: '2024-01-01T00:00:00.000Z',
+  headline: 'Helping 4th graders love math.',
+  subjects: ['Mathematics'],
+  gradesSupported: [makeGradeLevel('Grade 4', 4)],
+  experienceYears: 8,
+  certifications: [
+    { name: 'Elementary Education Certification', issuer: 'State Board', year: 2016 },
+  ],
+  joinedDate: new Date(2020, 8, 1),
+  role: 'Educator',
   email: 'j.williams@school.edu',
   phone: '(555) 123-4567',
   school: 'Riverside Elementary School',
   grade: '4th Grade',
-  studentName: 'Sarah Chen',
-  joinedDate: new Date(2020, 8, 1),
+  childName: 'Sarah Chen',
 };
 
-export const MOCK_PARENT = {
-  id: 'parent-1',
-  name: 'Michael Chen',
-  avatar: '/professional-man-avatar.png',
-  isOnline: true,
-  status: 'Parent of Sarah Chen',
-  role: 'Parent' as const,
+export const MOCK_GUARDIAN: GuardianProfile & {
+  role: 'Guardian';
+  email: string;
+  phone: string;
+  school: string;
+  grade: string;
+  childName: string;
+} = {
+  orgId: MOCK_ORG_ID,
+  id: 'guardian-1',
+  accountId: 'guardian-1',
+  displayName: 'Michael Chen',
+  firstName: 'Michael',
+  lastName: 'Chen',
+  avatar: {
+    source: 'upload',
+    url: '/professional-man-avatar.png',
+    seed: 'guardian-1',
+    updatedAt: '2024-01-01T00:00:00.000Z',
+  },
+  timezone: 'America/New_York',
+  locale: 'en-US',
+  notificationDefaults: null,
+  status: 'active',
+  createdAt: '2021-09-15T00:00:00.000Z',
+  updatedAt: '2024-01-01T00:00:00.000Z',
+  children: [],
+  joinedDate: new Date(2021, 8, 15),
+  role: 'Guardian',
   email: 'michael.chen@email.com',
   phone: '(555) 987-6543',
   school: 'Riverside Elementary School',
   grade: '4th Grade',
-  studentName: 'Sarah Chen',
-  joinedDate: new Date(2021, 8, 15),
+  childName: 'Sarah Chen',
 };
 
 export const LAST_READ_MESSAGE_ID = '4';
@@ -46,10 +103,10 @@ export const MOCK_MESSAGES: Message[] = [
     id: '1',
     type: 'text',
     content:
-      "Good morning! Thank you for scheduling this parent-teacher conference. I wanted to discuss Sarah's progress in math this semester.",
-    sender: MOCK_TEACHER,
+      "Good morning! Thank you for scheduling this guardian-educator conference. I wanted to discuss Sarah's progress in math this semester.",
+    sender: MOCK_EDUCATOR,
     timestamp: new Date(Date.now() - 3600000 * 24),
-    reactions: [{ emoji: '👋', count: 1, users: ['parent-1'] }],
+    reactions: [{ emoji: '👋', count: 1, users: ['guardian-1'] }],
     visibility: { type: 'all' },
     isRead: true,
     isSaved: true,
@@ -59,7 +116,7 @@ export const MOCK_MESSAGES: Message[] = [
     type: 'text',
     content:
       "Good morning, Ms. Williams! Yes, I've been wanting to talk about her recent test results. Is everything okay?",
-    sender: MOCK_PARENT,
+    sender: MOCK_GUARDIAN,
     timestamp: new Date(Date.now() - 3600000 * 23.5),
     reactions: [],
     visibility: { type: 'all' },
@@ -68,7 +125,7 @@ export const MOCK_MESSAGES: Message[] = [
       id: 'thread-1',
       messageCount: 3,
       lastReply: new Date(Date.now() - 3600000 * 2),
-      participants: [MOCK_TEACHER, MOCK_PARENT],
+      participants: [MOCK_EDUCATOR, MOCK_GUARDIAN],
       unreadCount: 1,
     },
   } as TextMessage,
@@ -77,9 +134,9 @@ export const MOCK_MESSAGES: Message[] = [
     type: 'lesson-assignment',
     content:
       "Here's the homework assignment for next week. Sarah will need to complete these problems for Monday.",
-    sender: MOCK_TEACHER,
+    sender: MOCK_EDUCATOR,
     timestamp: new Date(Date.now() - 3600000 * 20),
-    reactions: [{ emoji: '📚', count: 1, users: ['parent-1'] }],
+    reactions: [{ emoji: '📚', count: 1, users: ['guardian-1'] }],
     visibility: { type: 'all' },
     isRead: true,
     isSaved: true,
@@ -97,15 +154,15 @@ export const MOCK_MESSAGES: Message[] = [
     id: '4',
     type: 'session-booking',
     content:
-      "I've scheduled our next parent-teacher meeting to discuss Sarah's semester progress.",
-    sender: MOCK_TEACHER,
+      "I've scheduled our next guardian-educator meeting to discuss Sarah's semester progress.",
+    sender: MOCK_EDUCATOR,
     timestamp: new Date(Date.now() - 3600000 * 18),
-    reactions: [{ emoji: '✅', count: 1, users: ['parent-1'] }],
+    reactions: [{ emoji: '✅', count: 1, users: ['guardian-1'] }],
     visibility: { type: 'all' },
     isRead: true,
     isSaved: true,
     session: {
-      title: "Parent-Teacher Conference: Sarah's Progress",
+      title: "Guardian-Educator Conference: Sarah's Progress",
       subject: 'General Academic Review',
       startTime: new Date(Date.now() + 3600000 * 72),
       duration: 30,
@@ -119,7 +176,7 @@ export const MOCK_MESSAGES: Message[] = [
     type: 'homework-submission',
     content:
       'Sarah completed her homework assignment last night. I helped her review the problems she found challenging.',
-    sender: MOCK_PARENT,
+    sender: MOCK_GUARDIAN,
     timestamp: new Date(Date.now() - 3600000 * 4),
     reactions: [],
     visibility: { type: 'all' },
@@ -143,11 +200,11 @@ export const MOCK_MESSAGES: Message[] = [
     type: 'progress-update',
     content:
       'Great news! Sarah has shown significant improvement in her math skills this month!',
-    sender: MOCK_TEACHER,
+    sender: MOCK_EDUCATOR,
     timestamp: new Date(Date.now() - 3600000 * 2),
     reactions: [
-      { emoji: '🎉', count: 1, users: ['parent-1'] },
-      { emoji: '💪', count: 1, users: ['parent-1'] },
+      { emoji: '🎉', count: 1, users: ['guardian-1'] },
+      { emoji: '💪', count: 1, users: ['guardian-1'] },
     ],
     visibility: { type: 'all' },
     isRead: false,
@@ -167,9 +224,9 @@ export const MOCK_MESSAGES: Message[] = [
     type: 'text',
     content:
       "That's wonderful to hear! We've been working on math together at home. Thank you for your support and guidance.",
-    sender: MOCK_PARENT,
+    sender: MOCK_GUARDIAN,
     timestamp: new Date(Date.now() - 300000),
-    reactions: [{ emoji: '🙏', count: 1, users: ['teacher-1'] }],
+    reactions: [{ emoji: '🙏', count: 1, users: ['educator-1'] }],
     visibility: { type: 'all' },
     isRead: false,
   } as TextMessage,
@@ -177,7 +234,7 @@ export const MOCK_MESSAGES: Message[] = [
     id: '8',
     type: 'link-preview',
     content: 'I found this helpful resource for practicing fractions at home!',
-    sender: MOCK_PARENT,
+    sender: MOCK_GUARDIAN,
     timestamp: new Date(Date.now() - 60000),
     reactions: [],
     visibility: { type: 'all' },
@@ -197,7 +254,7 @@ export const MOCK_MESSAGES: Message[] = [
     id: '9',
     type: 'audio-recording',
     content: "Quick voice note about Sarah's science project",
-    sender: MOCK_TEACHER,
+    sender: MOCK_EDUCATOR,
     timestamp: new Date(Date.now() - 30000),
     reactions: [],
     visibility: { type: 'all' },
@@ -225,7 +282,7 @@ export const MOCK_THREAD_MESSAGES: Record<string, Message[]> = {
       type: 'text',
       content:
         "Good morning, Ms. Williams! Yes, I've been wanting to talk about her recent test results. Is everything okay?",
-      sender: MOCK_PARENT,
+      sender: MOCK_GUARDIAN,
       timestamp: new Date(Date.now() - 3600000 * 23.5),
       reactions: [],
       visibility: { type: 'all' },
@@ -235,10 +292,10 @@ export const MOCK_THREAD_MESSAGES: Record<string, Message[]> = {
       id: 't1-2',
       type: 'text',
       content:
-        'Everything is going well overall! Sarah is a bright student. I just wanted to go over some areas where we can help her improve even more.',
-      sender: MOCK_TEACHER,
+        'Everything is going well overall! Sarah is a bright child. I just wanted to go over some areas where we can help her improve even more.',
+      sender: MOCK_EDUCATOR,
       timestamp: new Date(Date.now() - 3600000 * 23),
-      reactions: [{ emoji: '👍', count: 1, users: ['parent-1'] }],
+      reactions: [{ emoji: '👍', count: 1, users: ['guardian-1'] }],
       visibility: { type: 'all' },
       isRead: true,
     },
@@ -247,7 +304,7 @@ export const MOCK_THREAD_MESSAGES: Record<string, Message[]> = {
       type: 'text',
       content:
         'That sounds great! I appreciate you taking the time to help Sarah succeed.',
-      sender: MOCK_PARENT,
+      sender: MOCK_GUARDIAN,
       timestamp: new Date(Date.now() - 3600000 * 2),
       reactions: [],
       visibility: { type: 'all' },

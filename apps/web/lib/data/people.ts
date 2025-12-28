@@ -146,7 +146,7 @@ export const toProfileUser = (
       : undefined,
 });
 
-export const MOCK_TEACHER: EducatorProfile = {
+export const MOCK_EDUCATOR: EducatorProfile = {
   orgId: MOCK_ORG_ID,
   id: 'a21b9c5f-0906-4f04-9b7f-6f7b4a6fb1c5',
   accountId: 'a21b9c5f-0906-4f04-9b7f-6f7b4a6fb1c5',
@@ -155,7 +155,7 @@ export const MOCK_TEACHER: EducatorProfile = {
   lastName: 'Williams',
   avatar: {
     source: 'upload',
-    seed: 'teacher-1',
+    seed: 'educator-1',
     url: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-sarah-Vsp1gZWstExMvD0Qce0ogsgN6nv2pC.png',
     updatedAt: '2024-01-01T00:00:00.000Z',
   },
@@ -176,7 +176,7 @@ export const MOCK_TEACHER: EducatorProfile = {
   joinedDate: new Date(2020, 8, 1),
 };
 
-export const MOCK_TEACHER_2: EducatorProfile = {
+export const MOCK_EDUCATOR_2: EducatorProfile = {
   orgId: MOCK_ORG_ID,
   id: '0b2b3d51-9a35-4b47-86b4-5fe9b9b5f8e4',
   accountId: '0b2b3d51-9a35-4b47-86b4-5fe9b9b5f8e4',
@@ -185,7 +185,7 @@ export const MOCK_TEACHER_2: EducatorProfile = {
   lastName: 'Kim',
   avatar: {
     source: 'upload',
-    seed: 'teacher-2',
+    seed: 'educator-2',
     url: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-jordan-ACflnHBYNP7M9crd5MtKL7WSpk3GiQ.jpg',
     updatedAt: '2024-01-01T00:00:00.000Z',
   },
@@ -203,14 +203,14 @@ export const MOCK_TEACHER_2: EducatorProfile = {
   certifications: [
     { name: 'Secondary Science Certification', issuer: 'State Board', year: 2012 },
   ],
-  bio: 'Hands-on labs and real-world examples keep students curious.',
+  bio: 'Hands-on labs and real-world examples keep children curious.',
   notesInternal: null,
   createdAt: '2018-08-20T00:00:00.000Z',
   updatedAt: '2024-01-01T00:00:00.000Z',
   joinedDate: new Date(2018, 7, 20),
 };
 
-export const MOCK_TEACHER_3: EducatorProfile = {
+export const MOCK_EDUCATOR_3: EducatorProfile = {
   orgId: MOCK_ORG_ID,
   id: '4a5fbb0f-4b74-4c48-a3d4-1f88b0a2d8e2',
   accountId: '4a5fbb0f-4b74-4c48-a3d4-1f88b0a2d8e2',
@@ -219,7 +219,7 @@ export const MOCK_TEACHER_3: EducatorProfile = {
   lastName: 'Desai',
   avatar: {
     source: 'upload',
-    seed: 'teacher-3',
+    seed: 'educator-3',
     url: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-alex-UoI6qSVh9rZS9DvLOmhIY8pabZfAOq.png',
     updatedAt: '2024-01-01T00:00:00.000Z',
   },
@@ -244,7 +244,7 @@ export const MOCK_TEACHER_3: EducatorProfile = {
   joinedDate: new Date(2019, 7, 15),
 };
 
-export const MOCK_TEACHER_4: EducatorProfile = {
+export const MOCK_EDUCATOR_4: EducatorProfile = {
   orgId: MOCK_ORG_ID,
   id: '6b0a28a8-1f47-41b5-9a61-3f5c2fffb7f6',
   accountId: '6b0a28a8-1f47-41b5-9a61-3f5c2fffb7f6',
@@ -253,7 +253,7 @@ export const MOCK_TEACHER_4: EducatorProfile = {
   lastName: 'Hernandez',
   avatar: {
     source: 'upload',
-    seed: 'teacher-4',
+    seed: 'educator-4',
     url: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-mike-T2UMe9BlbWWIxlq7z99cJWqwEagAuc.jpg',
     updatedAt: '2024-01-01T00:00:00.000Z',
   },
@@ -274,7 +274,7 @@ export const MOCK_TEACHER_4: EducatorProfile = {
   joinedDate: new Date(2017, 0, 10),
 };
 
-export const MOCK_TEACHER_5: EducatorProfile = {
+export const MOCK_EDUCATOR_5: EducatorProfile = {
   orgId: MOCK_ORG_ID,
   id: 'a5b1c3d7-0f7f-4b47-8c6d-9fb2d9b0b3d1',
   accountId: 'a5b1c3d7-0f7f-4b47-8c6d-9fb2d9b0b3d1',
@@ -283,7 +283,7 @@ export const MOCK_TEACHER_5: EducatorProfile = {
   lastName: 'Rivera',
   avatar: {
     source: 'upload',
-    seed: 'teacher-5',
+    seed: 'educator-5',
     url: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-sarah-Vsp1gZWstExMvD0Qce0ogsgN6nv2pC.png',
     updatedAt: '2024-01-01T00:00:00.000Z',
   },
@@ -308,15 +308,15 @@ export const MOCK_TEACHER_5: EducatorProfile = {
   joinedDate: new Date(2021, 7, 25),
 };
 
-export const MOCK_TEACHERS: EducatorProfile[] = [
-  MOCK_TEACHER,
-  MOCK_TEACHER_2,
-  MOCK_TEACHER_3,
-  MOCK_TEACHER_4,
-  MOCK_TEACHER_5,
+export const MOCK_EDUCATORS: EducatorProfile[] = [
+  MOCK_EDUCATOR,
+  MOCK_EDUCATOR_2,
+  MOCK_EDUCATOR_3,
+  MOCK_EDUCATOR_4,
+  MOCK_EDUCATOR_5,
 ];
 
-export const MOCK_PARENT: GuardianProfile = {
+export const MOCK_GUARDIAN: GuardianProfile = {
   orgId: MOCK_ORG_ID,
   id: '2a0f3cbe-0b3b-470a-8a98-9381c1c9c6a7',
   accountId: '2a0f3cbe-0b3b-470a-8a98-9381c1c9c6a7',
@@ -325,7 +325,7 @@ export const MOCK_PARENT: GuardianProfile = {
   lastName: 'Chen',
   avatar: {
     source: 'upload',
-    seed: 'parent-1',
+    seed: 'guardian-1',
     url: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-mike-T2UMe9BlbWWIxlq7z99cJWqwEagAuc.jpg',
     updatedAt: '2024-01-01T00:00:00.000Z',
   },
@@ -343,13 +343,13 @@ export const MOCK_PARENT: GuardianProfile = {
 export const MOCK_USER_ACCOUNTS: UserAccount[] = [
   {
     orgId: MOCK_ORG_ID,
-    id: MOCK_TEACHER.accountId,
+    id: MOCK_EDUCATOR.accountId,
     contacts: { email: 'j.williams@school.edu', phoneE164: '+15551234567' },
     userRoles: [
       {
         orgId: MOCK_ORG_ID,
-        id: `role-${MOCK_TEACHER.accountId}`,
-        roleKey: 'teacher',
+        id: `role-${MOCK_EDUCATOR.accountId}`,
+        roleKey: 'educator',
         assignedAt: '2020-09-01T00:00:00.000Z',
       },
     ],
@@ -359,13 +359,13 @@ export const MOCK_USER_ACCOUNTS: UserAccount[] = [
   },
   {
     orgId: MOCK_ORG_ID,
-    id: MOCK_TEACHER_2.accountId,
+    id: MOCK_EDUCATOR_2.accountId,
     contacts: { email: 'd.kim@school.edu', phoneE164: '+15551230001' },
     userRoles: [
       {
         orgId: MOCK_ORG_ID,
-        id: `role-${MOCK_TEACHER_2.accountId}`,
-        roleKey: 'teacher',
+        id: `role-${MOCK_EDUCATOR_2.accountId}`,
+        roleKey: 'educator',
         assignedAt: '2018-08-20T00:00:00.000Z',
       },
     ],
@@ -375,13 +375,13 @@ export const MOCK_USER_ACCOUNTS: UserAccount[] = [
   },
   {
     orgId: MOCK_ORG_ID,
-    id: MOCK_TEACHER_3.accountId,
+    id: MOCK_EDUCATOR_3.accountId,
     contacts: { email: 'p.desai@school.edu', phoneE164: '+15551230002' },
     userRoles: [
       {
         orgId: MOCK_ORG_ID,
-        id: `role-${MOCK_TEACHER_3.accountId}`,
-        roleKey: 'teacher',
+        id: `role-${MOCK_EDUCATOR_3.accountId}`,
+        roleKey: 'educator',
         assignedAt: '2019-08-15T00:00:00.000Z',
       },
     ],
@@ -391,13 +391,13 @@ export const MOCK_USER_ACCOUNTS: UserAccount[] = [
   },
   {
     orgId: MOCK_ORG_ID,
-    id: MOCK_TEACHER_4.accountId,
+    id: MOCK_EDUCATOR_4.accountId,
     contacts: { email: 'l.hernandez@school.edu', phoneE164: '+15551230003' },
     userRoles: [
       {
         orgId: MOCK_ORG_ID,
-        id: `role-${MOCK_TEACHER_4.accountId}`,
-        roleKey: 'teacher',
+        id: `role-${MOCK_EDUCATOR_4.accountId}`,
+        roleKey: 'educator',
         assignedAt: '2017-01-10T00:00:00.000Z',
       },
     ],
@@ -407,13 +407,13 @@ export const MOCK_USER_ACCOUNTS: UserAccount[] = [
   },
   {
     orgId: MOCK_ORG_ID,
-    id: MOCK_TEACHER_5.accountId,
+    id: MOCK_EDUCATOR_5.accountId,
     contacts: { email: 'c.rivera@school.edu', phoneE164: '+15551230004' },
     userRoles: [
       {
         orgId: MOCK_ORG_ID,
-        id: `role-${MOCK_TEACHER_5.accountId}`,
-        roleKey: 'teacher',
+        id: `role-${MOCK_EDUCATOR_5.accountId}`,
+        roleKey: 'educator',
         assignedAt: '2021-08-25T00:00:00.000Z',
       },
     ],
@@ -423,13 +423,13 @@ export const MOCK_USER_ACCOUNTS: UserAccount[] = [
   },
   {
     orgId: MOCK_ORG_ID,
-    id: MOCK_PARENT.accountId,
+    id: MOCK_GUARDIAN.accountId,
     contacts: { email: 'michael.chen@email.com', phoneE164: '+15559876543' },
     userRoles: [
       {
         orgId: MOCK_ORG_ID,
-        id: `role-${MOCK_PARENT.accountId}`,
-        roleKey: 'parent',
+        id: `role-${MOCK_GUARDIAN.accountId}`,
+        roleKey: 'guardian',
         assignedAt: '2021-09-15T00:00:00.000Z',
       },
     ],

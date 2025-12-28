@@ -82,10 +82,10 @@ export function SidebarLeft({
     icon: ICONS[item.icon],
   }));
 
-  const classroomsByStudent = data.STUDENTS.map((student) => ({
-    student,
+  const classroomsByChild = data.CHILDREN.map((child) => ({
+    child,
     classrooms: classrooms.filter((classroom) =>
-      classroom.participants.includes(student.userId),
+      classroom.participants.includes(child.userId),
     ),
   }));
 
@@ -122,7 +122,7 @@ export function SidebarLeft({
             >
               <DropdownMenuItem>
                 <UserPlus className="text-muted-foreground" />
-                <span>Add a student</span>
+                <span>Add a child</span>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <MessageSquarePlus className="text-muted-foreground" />
@@ -137,14 +137,14 @@ export function SidebarLeft({
           </DropdownMenu>
           <SidebarGroupContent />
         </SidebarGroup>
-        {classroomsByStudent.length === 0 ? (
+        {classroomsByChild.length === 0 ? (
           <SidebarGroup className="group-data-[collapsible=icon]:hidden">
             <SidebarGroupContent>
               <Empty>
                 <EmptyContent>
                   <div className="flex">
                     <Button size={'lg'}>
-                      <UserPlus /> Add a Student
+                      <UserPlus /> Add a Child
                     </Button>
                   </div>
                 </EmptyContent>
@@ -152,11 +152,11 @@ export function SidebarLeft({
             </SidebarGroupContent>
           </SidebarGroup>
         ) : (
-          classroomsByStudent.map(({ student, classrooms }, index) => (
+          classroomsByChild.map(({ child, classrooms }, index) => (
             <NavClassrooms
-              key={student.userId}
-              title={student.displayName}
-              student={student}
+              key={child.userId}
+              title={child.displayName}
+              child={child}
               classrooms={classrooms}
               defaultOpen={index === 0}
             />

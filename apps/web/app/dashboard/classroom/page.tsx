@@ -5,8 +5,8 @@ import {
   MOCK_THREAD_MESSAGES,
 } from '../../../lib/data/classroom-messages';
 import {
-  MOCK_PARENT,
-  MOCK_TEACHER,
+  MOCK_GUARDIAN,
+  MOCK_EDUCATOR,
   getMockUserAccountById,
   toProfileUser,
 } from '../../../lib/data/people';
@@ -19,13 +19,13 @@ export default function Page() {
         <ClassroomContainer
           messages={MOCK_MESSAGES}
           initialThreadMessages={MOCK_THREAD_MESSAGES}
-          teacher={toProfileUser(
-            MOCK_TEACHER,
-            getMockUserAccountById(MOCK_TEACHER.accountId),
+          educator={toProfileUser(
+            MOCK_EDUCATOR,
+            getMockUserAccountById(MOCK_EDUCATOR.accountId),
           )}
-          parent={toProfileUser(
-            MOCK_PARENT,
-            getMockUserAccountById(MOCK_PARENT.accountId),
+          guardian={toProfileUser(
+            MOCK_GUARDIAN,
+            getMockUserAccountById(MOCK_GUARDIAN.accountId),
           )}
           lastReadMessageId={LAST_READ_MESSAGE_ID}
         />

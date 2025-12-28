@@ -19,7 +19,7 @@ interface DayViewProps {
   currentDate: Date;
   events: CalendarEvent[];
   calendarEvents?: CalendarEvent[];
-  studentsCount?: number;
+  childrenCount?: number;
   selectedEvent: CalendarEvent | null;
   onEventClick: (event: CalendarEvent) => void;
   onDateSelect: (date: Date) => void;
@@ -30,7 +30,7 @@ export function DayView({
   currentDate,
   events,
   calendarEvents,
-  studentsCount,
+  childrenCount,
   selectedEvent,
   onEventClick,
   onDateSelect,
@@ -39,7 +39,7 @@ export function DayView({
   const timeSlots = getTimeSlots();
   const dayEvents = events.filter((event) => isSameDay(event.date, currentDate));
   const miniCalendarEvents = calendarEvents ?? events;
-  const hasStudents = studentsCount === undefined ? true : studentsCount > 0;
+  const hasChildren = childrenCount === undefined ? true : childrenCount > 0;
   const hasClasses = miniCalendarEvents.length > 0;
   const nextEvent = [...miniCalendarEvents]
     .filter((event) => event.date > currentDate)
@@ -246,17 +246,17 @@ export function DayView({
           {dayEvents.length === 0 && (
             <div className="absolute inset-0 flex items-center justify-center px-6">
               <div className="flex flex-col items-center gap-3 rounded-xl border bg-background/90 px-6 py-4 text-center shadow-sm">
-                {!hasStudents ? (
+                {!hasChildren ? (
                   <>
                     <div className="text-sm font-medium text-foreground">
-                      Add your student to get started
+                      Add your child to get started
                     </div>
                     <div className="text-xs text-muted-foreground">
-                      You need at least one student profile to see classes.
+                      You need at least one child profile to see classes.
                     </div>
                     <Button size="sm">
                       <UserPlus className="mr-2 size-4" />
-                      Add a student
+                      Add a child
                     </Button>
                   </>
                 ) : !hasClasses ? (

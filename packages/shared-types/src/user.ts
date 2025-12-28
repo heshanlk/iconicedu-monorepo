@@ -5,7 +5,7 @@ export type GradeLevel = {
   label: string;
   value: string | number;
 } | null;
-export type RoleKey = 'owner' | 'admin' | 'teacher' | 'parent' | 'child';
+export type RoleKey = 'owner' | 'admin' | 'educator' | 'guardian' | 'child';
 export type AccountStatus = 'active' | 'invited' | 'suspended' | 'deleted';
 
 export interface UserRole {
@@ -28,7 +28,7 @@ export interface FamilyLink {
   familyId: UUID;
   guardianAccountId: UUID;
   childAccountId: UUID;
-  relation: 'parent' | 'legal_guardian' | 'caregiver' | 'relative' | 'other';
+  relation: 'guardian' | 'legal_guardian' | 'caregiver' | 'relative' | 'other';
   permissionsScope?: string[] | null;
 }
 

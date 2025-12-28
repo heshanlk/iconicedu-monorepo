@@ -64,7 +64,7 @@ export type SidebarDirectMessageItem = {
   url?: string;
 };
 
-export type SidebarStudent = {
+export type SidebarChild = {
   userId: string;
   displayName: string;
   color: string;
@@ -83,5 +83,5 @@ export type SidebarLeftData = {
   CLASSROOMS: SidebarClassroomItemData[];
   navSecondary: SidebarSecondaryItemData[];
   DIRECT_MESSAGES: SidebarDirectMessageItem[];
-  STUDENTS: SidebarStudent[];
+  CHILDREN: SidebarChild[];
 };
