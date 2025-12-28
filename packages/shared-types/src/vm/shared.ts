@@ -4,12 +4,9 @@ export type ISODateTime = string;
 export type AvatarSource = 'seed' | 'upload' | 'external';
 export type AccountStatus = 'active' | 'invited' | 'suspended' | 'deleted';
 
-// Stable persisted keys you can safely store/query
-export type GradeLevelKey = string | number;
-
 // UI-friendly grade option (dropdown, chips, etc.)
 export type GradeLevelOption = {
-  id: GradeLevelKey;
+  id: string | number;
   label: string;
 } | null;
 

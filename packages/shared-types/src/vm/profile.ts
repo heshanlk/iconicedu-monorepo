@@ -1,8 +1,11 @@
-import type { AccountStatus, AvatarSource, ConnectionVM, GradeLevelOption, ISODateTime, UUID } from './shared';
-
-// =====================
-// AvatarVM / presence (VM)
-// =====================
+import type {
+  AccountStatus,
+  AvatarSource,
+  ConnectionVM,
+  GradeLevelOption,
+  ISODateTime,
+  UUID,
+} from './shared';
 
 export interface AvatarVM {
   source: AvatarSource;
@@ -27,10 +30,6 @@ export interface PresenceVM {
   // Helpful FE flags for hydration
   presenceLoaded?: boolean;
 }
-
-// =====================
-// Base profile (VM)
-// =====================
 
 export interface BaseUserProfileVM {
   orgId: UUID;
@@ -58,10 +57,6 @@ export interface BaseUserProfileVM {
   createdAt: ISODateTime;
   updatedAt: ISODateTime;
 }
-
-// =====================
-// Role-specific profiles (VM)
-// =====================
 
 export interface EducatorProfileVM extends BaseUserProfileVM {
   headline?: string | null;

@@ -19,7 +19,6 @@ export interface FamilyLinkVM {
   familyId: UUID;
 
   guardianAccountId: UUID;
-  // NOTE: Keeping your original name for compatibility, but in DB I recommend "childId"
   childAccountId: UUID;
 
   relation: FamilyRelation;

@@ -1,10 +1,6 @@
 import type { AccountRoleContextVM, UserRoleVM } from './roles';
 import type { AccountStatus, ISODateTime, UUID } from './shared';
 
-// =====================
-// Contacts (VM)
-// =====================
-
 export interface UserContactVM {
   email?: string | null;
   phoneE164?: string | null;
@@ -17,10 +13,6 @@ export interface UserContactVM {
 
   preferredContactChannels?: string[] | null;
 }
-
-// =====================
-// Account (VM)
-// =====================
 
 export interface UserAccountVM {
   orgId: UUID;
