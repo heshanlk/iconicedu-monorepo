@@ -1,5 +1,5 @@
 import type React from 'react';
-import type { ChildProfileVM } from './user';
+import type { ChildProfileVM } from './vm/profile';
 
 export type SidebarIconKey =
   | 'home'

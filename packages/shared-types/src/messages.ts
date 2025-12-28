@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import type { UserProfileVM } from './user';
+import type { UserProfileVM } from './vm/profile';
 
 export interface Reaction {
   emoji: string;
