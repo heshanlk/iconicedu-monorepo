@@ -16,7 +16,7 @@ import {
   isLinkPreviewMessage,
   isAudioRecordingMessage,
   isMessageVisibleToUser,
-} from '@iconicedu/shared-types';
+} from '../../lib/message-guards';
 import {
   TextMessage,
   ImageMessage,
