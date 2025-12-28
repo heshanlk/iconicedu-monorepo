@@ -5,11 +5,23 @@ import type {
   FileMessage,
   LinkPreviewMessage,
 } from '@iconicedu/shared-types';
-import { MOCK_PARENT, MOCK_TEACHER, MOCK_TEACHER_2, toMessageUser } from './people';
+import { MOCK_PARENT, MOCK_TEACHER, MOCK_TEACHER_2 } from './people';
 
-export const DIRECT_USER = toMessageUser(MOCK_PARENT);
-export const DIRECT_CONTACT = toMessageUser(MOCK_TEACHER);
-export const DIRECT_ALT_CONTACT = toMessageUser(MOCK_TEACHER_2);
+export const DIRECT_USER = {
+  id: MOCK_PARENT.userId,
+  name: MOCK_PARENT.displayName,
+  avatar: MOCK_PARENT.avatar.url ?? '',
+};
+export const DIRECT_CONTACT = {
+  id: MOCK_TEACHER.userId,
+  name: MOCK_TEACHER.displayName,
+  avatar: MOCK_TEACHER.avatar.url ?? '',
+};
+export const DIRECT_ALT_CONTACT = {
+  id: MOCK_TEACHER_2.userId,
+  name: MOCK_TEACHER_2.displayName,
+  avatar: MOCK_TEACHER_2.avatar.url ?? '',
+};
 
 export const DIRECT_LAST_READ_MESSAGE_ID = 'dm-6';
 

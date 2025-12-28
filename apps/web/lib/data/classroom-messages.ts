@@ -8,10 +8,18 @@ import type {
   LinkPreviewMessage,
   AudioRecordingMessage,
 } from '@iconicedu/shared-types';
-import { MOCK_PARENT, MOCK_TEACHER, toMessageUser } from './people';
+import { MOCK_PARENT, MOCK_TEACHER } from './people';
 
-const MOCK_TEACHER_USER = toMessageUser(MOCK_TEACHER);
-const MOCK_PARENT_USER = toMessageUser(MOCK_PARENT);
+const MOCK_TEACHER_USER = {
+  id: MOCK_TEACHER.userId,
+  name: MOCK_TEACHER.displayName,
+  avatar: MOCK_TEACHER.avatar.url ?? '',
+};
+const MOCK_PARENT_USER = {
+  id: MOCK_PARENT.userId,
+  name: MOCK_PARENT.displayName,
+  avatar: MOCK_PARENT.avatar.url ?? '',
+};
 
 export const LAST_READ_MESSAGE_ID = '4';
 

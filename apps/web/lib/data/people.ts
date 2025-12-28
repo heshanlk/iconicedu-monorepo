@@ -3,22 +3,37 @@ import type { User } from '@iconicedu/shared-types';
 export type AvatarSource = 'seed' | 'upload' | 'external';
 export type ISODateTime = string;
 export type UUID = string;
-export type GradeLevel = number | string;
+export type GradeLevel = {
+  label: string;
+  value: string | number;
+} | null;
 export type RoleKey = 'owner' | 'admin' | 'teacher' | 'parent' | 'child';
 export type AccountStatus = 'active' | 'invited' | 'suspended' | 'deleted';
 
 export const MOCK_ORG_ID = '4fca0d16-5d72-4a24-9a0d-6f8c0bf2b652';
 
 export interface UserRole {
-  userId: UUID;
+  orgId: UUID;
+  id: UUID;
   roleKey: RoleKey;
   assignedBy?: UUID | null;
   assignedAt: ISODateTime;
 }
 
 export interface Family {
-  familyId: UUID;
+  orgId: UUID;
+  id: UUID;
   displayName: string;
+}
+
+export interface FamilyLink {
+  orgId: UUID;
+  id: UUID;
+  familyId: UUID;
+  guardianAccountId: UUID;
+  childAccountId: UUID;
+  relation: 'parent' | 'legal_guardian' | 'caregiver' | 'relative' | 'other';
+  permissionsScope?: string[] | null;
 }
 
 export interface Avatar {
@@ -28,7 +43,12 @@ export interface Avatar {
   updatedAt?: ISODateTime | null;
 }
 
-export type PresenceState = 'online' | 'offline' | 'away' | 'do_not_disturb' | 'idle';
+export type PresenceState = {
+  text?: string | null;
+  emoji?: string | null;
+  expiresAt?: ISODateTime | null;
+};
+
 export type LiveStatus = 'none' | 'in_class' | 'teaching' | 'busy' | 'reviewing_work';
 export interface Presence {
   state: PresenceState;
@@ -45,39 +65,52 @@ export interface UserContact {
   phoneVerified?: boolean;
   whatsappVerified?: boolean;
   verifiedAt?: ISODateTime | null;
+
+  preferredContactChannels?: string[] | null;
 }
 
 export interface UserAccount {
   orgId: UUID;
-  userId: UUID;
+  id: UUID;
+
   contacts: UserContact;
-  userRoles?: UserRole[] | null;
+
+  userRoles: UserRole[] | null;
+
   status?: AccountStatus;
-  presence?: Presence | null;
+
   createdAt: ISODateTime;
   updatedAt: ISODateTime;
   archivedAt?: ISODateTime | null;
 }
 
+export interface GuardianAccount extends UserAccount {
+  familyLink: FamilyLink;
+}
+export interface ChildAccount extends UserAccount {
+  familyLink: FamilyLink;
+}
+
 export interface BaseUserProfile {
   orgId: UUID;
-  userId: UUID;
+  id: UUID;
+  accountId: UUID;
 
   displayName: string;
   firstName?: string | null;
   lastName?: string | null;
-
   bio?: string | null;
-
   avatar: Avatar;
 
   timezone: string;
   locale?: string | null;
   languagesSpoken?: string[] | null;
 
-  prefs?: Record<string, unknown> | null;
   notificationDefaults?: Record<string, unknown> | null;
-  preferredContactChannels?: string[] | null;
+
+  presence?: Presence | null;
+
+  status?: AccountStatus;
 
   createdAt: ISODateTime;
   updatedAt: ISODateTime;
@@ -85,8 +118,8 @@ export interface BaseUserProfile {
 
 export interface TeacherProfile extends BaseUserProfile {
   headline?: string | null;
-  subjects?: string[] | null;
-  gradesSupported?: GradeLevel[] | null;
+  subjects: string[] | null;
+  gradesSupported: GradeLevel[] | null;
   education?: string | null;
   experienceYears?: number | null;
   certifications?: Array<{
@@ -106,7 +139,7 @@ export interface TeacherProfile extends BaseUserProfile {
   leadSource?: string | null;
 }
 
-export interface ParentProfile extends BaseUserProfile {
+export interface GuardianProfile extends BaseUserProfile {
   children: ChildProfile[];
   joinedDate: Date;
   notesInternal?: string | null;
@@ -237,7 +270,7 @@ const toRoleLabel = (roleKey: RoleKey | undefined) => {
 };
 
 export const toProfileUser = (
-  profile: TeacherProfile | ParentProfile,
+  profile: TeacherProfile | GuardianProfile,
   account?: UserAccount,
 ): User & {
   role?: string;
@@ -284,8 +317,7 @@ export const MOCK_TEACHER: TeacherProfile = {
   avatar: {
     source: 'upload',
     seed: 'teacher-1',
-    url:
-      'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-sarah-Vsp1gZWstExMvD0Qce0ogsgN6nv2pC.png',
+    url: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-sarah-Vsp1gZWstExMvD0Qce0ogsgN6nv2pC.png',
     updatedAt: '2024-01-01T00:00:00.000Z',
   },
   timezone: 'America/New_York',
@@ -315,8 +347,7 @@ export const MOCK_TEACHER_2: TeacherProfile = {
   avatar: {
     source: 'upload',
     seed: 'teacher-2',
-    url:
-      'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-jordan-ACflnHBYNP7M9crd5MtKL7WSpk3GiQ.jpg',
+    url: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-jordan-ACflnHBYNP7M9crd5MtKL7WSpk3GiQ.jpg',
     updatedAt: '2024-01-01T00:00:00.000Z',
   },
   timezone: 'America/New_York',
@@ -346,8 +377,7 @@ export const MOCK_TEACHER_3: TeacherProfile = {
   avatar: {
     source: 'upload',
     seed: 'teacher-3',
-    url:
-      'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-alex-UoI6qSVh9rZS9DvLOmhIY8pabZfAOq.png',
+    url: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-alex-UoI6qSVh9rZS9DvLOmhIY8pabZfAOq.png',
     updatedAt: '2024-01-01T00:00:00.000Z',
   },
   timezone: 'America/Chicago',
@@ -377,8 +407,7 @@ export const MOCK_TEACHER_4: TeacherProfile = {
   avatar: {
     source: 'upload',
     seed: 'teacher-4',
-    url:
-      'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-mike-T2UMe9BlbWWIxlq7z99cJWqwEagAuc.jpg',
+    url: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-mike-T2UMe9BlbWWIxlq7z99cJWqwEagAuc.jpg',
     updatedAt: '2024-01-01T00:00:00.000Z',
   },
   timezone: 'America/Los_Angeles',
@@ -408,8 +437,7 @@ export const MOCK_TEACHER_5: TeacherProfile = {
   avatar: {
     source: 'upload',
     seed: 'teacher-5',
-    url:
-      'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-sarah-Vsp1gZWstExMvD0Qce0ogsgN6nv2pC.png',
+    url: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-sarah-Vsp1gZWstExMvD0Qce0ogsgN6nv2pC.png',
     updatedAt: '2024-01-01T00:00:00.000Z',
   },
   timezone: 'America/New_York',
@@ -438,7 +466,7 @@ export const MOCK_TEACHERS: TeacherProfile[] = [
   MOCK_TEACHER_5,
 ];
 
-export const MOCK_PARENT: ParentProfile = {
+export const MOCK_PARENT: GuardianProfile = {
   orgId: MOCK_ORG_ID,
   userId: '2a0f3cbe-0b3b-470a-8a98-9381c1c9c6a7',
   displayName: 'Michael Chen',
@@ -447,8 +475,7 @@ export const MOCK_PARENT: ParentProfile = {
   avatar: {
     source: 'upload',
     seed: 'parent-1',
-    url:
-      'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-mike-T2UMe9BlbWWIxlq7z99cJWqwEagAuc.jpg',
+    url: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/avatar-mike-T2UMe9BlbWWIxlq7z99cJWqwEagAuc.jpg',
     updatedAt: '2024-01-01T00:00:00.000Z',
   },
   timezone: 'America/New_York',
