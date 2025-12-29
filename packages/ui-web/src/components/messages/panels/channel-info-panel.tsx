@@ -7,6 +7,7 @@ import { Badge } from '../../../ui/badge';
 import { Separator } from '../../../ui/separator';
 import { AvatarWithStatus } from '../../shared/avatar-with-status';
 import { useMessagesState } from '../messages-state-provider';
+import { ProfileActions } from '../profile-actions';
 
 interface ChannelInfoPanelProps {
   intent: MessagesRightPanelIntent;
@@ -20,7 +21,7 @@ const CHANNEL_ICON_MAP = {
 } as const;
 
 const ChannelInfoPanelContent = memo(function ChannelInfoPanelContent() {
-  const { channel } = useMessagesState();
+  const { channel, toggle } = useMessagesState();
   const topicIconKey = channel.topicIconKey ?? 'sparkles';
   const TopicIcon = CHANNEL_ICON_MAP[topicIconKey as keyof typeof CHANNEL_ICON_MAP] ?? Sparkles;
   const nextSessionItem = channel.headerItems.find((item) => item.key === 'next-session');
@@ -42,6 +43,13 @@ const ChannelInfoPanelContent = memo(function ChannelInfoPanelContent() {
             {channel.purpose.replace('-', ' ')}
           </Badge>
         ) : null}
+      </div>
+
+      <Separator />
+
+      <div className="space-y-4 p-4">
+        <h3 className="text-sm font-semibold text-foreground">Quick actions</h3>
+        <ProfileActions onSavedMessagesClick={() => toggle({ key: 'saved' })} />
       </div>
 
       <Separator />
