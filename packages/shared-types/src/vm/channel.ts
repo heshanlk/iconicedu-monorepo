@@ -1,6 +1,6 @@
 import type { ConnectionVM, ISODateTime, UUID } from './shared';
 import type { UserProfileVM } from './profile';
-import type { MessageVM } from './messages';
+import type { MessageReadStateVM, MessageVM } from './messages';
 
 export type ChannelVisibility = 'private' | 'public';
 export type ChannelStatus = 'active' | 'archived';
@@ -45,4 +45,5 @@ export interface ChannelVM {
   headerItems: ChannelHeaderItemVM[];
   participants: UserProfileVM[];
   messages: ConnectionVM<MessageVM>;
+  readState?: MessageReadStateVM;
 }

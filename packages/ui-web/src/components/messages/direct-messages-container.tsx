@@ -1,18 +1,15 @@
 'use client';
 
-import type { MessagesContainerProps } from './messages-container';
 import type { ChannelVM } from '@iconicedu/shared-types';
 import { MessagesShell } from './messages-shell';
 
-export interface DirectMessagesContainerProps
-  extends Omit<MessagesContainerProps, 'channel'> {
+export interface DirectMessagesContainerProps {
   channel: ChannelVM;
 }
 
-export function DirectMessagesContainer({ channel, ...props }: DirectMessagesContainerProps) {
+export function DirectMessagesContainer({ channel }: DirectMessagesContainerProps) {
   return (
     <MessagesShell
-      {...props}
       channel={channel}
     />
   );

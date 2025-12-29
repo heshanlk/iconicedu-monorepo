@@ -9,6 +9,7 @@ export interface ReactionVM {
 }
 
 export interface MessageReadStateVM {
+  channelId?: UUID;
   lastReadMessageId?: UUID;
   lastReadAt?: ISODateTime;
   unreadCount?: number;

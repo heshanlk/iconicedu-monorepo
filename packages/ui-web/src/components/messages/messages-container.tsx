@@ -9,7 +9,6 @@ import type {
   ChannelVM,
   EducatorProfileVM,
   GuardianProfileVM,
-  MessageReadStateVM,
   MessageVM,
   TextMessageVM,
   ThreadVM,
@@ -18,7 +17,6 @@ import type {
 
 export interface MessagesContainerProps {
   channel: ChannelVM;
-  readState?: MessageReadStateVM;
 }
 
 const isGuardianProfile = (profile: UserProfileVM): profile is GuardianProfileVM =>
@@ -29,7 +27,6 @@ const isEducatorProfile = (profile: UserProfileVM): profile is EducatorProfileVM
 
 export function MessagesContainer({
   channel,
-  readState,
 }: MessagesContainerProps) {
   const messageListRef = useRef<MessageListRef>(null);
   const {
@@ -213,7 +210,7 @@ export function MessagesContainer({
       onToggleSaved: handleToggleSaved,
       onToggleHidden: handleToggleHidden,
       currentUserId,
-      lastReadMessageId: readState?.lastReadMessageId,
+      lastReadMessageId: channel.readState?.lastReadMessageId,
     }),
     [
       visibleMessages,
@@ -223,7 +220,7 @@ export function MessagesContainer({
       handleToggleSaved,
       handleToggleHidden,
       currentUserId,
-      readState?.lastReadMessageId,
+      channel.readState?.lastReadMessageId,
     ],
   );
 

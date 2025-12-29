@@ -19,7 +19,10 @@ const minutesAgo = (minutes: number) =>
 const hoursFromNow = (hours: number) =>
   new Date(Date.now() + 3600000 * hours).toISOString();
 
+const LEARNING_SPACE_ID = 'learning-space-1';
+
 export const LEARNING_SPACE_READ_STATE: MessageReadStateVM = {
+  channelId: LEARNING_SPACE_ID,
   lastReadMessageId: '4',
   lastReadAt: hoursAgo(1),
   unreadCount: 6,
@@ -341,7 +344,7 @@ export const MOCK_MESSAGES: MessageVM[] = [
 ];
 
 export const LEARNING_SPACE: ChannelVM = {
-  id: 'learning-space-1',
+  id: LEARNING_SPACE_ID,
   orgId: 'org-1',
   kind: 'channel',
   topic: `ELA • ${MOCK_EDUCATOR.displayName}'s Class`,
@@ -359,6 +362,7 @@ export const LEARNING_SPACE: ChannelVM = {
     allowThreads: true,
     allowReactions: true,
   },
+  readState: LEARNING_SPACE_READ_STATE,
   headerItems: [
     { key: 'saved', label: '0', tooltip: 'View saved messages', isPrimary: true },
     { key: 'next-session', label: 'Wed 4:30 PM' },
