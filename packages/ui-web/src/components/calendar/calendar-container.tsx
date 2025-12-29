@@ -27,7 +27,6 @@ export function CalendarContainer({
   events,
   childrenCount,
 }: CalendarContainerProps) {
-  const [selectedEvent, setSelectedEvent] = useState<CalendarEventVM | null>(null);
   const [calendarMonthAnchor, setCalendarMonthAnchor] = useState(
     new Date(currentDate.getFullYear(), currentDate.getMonth(), 1),
   );
@@ -54,10 +53,6 @@ export function CalendarContainer({
     onDateSelect(newDate);
   };
 
-  const handleEventClick = (event: CalendarEventVM) => {
-    setSelectedEvent(event);
-  };
-
   return (
     <>
       <CalendarHeader
@@ -71,7 +66,6 @@ export function CalendarContainer({
         <WeekView
           currentDate={currentDate}
           events={calendarEventsForView}
-          onEventClick={handleEventClick}
           onDateSelect={onDateSelect}
           onSwitchToDay={() => onViewChange('day')}
         />
@@ -81,8 +75,6 @@ export function CalendarContainer({
           events={calendarEventsForView}
           calendarEvents={calendarEventsForDots}
           childrenCount={childrenCount}
-          selectedEvent={selectedEvent}
-          onEventClick={handleEventClick}
           onDateSelect={onDateSelect}
           onMonthChange={setCalendarMonthAnchor}
         />

@@ -28,7 +28,6 @@ export interface MessageBaseProps {
   onToggleReaction?: (emoji: string) => void;
   onToggleSaved?: () => void;
   onToggleHidden?: () => void;
-  currentUserId?: UUID;
 }
 
 export const MessageBase = memo(function MessageBase({
@@ -41,7 +40,6 @@ export const MessageBase = memo(function MessageBase({
   onToggleReaction,
   onToggleSaved,
   onToggleHidden,
-  currentUserId,
 }: MessageBaseProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -160,11 +158,7 @@ export const MessageBase = memo(function MessageBase({
 
         {children}
 
-        <ReactionBar
-          reactions={message.reactions}
-          onToggleReaction={handleToggleReaction}
-          currentUserId={currentUserId}
-        />
+          <ReactionBar reactions={message.reactions} onToggleReaction={handleToggleReaction} />
 
         {message.thread && !isThreadReply && (
           <ThreadIndicator

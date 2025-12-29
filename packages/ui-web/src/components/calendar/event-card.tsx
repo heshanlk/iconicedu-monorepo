@@ -13,11 +13,10 @@ import { EventLiveIndicator } from './event-live-indicator';
 
 interface EventCardProps {
   event: CalendarEventVM;
-  onClick?: () => void;
   compact?: boolean;
 }
 
-export function EventCard({ event, onClick, compact = false }: EventCardProps) {
+export function EventCard({ event, compact = false }: EventCardProps) {
   const isLive = isEventLive(event);
   const [open, setOpen] = useState(false);
   const startTime = formatEventTime(event.startAt);

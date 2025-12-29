@@ -79,7 +79,6 @@ export const MessageItem = memo(function MessageItem({
     onOpenThread,
     isThreadReply,
     onProfileClick,
-    currentUserId,
     onToggleReaction: handleToggleReaction,
     onToggleSaved: handleToggleSaved,
     onToggleHidden: handleToggleHidden,

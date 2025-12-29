@@ -18,7 +18,7 @@ import {
 import { Skeleton } from '@iconicedu/ui-web/ui/skeleton';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@iconicedu/ui-web/ui/tooltip';
 import { useIsMobile } from '@iconicedu/ui-web/hooks/use-mobile';
-import { PanelLeftClose, PanelLeftIcon, PanelLeftOpen } from 'lucide-react';
+import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 
 const SIDEBAR_COOKIE_NAME = 'sidebar_state';
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;

@@ -5,11 +5,9 @@ import {
   ChevronDown,
   ChevronUp,
   ListXIcon,
-  MessageSquareDot,
   MessageSquarePlus,
   MoreHorizontal,
   StarOff,
-  UserPlus,
 } from 'lucide-react';
 import type { SidebarClassroomItem, SidebarChild } from '@iconicedu/shared-types';
 
@@ -26,7 +24,6 @@ import {
   SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarSeparator,
   useSidebar,
 } from '../../ui/sidebar';
 import {

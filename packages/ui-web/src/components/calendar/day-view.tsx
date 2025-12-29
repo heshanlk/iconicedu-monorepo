@@ -22,8 +22,6 @@ interface DayViewProps {
   events: CalendarEventVM[];
   calendarEvents?: CalendarEventVM[];
   childrenCount?: number;
-  selectedEvent: CalendarEventVM | null;
-  onEventClick: (event: CalendarEventVM) => void;
   onDateSelect: (date: Date) => void;
   onMonthChange?: (date: Date) => void;
 }
@@ -33,8 +31,6 @@ export function DayView({
   events,
   calendarEvents,
   childrenCount,
-  selectedEvent,
-  onEventClick,
   onDateSelect,
   onMonthChange,
 }: DayViewProps) {
@@ -182,11 +178,7 @@ export function DayView({
                     }}
                   >
                     <div className="pointer-events-auto h-full">
-                      <EventCard
-                        event={event}
-                        compact={isCompact}
-                        onClick={() => onEventClick(event)}
-                      />
+                      <EventCard event={event} compact={isCompact} />
                     </div>
                   </div>
                 );

@@ -47,7 +47,6 @@ import { Empty } from '../../ui/empty';
 import { EmptyContent } from '../../ui/empty';
 import type {
   SidebarClassroomItem,
-  SidebarIconKey,
   SidebarLeftData,
   SidebarNavItem,
   SidebarSecondaryItem,

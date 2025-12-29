@@ -4,7 +4,6 @@ import type React from 'react';
 
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '../../ui/dialog';
 import { Drawer, DrawerContent, DrawerTitle, DrawerTrigger } from '../../ui/drawer';
-import { ScrollArea } from '../../ui/scroll-area';
 import { Separator } from '../../ui/separator';
 import type { CalendarEventVM } from '@iconicedu/shared-types';
 import { EventDetailsHeader } from './event-details-header';

@@ -37,7 +37,6 @@ export function MessagesContainer({
     setMessages,
     setCreateTextMessage,
     setThreadHandlers,
-    appendThreadMessage,
     setScrollToMessage,
   } = useMessagesState();
   const channelMessages = channel.messages?.items ?? [];

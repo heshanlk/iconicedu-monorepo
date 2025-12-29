@@ -18,7 +18,6 @@ import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
 interface WeekViewProps {
   currentDate: Date;
   events: CalendarEventVM[];
-  onEventClick: (event: CalendarEventVM) => void;
   onDateSelect?: (date: Date) => void;
   onSwitchToDay?: () => void;
 }
@@ -26,7 +25,6 @@ interface WeekViewProps {
 export function WeekView({
   currentDate,
   events,
-  onEventClick,
   onDateSelect,
   onSwitchToDay,
 }: WeekViewProps) {
@@ -76,13 +74,6 @@ export function WeekView({
       scrollContainerRef.current.scrollTo({ top: scrollTop, behavior: 'smooth' });
     }
   }, [currentDate, events, weekDays]);
-
-  const handleEventClick = (event: CalendarEventVM) => {
-    onEventClick(event);
-    if (onDateSelect) {
-      onDateSelect(getEventDate(event));
-    }
-  };
 
   const handleCellClick = (day: Date) => {
     if (onDateSelect) {
@@ -237,11 +228,7 @@ export function WeekView({
                         }}
                       >
                         <div className="pointer-events-auto h-full">
-                          <EventCard
-                            event={event}
-                            compact={isCompact}
-                            onClick={() => handleEventClick(event)}
-                          />
+                        <EventCard event={event} compact={isCompact} />
                         </div>
                       </div>
                     );
