@@ -138,17 +138,24 @@ export const MessagesContainerHeader = memo(function MessagesContainerHeader({
     if (channel.kind === 'dm') {
       if (!otherParticipant) return null;
       return (
-        <AvatarWithStatus
-          name={otherParticipant.displayName}
-          avatar={otherParticipant.avatar.url ?? ''}
-          isOnline={
-            otherParticipant.presence?.liveStatus !== undefined
-              ? otherParticipant.presence.liveStatus !== 'none'
-              : undefined
-          }
-          sizeClassName="h-7 w-7"
-          initialsLength={1}
-        />
+        <button
+          type="button"
+          onClick={() => toggle({ key: 'profile', userId: otherParticipant.id })}
+          className="rounded-full"
+          aria-label={`View ${otherParticipant.displayName} profile`}
+        >
+          <AvatarWithStatus
+            name={otherParticipant.displayName}
+            avatar={otherParticipant.avatar.url ?? ''}
+            isOnline={
+              otherParticipant.presence?.liveStatus !== undefined
+                ? otherParticipant.presence.liveStatus !== 'none'
+                : undefined
+            }
+            sizeClassName="h-7 w-7"
+            initialsLength={1}
+          />
+        </button>
       );
     }
     const Icon = CHANNEL_ICON_MAP[channel.topicIconKey ?? ''] ?? Sparkles;
@@ -157,7 +164,7 @@ export const MessagesContainerHeader = memo(function MessagesContainerHeader({
         <Icon className="h-3.5 w-3.5" />
       </span>
     );
-  }, [channel.kind, channel.topicIconKey, otherParticipant]);
+  }, [channel.kind, channel.topicIconKey, otherParticipant, toggle]);
 
   const subtitleItems: HeaderSubtitleItem[] = useMemo(
     () =>

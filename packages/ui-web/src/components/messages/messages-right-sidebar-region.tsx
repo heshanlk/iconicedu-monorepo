@@ -23,8 +23,6 @@ const getSidebarMeta = (intent: MessagesRightPanelIntent | null) => {
       return { title: 'Details', subtitle: undefined };
     case 'saved':
       return { title: 'Saved Messages', subtitle: undefined };
-    case 'pinned':
-      return { title: 'Pinned', subtitle: undefined };
     case 'profile':
       return { title: 'Profile', subtitle: undefined };
     case 'thread':

@@ -1,7 +1,7 @@
 'use client';
 
 import { memo } from 'react';
-import { Info, Bookmark, Pin } from 'lucide-react';
+import { Info } from 'lucide-react';
 import { Button } from '../../ui/button';
 import { cn } from '../../lib/utils';
 import { useMessagesRightSidebar } from './messages-right-sidebar-provider';
@@ -47,18 +47,6 @@ export const MessagesContainerHeaderActions = memo(
 
   return (
     <div className="flex items-center gap-2">
-      <ActionButton
-        icon={Bookmark}
-        label="Saved messages"
-        active={isActive('saved')}
-        onClick={() => toggle({ key: 'saved' })}
-      />
-      <ActionButton
-        icon={Pin}
-        label="Pinned items"
-        active={isActive('pinned')}
-        onClick={() => toggle({ key: 'pinned' })}
-      />
       <ActionButton
         icon={Info}
         label="Info"
