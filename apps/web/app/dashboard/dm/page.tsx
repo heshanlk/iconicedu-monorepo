@@ -1,4 +1,4 @@
-import { DirectMessagesContainer, DashboardHeader } from '@iconicedu/ui-web';
+import { MessagesShell, DashboardHeader } from '@iconicedu/ui-web';
 import { DIRECT_CHANNEL } from '../../../lib/data/direct-messages';
 
 export default function Page() {
@@ -6,7 +6,7 @@ export default function Page() {
     <>
       <div className="flex h-[calc(100vh-1.0rem)] flex-col">
         <DashboardHeader />
-        <DirectMessagesContainer channel={DIRECT_CHANNEL} />
+        <MessagesShell channel={DIRECT_CHANNEL} />
       </div>
     </>
   );

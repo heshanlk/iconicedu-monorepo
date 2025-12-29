@@ -6,7 +6,10 @@ import type { MessagesContainerProps } from './messages-container';
 import { MessagesContainer } from './messages-container';
 import { MessagesContainerHeader } from './messages-container-header';
 import { MessagesContainerHeaderActions } from './messages-container-header-actions';
-import { MessagesStateProvider, useMessagesState } from './messages-state-provider';
+import {
+  MessagesStateProvider,
+  useMessagesState,
+} from './context/messages-state-provider';
 import { MessagesRightSidebarRegion } from './messages-right-sidebar-region';
 import { ChannelInfoPanel } from './panels/channel-info-panel';
 import { ProfilePanel } from './panels/profile-panel';

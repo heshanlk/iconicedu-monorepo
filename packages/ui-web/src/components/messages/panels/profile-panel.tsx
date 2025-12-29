@@ -22,7 +22,7 @@ import type {
   UserProfileVM,
 } from '@iconicedu/shared-types';
 import { ProfileSheet } from '../profile-sheet';
-import { useMessagesState } from '../messages-state-provider';
+import { useMessagesState } from '../context/messages-state-provider';
 import { useIsMobile } from '../../../hooks/use-mobile';
 
 interface ProfilePanelProps {
@@ -186,9 +186,7 @@ function ProfileDetails({ user, onSavedMessagesClick }: ProfileDetailsProps) {
               <Users className="mt-0.5 h-4 w-4 text-muted-foreground" />
               <div className="flex-1">
                 <p className="text-xs text-muted-foreground">Children</p>
-                <p className="text-sm text-foreground">
-                  {user.childrenNames.join(', ')}
-                </p>
+                <p className="text-sm text-foreground">{user.childrenNames.join(', ')}</p>
               </div>
             </div>
           ) : null}

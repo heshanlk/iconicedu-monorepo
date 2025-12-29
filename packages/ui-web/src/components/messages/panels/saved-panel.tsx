@@ -5,7 +5,7 @@ import { ScrollArea } from '../../../ui/scroll-area';
 import { SavedMessagePreview } from '../saved-message-preview';
 import { Bookmark } from 'lucide-react';
 import type { MessageVM, MessagesRightPanelIntent } from '@iconicedu/shared-types';
-import { useMessagesState } from '../messages-state-provider';
+import { useMessagesState } from '../context/messages-state-provider';
 
 interface SavedPanelProps {
   intent: MessagesRightPanelIntent;

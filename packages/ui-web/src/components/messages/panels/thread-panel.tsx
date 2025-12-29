@@ -6,7 +6,7 @@ import type {
   ThreadPanelPropsVM,
 } from '@iconicedu/shared-types';
 import { ThreadSheet } from '../thread-sheet';
-import { useMessagesState } from '../messages-state-provider';
+import { useMessagesState } from '../context/messages-state-provider';
 import { useIsMobile } from '../../../hooks/use-mobile';
 import { MessageInput } from '../message-input';
 import { ScrollArea } from '../../../ui/scroll-area';
@@ -76,12 +76,11 @@ export function ThreadPanel({ intent }: ThreadPanelProps) {
     threadData.parentMessage ??
     messages.find((message) => message.id === threadData.thread.parentMessageId);
   const threadMessages = useMemo(
-    () =>
-      messages.filter((message) => message.thread?.id === threadData.thread.id),
+    () => messages.filter((message) => message.thread?.id === threadData.thread.id),
     [messages, threadData.thread.id],
   );
   const sortedThreadMessages = useMemo(() => {
-    const messageMap = new Map<string, typeof messages[number]>();
+    const messageMap = new Map<string, (typeof messages)[number]>();
     if (parentMessage) {
       messageMap.set(parentMessage.id, parentMessage);
     }

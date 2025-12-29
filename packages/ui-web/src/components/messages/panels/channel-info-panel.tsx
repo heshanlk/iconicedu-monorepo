@@ -6,7 +6,7 @@ import type { MessagesRightPanelIntent } from '@iconicedu/shared-types';
 import { Badge } from '../../../ui/badge';
 import { Separator } from '../../../ui/separator';
 import { AvatarWithStatus } from '../../shared/avatar-with-status';
-import { useMessagesState } from '../messages-state-provider';
+import { useMessagesState } from '../context/messages-state-provider';
 import { ProfileActions } from '../profile-actions';
 
 interface ChannelInfoPanelProps {
@@ -23,7 +23,8 @@ const CHANNEL_ICON_MAP = {
 const ChannelInfoPanelContent = memo(function ChannelInfoPanelContent() {
   const { channel, toggle } = useMessagesState();
   const topicIconKey = channel.topicIconKey ?? 'sparkles';
-  const TopicIcon = CHANNEL_ICON_MAP[topicIconKey as keyof typeof CHANNEL_ICON_MAP] ?? Sparkles;
+  const TopicIcon =
+    CHANNEL_ICON_MAP[topicIconKey as keyof typeof CHANNEL_ICON_MAP] ?? Sparkles;
   const nextSessionItem = channel.headerItems.find((item) => item.key === 'next-session');
 
   return (

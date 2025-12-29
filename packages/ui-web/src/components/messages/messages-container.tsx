@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { MessageList, type MessageListRef } from './message-list';
 import { MessageInput } from './message-input';
 import { useMessages } from '../../hooks/use-messages';
-import { useMessagesState } from './messages-state-provider';
+import { useMessagesState } from './context/messages-state-provider';
 import type {
   ChannelVM,
   EducatorProfileVM,
@@ -25,9 +25,7 @@ const isGuardianProfile = (profile: UserProfileVM): profile is GuardianProfileVM
 const isEducatorProfile = (profile: UserProfileVM): profile is EducatorProfileVM =>
   'subjects' in profile || 'gradesSupported' in profile || 'experienceYears' in profile;
 
-export function MessagesContainer({
-  channel,
-}: MessagesContainerProps) {
+export function MessagesContainer({ channel }: MessagesContainerProps) {
   const messageListRef = useRef<MessageListRef>(null);
   const {
     toggle,
@@ -67,7 +65,9 @@ export function MessagesContainer({
         .sort(
           (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
         );
-      const resolvedThreadMessages = threadMessages.length ? threadMessages : [parentMessage];
+      const resolvedThreadMessages = threadMessages.length
+        ? threadMessages
+        : [parentMessage];
       const replyItems = resolvedThreadMessages.filter(
         (message) => message.id !== parentMessage.id,
       );

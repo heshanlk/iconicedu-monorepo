@@ -4,7 +4,7 @@ import { memo } from 'react';
 import { Info } from 'lucide-react';
 import { Button } from '../../ui/button';
 import { cn } from '../../lib/utils';
-import { useMessagesState } from './messages-state-provider';
+import { useMessagesState } from './context/messages-state-provider';
 
 const ActionButton = memo(function ActionButton({
   icon: Icon,
@@ -39,29 +39,32 @@ const ActionButton = memo(function ActionButton({
 
 export const MessagesContainerHeaderActions = memo(
   function MessagesContainerHeaderActions() {
-  const { toggle, isActive, channel, currentUserId } = useMessagesState();
-  const otherParticipant =
-    channel.kind === 'dm'
-      ? channel.participants.find((participant) => participant.id !== currentUserId)
-      : null;
+    const { toggle, isActive, channel, currentUserId } = useMessagesState();
+    const otherParticipant =
+      channel.kind === 'dm'
+        ? channel.participants.find((participant) => participant.id !== currentUserId)
+        : null;
 
-  return (
-    <div className="flex items-center gap-2">
-      <ActionButton
-        icon={Info}
-        label="Info"
-        active={
-          channel.kind === 'dm'
-            ? isActive('profile', { key: 'profile', userId: otherParticipant?.id ?? '' })
-            : isActive('channel_info')
-        }
-        onClick={() =>
-          channel.kind === 'dm' && otherParticipant
-            ? toggle({ key: 'profile', userId: otherParticipant.id })
-            : toggle({ key: 'channel_info' })
-        }
-      />
-    </div>
-  );
+    return (
+      <div className="flex items-center gap-2">
+        <ActionButton
+          icon={Info}
+          label="Info"
+          active={
+            channel.kind === 'dm'
+              ? isActive('profile', {
+                  key: 'profile',
+                  userId: otherParticipant?.id ?? '',
+                })
+              : isActive('channel_info')
+          }
+          onClick={() =>
+            channel.kind === 'dm' && otherParticipant
+              ? toggle({ key: 'profile', userId: otherParticipant.id })
+              : toggle({ key: 'channel_info' })
+          }
+        />
+      </div>
+    );
   },
 );

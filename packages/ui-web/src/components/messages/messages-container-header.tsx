@@ -2,7 +2,15 @@
 
 import { memo, useMemo } from 'react';
 import type { ReactNode } from 'react';
-import { Sparkles, User, Users, BookOpen, Bookmark, Clock, type LucideIcon } from 'lucide-react';
+import {
+  Sparkles,
+  User,
+  Users,
+  BookOpen,
+  Bookmark,
+  Clock,
+  type LucideIcon,
+} from 'lucide-react';
 import {
   Tooltip,
   TooltipContent,
@@ -12,7 +20,7 @@ import {
 import { cn } from '../../lib/utils';
 import { AvatarWithStatus } from '../shared/avatar-with-status';
 import type { ChannelVM, UserProfileVM } from '@iconicedu/shared-types';
-import { useMessagesState } from './messages-state-provider';
+import { useMessagesState } from './context/messages-state-provider';
 
 interface HeaderSubtitleItem {
   icon?: LucideIcon;
@@ -133,7 +141,10 @@ export const MessagesContainerHeader = memo(function MessagesContainerHeader({
     [channel.kind, channel.participants, currentUserId],
   );
 
-  const title = channel.kind === 'dm' ? otherParticipant?.displayName ?? channel.topic : channel.topic;
+  const title =
+    channel.kind === 'dm'
+      ? (otherParticipant?.displayName ?? channel.topic)
+      : channel.topic;
   const leading = useMemo(() => {
     if (channel.kind === 'dm') {
       if (!otherParticipant) return null;

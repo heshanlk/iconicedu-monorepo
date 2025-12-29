@@ -92,9 +92,7 @@ export function MessagesStateProvider({
     (content: string) => TextMessageVM | null
   >(() => () => null);
   const [threadHandlers, setThreadHandlers] = useState<ThreadActionHandlers>({});
-  const [threadData, setThreadDataState] = useState<Record<string, ThreadData>>(
-    {},
-  );
+  const [threadData, setThreadDataState] = useState<Record<string, ThreadData>>({});
   const [scrollToMessage, setScrollToMessage] = useState<
     ((messageId: string) => void) | undefined
   >(undefined);
@@ -107,17 +105,14 @@ export function MessagesStateProvider({
     setState((prev) => ({ ...prev, isOpen: false, intent: null }));
   }, []);
 
-  const toggle = useCallback(
-    (intent: MessagesRightPanelIntent) => {
-      setState((prev) => {
-        if (prev.isOpen && isSameIntent(prev.intent, intent)) {
-          return { ...prev, isOpen: false, intent: null };
-        }
-        return { ...prev, isOpen: true, intent };
-      });
-    },
-    [],
-  );
+  const toggle = useCallback((intent: MessagesRightPanelIntent) => {
+    setState((prev) => {
+      if (prev.isOpen && isSameIntent(prev.intent, intent)) {
+        return { ...prev, isOpen: false, intent: null };
+      }
+      return { ...prev, isOpen: true, intent };
+    });
+  }, []);
 
   const isActive = useCallback(
     (key: MessagesRightPanelIntentKey, intent?: MessagesRightPanelIntent) => {
@@ -132,7 +127,10 @@ export function MessagesStateProvider({
   );
 
   const setThreadData = useCallback(
-    (thread: ThreadVM, data: { replies: ConnectionVM<MessageVM>; parentMessage?: MessageVM }) => {
+    (
+      thread: ThreadVM,
+      data: { replies: ConnectionVM<MessageVM>; parentMessage?: MessageVM },
+    ) => {
       setThreadDataState((prev) => ({ ...prev, [thread.id]: { thread, ...data } }));
     },
     [],
@@ -234,9 +232,7 @@ export function MessagesStateProvider({
 export function useMessagesState() {
   const context = useContext(MessagesStateContext);
   if (!context) {
-    throw new Error(
-      'useMessagesState must be used within MessagesStateProvider',
-    );
+    throw new Error('useMessagesState must be used within MessagesStateProvider');
   }
   return context;
 }
