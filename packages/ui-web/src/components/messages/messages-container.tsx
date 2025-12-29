@@ -18,6 +18,8 @@ import { useDMSidebar, type SidebarContent } from '../../hooks/use-messages-side
 import { useThread } from '../../hooks/use-thread';
 import type {
   ChannelVM,
+  GuardianProfileVM,
+  EducatorProfileVM,
   ThreadVM,
   TextMessageVM,
   MessageVM,
@@ -26,28 +28,37 @@ import type {
 
 export interface MessagesContainerProps {
   channel: ChannelVM;
-  messages: MessageVM[];
   initialThreadMessages: Record<string, MessageVM[]>;
-  educator: UserProfileVM;
-  guardian: UserProfileVM;
   lastReadMessageId?: string;
   infoPanel?: ReactNode;
   infoPanelMeta?: { title: string; subtitle?: string };
   defaultSidebarContent?: SidebarContent;
 }
 
+const isGuardianProfile = (profile: UserProfileVM): profile is GuardianProfileVM =>
+  'children' in profile;
+
+const isEducatorProfile = (profile: UserProfileVM): profile is EducatorProfileVM =>
+  'subjects' in profile || 'gradesSupported' in profile || 'experienceYears' in profile;
+
 export function MessagesContainer({
   channel,
-  messages: initialMessages,
   initialThreadMessages,
-  educator,
-  guardian,
   lastReadMessageId,
   infoPanel,
   infoPanelMeta,
   defaultSidebarContent,
 }: MessagesContainerProps) {
   const isMobile = useIsMobile();
+  const participants = channel.participants ?? [];
+  const fallbackParticipant = participants[0];
+  const guardian = participants.find(isGuardianProfile) ?? fallbackParticipant;
+  const educator =
+    participants.find(isEducatorProfile) ??
+    participants.find((participant) => participant.id !== guardian?.id) ??
+    fallbackParticipant;
+  const senderProfile = guardian ?? educator ?? fallbackParticipant;
+  const currentUserId = guardian?.id ?? participants[0]?.id ?? '';
   const messageListRef = useRef<MessageListRef>(null);
   const {
     openThread: openThreadSidebar,
@@ -58,8 +69,9 @@ export function MessagesContainer({
     profileUserId,
     sidebarContent,
   } = useDMSidebar();
+  const channelMessages = channel.messages?.items ?? [];
   const { messages, addMessage, toggleReaction, toggleSaved, toggleHidden } =
-    useMessages(initialMessages);
+    useMessages(channelMessages);
   const {
     activeThread,
     threadMessages,
@@ -94,11 +106,12 @@ export function MessagesContainer({
 
   const handleSendMessage = useCallback(
     (content: string) => {
+      if (!senderProfile) return;
       const newMessage: TextMessageVM = {
         id: `msg-${Date.now()}`,
         type: 'text',
         content,
-        sender: guardian,
+        sender: senderProfile,
         timestamp: new Date().toISOString(),
         reactions: [],
         visibility: { type: 'all' },
@@ -107,16 +120,17 @@ export function MessagesContainer({
       };
       addMessage(newMessage);
     },
-    [addMessage, guardian],
+    [addMessage, senderProfile],
   );
 
   const handleSendThreadReply = useCallback(
     (content: string) => {
+      if (!senderProfile) return;
       const newReply: TextMessageVM = {
         id: `reply-${Date.now()}`,
         type: 'text',
         content,
-        sender: guardian,
+        sender: senderProfile,
         timestamp: new Date().toISOString(),
         reactions: [],
         visibility: { type: 'all' },
@@ -125,7 +139,7 @@ export function MessagesContainer({
       };
       addThreadMessage(newReply);
     },
-    [addThreadMessage, guardian],
+    [addThreadMessage, senderProfile],
   );
 
   const handleProfileClick = useCallback(
@@ -168,16 +182,18 @@ export function MessagesContainer({
 
   const handleToggleReaction = useCallback(
     (messageId: string, emoji: string) => {
-      toggleReaction(messageId, emoji, guardian.id);
+      if (!currentUserId) return;
+      toggleReaction(messageId, emoji, currentUserId);
     },
-    [toggleReaction, guardian.id],
+    [toggleReaction, currentUserId],
   );
 
   const handleToggleThreadReaction = useCallback(
     (messageId: string, emoji: string) => {
-      toggleThreadReaction(messageId, emoji, guardian.id);
+      if (!currentUserId) return;
+      toggleThreadReaction(messageId, emoji, currentUserId);
     },
-    [toggleThreadReaction, guardian.id],
+    [toggleThreadReaction, currentUserId],
   );
 
   const handleToggleSaved = useCallback(
@@ -219,10 +235,14 @@ export function MessagesContainer({
   );
 
   const profileUser = useMemo(() => {
-    if (profileUserId === educator.id) return educator;
-    if (profileUserId === guardian.id) return guardian;
-    return educator;
-  }, [profileUserId, educator, guardian]);
+    if (!profileUserId) return educator ?? guardian ?? participants[0];
+    return (
+      participants.find((participant) => participant.id === profileUserId) ??
+      educator ??
+      guardian ??
+      participants[0]
+    );
+  }, [profileUserId, educator, guardian, participants]);
 
   const sidebarMeta = useMemo(() => {
     if (sidebarContent === 'thread' && activeThread) {
@@ -254,7 +274,7 @@ export function MessagesContainer({
   const contextValue = useMemo(
     () => ({
       channel,
-      currentUserId: guardian.id,
+      currentUserId,
       savedCount,
       sidebarContent,
       profileUserId,
@@ -264,7 +284,7 @@ export function MessagesContainer({
     }),
     [
       channel,
-      guardian.id,
+      currentUserId,
       savedCount,
       sidebarContent,
       profileUserId,
@@ -282,7 +302,7 @@ export function MessagesContainer({
       onToggleReaction: handleToggleReaction,
       onToggleSaved: handleToggleSaved,
       onToggleHidden: handleToggleHidden,
-      currentUserId: guardian.id,
+      currentUserId,
       lastReadMessageId,
     }),
     [
@@ -292,7 +312,7 @@ export function MessagesContainer({
       handleToggleReaction,
       handleToggleSaved,
       handleToggleHidden,
-      guardian.id,
+      currentUserId,
       lastReadMessageId,
     ],
   );
@@ -306,7 +326,7 @@ export function MessagesContainer({
       onToggleReaction: handleToggleThreadReaction,
       onToggleSaved: handleToggleThreadSaved,
       onToggleHidden: handleToggleThreadHidden,
-      currentUserId: guardian.id,
+      currentUserId,
       lastReadMessageId,
     }),
     [
@@ -317,7 +337,7 @@ export function MessagesContainer({
       handleToggleThreadReaction,
       handleToggleThreadSaved,
       handleToggleThreadHidden,
-      guardian.id,
+      currentUserId,
       lastReadMessageId,
     ],
   );
@@ -340,7 +360,7 @@ export function MessagesContainer({
               <MessageList ref={messageListRef} {...messageListProps} />
               <MessageInput
                 onSend={handleSendMessage}
-                placeholder={`Message ${educator.displayName}`}
+                placeholder={`Message ${educator?.displayName ?? channel.topic}`}
               />
             </div>
             <MessagesSidebar
