@@ -7,7 +7,7 @@ import {
 export default function Page() {
   return (
     <>
-      <div className="flex h-[calc(100vh-1.5rem)] flex-col">
+      <div className="flex h-[calc(100vh-1.0rem)] flex-col">
         <DashboardHeader />
         <LearningSpaceContainer
           space={LEARNING_SPACE}

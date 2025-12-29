@@ -106,7 +106,7 @@ export const MessageInput = memo(function MessageInput({
     <div
       className={
         sticky
-          ? 'sticky bottom-0 z-10 w-full border-t border-border bg-card/95 backdrop-blur p-4'
+          ? 'sticky bottom-0 z-10 w-full border-t border-border backdrop-blur p-4 rounded-xl'
           : 'w-full border-t border-border bg-card/95 backdrop-blur p-4'
       }
     >
