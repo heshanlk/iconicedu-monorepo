@@ -2,17 +2,7 @@
 
 import { memo, useMemo } from 'react';
 import type { ReactNode } from 'react';
-import {
-  Info,
-  Sparkles,
-  User,
-  Users,
-  BookOpen,
-  Bookmark,
-  Clock,
-  type LucideIcon,
-} from 'lucide-react';
-import { Button } from '../../ui/button';
+import { Sparkles, User, Users, BookOpen, Bookmark, Clock, type LucideIcon } from 'lucide-react';
 import {
   Tooltip,
   TooltipContent,
@@ -22,7 +12,7 @@ import {
 import { cn } from '../../lib/utils';
 import { AvatarWithStatus } from '../shared/avatar-with-status';
 import type { ChannelVM, UserProfileVM } from '@iconicedu/shared-types';
-import { useMessagesContainer } from './messages-container-context';
+import { useRightSidebar } from './right-sidebar-provider';
 
 interface HeaderSubtitleItem {
   icon?: LucideIcon;
@@ -114,32 +104,6 @@ const HeaderSubtitleRow = memo(function HeaderSubtitleRow({
   );
 });
 
-const HeaderInfoButton = memo(function HeaderInfoButton({
-  isActive,
-  onOpenInfo,
-}: {
-  isActive: boolean;
-  onOpenInfo: () => void;
-}) {
-  return (
-    <Button
-      variant="ghost"
-      size="icon"
-      className="h-9 w-9 text-muted-foreground"
-      onClick={onOpenInfo}
-    >
-      <span
-        className={cn(
-          'flex h-9 w-9 items-center justify-center rounded-full bg-muted',
-          isActive && 'bg-primary/10 text-primary',
-        )}
-      >
-        <Info className={cn('h-3.5 w-3.5')} strokeWidth={3} />
-      </span>
-    </Button>
-  );
-});
-
 const CHANNEL_ICON_MAP: Record<string, LucideIcon> = {
   sparkles: Sparkles,
   book: BookOpen,
@@ -151,7 +115,6 @@ const HEADER_ICON_MAP: Record<string, LucideIcon> = {
   saved: Bookmark,
   'next-session': Clock,
   'last-seen': Clock,
-  info: Info,
 };
 
 const getOtherParticipant = (participants: UserProfileVM[], currentUserId: string) =>
@@ -160,18 +123,13 @@ const getOtherParticipant = (participants: UserProfileVM[], currentUserId: strin
 export const MessagesContainerHeader = memo(function MessagesContainerHeader({
   channel,
 }: MessagesContainerHeaderProps) {
-  const {
-    currentUserId,
-    savedCount,
-    sidebarContent,
-    profileUserId,
-    openInfo,
-    openProfile,
-    openSavedMessages,
-  } = useMessagesContainer();
+  const { savedCount, currentUserId } = useRightSidebar();
 
   const otherParticipant = useMemo(
-    () => (channel.kind === 'dm' ? getOtherParticipant(channel.participants, currentUserId) : null),
+    () =>
+      channel.kind === 'dm'
+        ? getOtherParticipant(channel.participants, currentUserId)
+        : null,
     [channel.kind, channel.participants, currentUserId],
   );
 
@@ -203,44 +161,18 @@ export const MessagesContainerHeader = memo(function MessagesContainerHeader({
 
   const subtitleItems: HeaderSubtitleItem[] = useMemo(
     () =>
-      channel.headerItems.map((item) => {
-        const icon = HEADER_ICON_MAP[item.key];
-        const label = item.key === 'saved' ? `${savedCount}` : item.label;
-        return {
-          icon,
-          label,
-          tooltip: item.tooltip ?? undefined,
-          onClick: item.key === 'saved' ? openSavedMessages : undefined,
-        };
-      }),
-    [channel.headerItems, savedCount, openSavedMessages],
+      channel.headerItems.map((item) => ({
+        icon: HEADER_ICON_MAP[item.key],
+        label: item.key === 'saved' ? `${savedCount}` : item.label,
+        tooltip: item.tooltip ?? undefined,
+      })),
+    [channel.headerItems, savedCount],
   );
 
-  const isInfoActive =
-    channel.kind === 'dm'
-      ? sidebarContent === 'profile' && profileUserId === otherParticipant?.id
-      : sidebarContent === 'space-info';
-
-  const handleOpenInfo = () => {
-    if (channel.kind === 'dm') {
-      if (otherParticipant) {
-        openProfile(otherParticipant.id);
-      }
-      return;
-    }
-    openInfo();
-  };
-
   return (
-    <header className="flex min-h-16 items-center justify-between gap-3 border-b border-border px-4 py-3">
-      <div className="flex min-w-0 flex-col">
-        <HeaderTitle title={title} leading={leading} />
-        {subtitleItems.length ? <HeaderSubtitleRow items={subtitleItems} /> : null}
-      </div>
-
-      <div className="flex items-center gap-3 sm:justify-end">
-        <HeaderInfoButton isActive={isInfoActive} onOpenInfo={handleOpenInfo} />
-      </div>
-    </header>
+    <div className="flex min-w-0 flex-col">
+      <HeaderTitle title={title} leading={leading} />
+      {subtitleItems.length ? <HeaderSubtitleRow items={subtitleItems} /> : null}
+    </div>
   );
 });
