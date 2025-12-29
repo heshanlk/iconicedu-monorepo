@@ -17,11 +17,7 @@ import type {
   MessagesRightPanelIntent,
 } from '@iconicedu/shared-types';
 import { useIsMobile } from '../../hooks/use-mobile';
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from '../../ui/resizable';
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '../../ui/resizable';
 
 interface MessagesRightPanelProps {
   intent: MessagesRightPanelIntent;
@@ -61,7 +57,9 @@ const MessagesShellLayout = memo(function MessagesShellLayout({
   const { state } = useMessagesState();
 
   const mainContent = (
-    <MessagesContainer {...props} />
+    <div className="flex min-h-0 flex-1 min-w-0">
+      <MessagesContainer {...props} />
+    </div>
   );
 
   const rightPanel = (
@@ -90,14 +88,23 @@ const MessagesShellLayout = memo(function MessagesShellLayout({
         <MessagesContainerHeaderActions />
       </header>
       <div className="flex flex-1 overflow-hidden">
-        <ResizablePanelGroup direction="horizontal" className="flex-1">
-          <ResizablePanel defaultSize={state.isOpen ? 70 : 100} minSize={50}>
+        <ResizablePanelGroup direction="horizontal" className="flex-1 min-w-0">
+          <ResizablePanel
+            defaultSize={state.isOpen ? 65 : 100}
+            minSize={50}
+            className="min-w-0"
+          >
             {mainContent}
           </ResizablePanel>
           {state.isOpen ? (
             <>
               <ResizableHandle withHandle />
-              <ResizablePanel defaultSize={30} minSize={20} maxSize={45}>
+              <ResizablePanel
+                defaultSize={45}
+                minSize={25}
+                maxSize={50}
+                className="min-w-0"
+              >
                 {rightPanel}
               </ResizablePanel>
             </>

@@ -87,13 +87,13 @@ export function MessagesSidebar({
     <div
       data-state={open ? 'open' : 'closed'}
       className={cn(
-        'hidden md:flex overflow-hidden',
+        'hidden md:flex overflow-hidden min-w-0 flex-1',
         layout === 'resizable'
           ? 'w-full transition-[opacity,transform] duration-200 motion-reduce:transition-none data-[state=closed]:pointer-events-none data-[state=closed]:opacity-0 data-[state=closed]:translate-x-4 data-[state=open]:opacity-100 data-[state=open]:translate-x-0'
           : 'transition-[width,opacity,transform] duration-200 motion-reduce:transition-none data-[state=closed]:w-0 data-[state=closed]:pointer-events-none data-[state=closed]:opacity-0 data-[state=closed]:translate-x-4 data-[state=open]:w-[360px] data-[state=open]:opacity-100 data-[state=open]:translate-x-0',
       )}
     >
-      <Card className="w-full min-h-0 flex-col rounded-none border-0 border-l border-border bg-card">
+      <Card className="flex h-full w-full min-h-0 flex-col rounded-none border-0 border-l border-border bg-card">
         <CardHeader className="border-b border-border px-4 py-3">
           <SidebarHeader title={title} subtitle={subtitle} onClose={onClose} />
         </CardHeader>

@@ -201,7 +201,7 @@ export function MessagesContainer({
   );
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
+    <div className="flex h-full min-h-0 flex-1 min-w-0 flex-col">
       <MessageList ref={messageListRef} {...messageListProps} />
       <MessageInput
         onSend={handleSendMessage}

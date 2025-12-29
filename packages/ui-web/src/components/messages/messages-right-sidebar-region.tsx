@@ -53,6 +53,7 @@ export const MessagesRightSidebarRegion = memo(function MessagesRightSidebarRegi
       subtitle={meta.subtitle}
       onClose={close}
       layout={layout}
+      className="min-w-0 flex-1"
     >
       {Panel && state.intent ? <Panel intent={state.intent} /> : null}
     </MessagesSidebar>
