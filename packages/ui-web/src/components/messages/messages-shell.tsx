@@ -6,7 +6,7 @@ import type { MessagesContainerProps } from './messages-container';
 import { MessagesContainer } from './messages-container';
 import { MessagesContainerHeader } from './messages-container-header';
 import { MessagesContainerHeaderActions } from './messages-container-header-actions';
-import { MessagesStateProvider } from './messages-state-provider';
+import { MessagesStateProvider, useMessagesState } from './messages-state-provider';
 import { MessagesRightSidebarRegion } from './messages-right-sidebar-region';
 import { ChannelInfoPanel } from './panels/channel-info-panel';
 import { ProfilePanel } from './panels/profile-panel';
@@ -16,6 +16,12 @@ import type {
   MessagesRightPanelRegistry,
   MessagesRightPanelIntent,
 } from '@iconicedu/shared-types';
+import { useIsMobile } from '../../hooks/use-mobile';
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from '../../ui/resizable';
 
 interface MessagesRightPanelProps {
   intent: MessagesRightPanelIntent;
@@ -38,16 +44,66 @@ export const MessagesShell = memo(function MessagesShell(props: MessagesContaine
 
   return (
     <MessagesStateProvider channel={channel}>
+      <MessagesShellLayout {...props} registry={rightPanelRegistry} />
+    </MessagesStateProvider>
+  );
+});
+
+interface MessagesShellLayoutProps extends MessagesContainerProps {
+  registry: MessagesRightPanelRegistry<ComponentType<MessagesRightPanelProps>>;
+}
+
+const MessagesShellLayout = memo(function MessagesShellLayout({
+  registry,
+  ...props
+}: MessagesShellLayoutProps) {
+  const isMobile = useIsMobile();
+  const { state } = useMessagesState();
+
+  const mainContent = (
+    <MessagesContainer {...props} />
+  );
+
+  const rightPanel = (
+    <MessagesRightSidebarRegion registry={registry} layout="resizable" />
+  );
+
+  if (isMobile) {
+    return (
       <div className="flex h-full min-h-0 flex-col">
         <header className="flex min-h-16 items-center justify-between gap-3 border-b border-border px-4 py-3">
-          <MessagesContainerHeader channel={channel} />
+          <MessagesContainerHeader channel={props.channel} />
           <MessagesContainerHeaderActions />
         </header>
-        <div className="flex flex-1 verflow-hidden">
-          <MessagesContainer {...props} />
-          <MessagesRightSidebarRegion registry={rightPanelRegistry} />
+        <div className="flex flex-1 overflow-hidden">
+          {mainContent}
+          <MessagesRightSidebarRegion registry={registry} />
         </div>
       </div>
-    </MessagesStateProvider>
+    );
+  }
+
+  return (
+    <div className="flex h-full min-h-0 flex-col">
+      <header className="flex min-h-16 items-center justify-between gap-3 border-b border-border px-4 py-3">
+        <MessagesContainerHeader channel={props.channel} />
+        <MessagesContainerHeaderActions />
+      </header>
+      <div className="flex flex-1 overflow-hidden">
+        <ResizablePanelGroup direction="horizontal" className="flex-1">
+          <ResizablePanel defaultSize={state.isOpen ? 70 : 100} minSize={50}>
+            {mainContent}
+          </ResizablePanel>
+          {state.isOpen ? (
+            <>
+              <ResizableHandle withHandle />
+              <ResizablePanel defaultSize={30} minSize={20} maxSize={45}>
+                {rightPanel}
+              </ResizablePanel>
+            </>
+          ) : null}
+        </ResizablePanelGroup>
+      </div>
+    </div>
   );
 });

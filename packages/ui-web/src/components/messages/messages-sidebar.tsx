@@ -16,6 +16,7 @@ interface MessagesSidebarProps {
   onClose: () => void;
   children: ReactNode;
   mobileScrollable?: boolean;
+  layout?: 'fixed' | 'resizable';
   className?: string;
 }
 
@@ -55,6 +56,7 @@ export function MessagesSidebar({
   open,
   onClose,
   children,
+  layout = 'fixed',
   className,
 }: MessagesSidebarProps) {
   const isMobile = useIsMobile();
@@ -86,9 +88,9 @@ export function MessagesSidebar({
       data-state={open ? 'open' : 'closed'}
       className={cn(
         'hidden md:flex overflow-hidden',
-        'transition-[width,opacity,transform] duration-200 motion-reduce:transition-none',
-        'data-[state=closed]:w-0 data-[state=closed]:pointer-events-none data-[state=closed]:opacity-0 data-[state=closed]:translate-x-4',
-        'data-[state=open]:opacity-100 data-[state=open]:translate-x-0',
+        layout === 'resizable'
+          ? 'w-full transition-[opacity,transform] duration-200 motion-reduce:transition-none data-[state=closed]:pointer-events-none data-[state=closed]:opacity-0 data-[state=closed]:translate-x-4 data-[state=open]:opacity-100 data-[state=open]:translate-x-0'
+          : 'transition-[width,opacity,transform] duration-200 motion-reduce:transition-none data-[state=closed]:w-0 data-[state=closed]:pointer-events-none data-[state=closed]:opacity-0 data-[state=closed]:translate-x-4 data-[state=open]:w-[360px] data-[state=open]:opacity-100 data-[state=open]:translate-x-0',
       )}
     >
       <Card className="w-full min-h-0 flex-col rounded-none border-0 border-l border-border bg-card">

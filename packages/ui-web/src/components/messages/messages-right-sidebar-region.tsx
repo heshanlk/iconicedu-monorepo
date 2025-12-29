@@ -10,6 +10,7 @@ import { MessagesSidebar } from './messages-sidebar';
 import { useMessagesState } from './messages-state-provider';
 interface MessagesRightSidebarRegionProps {
   registry: MessagesRightPanelRegistry<ComponentType<MessagesRightPanelProps>>;
+  layout?: 'fixed' | 'resizable';
 }
 
 interface MessagesRightPanelProps {
@@ -34,6 +35,7 @@ const getSidebarMeta = (intent: MessagesRightPanelIntent | null) => {
 
 export const MessagesRightSidebarRegion = memo(function MessagesRightSidebarRegion({
   registry,
+  layout = 'fixed',
 }: MessagesRightSidebarRegionProps) {
   const { state, close } = useMessagesState();
 
@@ -45,7 +47,13 @@ export const MessagesRightSidebarRegion = memo(function MessagesRightSidebarRegi
   const meta = getSidebarMeta(state.intent);
 
   return (
-    <MessagesSidebar open={state.isOpen} title={meta.title} subtitle={meta.subtitle} onClose={close}>
+    <MessagesSidebar
+      open={state.isOpen}
+      title={meta.title}
+      subtitle={meta.subtitle}
+      onClose={close}
+      layout={layout}
+    >
       {Panel && state.intent ? <Panel intent={state.intent} /> : null}
     </MessagesSidebar>
   );
