@@ -1,21 +1,9 @@
 'use client';
 
 import { memo } from 'react';
-import { Info, Bookmark, Calendar, Clock, MoreHorizontal, Sparkles } from 'lucide-react';
+import { Bookmark, Clock, Info, Sparkles } from 'lucide-react';
 import { Button } from '../../ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '../../ui/dropdown-menu';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '../../ui/tooltip';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../../ui/tooltip';
 import { cn } from '../../lib/utils';
 
 interface LearningSpaceHeaderProps {
@@ -25,8 +13,7 @@ interface LearningSpaceHeaderProps {
   savedCount: number;
   onOpenInfo: () => void;
   onSavedMessagesClick: () => void;
-  joinUrl?: string;
-  accentColor?: string;
+  isInfoActive?: boolean;
 }
 
 const HeaderChip = memo(function HeaderChip({
@@ -35,7 +22,7 @@ const HeaderChip = memo(function HeaderChip({
   onClick,
   className,
 }: {
-  icon: typeof Calendar;
+  icon?: typeof Clock;
   label: string;
   onClick?: () => void;
   className?: string;
@@ -43,15 +30,15 @@ const HeaderChip = memo(function HeaderChip({
   const content = (
     <span
       className={cn(
-        'inline-flex items-center gap-1.5 rounded-full bg-muted px-2.5 py-1 text-xs text-muted-foreground',
-        onClick && 'cursor-pointer hover:text-foreground transition-colors',
+        'inline-flex items-center gap-1.5 text-xs text-muted-foreground',
+        onClick && 'cursor-pointer',
         className,
       )}
       onClick={onClick}
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
     >
-      <Icon className="h-3.5 w-3.5" />
+      {Icon ? <Icon className="h-3.5 w-3.5" /> : null}
       <span className="truncate">{label}</span>
     </span>
   );
@@ -73,79 +60,46 @@ export const LearningSpaceHeader = memo(function LearningSpaceHeader({
   savedCount,
   onOpenInfo,
   onSavedMessagesClick,
-  joinUrl,
-  accentColor = 'bg-emerald-100 text-emerald-700',
+  isInfoActive = false,
 }: LearningSpaceHeaderProps) {
   return (
-    <header className="flex min-h-16 items-center justify-between gap-4 border-b border-border bg-muted/40 px-4 py-3">
-      <div className="flex min-w-0 items-start gap-3">
-        <div
-          className={cn(
-            'mt-0.5 flex h-9 w-9 items-center justify-center rounded-xl',
-            accentColor,
-          )}
-        >
-          <Sparkles className="h-4 w-4" />
-        </div>
-        <div className="flex min-w-0 flex-col">
+    <header className="flex min-h-16 items-center justify-between gap-3 border-b border-border px-4 py-3">
+      <div className="flex min-w-0 flex-col">
         <div className="flex items-center gap-2">
-          <span className="truncate text-sm font-semibold text-foreground">
-            {title}
+          <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+            <Sparkles className="h-3.5 w-3.5" />
           </span>
+          <span className="truncate text-sm font-semibold text-foreground">{title}</span>
         </div>
-        <div className="mt-1.5 flex flex-wrap items-center gap-2">
-          <HeaderChip icon={Calendar} label={schedule} />
-          <HeaderChip icon={Clock} label={nextSession} />
+        <div className="mt-1.5 flex flex-wrap items-center gap-3">
           <HeaderChip
             icon={Bookmark}
-            label={`${savedCount} saved`}
+            label={`${savedCount}`}
             onClick={onSavedMessagesClick}
-            className="bg-primary/10 text-primary"
+            className="text-muted-foreground"
           />
-        </div>
+          <span className="h-4 w-px bg-border" aria-hidden="true" />
+          <HeaderChip icon={Clock} label={nextSession} />
         </div>
       </div>
 
-      <TooltipProvider>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" asChild={Boolean(joinUrl)}>
-            {joinUrl ? (
-              <a href={joinUrl} target="_blank" rel="noreferrer">
-                Join
-              </a>
-            ) : (
-              <span>Join</span>
+      <div className="flex items-center gap-3 sm:justify-end">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-9 w-9 text-muted-foreground"
+          onClick={onOpenInfo}
+        >
+          <span
+            className={cn(
+              'flex h-6 w-6 items-center justify-center rounded-full bg-muted',
+              isInfoActive && 'bg-primary/10 text-primary',
             )}
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-9 w-9 text-muted-foreground hover:text-foreground"
-            onClick={onOpenInfo}
           >
-            <Info className="h-4 w-4" />
-          </Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-9 w-9 text-muted-foreground hover:text-foreground"
-              >
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem onClick={onOpenInfo}>View details</DropdownMenuItem>
-              <DropdownMenuItem>Mute updates</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-destructive">
-                Leave space
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </TooltipProvider>
+            <Info className={cn('h-3.5 w-3.5')} strokeWidth={3} />
+          </span>
+        </Button>
+      </div>
     </header>
   );
 });

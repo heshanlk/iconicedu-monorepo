@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useMemo, useRef, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { MessageList, type MessageListRef } from './message-list';
 import { ThreadPanel } from './thread-panel';
@@ -13,7 +13,7 @@ import { MessageInput } from './message-input';
 import { MessageHeader } from './messages-header';
 import { useIsMobile } from '../../hooks/use-mobile';
 import { useMessages } from '../../hooks/use-messages';
-import { useDMSidebar } from '../../hooks/use-messages-sidebar';
+import { useDMSidebar, type SidebarContent } from '../../hooks/use-messages-sidebar';
 import { useThread } from '../../hooks/use-thread';
 import type {
   ThreadVM,
@@ -31,6 +31,7 @@ export interface MessagesContainerProps {
   renderHeader?: (props: MessagesHeaderRenderProps) => ReactNode;
   infoPanel?: ReactNode;
   infoPanelMeta?: { title: string; subtitle?: string };
+  defaultSidebarContent?: SidebarContent;
 }
 
 export interface MessagesHeaderRenderProps {
@@ -40,6 +41,7 @@ export interface MessagesHeaderRenderProps {
   onProfileClick: (userId: string) => void;
   onSavedMessagesClick: () => void;
   onOpenInfo: () => void;
+  isInfoActive: boolean;
 }
 
 export function MessagesContainer({
@@ -51,6 +53,7 @@ export function MessagesContainer({
   renderHeader,
   infoPanel,
   infoPanelMeta,
+  defaultSidebarContent,
 }: MessagesContainerProps) {
   const isMobile = useIsMobile();
   const messageListRef = useRef<MessageListRef>(null);
@@ -161,6 +164,12 @@ export function MessagesContainer({
     openInfo();
   }, [infoPanel, sidebarContent, closeSidebar, openInfo]);
 
+  useEffect(() => {
+    if (defaultSidebarContent === 'space-info' && infoPanel) {
+      openInfo();
+    }
+  }, [defaultSidebarContent, infoPanel, openInfo]);
+
   const handleCloseSidebar = useCallback(() => {
     closeSidebar();
   }, [closeSidebar]);
@@ -246,9 +255,7 @@ export function MessagesContainer({
     return { title: '', subtitle: undefined };
   }, [sidebarContent, activeThread, messages, infoPanelMeta]);
 
-  const savedCount = useMemo(() => messages.filter((m) => m.isSaved).length, [
-    messages,
-  ]);
+  const savedCount = useMemo(() => messages.filter((m) => m.isSaved).length, [messages]);
 
   const headerNode = renderHeader ? (
     renderHeader({
@@ -258,6 +265,7 @@ export function MessagesContainer({
       onProfileClick: handleProfileClick,
       onSavedMessagesClick: handleSavedMessagesClick,
       onOpenInfo: handleOpenInfo,
+      isInfoActive: sidebarContent === 'space-info',
     })
   ) : (
     <MessageHeader

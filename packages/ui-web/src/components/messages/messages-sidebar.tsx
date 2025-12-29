@@ -5,7 +5,7 @@ import { X } from 'lucide-react';
 import { useIsMobile } from '../../hooks/use-mobile';
 import { Button } from '../../ui/button';
 import { Card, CardContent, CardHeader } from '../../ui/card';
-import { Drawer, DrawerContent, DrawerHeader } from '../../ui/drawer';
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '../../ui/drawer';
 import { ScrollArea } from '../../ui/scroll-area';
 import { cn } from '../../lib/utils';
 
@@ -70,6 +70,7 @@ export function MessagesSidebar({
           )}
         >
           <DrawerHeader className="border-b border-border px-4 py-3">
+            <DrawerTitle className="sr-only">{title}</DrawerTitle>
             <SidebarHeader title={title} subtitle={subtitle} onClose={onClose} />
           </DrawerHeader>
           <div className="flex min-h-0 flex-1 flex-col overflow-hidden">

@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { MessagesContainer } from '../messages/messages-container';
 import type {
   MessagesContainerProps,
@@ -7,6 +8,7 @@ import type {
 } from '../messages/messages-container';
 import { LearningSpaceHeader } from './learning-space-header';
 import { LearningSpaceInfoPanel } from './learning-space-info-panel';
+import { useIsMobile } from '../../hooks/use-mobile';
 
 interface LearningSpaceMember {
   id: string;
@@ -30,14 +32,18 @@ export interface LearningSpaceContainerProps extends MessagesContainerProps {
   space: LearningSpaceMeta;
 }
 
-export function LearningSpaceContainer({
-  space,
-  ...props
-}: LearningSpaceContainerProps) {
+export function LearningSpaceContainer({ space, ...props }: LearningSpaceContainerProps) {
+  const isMobile = useIsMobile();
+  const [hasMounted, setHasMounted] = useState(false);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
   const renderHeader = ({
     savedCount,
     onSavedMessagesClick,
     onOpenInfo,
+    isInfoActive,
   }: MessagesHeaderRenderProps) => (
     <LearningSpaceHeader
       title={space.title}
@@ -46,8 +52,7 @@ export function LearningSpaceContainer({
       savedCount={savedCount}
       onSavedMessagesClick={onSavedMessagesClick}
       onOpenInfo={onOpenInfo}
-      joinUrl={space.joinUrl}
-      accentColor={space.accentColor}
+      isInfoActive={isInfoActive}
     />
   );
 
@@ -63,9 +68,11 @@ export function LearningSpaceContainer({
           members={space.members}
           schedule={space.schedule}
           nextSession={space.nextSession}
+          joinUrl={space.joinUrl}
         />
       }
       infoPanelMeta={{ title: 'Details', subtitle: space.title }}
+      defaultSidebarContent={hasMounted && !isMobile ? 'space-info' : undefined}
     />
   );
 }
