@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useMemo, useRef, useEffect } from 'react';
+import type { ReactNode } from 'react';
 import { MessageList, type MessageListRef } from './message-list';
 import { ThreadPanel } from './thread-panel';
 import { ThreadSheet } from './thread-sheet';

@@ -193,8 +193,7 @@ export const MessagesContainerHeader = memo(function MessagesContainerHeader({
         />
       );
     }
-    const Icon =
-      (channel.topicIconKey && CHANNEL_ICON_MAP[channel.topicIconKey]) ?? Sparkles;
+    const Icon = CHANNEL_ICON_MAP[channel.topicIconKey ?? ''] ?? Sparkles;
     return (
       <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-muted text-muted-foreground">
         <Icon className="h-3.5 w-3.5" />
