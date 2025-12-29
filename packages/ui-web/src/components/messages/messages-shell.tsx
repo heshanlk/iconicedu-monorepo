@@ -8,12 +8,15 @@ import { MessagesContainerHeader } from './messages-container-header';
 import { ChannelHeaderActions } from './channel-header-actions';
 import { RightSidebarProvider, useRightSidebar } from './right-sidebar-provider';
 import { RightSidebarRegion } from './right-sidebar-region';
-import { ChannelInfoPanel } from './panels/channel-info-panel';
 import { PinnedPanel } from './panels/pinned-panel';
-import { SavedPanel } from './panels/saved-panel';
-import { ProfilePanel } from './panels/profile-panel';
-import { ThreadPanel } from './panels/thread-panel';
+import { SavedMessagesPanel } from './saved-messages-panel';
+import { ProfilePanel as DetailedProfilePanel } from './profile-panel';
+import { ProfileSheet } from './profile-sheet';
+import { ThreadPanel as DetailedThreadPanel } from './thread-panel';
+import { ThreadSheet } from './thread-sheet';
+import { LearningSpaceInfoPanel } from '../learning-space/learning-space-info-panel';
 import type { RightPanelRegistry, RightPanelIntent } from '@iconicedu/shared-types';
+import { useIsMobile } from '../../hooks/use-mobile';
 
 interface RightPanelProps {
   intent: RightPanelIntent;
@@ -21,12 +24,38 @@ interface RightPanelProps {
 
 function ChannelInfoPanelWrapper(_: RightPanelProps) {
   const { channel } = useRightSidebar();
-  return <ChannelInfoPanel channel={channel} />;
+  const members = channel.participants.map((participant) => ({
+    id: participant.id,
+    name: participant.displayName,
+    role: participant.status ?? undefined,
+    avatarUrl: participant.avatar.url ?? null,
+  }));
+  const nextSessionItem = channel.headerItems.find((item) => item.key === 'next-session');
+
+  return (
+    <LearningSpaceInfoPanel
+      title={channel.topic}
+      topic={channel.topic}
+      description={channel.description ?? undefined}
+      members={members}
+      schedule={null}
+      nextSession={nextSessionItem?.label}
+      joinUrl={undefined}
+    />
+  );
 }
 
 function SavedPanelWrapper(_: RightPanelProps) {
-  const { savedCount } = useRightSidebar();
-  return <SavedPanel savedCount={savedCount} />;
+  const { messages, scrollToMessage, close } = useRightSidebar();
+  return (
+    <SavedMessagesPanel
+      messages={messages}
+      onMessageClick={(messageId) => {
+        close();
+        scrollToMessage?.(messageId);
+      }}
+    />
+  );
 }
 
 function PinnedPanelWrapper(_: RightPanelProps) {
@@ -34,17 +63,60 @@ function PinnedPanelWrapper(_: RightPanelProps) {
 }
 
 function ProfilePanelWrapper({ intent }: RightPanelProps) {
-  const { channel } = useRightSidebar();
+  const isMobile = useIsMobile();
+  const { channel, toggle } = useRightSidebar();
   if (intent.key !== 'profile') return null;
   const user = channel.participants.find((participant) => participant.id === intent.userId);
-  return <ProfilePanel user={user ?? null} />;
+  if (isMobile) {
+    return (
+      <ProfileSheet
+        user={user ?? null}
+        onSavedMessagesClick={() => toggle({ key: 'saved' })}
+      />
+    );
+  }
+  return (
+    <DetailedProfilePanel
+      user={user ?? null}
+      onSavedMessagesClick={() => toggle({ key: 'saved' })}
+    />
+  );
 }
 
 function ThreadPanelWrapper({ intent }: RightPanelProps) {
-  const { getThreadData } = useRightSidebar();
+  const isMobile = useIsMobile();
+  const { getThreadData, createTextMessage, appendThreadMessage, toggle, currentUserId } =
+    useRightSidebar();
   if (intent.key !== 'thread') return null;
   const threadData = getThreadData(intent.threadId);
-  return <ThreadPanel threadId={intent.threadId} messages={threadData?.messages} />;
+  if (!threadData) return null;
+  const onSendReply = (content: string) => {
+    const message = createTextMessage?.(content);
+    if (!message) return;
+    appendThreadMessage(intent.threadId, message);
+  };
+  const onProfileClick = (userId: string) => toggle({ key: 'profile', userId });
+
+  if (isMobile) {
+    return (
+      <ThreadSheet
+        thread={threadData.thread}
+        messages={threadData.messages}
+        onSendReply={onSendReply}
+        onProfileClick={onProfileClick}
+        currentUserId={currentUserId}
+      />
+    );
+  }
+  return (
+    <DetailedThreadPanel
+      thread={threadData.thread}
+      messages={threadData.messages}
+      onSendReply={onSendReply}
+      onProfileClick={onProfileClick}
+      currentUserId={currentUserId}
+    />
+  );
 }
 
 export const MessagesShell = memo(function MessagesShell(props: MessagesContainerProps) {

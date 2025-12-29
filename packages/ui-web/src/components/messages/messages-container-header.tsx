@@ -123,7 +123,7 @@ const getOtherParticipant = (participants: UserProfileVM[], currentUserId: strin
 export const MessagesContainerHeader = memo(function MessagesContainerHeader({
   channel,
 }: MessagesContainerHeaderProps) {
-  const { savedCount, currentUserId } = useRightSidebar();
+  const { savedCount, currentUserId, toggle } = useRightSidebar();
 
   const otherParticipant = useMemo(
     () =>
@@ -165,8 +165,9 @@ export const MessagesContainerHeader = memo(function MessagesContainerHeader({
         icon: HEADER_ICON_MAP[item.key],
         label: item.key === 'saved' ? `${savedCount}` : item.label,
         tooltip: item.tooltip ?? undefined,
+        onClick: item.key === 'saved' ? () => toggle({ key: 'saved' }) : undefined,
       })),
-    [channel.headerItems, savedCount],
+    [channel.headerItems, savedCount, toggle],
   );
 
   return (

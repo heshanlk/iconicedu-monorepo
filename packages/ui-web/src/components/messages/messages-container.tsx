@@ -33,7 +33,16 @@ export function MessagesContainer({
   lastReadMessageId,
 }: MessagesContainerProps) {
   const messageListRef = useRef<MessageListRef>(null);
-  const { toggle, setSavedCount, setThreadData, setCurrentUserId } = useRightSidebar();
+  const {
+    toggle,
+    setSavedCount,
+    setThreadData,
+    setCurrentUserId,
+    setMessages,
+    setCreateTextMessage,
+    appendThreadMessage,
+    setScrollToMessage,
+  } = useRightSidebar();
   const channelMessages = channel.messages?.items ?? [];
   const { messages, addMessage, toggleReaction, toggleSaved, toggleHidden } =
     useMessages(channelMessages);
@@ -51,7 +60,7 @@ export function MessagesContainer({
   const handleOpenThread = useCallback(
     (thread: ThreadVM, parentMessage: MessageVM) => {
       const threadMessages = initialThreadMessages[thread.id] || [parentMessage];
-      setThreadData(thread.id, threadMessages);
+      setThreadData(thread, threadMessages);
       toggle({ key: 'thread', threadId: thread.id });
     },
     [initialThreadMessages, setThreadData, toggle],
@@ -116,6 +125,31 @@ export function MessagesContainer({
       setCurrentUserId(currentUserId);
     }
   }, [currentUserId, setCurrentUserId]);
+
+  useEffect(() => {
+    setMessages(messages);
+  }, [messages, setMessages]);
+
+  useEffect(() => {
+    if (!senderProfile) return;
+    setCreateTextMessage(() => (content: string) => ({
+      id: `reply-${Date.now()}`,
+      type: 'text',
+      content,
+      sender: senderProfile,
+      timestamp: new Date().toISOString(),
+      reactions: [],
+      visibility: { type: 'all' },
+      isSaved: false,
+      isRead: true,
+    }));
+  }, [senderProfile, setCreateTextMessage]);
+
+  useEffect(() => {
+    setScrollToMessage(() => (messageId: string) => {
+      messageListRef.current?.scrollToMessage(messageId);
+    });
+  }, [setScrollToMessage]);
 
   const messageListProps = useMemo(
     () => ({

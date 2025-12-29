@@ -7,10 +7,12 @@ import type {
   RightPanelIntent,
   RightPanelIntentKey,
   RightSidebarState,
+  TextMessageVM,
+  ThreadVM,
 } from '@iconicedu/shared-types';
 
 type ThreadData = {
-  threadId: string;
+  thread: ThreadVM;
   messages: MessageVM[];
 };
 
@@ -18,6 +20,8 @@ interface RightSidebarContextValue {
   channel: ChannelVM;
   currentUserId: string;
   savedCount: number;
+  messages: MessageVM[];
+  createTextMessage: (content: string) => TextMessageVM | null;
   state: RightSidebarState;
   open: (intent: RightPanelIntent) => void;
   close: () => void;
@@ -25,8 +29,13 @@ interface RightSidebarContextValue {
   isActive: (key: RightPanelIntentKey, intent?: RightPanelIntent) => boolean;
   setCurrentUserId: (userId: string) => void;
   setSavedCount: (count: number) => void;
-  setThreadData: (threadId: string, messages: MessageVM[]) => void;
+  setMessages: (messages: MessageVM[]) => void;
+  setCreateTextMessage: (factory: (content: string) => TextMessageVM | null) => void;
+  appendThreadMessage: (threadId: string, message: MessageVM) => void;
+  setThreadData: (thread: ThreadVM, messages: MessageVM[]) => void;
   getThreadData: (threadId: string) => ThreadData | undefined;
+  setScrollToMessage: (handler: (messageId: string) => void) => void;
+  scrollToMessage?: (messageId: string) => void;
 }
 
 const RightSidebarContext = createContext<RightSidebarContextValue | null>(null);
@@ -56,9 +65,16 @@ export function RightSidebarProvider({
   });
   const [currentUserId, setCurrentUserId] = useState('');
   const [savedCount, setSavedCount] = useState(0);
+  const [messages, setMessages] = useState<MessageVM[]>([]);
+  const [createTextMessage, setCreateTextMessage] = useState<
+    (content: string) => TextMessageVM | null
+  >(() => null);
   const [threadData, setThreadDataState] = useState<Record<string, ThreadData>>(
     {},
   );
+  const [scrollToMessage, setScrollToMessage] = useState<
+    ((messageId: string) => void) | undefined
+  >(undefined);
 
   const open = useCallback((intent: RightPanelIntent) => {
     setState({ isOpen: true, intent });
@@ -92,8 +108,19 @@ export function RightSidebarProvider({
     [state.intent, state.isOpen],
   );
 
-  const setThreadData = useCallback((threadId: string, messages: MessageVM[]) => {
-    setThreadDataState((prev) => ({ ...prev, [threadId]: { threadId, messages } }));
+  const setThreadData = useCallback((thread: ThreadVM, messages: MessageVM[]) => {
+    setThreadDataState((prev) => ({ ...prev, [thread.id]: { thread, messages } }));
+  }, []);
+
+  const appendThreadMessage = useCallback((threadId: string, message: MessageVM) => {
+    setThreadDataState((prev) => {
+      const existing = prev[threadId];
+      if (!existing) return prev;
+      return {
+        ...prev,
+        [threadId]: { ...existing, messages: [...existing.messages, message] },
+      };
+    });
   }, []);
 
   const getThreadData = useCallback(
@@ -106,6 +133,8 @@ export function RightSidebarProvider({
       channel,
       currentUserId,
       savedCount,
+      messages,
+      createTextMessage,
       state,
       open,
       close,
@@ -113,13 +142,20 @@ export function RightSidebarProvider({
       isActive,
       setCurrentUserId,
       setSavedCount,
+      setMessages,
+      setCreateTextMessage,
+      appendThreadMessage,
       setThreadData,
       getThreadData,
+      setScrollToMessage,
+      scrollToMessage,
     }),
     [
       channel,
       currentUserId,
       savedCount,
+      messages,
+      createTextMessage,
       state,
       open,
       close,
@@ -127,8 +163,13 @@ export function RightSidebarProvider({
       isActive,
       setCurrentUserId,
       setSavedCount,
+      setMessages,
+      setCreateTextMessage,
+      appendThreadMessage,
       setThreadData,
       getThreadData,
+      setScrollToMessage,
+      scrollToMessage,
     ],
   );
 
