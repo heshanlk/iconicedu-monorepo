@@ -1,5 +1,6 @@
 import type {
   ChannelVM,
+  MessageReadStateVM,
   MessageVM,
   TextMessageVM,
   ImageMessageVM,
@@ -12,12 +13,16 @@ export const DIRECT_GUARDIAN = MOCK_GUARDIAN;
 export const DIRECT_EDUCATOR = MOCK_EDUCATOR;
 export const DIRECT_ALT_EDUCATOR = MOCK_EDUCATOR_2;
 
-export const DIRECT_LAST_READ_MESSAGE_ID = 'dm-6';
-
 const hoursAgo = (hours: number) =>
   new Date(Date.now() - 1000 * 60 * 60 * hours).toISOString();
 const minutesAgo = (minutes: number) =>
   new Date(Date.now() - 1000 * 60 * minutes).toISOString();
+
+export const DIRECT_READ_STATE: MessageReadStateVM = {
+  lastReadMessageId: 'dm-6',
+  lastReadAt: minutesAgo(10),
+  unreadCount: 0,
+};
 
 export const DIRECT_MESSAGES: MessageVM[] = [
   {
@@ -25,30 +30,27 @@ export const DIRECT_MESSAGES: MessageVM[] = [
     type: 'text',
     content: 'Hey! Are we still on for the session this afternoon?',
     sender: DIRECT_GUARDIAN,
-    timestamp: hoursAgo(5),
+    createdAt: hoursAgo(5),
     reactions: [],
     visibility: { type: 'sender-only' },
-    isRead: true,
   } as TextMessageVM,
   {
     id: 'dm-2',
     type: 'text',
     content: 'Yes — 4:30 PM works great. I will share the Zoom link soon.',
     sender: DIRECT_EDUCATOR,
-    timestamp: hoursAgo(4.5),
-    reactions: [{ emoji: '✅', count: 1, users: [MOCK_GUARDIAN.id] }],
+    createdAt: hoursAgo(4.5),
+    reactions: [{ emoji: '✅', count: 1, sampleUserIds: [MOCK_GUARDIAN.id] }],
     visibility: { type: 'all' },
-    isRead: true,
   } as TextMessageVM,
   {
     id: 'dm-3',
     type: 'image',
     content: 'Here is the worksheet photo from today.',
     sender: DIRECT_GUARDIAN,
-    timestamp: hoursAgo(3),
+    createdAt: hoursAgo(3),
     reactions: [],
     visibility: { type: 'all' },
-    isRead: true,
     attachment: {
       type: 'image',
       url: 'https://images.unsplash.com/photo-1509228627152-72ae9ae6848d?auto=format&fit=crop&w=800&q=80',
@@ -62,10 +64,9 @@ export const DIRECT_MESSAGES: MessageVM[] = [
     type: 'file',
     content: 'Sharing the notes PDF before class.',
     sender: DIRECT_EDUCATOR,
-    timestamp: hoursAgo(2),
+    createdAt: hoursAgo(2),
     reactions: [],
     visibility: { type: 'all' },
-    isRead: true,
     attachment: {
       type: 'file',
       url: '/documents/lesson-notes.pdf',
@@ -79,10 +80,9 @@ export const DIRECT_MESSAGES: MessageVM[] = [
     type: 'link-preview',
     content: "Here is a quick reference for today's topic.",
     sender: DIRECT_ALT_EDUCATOR,
-    timestamp: hoursAgo(1.5),
+    createdAt: hoursAgo(1.5),
     reactions: [],
     visibility: { type: 'all' },
-    isRead: false,
     link: {
       url: 'https://www.khanacademy.org/math/algebra',
       title: 'Algebra | Khan Academy',
@@ -97,10 +97,9 @@ export const DIRECT_MESSAGES: MessageVM[] = [
     type: 'text',
     content: "Got it -- thanks! I'll join a few minutes early.",
     sender: DIRECT_GUARDIAN,
-    timestamp: minutesAgo(15),
-    reactions: [{ emoji: '👍', count: 1, users: [MOCK_EDUCATOR.id] }],
+    createdAt: minutesAgo(15),
+    reactions: [{ emoji: '👍', count: 1, sampleUserIds: [MOCK_EDUCATOR.id] }],
     visibility: { type: 'all' },
-    isRead: false,
   } as TextMessageVM,
 ];
 

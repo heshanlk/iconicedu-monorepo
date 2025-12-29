@@ -53,8 +53,8 @@ export const EventReminderMessage = memo(function EventReminderMessage(
     });
   };
 
-  const startTime = new Date(event.startTime);
-  const endTime = event.endTime ? new Date(event.endTime) : undefined;
+  const startTime = new Date(event.startAt);
+  const endTime = event.endAt ? new Date(event.endAt) : undefined;
 
   return (
     <MessageBase message={message} {...baseProps} className="bg-primary/5">

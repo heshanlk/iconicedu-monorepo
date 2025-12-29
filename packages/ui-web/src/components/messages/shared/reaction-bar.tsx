@@ -40,8 +40,7 @@ export const ReactionBar = memo(function ReactionBar({
       <div className="overflow-hidden">
         <div className="flex flex-wrap gap-1 pt-1">
           {reactions.map((reaction, index) => {
-            const isUserReaction =
-              currentUserId && reaction.users.includes(currentUserId);
+            const isUserReaction = reaction.reactedByMe ?? false;
             return (
               <TooltipProvider key={reaction.emoji}>
                 <Tooltip>

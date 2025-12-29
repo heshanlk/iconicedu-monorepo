@@ -67,7 +67,7 @@ export function SavedMessagePreview({ message, onClick }: SavedMessagePreviewPro
             {message.sender.displayName}
           </span>
           <span className="text-xs text-muted-foreground flex-shrink-0">
-            {formatDistanceToNow(new Date(message.timestamp), { addSuffix: true })}
+            {formatDistanceToNow(new Date(message.createdAt), { addSuffix: true })}
           </span>
         </div>
         <p className="text-sm text-muted-foreground line-clamp-2">{truncatedPreview}</p>

@@ -63,11 +63,11 @@ export const MessageList = forwardRef<MessageListRef, MessageListProps>(
       let currentDate = '';
 
       const sortedMessages = [...messages].sort(
-        (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
+        (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
       );
 
       sortedMessages.forEach((message) => {
-        const messageDate = formatDateHeader(message.timestamp);
+        const messageDate = formatDateHeader(message.createdAt);
         if (messageDate !== currentDate) {
           currentDate = messageDate;
           groups.push({ date: messageDate, messages: [message] });

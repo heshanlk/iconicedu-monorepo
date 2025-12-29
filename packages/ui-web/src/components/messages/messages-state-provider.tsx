@@ -3,6 +3,7 @@
 import { createContext, useCallback, useContext, useMemo, useState } from 'react';
 import type {
   ChannelVM,
+  ConnectionVM,
   MessagesRightPanelIntent,
   MessagesRightPanelIntentKey,
   MessagesRightSidebarState,
@@ -13,7 +14,8 @@ import type {
 
 type ThreadData = {
   thread: ThreadVM;
-  messages: MessageVM[];
+  replies: ConnectionVM<MessageVM>;
+  parentMessage?: MessageVM;
 };
 
 interface MessagesStateContextValue {
@@ -37,7 +39,10 @@ interface MessagesStateContextValue {
   setCreateTextMessage: (factory: (content: string) => TextMessageVM | null) => void;
   setThreadHandlers: (handlers: ThreadActionHandlers) => void;
   appendThreadMessage: (threadId: string, message: MessageVM) => void;
-  setThreadData: (thread: ThreadVM, messages: MessageVM[]) => void;
+  setThreadData: (
+    thread: ThreadVM,
+    data: { replies: ConnectionVM<MessageVM>; parentMessage?: MessageVM },
+  ) => void;
   getThreadData: (threadId: string) => ThreadData | undefined;
   setScrollToMessage: (handler: (messageId: string) => void) => void;
   scrollToMessage?: (messageId: string) => void;
@@ -123,9 +128,12 @@ export function MessagesStateProvider({
     [state.intent, state.isOpen],
   );
 
-  const setThreadData = useCallback((thread: ThreadVM, messages: MessageVM[]) => {
-    setThreadDataState((prev) => ({ ...prev, [thread.id]: { thread, messages } }));
-  }, []);
+  const setThreadData = useCallback(
+    (thread: ThreadVM, data: { replies: ConnectionVM<MessageVM>; parentMessage?: MessageVM }) => {
+      setThreadDataState((prev) => ({ ...prev, [thread.id]: { thread, ...data } }));
+    },
+    [],
+  );
 
   const appendThreadMessage = useCallback((threadId: string, message: MessageVM) => {
     setThreadDataState((prev) => {
@@ -133,7 +141,17 @@ export function MessagesStateProvider({
       if (!existing) return prev;
       return {
         ...prev,
-        [threadId]: { ...existing, messages: [...existing.messages, message] },
+        [threadId]: {
+          ...existing,
+          replies: {
+            ...existing.replies,
+            items: [...existing.replies.items, message],
+            total:
+              typeof existing.replies.total === 'number'
+                ? existing.replies.total + 1
+                : existing.replies.total,
+          },
+        },
       };
     });
   }, []);

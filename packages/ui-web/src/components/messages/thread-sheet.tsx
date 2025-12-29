@@ -5,15 +5,17 @@ import { ScrollArea } from '../../ui/scroll-area';
 import { ThreadMessageList } from './shared/thread-message-list';
 
 export function ThreadSheet({
-  messages,
+  replies,
+  parentMessage,
   onSendReply,
   onProfileClick,
   onToggleReaction,
   onToggleSaved,
   onToggleHidden,
   currentUserId,
-  lastReadMessageId,
+  readState,
 }: ThreadPanelPropsVM) {
+  const messages = parentMessage ? [parentMessage, ...replies.items] : replies.items;
   const bottomRef = useRef<HTMLDivElement>(null);
   const messageCountRef = useRef(messages.length);
 
@@ -34,7 +36,7 @@ export function ThreadSheet({
           onToggleSaved={onToggleSaved}
           onToggleHidden={onToggleHidden}
           currentUserId={currentUserId}
-          lastReadMessageId={lastReadMessageId}
+          lastReadMessageId={readState?.lastReadMessageId}
         />
         <div ref={bottomRef} />
       </ScrollArea>

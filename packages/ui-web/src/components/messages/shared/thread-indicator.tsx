@@ -47,7 +47,7 @@ export const ThreadIndicator = memo(function ThreadIndicator({
         ))}
       </div>
       <span className="text-xs text-muted-foreground">
-        {formatThreadTime(thread.lastReply)}
+        {formatThreadTime(thread.lastReplyAt)}
       </span>
     </Button>
   );

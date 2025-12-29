@@ -1,10 +1,17 @@
-import type { ISODateTime, UUID } from './shared';
+import type { ConnectionVM, ISODateTime, UUID } from './shared';
 import type { UserProfileVM } from './profile';
 
 export interface ReactionVM {
   emoji: string;
   count: number;
-  users: UUID[];
+  reactedByMe?: boolean;
+  sampleUserIds?: UUID[];
+}
+
+export interface MessageReadStateVM {
+  lastReadMessageId?: UUID;
+  lastReadAt?: ISODateTime;
+  unreadCount?: number;
 }
 
 export type AttachmentTypeVM = 'image' | 'file' | 'design-file';
@@ -35,26 +42,27 @@ export interface DesignFileAttachmentVM extends BaseAttachmentVM {
   thumbnail?: string;
 }
 
-export type AttachmentVM =
-  | ImageAttachmentVM
-  | FileAttachmentVM
-  | DesignFileAttachmentVM;
+export type AttachmentVM = ImageAttachmentVM | FileAttachmentVM | DesignFileAttachmentVM;
 
 export interface ThreadVM {
   id: UUID;
+  parentMessageId: UUID;
+  parentMessageSnippet?: string | null;
+  parentMessageAuthorId?: UUID | null;
+  parentMessageAuthorName?: string | null;
   messageCount: number;
-  lastReply: ISODateTime;
+  lastReplyAt: ISODateTime;
   participants: UserProfileVM[];
-  parentMessage?: MessageVM;
-  unreadCount?: number;
+  readState?: MessageReadStateVM;
 }
 
 export interface ThreadPanelPropsVM {
   thread: ThreadVM;
-  messages: MessageVM[];
+  replies: ConnectionVM<MessageVM>;
+  parentMessage?: MessageVM;
   onSendReply: (content: string) => void;
   onProfileClick: (userId: UUID) => void;
-  lastReadMessageId?: UUID;
+  readState?: MessageReadStateVM;
   onToggleReaction?: (messageId: UUID, emoji: string) => void;
   onToggleSaved?: (messageId: UUID) => void;
   onToggleHidden?: (messageId: UUID) => void;
@@ -84,13 +92,12 @@ export type MessageTypeVM =
 interface BaseMessageVM {
   id: UUID;
   sender: UserProfileVM;
-  timestamp: ISODateTime;
+  createdAt: ISODateTime;
   reactions: ReactionVM[];
   thread?: ThreadVM;
   visibility: MessageVisibilityVM;
   isEdited?: boolean;
   editedAt?: ISODateTime;
-  isRead?: boolean;
   isSaved?: boolean;
   isHidden?: boolean;
 }
@@ -126,7 +133,7 @@ export interface PaymentReminderMessageVM extends BaseMessageVM {
   payment: {
     amount: number;
     currency: string;
-    dueDate: ISODateTime;
+    dueAt: ISODateTime;
     status: 'pending' | 'paid' | 'overdue';
     invoiceId?: string;
     description?: string;
@@ -139,8 +146,8 @@ export interface EventReminderMessageVM extends BaseMessageVM {
   event: {
     status?: string | null;
     title: string;
-    startTime: ISODateTime;
-    endTime?: ISODateTime;
+    startAt: ISODateTime;
+    endAt?: ISODateTime;
     location?: string;
     meetingLink?: string;
     attendees?: UserProfileVM[];
@@ -154,7 +161,7 @@ export interface LessonAssignmentMessageVM extends BaseMessageVM {
   assignment: {
     title: string;
     description: string;
-    dueDate: ISODateTime;
+    dueAt: ISODateTime;
     subject: string;
     attachments?: AttachmentVM[];
     estimatedDuration?: number;
@@ -182,7 +189,8 @@ export interface SessionBookingMessageVM extends BaseMessageVM {
   session: {
     title: string;
     subject: string;
-    startTime: ISODateTime;
+    startAt: ISODateTime;
+    endAt?: ISODateTime;
     durationMinutes: number;
     meetingLink?: string;
     location?: string;
@@ -218,13 +226,11 @@ export interface LinkPreviewMessageVM extends BaseMessageVM {
 }
 
 export interface AudioRecordingMessageVM extends BaseMessageVM {
-  audioUrl: string | undefined;
-  duration: string;
   type: 'audio-recording';
   content?: string;
   audio: {
     url: string;
-    duration: number;
+    durationSeconds: number;
     waveform?: number[];
     fileSize?: number;
     mimeType?: string;

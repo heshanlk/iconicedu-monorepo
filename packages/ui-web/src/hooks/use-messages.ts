@@ -29,26 +29,31 @@ export function useMessages(initialMessages: MessageVM[]) {
 
           if (existingReactionIndex >= 0) {
             const reaction = reactions[existingReactionIndex];
-            const userIndex = reaction.users.indexOf(userId);
+            const sampleUserIds = reaction.sampleUserIds ?? [];
+            const hasReacted = reaction.reactedByMe ?? false;
 
-            if (userIndex >= 0) {
-              // Remove user's reaction
-              const updatedUsers = reaction.users.filter((id) => id !== userId);
-              if (updatedUsers.length === 0) {
+            if (hasReacted) {
+              const nextCount = Math.max(0, reaction.count - 1);
+              const updatedSampleUserIds = sampleUserIds.filter((id) => id !== userId);
+              if (nextCount === 0) {
                 reactions.splice(existingReactionIndex, 1);
               } else {
                 reactions[existingReactionIndex] = {
                   ...reaction,
-                  users: updatedUsers,
-                  count: updatedUsers.length,
+                  count: nextCount,
+                  reactedByMe: false,
+                  sampleUserIds: updatedSampleUserIds,
                 };
               }
             } else {
-              // Add user's reaction
+              const updatedSampleUserIds = sampleUserIds.includes(userId)
+                ? sampleUserIds
+                : [userId, ...sampleUserIds].slice(0, 3);
               reactions[existingReactionIndex] = {
                 ...reaction,
-                users: [...reaction.users, userId],
                 count: reaction.count + 1,
+                reactedByMe: true,
+                sampleUserIds: updatedSampleUserIds,
               };
             }
           } else {
@@ -56,7 +61,8 @@ export function useMessages(initialMessages: MessageVM[]) {
             reactions.push({
               emoji,
               count: 1,
-              users: [userId],
+              reactedByMe: true,
+              sampleUserIds: [userId],
             });
           }
 

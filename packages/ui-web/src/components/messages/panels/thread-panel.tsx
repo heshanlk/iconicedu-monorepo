@@ -17,15 +17,17 @@ interface ThreadPanelProps {
 }
 
 const ThreadPanelContent = memo(function ThreadPanelContent({
-  messages,
+  replies,
+  parentMessage,
   onSendReply,
   onProfileClick,
   onToggleReaction,
   onToggleSaved,
   onToggleHidden,
   currentUserId,
-  lastReadMessageId,
+  readState,
 }: ThreadPanelPropsVM) {
+  const messages = parentMessage ? [parentMessage, ...replies.items] : replies.items;
   const bottomRef = useRef<HTMLDivElement>(null);
   const messageCountRef = useRef(messages.length);
 
@@ -46,7 +48,7 @@ const ThreadPanelContent = memo(function ThreadPanelContent({
           onToggleSaved={onToggleSaved}
           onToggleHidden={onToggleHidden}
           currentUserId={currentUserId}
-          lastReadMessageId={lastReadMessageId}
+          lastReadMessageId={readState?.lastReadMessageId}
         />
         <div ref={bottomRef} />
       </ScrollArea>
@@ -80,26 +82,30 @@ export function ThreadPanel({ intent }: ThreadPanelProps) {
     return (
       <ThreadSheet
         thread={threadData.thread}
-        messages={threadData.messages}
+        replies={threadData.replies}
+        parentMessage={threadData.parentMessage}
         onSendReply={onSendReply}
         onProfileClick={onProfileClick}
         onToggleReaction={threadHandlers.onToggleReaction}
         onToggleSaved={threadHandlers.onToggleSaved}
         onToggleHidden={threadHandlers.onToggleHidden}
         currentUserId={currentUserId}
+        readState={threadData.thread.readState}
       />
     );
   }
   return (
     <ThreadPanelContent
       thread={threadData.thread}
-      messages={threadData.messages}
+      replies={threadData.replies}
+      parentMessage={threadData.parentMessage}
       onSendReply={onSendReply}
       onProfileClick={onProfileClick}
       onToggleReaction={threadHandlers.onToggleReaction}
       onToggleSaved={threadHandlers.onToggleSaved}
       onToggleHidden={threadHandlers.onToggleHidden}
       currentUserId={currentUserId}
+      readState={threadData.thread.readState}
     />
   );
 }

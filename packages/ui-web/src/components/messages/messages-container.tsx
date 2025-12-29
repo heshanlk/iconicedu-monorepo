@@ -9,6 +9,7 @@ import type {
   ChannelVM,
   EducatorProfileVM,
   GuardianProfileVM,
+  MessageReadStateVM,
   MessageVM,
   TextMessageVM,
   ThreadVM,
@@ -17,7 +18,7 @@ import type {
 
 export interface MessagesContainerProps {
   channel: ChannelVM;
-  lastReadMessageId?: string;
+  readState?: MessageReadStateVM;
 }
 
 const isGuardianProfile = (profile: UserProfileVM): profile is GuardianProfileVM =>
@@ -28,7 +29,7 @@ const isEducatorProfile = (profile: UserProfileVM): profile is EducatorProfileVM
 
 export function MessagesContainer({
   channel,
-  lastReadMessageId,
+  readState,
 }: MessagesContainerProps) {
   const messageListRef = useRef<MessageListRef>(null);
   const {
@@ -61,12 +62,22 @@ export function MessagesContainer({
       const threadMessages = messages
         .filter((message) => message.thread?.id === thread.id)
         .sort(
-          (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
+          (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
         );
-      const resolvedThreadMessages = threadMessages.length
-        ? threadMessages
-        : [parentMessage];
-      setThreadData(thread, resolvedThreadMessages);
+      const resolvedThreadMessages = threadMessages.length ? threadMessages : [parentMessage];
+      const replyItems = resolvedThreadMessages.filter(
+        (message) => message.id !== parentMessage.id,
+      );
+      setThreadData(thread, {
+        replies: {
+          items: replyItems,
+          total:
+            typeof thread.messageCount === 'number'
+              ? Math.max(0, thread.messageCount - 1)
+              : undefined,
+        },
+        parentMessage,
+      });
       toggle({ key: 'thread', threadId: thread.id });
     },
     [messages, setThreadData, toggle],
@@ -80,11 +91,10 @@ export function MessagesContainer({
         type: 'text',
         content,
         sender: senderProfile,
-        timestamp: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
         reactions: [],
         visibility: { type: 'all' },
         isSaved: false,
-        isRead: true,
       };
       addMessage(newMessage);
     },
@@ -126,8 +136,8 @@ export function MessagesContainer({
     () =>
       messages.filter(
         (message) =>
-          !message.thread?.parentMessage ||
-          message.thread.parentMessage.id === message.id,
+          !message.thread?.parentMessageId ||
+          message.thread.parentMessageId === message.id,
       ),
     [messages],
   );
@@ -154,11 +164,10 @@ export function MessagesContainer({
         type: 'text',
         content,
         sender: senderProfile,
-        timestamp: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
         reactions: [],
         visibility: { type: 'all' },
         isSaved: false,
-        isRead: true,
       }),
     );
   }, [senderProfile, setCreateTextMessage]);
@@ -186,7 +195,7 @@ export function MessagesContainer({
       onToggleSaved: handleToggleSaved,
       onToggleHidden: handleToggleHidden,
       currentUserId,
-      lastReadMessageId,
+      lastReadMessageId: readState?.lastReadMessageId,
     }),
     [
       visibleMessages,
@@ -196,7 +205,7 @@ export function MessagesContainer({
       handleToggleSaved,
       handleToggleHidden,
       currentUserId,
-      lastReadMessageId,
+      readState?.lastReadMessageId,
     ],
   );
 

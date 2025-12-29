@@ -86,7 +86,7 @@ export const PaymentReminderMessage = memo(function PaymentReminderMessage(
 
           <div className="flex items-center justify-between text-xs">
             <span className="text-muted-foreground">
-              Due: {formatDate(payment.dueDate)}
+              Due: {formatDate(payment.dueAt)}
             </span>
             {payment.invoiceId && (
               <span className="text-muted-foreground">#{payment.invoiceId}</span>

@@ -16,7 +16,7 @@ export const AudioMessage = memo(function AudioMessage(props: AudioMessageProps)
   const { message, ...baseProps } = props;
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
+  const [duration, setDuration] = useState(message.audio.durationSeconds ?? 0);
   const [canPlay, setCanPlay] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -25,7 +25,13 @@ export const AudioMessage = memo(function AudioMessage(props: AudioMessageProps)
     if (!audio) return;
 
     const handleTimeUpdate = () => setCurrentTime(audio.currentTime);
-    const handleDurationChange = () => setDuration(audio.duration);
+    const handleDurationChange = () => {
+      const nextDuration =
+        Number.isFinite(audio.duration) && audio.duration > 0
+          ? audio.duration
+          : message.audio.durationSeconds ?? 0;
+      setDuration(nextDuration);
+    };
     const handleEnded = () => setIsPlaying(false);
     const handleCanPlay = () => setCanPlay(true);
     const handleError = () => setCanPlay(false);
@@ -43,7 +49,7 @@ export const AudioMessage = memo(function AudioMessage(props: AudioMessageProps)
       audio.removeEventListener('canplay', handleCanPlay);
       audio.removeEventListener('error', handleError);
     };
-  }, []);
+  }, [message.audio.durationSeconds]);
 
   const togglePlayPause = useCallback(() => {
     if (!audioRef.current || !canPlay) return;
@@ -78,7 +84,7 @@ export const AudioMessage = memo(function AudioMessage(props: AudioMessageProps)
       <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent p-4 max-w-sm border border-primary/20">
         <audio
           ref={audioRef}
-          src={message.audioUrl ?? message.audio?.url}
+          src={message.audio.url}
           preload="metadata"
           aria-label="Audio message"
         />
@@ -113,7 +119,11 @@ export const AudioMessage = memo(function AudioMessage(props: AudioMessageProps)
             />
             <div className="flex items-center justify-between text-xs text-muted-foreground">
               <span>{formatTime(currentTime)}</span>
-              <span>{message.duration || formatTime(message.audio.duration || duration)}</span>
+              <span>
+                {message.audio.durationSeconds
+                  ? formatTime(message.audio.durationSeconds)
+                  : formatTime(duration)}
+              </span>
             </div>
           </div>
         </div>

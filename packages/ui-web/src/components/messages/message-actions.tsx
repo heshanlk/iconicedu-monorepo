@@ -63,9 +63,13 @@ export const MessageActions = memo(function MessageActions({
     } else {
       const newThread: ThreadVM = {
         id: `thread-${message.id}`,
+        parentMessageId: message.id,
+        parentMessageSnippet: 'content' in message ? message.content : null,
+        parentMessageAuthorId: message.sender.id,
+        parentMessageAuthorName: message.sender.displayName,
         messageCount: 1,
         participants: [message.sender],
-        lastReply: new Date().toISOString(),
+        lastReplyAt: new Date().toISOString(),
       };
       onOpenThread(newThread, message);
     }

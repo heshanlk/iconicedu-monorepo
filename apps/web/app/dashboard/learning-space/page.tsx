@@ -1,6 +1,6 @@
 import { LearningSpaceContainer, DashboardHeader } from '@iconicedu/ui-web';
 import {
-  LAST_READ_MESSAGE_ID,
+  LEARNING_SPACE_READ_STATE,
   LEARNING_SPACE,
 } from '../../../lib/data/learning-space-messages';
 
@@ -11,7 +11,7 @@ export default function Page() {
         <DashboardHeader />
         <LearningSpaceContainer
           space={LEARNING_SPACE}
-          lastReadMessageId={LAST_READ_MESSAGE_ID}
+          readState={LEARNING_SPACE_READ_STATE}
         />
       </div>
     </>

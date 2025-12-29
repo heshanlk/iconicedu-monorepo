@@ -90,11 +90,11 @@ export const MessageBase = memo(function MessageBase({
               <Tooltip>
                 <TooltipTrigger asChild>
                   <span className="text-xs text-muted-foreground cursor-default">
-                    {formatTime(message.timestamp)}
+                    {formatTime(message.createdAt)}
                   </span>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>{formatFullDate(message.timestamp)}</p>
+                  <p>{formatFullDate(message.createdAt)}</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -144,11 +144,11 @@ export const MessageBase = memo(function MessageBase({
             <Tooltip>
               <TooltipTrigger asChild>
                 <span className="text-xs text-muted-foreground cursor-default">
-                  {formatTime(message.timestamp)}
+                  {formatTime(message.createdAt)}
                 </span>
               </TooltipTrigger>
               <TooltipContent>
-                <p>{formatFullDate(message.timestamp)}</p>
+                <p>{formatFullDate(message.createdAt)}</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -170,7 +170,7 @@ export const MessageBase = memo(function MessageBase({
           <ThreadIndicator
             thread={message.thread}
             onClick={handleThreadClick}
-            unreadCount={message.thread.unreadCount}
+            unreadCount={message.thread.readState?.unreadCount}
           />
         )}
       </div>
