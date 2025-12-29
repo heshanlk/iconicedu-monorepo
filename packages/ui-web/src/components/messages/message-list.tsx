@@ -1,6 +1,6 @@
 import { useRef, useEffect, useImperativeHandle, forwardRef, useMemo } from 'react';
 import { MessageItem } from './message-item';
-import type { MessageVM, ThreadVM, UserProfileVM } from '@iconicedu/shared-types';
+import type { MessageVM, ThreadVM } from '@iconicedu/shared-types';
 import { ScrollArea } from '../../ui/scroll-area';
 import { formatDateHeader } from '../../lib/message-utils';
 
@@ -13,8 +13,6 @@ interface MessageListProps {
   onToggleHidden?: (messageId: string) => void;
   currentUserId?: string;
   lastReadMessageId?: string;
-  typingUser?: UserProfileVM;
-  isTyping?: boolean;
 }
 
 export interface MessageListRef {
@@ -32,8 +30,6 @@ export const MessageList = forwardRef<MessageListRef, MessageListProps>(
       onToggleHidden,
       currentUserId,
       lastReadMessageId,
-      typingUser,
-      isTyping,
     },
     ref,
   ) => {
@@ -133,8 +129,6 @@ export const MessageList = forwardRef<MessageListRef, MessageListProps>(
             })}
           </div>
         ))}
-
-        {/* {isTyping && typingUser && <div>TypingIndicator user={typingUser}</div>} */}
 
         <div ref={bottomRef} />
       </ScrollArea>
