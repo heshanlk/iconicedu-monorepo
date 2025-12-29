@@ -49,6 +49,9 @@ interface MessagesStateContextValue {
 }
 
 type ThreadActionHandlers = {
+  onAddMessage?: (message: MessageVM) => void;
+  onUpdateMessage?: (messageId: string, updates: Partial<MessageVM>) => void;
+  onDeleteMessage?: (messageId: string) => void;
   onToggleReaction?: (messageId: string, emoji: string) => void;
   onToggleSaved?: (messageId: string) => void;
   onToggleHidden?: (messageId: string) => void;

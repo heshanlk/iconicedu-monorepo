@@ -44,8 +44,15 @@ export function MessagesContainer({
     setScrollToMessage,
   } = useMessagesState();
   const channelMessages = channel.messages?.items ?? [];
-  const { messages, addMessage, toggleReaction, toggleSaved, toggleHidden } =
-    useMessages(channelMessages);
+  const {
+    messages,
+    addMessage,
+    updateMessage,
+    deleteMessage,
+    toggleReaction,
+    toggleSaved,
+    toggleHidden,
+  } = useMessages(channelMessages);
 
   const participants = channel.participants ?? [];
   const fallbackParticipant = participants[0];
@@ -174,11 +181,22 @@ export function MessagesContainer({
 
   useEffect(() => {
     setThreadHandlers({
+      onAddMessage: addMessage,
+      onUpdateMessage: updateMessage,
+      onDeleteMessage: deleteMessage,
       onToggleReaction: handleToggleReaction,
       onToggleSaved: handleToggleSaved,
       onToggleHidden: handleToggleHidden,
     });
-  }, [handleToggleReaction, handleToggleSaved, handleToggleHidden, setThreadHandlers]);
+  }, [
+    addMessage,
+    updateMessage,
+    deleteMessage,
+    handleToggleReaction,
+    handleToggleSaved,
+    handleToggleHidden,
+    setThreadHandlers,
+  ]);
 
   useEffect(() => {
     setScrollToMessage(() => (messageId: string) => {

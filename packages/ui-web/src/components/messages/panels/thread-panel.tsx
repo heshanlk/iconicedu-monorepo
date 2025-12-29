@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, memo } from 'react';
+import { useEffect, useMemo, useRef, memo } from 'react';
 import type {
   MessagesRightPanelIntent,
   ThreadPanelPropsVM,
@@ -67,14 +67,56 @@ export function ThreadPanel({ intent }: ThreadPanelProps) {
     toggle,
     currentUserId,
     threadHandlers,
+    messages,
   } = useMessagesState();
   if (intent.key !== 'thread') return null;
   const threadData = getThreadData(intent.threadId);
   if (!threadData) return null;
+  const parentMessage =
+    threadData.parentMessage ??
+    messages.find((message) => message.id === threadData.thread.parentMessageId);
+  const threadMessages = useMemo(
+    () =>
+      messages.filter((message) => message.thread?.id === threadData.thread.id),
+    [messages, threadData.thread.id],
+  );
+  const sortedThreadMessages = useMemo(() => {
+    const messageMap = new Map<string, typeof messages[number]>();
+    if (parentMessage) {
+      messageMap.set(parentMessage.id, parentMessage);
+    }
+    threadMessages.forEach((message) => messageMap.set(message.id, message));
+    return Array.from(messageMap.values()).sort(
+      (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+    );
+  }, [parentMessage, threadMessages]);
+  const replies = useMemo(() => {
+    const replyItems = sortedThreadMessages.filter(
+      (message) => message.id !== parentMessage?.id,
+    );
+    return {
+      items: replyItems,
+      total: replyItems.length,
+    };
+  }, [parentMessage?.id, sortedThreadMessages]);
+
   const onSendReply = (content: string) => {
     const message = createTextMessage?.(content);
     if (!message) return;
-    appendThreadMessage(intent.threadId, message);
+    const updatedThread = {
+      ...threadData.thread,
+      messageCount: threadData.thread.messageCount + 1,
+      lastReplyAt: new Date().toISOString(),
+    };
+    const messageWithThread = {
+      ...message,
+      thread: updatedThread,
+    };
+    threadHandlers.onAddMessage?.(messageWithThread);
+    threadHandlers.onUpdateMessage?.(threadData.thread.parentMessageId, {
+      thread: updatedThread,
+    });
+    appendThreadMessage(intent.threadId, messageWithThread);
   };
   const onProfileClick = (userId: string) => toggle({ key: 'profile', userId });
 
@@ -82,8 +124,8 @@ export function ThreadPanel({ intent }: ThreadPanelProps) {
     return (
       <ThreadSheet
         thread={threadData.thread}
-        replies={threadData.replies}
-        parentMessage={threadData.parentMessage}
+        replies={replies}
+        parentMessage={parentMessage}
         onSendReply={onSendReply}
         onProfileClick={onProfileClick}
         onToggleReaction={threadHandlers.onToggleReaction}
@@ -97,8 +139,8 @@ export function ThreadPanel({ intent }: ThreadPanelProps) {
   return (
     <ThreadPanelContent
       thread={threadData.thread}
-      replies={threadData.replies}
-      parentMessage={threadData.parentMessage}
+      replies={replies}
+      parentMessage={parentMessage}
       onSendReply={onSendReply}
       onProfileClick={onProfileClick}
       onToggleReaction={threadHandlers.onToggleReaction}
