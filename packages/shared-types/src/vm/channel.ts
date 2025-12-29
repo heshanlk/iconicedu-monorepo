@@ -1,6 +1,7 @@
 import type { ConnectionVM, ISODateTime, UUID } from './shared';
 import type { UserProfileVM } from './profile';
 import type { MessageReadStateVM, MessageVM } from './messages';
+import type { MessagesRightPanelIntentKey } from './messages-right-sidebar';
 
 export type ChannelVisibility = 'private' | 'public';
 export type ChannelStatus = 'active' | 'archived';
@@ -46,4 +47,6 @@ export interface ChannelVM {
   participants: UserProfileVM[];
   messages: ConnectionVM<MessageVM>;
   readState?: MessageReadStateVM;
+  defaultRightPanelOpen?: boolean;
+  defaultRightPanelKey?: MessagesRightPanelIntentKey;
 }

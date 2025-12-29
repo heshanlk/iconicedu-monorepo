@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useMemo } from 'react';
+import { memo, useMemo, useEffect, useRef } from 'react';
 import type { ComponentType } from 'react';
 import type { MessagesContainerProps } from './messages-container';
 import { MessagesContainer } from './messages-container';
@@ -54,7 +54,23 @@ const MessagesShellLayout = memo(function MessagesShellLayout({
   ...props
 }: MessagesShellLayoutProps) {
   const isMobile = useIsMobile();
-  const { state } = useMessagesState();
+  const { state, open } = useMessagesState();
+  const hasAutoOpened = useRef(false);
+
+  useEffect(() => {
+    if (isMobile || hasAutoOpened.current || state.isOpen) return;
+    if (!props.channel.defaultRightPanelOpen) return;
+    const defaultKey = props.channel.defaultRightPanelKey ?? 'channel_info';
+    if (defaultKey === 'profile' || defaultKey === 'thread') return;
+    open({ key: defaultKey });
+    hasAutoOpened.current = true;
+  }, [
+    isMobile,
+    open,
+    props.channel.defaultRightPanelKey,
+    props.channel.defaultRightPanelOpen,
+    state.isOpen,
+  ]);
 
   const mainContent = (
     <div className="flex min-h-0 flex-1 min-w-0 flex-col">

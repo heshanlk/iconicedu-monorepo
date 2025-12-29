@@ -214,6 +214,8 @@ export const DIRECT_CHANNEL: ChannelVM = {
     allowThreads: true,
     allowReactions: true,
   },
+  defaultRightPanelOpen: false,
+  defaultRightPanelKey: 'channel_info',
   readState: DIRECT_READ_STATE,
   headerItems: [
     { key: 'saved', label: '0', tooltip: 'View saved messages', isPrimary: true },

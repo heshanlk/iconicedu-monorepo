@@ -362,9 +362,11 @@ export const LEARNING_SPACE: ChannelVM = {
     allowThreads: true,
     allowReactions: true,
   },
+  defaultRightPanelOpen: true,
+  defaultRightPanelKey: 'channel_info',
   readState: LEARNING_SPACE_READ_STATE,
   headerItems: [
-    { key: 'saved', label: '0', tooltip: 'View saved messages', isPrimary: true },
+    { key: 'saved', label: '0', tooltip: 'View saved messages' },
     { key: 'next-session', label: 'Wed 4:30 PM' },
   ],
   participants: [MOCK_EDUCATOR, MOCK_GUARDIAN, ...MOCK_CHILDREN],
