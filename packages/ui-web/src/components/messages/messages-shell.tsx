@@ -88,11 +88,11 @@ const MessagesShellLayout = memo(function MessagesShellLayout({
         <MessagesContainerHeaderActions />
       </header>
       <div className="flex flex-1 overflow-hidden">
-        <ResizablePanelGroup direction="horizontal" className="flex-1 min-w-0">
+        <ResizablePanelGroup direction="horizontal" className="flex-1 min-w-0 min-h-0">
           <ResizablePanel
             defaultSize={state.isOpen ? 65 : 100}
             minSize={50}
-            className="min-w-0"
+            className="min-w-0 min-h-0"
           >
             {mainContent}
           </ResizablePanel>
@@ -100,10 +100,10 @@ const MessagesShellLayout = memo(function MessagesShellLayout({
             <>
               <ResizableHandle withHandle />
               <ResizablePanel
-                defaultSize={45}
+                defaultSize={35}
                 minSize={25}
                 maxSize={50}
-                className="min-w-0"
+                className="min-w-0 min-h-0"
               >
                 {rightPanel}
               </ResizablePanel>

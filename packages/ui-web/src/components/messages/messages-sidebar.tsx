@@ -76,7 +76,7 @@ export function MessagesSidebar({
             <SidebarHeader title={title} subtitle={subtitle} onClose={onClose} />
           </DrawerHeader>
           <ScrollArea className="flex min-h-0 flex-1">
-            <div className="flex min-h-0 flex-col">{children}</div>
+            <div className="flex min-h-0 flex-1 flex-col">{children}</div>
           </ScrollArea>
         </DrawerContent>
       </Drawer>
@@ -87,7 +87,7 @@ export function MessagesSidebar({
     <div
       data-state={open ? 'open' : 'closed'}
       className={cn(
-        'hidden md:flex overflow-hidden min-w-0 flex-1',
+        'hidden md:flex overflow-hidden min-w-0 flex-1 h-full',
         layout === 'resizable'
           ? 'w-full transition-[opacity,transform] duration-200 motion-reduce:transition-none data-[state=closed]:pointer-events-none data-[state=closed]:opacity-0 data-[state=closed]:translate-x-4 data-[state=open]:opacity-100 data-[state=open]:translate-x-0'
           : 'transition-[width,opacity,transform] duration-200 motion-reduce:transition-none data-[state=closed]:w-0 data-[state=closed]:pointer-events-none data-[state=closed]:opacity-0 data-[state=closed]:translate-x-4 data-[state=open]:w-[360px] data-[state=open]:opacity-100 data-[state=open]:translate-x-0',
@@ -99,7 +99,7 @@ export function MessagesSidebar({
         </CardHeader>
         <CardContent className="flex min-h-0 flex-1 flex-col p-0">
           <ScrollArea className="flex-1 min-h-0">
-            <div className="flex min-h-0 flex-col">{children}</div>
+            <div className="flex min-h-0 flex-1 flex-col">{children}</div>
           </ScrollArea>
         </CardContent>
       </Card>
