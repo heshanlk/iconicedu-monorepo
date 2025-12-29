@@ -2,18 +2,21 @@
 
 import { memo, useMemo } from 'react';
 import type { ComponentType } from 'react';
-import type { RightPanelIntent, RightPanelRegistry } from '@iconicedu/shared-types';
+import type {
+  MessagesRightPanelIntent,
+  MessagesRightPanelRegistry,
+} from '@iconicedu/shared-types';
 import { MessagesSidebar } from './messages-sidebar';
-import { useRightSidebar } from './right-sidebar-provider';
-interface RightSidebarRegionProps {
-  registry: RightPanelRegistry<ComponentType<RightPanelProps>>;
+import { useMessagesRightSidebar } from './messages-right-sidebar-provider';
+interface MessagesRightSidebarRegionProps {
+  registry: MessagesRightPanelRegistry<ComponentType<MessagesRightPanelProps>>;
 }
 
-interface RightPanelProps {
-  intent: RightPanelIntent;
+interface MessagesRightPanelProps {
+  intent: MessagesRightPanelIntent;
 }
 
-const getSidebarMeta = (intent: RightPanelIntent | null) => {
+const getSidebarMeta = (intent: MessagesRightPanelIntent | null) => {
   if (!intent) return { title: '', subtitle: undefined };
   switch (intent.key) {
     case 'channel_info':
@@ -31,10 +34,10 @@ const getSidebarMeta = (intent: RightPanelIntent | null) => {
   }
 };
 
-export const RightSidebarRegion = memo(function RightSidebarRegion({
+export const MessagesRightSidebarRegion = memo(function MessagesRightSidebarRegion({
   registry,
-}: RightSidebarRegionProps) {
-  const { state, close } = useRightSidebar();
+}: MessagesRightSidebarRegionProps) {
+  const { state, close } = useMessagesRightSidebar();
 
   const Panel = useMemo(() => {
     if (!state.intent) return null;

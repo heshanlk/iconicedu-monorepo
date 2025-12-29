@@ -5,9 +5,12 @@ import type { ComponentType } from 'react';
 import type { MessagesContainerProps } from './messages-container';
 import { MessagesContainer } from './messages-container';
 import { MessagesContainerHeader } from './messages-container-header';
-import { ChannelHeaderActions } from './channel-header-actions';
-import { RightSidebarProvider, useRightSidebar } from './right-sidebar-provider';
-import { RightSidebarRegion } from './right-sidebar-region';
+import { MessagesContainerHeaderActions } from './messages-container-header-actions';
+import {
+  MessagesRightSidebarProvider,
+  useMessagesRightSidebar,
+} from './messages-right-sidebar-provider';
+import { MessagesRightSidebarRegion } from './messages-right-sidebar-region';
 import { PinnedPanel } from './panels/pinned-panel';
 import { SavedMessagesPanel } from './saved-messages-panel';
 import { ProfilePanel as DetailedProfilePanel } from './profile-panel';
@@ -15,15 +18,18 @@ import { ProfileSheet } from './profile-sheet';
 import { ThreadPanel as DetailedThreadPanel } from './thread-panel';
 import { ThreadSheet } from './thread-sheet';
 import { LearningSpaceInfoPanel } from '../learning-space/learning-space-info-panel';
-import type { RightPanelRegistry, RightPanelIntent } from '@iconicedu/shared-types';
+import type {
+  MessagesRightPanelRegistry,
+  MessagesRightPanelIntent,
+} from '@iconicedu/shared-types';
 import { useIsMobile } from '../../hooks/use-mobile';
 
-interface RightPanelProps {
-  intent: RightPanelIntent;
+interface MessagesRightPanelProps {
+  intent: MessagesRightPanelIntent;
 }
 
-function ChannelInfoPanelWrapper(_: RightPanelProps) {
-  const { channel } = useRightSidebar();
+function ChannelInfoPanelWrapper(_: MessagesRightPanelProps) {
+  const { channel } = useMessagesRightSidebar();
   const members = channel.participants.map((participant) => ({
     id: participant.id,
     name: participant.displayName,
@@ -45,8 +51,8 @@ function ChannelInfoPanelWrapper(_: RightPanelProps) {
   );
 }
 
-function SavedPanelWrapper(_: RightPanelProps) {
-  const { messages, scrollToMessage, close } = useRightSidebar();
+function SavedPanelWrapper(_: MessagesRightPanelProps) {
+  const { messages, scrollToMessage, close } = useMessagesRightSidebar();
   return (
     <SavedMessagesPanel
       messages={messages}
@@ -58,35 +64,35 @@ function SavedPanelWrapper(_: RightPanelProps) {
   );
 }
 
-function PinnedPanelWrapper(_: RightPanelProps) {
+function PinnedPanelWrapper(_: MessagesRightPanelProps) {
   return <PinnedPanel />;
 }
 
-function ProfilePanelWrapper({ intent }: RightPanelProps) {
+function ProfilePanelWrapper({ intent }: MessagesRightPanelProps) {
   const isMobile = useIsMobile();
-  const { channel, toggle } = useRightSidebar();
+  const { channel, toggle } = useMessagesRightSidebar();
   if (intent.key !== 'profile') return null;
-  const user = channel.participants.find((participant) => participant.id === intent.userId);
+  const user = channel.participants.find(
+    (participant) => participant.id === intent.userId,
+  );
+  if (!user) return null;
   if (isMobile) {
     return (
-      <ProfileSheet
-        user={user ?? null}
-        onSavedMessagesClick={() => toggle({ key: 'saved' })}
-      />
+      <ProfileSheet user={user} onSavedMessagesClick={() => toggle({ key: 'saved' })} />
     );
   }
   return (
     <DetailedProfilePanel
-      user={user ?? null}
+      user={user}
       onSavedMessagesClick={() => toggle({ key: 'saved' })}
     />
   );
 }
 
-function ThreadPanelWrapper({ intent }: RightPanelProps) {
+function ThreadPanelWrapper({ intent }: MessagesRightPanelProps) {
   const isMobile = useIsMobile();
   const { getThreadData, createTextMessage, appendThreadMessage, toggle, currentUserId } =
-    useRightSidebar();
+    useMessagesRightSidebar();
   if (intent.key !== 'thread') return null;
   const threadData = getThreadData(intent.threadId);
   if (!threadData) return null;
@@ -122,7 +128,9 @@ function ThreadPanelWrapper({ intent }: RightPanelProps) {
 export const MessagesShell = memo(function MessagesShell(props: MessagesContainerProps) {
   const { channel } = props;
 
-  const rightPanelRegistry = useMemo<RightPanelRegistry<ComponentType<RightPanelProps>>>(
+  const rightPanelRegistry = useMemo<
+    MessagesRightPanelRegistry<ComponentType<MessagesRightPanelProps>>
+  >(
     () => ({
       channel_info: ChannelInfoPanelWrapper,
       saved: SavedPanelWrapper,
@@ -134,17 +142,17 @@ export const MessagesShell = memo(function MessagesShell(props: MessagesContaine
   );
 
   return (
-    <RightSidebarProvider channel={channel}>
+    <MessagesRightSidebarProvider channel={channel}>
       <div className="flex h-full min-h-0 flex-col">
         <header className="flex min-h-16 items-center justify-between gap-3 border-b border-border px-4 py-3">
           <MessagesContainerHeader channel={channel} />
-          <ChannelHeaderActions />
+          <MessagesContainerHeaderActions />
         </header>
         <div className="flex flex-1 overflow-hidden">
           <MessagesContainer {...props} />
-          <RightSidebarRegion registry={rightPanelRegistry} />
+          <MessagesRightSidebarRegion registry={rightPanelRegistry} />
         </div>
       </div>
-    </RightSidebarProvider>
+    </MessagesRightSidebarProvider>
   );
 });

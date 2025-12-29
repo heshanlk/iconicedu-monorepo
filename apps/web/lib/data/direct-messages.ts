@@ -104,8 +104,6 @@ export const DIRECT_MESSAGES: MessageVM[] = [
   } as TextMessageVM,
 ];
 
-export const DIRECT_THREAD_MESSAGES: Record<string, MessageVM[]> = {};
-
 export const DIRECT_CHANNEL: ChannelVM = {
   id: 'direct-channel-1',
   orgId: 'org-1',

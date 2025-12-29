@@ -12,7 +12,7 @@ import {
 import { cn } from '../../lib/utils';
 import { AvatarWithStatus } from '../shared/avatar-with-status';
 import type { ChannelVM, UserProfileVM } from '@iconicedu/shared-types';
-import { useRightSidebar } from './right-sidebar-provider';
+import { useMessagesRightSidebar } from './messages-right-sidebar-provider';
 
 interface HeaderSubtitleItem {
   icon?: LucideIcon;
@@ -123,7 +123,7 @@ const getOtherParticipant = (participants: UserProfileVM[], currentUserId: strin
 export const MessagesContainerHeader = memo(function MessagesContainerHeader({
   channel,
 }: MessagesContainerHeaderProps) {
-  const { savedCount, currentUserId, toggle } = useRightSidebar();
+  const { savedCount, currentUserId, toggle } = useMessagesRightSidebar();
 
   const otherParticipant = useMemo(
     () =>

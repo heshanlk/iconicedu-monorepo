@@ -2,6 +2,7 @@ import type {
   ChannelVM,
   MessageVM,
   TextMessageVM,
+  ThreadVM,
   LessonAssignmentMessageVM,
   ProgressUpdateMessageVM,
   SessionBookingMessageVM,
@@ -19,6 +20,55 @@ const minutesAgo = (minutes: number) =>
 const hoursFromNow = (hours: number) =>
   new Date(Date.now() + 3600000 * hours).toISOString();
 
+const THREAD_ONE: ThreadVM = {
+  id: 'thread-1',
+  messageCount: 3,
+  lastReply: hoursAgo(2),
+  participants: [MOCK_EDUCATOR, MOCK_GUARDIAN],
+  unreadCount: 1,
+};
+
+const THREAD_ONE_PARENT_MESSAGE: TextMessageVM = {
+  id: '2',
+  type: 'text',
+  content:
+    "Good morning, Ms. Williams! Yes, I've been wanting to talk about her recent test results. Is everything okay?",
+  sender: MOCK_GUARDIAN,
+  timestamp: hoursAgo(23.5),
+  reactions: [],
+  visibility: { type: 'all' },
+  isRead: true,
+  thread: THREAD_ONE,
+};
+
+const THREAD_ONE_MESSAGES: TextMessageVM[] = [
+  THREAD_ONE_PARENT_MESSAGE,
+  {
+    id: 't1-2',
+    type: 'text',
+    content:
+      'Everything is going well overall! Sarah is a bright child. I just wanted to go over some areas where we can help her improve even more.',
+    sender: MOCK_EDUCATOR,
+    timestamp: hoursAgo(23),
+    reactions: [{ emoji: '👍', count: 1, users: [MOCK_GUARDIAN.id] }],
+    visibility: { type: 'all' },
+    isRead: true,
+    thread: { ...THREAD_ONE, parentMessage: THREAD_ONE_PARENT_MESSAGE },
+  },
+  {
+    id: 't1-3',
+    type: 'text',
+    content:
+      'That sounds great! I appreciate you taking the time to help Sarah succeed.',
+    sender: MOCK_GUARDIAN,
+    timestamp: hoursAgo(2),
+    reactions: [],
+    visibility: { type: 'all' },
+    isRead: false,
+    thread: { ...THREAD_ONE, parentMessage: THREAD_ONE_PARENT_MESSAGE },
+  },
+];
+
 export const MOCK_MESSAGES: MessageVM[] = [
   {
     id: '1',
@@ -32,24 +82,8 @@ export const MOCK_MESSAGES: MessageVM[] = [
     isRead: true,
     isSaved: true,
   } as TextMessageVM,
-  {
-    id: '2',
-    type: 'text',
-    content:
-      "Good morning, Ms. Williams! Yes, I've been wanting to talk about her recent test results. Is everything okay?",
-    sender: MOCK_GUARDIAN,
-    timestamp: hoursAgo(23.5),
-    reactions: [],
-    visibility: { type: 'all' },
-    isRead: true,
-    thread: {
-      id: 'thread-1',
-      messageCount: 3,
-      lastReply: hoursAgo(2),
-      participants: [MOCK_EDUCATOR, MOCK_GUARDIAN],
-      unreadCount: 1,
-    },
-  } as TextMessageVM,
+  THREAD_ONE_PARENT_MESSAGE,
+  ...THREAD_ONE_MESSAGES.slice(1),
   {
     id: '3',
     type: 'lesson-assignment',
@@ -314,67 +348,6 @@ export const MOCK_MESSAGES: MessageVM[] = [
     },
   } as HomeworkSubmissionMessageVM,
 ];
-
-export const MOCK_THREAD_MESSAGES: Record<string, MessageVM[]> = {
-  'thread-1': [
-    {
-      id: 't1-1',
-      type: 'text',
-      content:
-        "Good morning, Ms. Williams! Yes, I've been wanting to talk about her recent test results. Is everything okay?",
-      sender: MOCK_GUARDIAN,
-      timestamp: hoursAgo(23.5),
-      reactions: [],
-      visibility: { type: 'all' },
-      isRead: true,
-    },
-    {
-      id: 't1-2',
-      type: 'text',
-      content:
-        'Everything is going well overall! Sarah is a bright child. I just wanted to go over some areas where we can help her improve even more.',
-      sender: MOCK_EDUCATOR,
-      timestamp: hoursAgo(23),
-      reactions: [{ emoji: '👍', count: 1, users: [MOCK_GUARDIAN.id] }],
-      visibility: { type: 'all' },
-      isRead: true,
-    },
-    {
-      id: 't1-3',
-      type: 'text',
-      content:
-        'That sounds great! I appreciate you taking the time to help Sarah succeed.',
-      sender: MOCK_GUARDIAN,
-      timestamp: hoursAgo(2),
-      reactions: [],
-      visibility: { type: 'all' },
-      isRead: false,
-    },
-  ] as TextMessageVM[],
-  'thread-2': [
-    {
-      id: 't2-1',
-      type: 'text',
-      content: 'Do you have any recommendations for extra reading materials?',
-      sender: MOCK_GUARDIAN,
-      timestamp: hoursAgo(5),
-      reactions: [],
-      visibility: { type: 'all' },
-      isRead: true,
-    },
-    {
-      id: 't2-2',
-      type: 'text',
-      content:
-        'Absolutely! I will share a short list this evening with a few great options.',
-      sender: MOCK_EDUCATOR,
-      timestamp: hoursAgo(4.5),
-      reactions: [{ emoji: '👍', count: 1, users: [MOCK_GUARDIAN.id] }],
-      visibility: { type: 'all' },
-      isRead: false,
-    },
-  ] as TextMessageVM[],
-};
 
 export const LEARNING_SPACE: ChannelVM = {
   id: 'learning-space-1',

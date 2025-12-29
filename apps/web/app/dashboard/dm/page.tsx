@@ -2,7 +2,6 @@ import { DirectMessagesContainer, DashboardHeader } from '@iconicedu/ui-web';
 import {
   DIRECT_CHANNEL,
   DIRECT_LAST_READ_MESSAGE_ID,
-  DIRECT_THREAD_MESSAGES,
 } from '../../../lib/data/direct-messages';
 
 export default function Page() {
@@ -12,7 +11,6 @@ export default function Page() {
         <DashboardHeader />
         <DirectMessagesContainer
           channel={DIRECT_CHANNEL}
-          initialThreadMessages={DIRECT_THREAD_MESSAGES}
           lastReadMessageId={DIRECT_LAST_READ_MESSAGE_ID}
         />
       </div>

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { MessageList, type MessageListRef } from './message-list';
 import { MessageInput } from './message-input';
 import { useMessages } from '../../hooks/use-messages';
-import { useRightSidebar } from './right-sidebar-provider';
+import { useMessagesRightSidebar } from './messages-right-sidebar-provider';
 import type {
   ChannelVM,
   EducatorProfileVM,
@@ -17,7 +17,6 @@ import type {
 
 export interface MessagesContainerProps {
   channel: ChannelVM;
-  initialThreadMessages: Record<string, MessageVM[]>;
   lastReadMessageId?: string;
 }
 
@@ -29,7 +28,6 @@ const isEducatorProfile = (profile: UserProfileVM): profile is EducatorProfileVM
 
 export function MessagesContainer({
   channel,
-  initialThreadMessages,
   lastReadMessageId,
 }: MessagesContainerProps) {
   const messageListRef = useRef<MessageListRef>(null);
@@ -42,7 +40,7 @@ export function MessagesContainer({
     setCreateTextMessage,
     appendThreadMessage,
     setScrollToMessage,
-  } = useRightSidebar();
+  } = useMessagesRightSidebar();
   const channelMessages = channel.messages?.items ?? [];
   const { messages, addMessage, toggleReaction, toggleSaved, toggleHidden } =
     useMessages(channelMessages);
@@ -59,11 +57,16 @@ export function MessagesContainer({
 
   const handleOpenThread = useCallback(
     (thread: ThreadVM, parentMessage: MessageVM) => {
-      const threadMessages = initialThreadMessages[thread.id] || [parentMessage];
-      setThreadData(thread, threadMessages);
+      const threadMessages = messages
+        .filter((message) => message.thread?.id === thread.id)
+        .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+      const resolvedThreadMessages = threadMessages.length
+        ? threadMessages
+        : [parentMessage];
+      setThreadData(thread, resolvedThreadMessages);
       toggle({ key: 'thread', threadId: thread.id });
     },
-    [initialThreadMessages, setThreadData, toggle],
+    [messages, setThreadData, toggle],
   );
 
   const handleSendMessage = useCallback(
@@ -116,6 +119,16 @@ export function MessagesContainer({
 
   const savedCount = useMemo(() => messages.filter((m) => m.isSaved).length, [messages]);
 
+  const visibleMessages = useMemo(
+    () =>
+      messages.filter(
+        (message) =>
+          !message.thread?.parentMessage ||
+          message.thread.parentMessage.id === message.id,
+      ),
+    [messages],
+  );
+
   useEffect(() => {
     setSavedCount(savedCount);
   }, [savedCount, setSavedCount]);
@@ -132,7 +145,7 @@ export function MessagesContainer({
 
   useEffect(() => {
     if (!senderProfile) return;
-    setCreateTextMessage(() => (content: string) => ({
+    setCreateTextMessage((content: string): TextMessageVM => ({
       id: `reply-${Date.now()}`,
       type: 'text',
       content,
@@ -153,7 +166,7 @@ export function MessagesContainer({
 
   const messageListProps = useMemo(
     () => ({
-      messages,
+      messages: visibleMessages,
       onOpenThread: handleOpenThread,
       onProfileClick: handleProfileClick,
       onToggleReaction: handleToggleReaction,
@@ -163,7 +176,7 @@ export function MessagesContainer({
       lastReadMessageId,
     }),
     [
-      messages,
+      visibleMessages,
       handleOpenThread,
       handleProfileClick,
       handleToggleReaction,

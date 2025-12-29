@@ -4,7 +4,7 @@ import { memo } from 'react';
 import { Info, Bookmark, Pin } from 'lucide-react';
 import { Button } from '../../ui/button';
 import { cn } from '../../lib/utils';
-import { useRightSidebar } from './right-sidebar-provider';
+import { useMessagesRightSidebar } from './messages-right-sidebar-provider';
 
 const ActionButton = memo(function ActionButton({
   icon: Icon,
@@ -37,8 +37,9 @@ const ActionButton = memo(function ActionButton({
   );
 });
 
-export const ChannelHeaderActions = memo(function ChannelHeaderActions() {
-  const { toggle, isActive, channel, currentUserId } = useRightSidebar();
+export const MessagesContainerHeaderActions = memo(
+  function MessagesContainerHeaderActions() {
+  const { toggle, isActive, channel, currentUserId } = useMessagesRightSidebar();
   const otherParticipant =
     channel.kind === 'dm'
       ? channel.participants.find((participant) => participant.id !== currentUserId)
@@ -74,4 +75,5 @@ export const ChannelHeaderActions = memo(function ChannelHeaderActions() {
       />
     </div>
   );
-});
+  },
+);

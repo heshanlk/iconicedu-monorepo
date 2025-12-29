@@ -3,10 +3,10 @@
 import { createContext, useCallback, useContext, useMemo, useState } from 'react';
 import type {
   ChannelVM,
+  MessagesRightPanelIntent,
+  MessagesRightPanelIntentKey,
+  MessagesRightSidebarState,
   MessageVM,
-  RightPanelIntent,
-  RightPanelIntentKey,
-  RightSidebarState,
   TextMessageVM,
   ThreadVM,
 } from '@iconicedu/shared-types';
@@ -16,17 +16,20 @@ type ThreadData = {
   messages: MessageVM[];
 };
 
-interface RightSidebarContextValue {
+interface MessagesRightSidebarContextValue {
   channel: ChannelVM;
   currentUserId: string;
   savedCount: number;
   messages: MessageVM[];
   createTextMessage: (content: string) => TextMessageVM | null;
-  state: RightSidebarState;
-  open: (intent: RightPanelIntent) => void;
+  state: MessagesRightSidebarState;
+  open: (intent: MessagesRightPanelIntent) => void;
   close: () => void;
-  toggle: (intent: RightPanelIntent) => void;
-  isActive: (key: RightPanelIntentKey, intent?: RightPanelIntent) => boolean;
+  toggle: (intent: MessagesRightPanelIntent) => void;
+  isActive: (
+    key: MessagesRightPanelIntentKey,
+    intent?: MessagesRightPanelIntent,
+  ) => boolean;
   setCurrentUserId: (userId: string) => void;
   setSavedCount: (count: number) => void;
   setMessages: (messages: MessageVM[]) => void;
@@ -38,9 +41,13 @@ interface RightSidebarContextValue {
   scrollToMessage?: (messageId: string) => void;
 }
 
-const RightSidebarContext = createContext<RightSidebarContextValue | null>(null);
+const MessagesRightSidebarContext =
+  createContext<MessagesRightSidebarContextValue | null>(null);
 
-const isSameIntent = (a: RightPanelIntent | null, b: RightPanelIntent) => {
+const isSameIntent = (
+  a: MessagesRightPanelIntent | null,
+  b: MessagesRightPanelIntent,
+) => {
   if (!a) return false;
   if (a.key !== b.key) return false;
   if (a.key === 'profile' && b.key === 'profile') {
@@ -52,14 +59,14 @@ const isSameIntent = (a: RightPanelIntent | null, b: RightPanelIntent) => {
   return true;
 };
 
-export function RightSidebarProvider({
+export function MessagesRightSidebarProvider({
   channel,
   children,
 }: {
   channel: ChannelVM;
   children: React.ReactNode;
 }) {
-  const [state, setState] = useState<RightSidebarState>({
+  const [state, setState] = useState<MessagesRightSidebarState>({
     isOpen: false,
     intent: null,
   });
@@ -76,7 +83,7 @@ export function RightSidebarProvider({
     ((messageId: string) => void) | undefined
   >(undefined);
 
-  const open = useCallback((intent: RightPanelIntent) => {
+  const open = useCallback((intent: MessagesRightPanelIntent) => {
     setState({ isOpen: true, intent });
   }, []);
 
@@ -85,7 +92,7 @@ export function RightSidebarProvider({
   }, []);
 
   const toggle = useCallback(
-    (intent: RightPanelIntent) => {
+    (intent: MessagesRightPanelIntent) => {
       setState((prev) => {
         if (prev.isOpen && isSameIntent(prev.intent, intent)) {
           return { ...prev, isOpen: false, intent: null };
@@ -97,7 +104,7 @@ export function RightSidebarProvider({
   );
 
   const isActive = useCallback(
-    (key: RightPanelIntentKey, intent?: RightPanelIntent) => {
+    (key: MessagesRightPanelIntentKey, intent?: MessagesRightPanelIntent) => {
       if (!state.isOpen || !state.intent) return false;
       if (state.intent.key !== key) return false;
       if (intent) {
@@ -174,16 +181,18 @@ export function RightSidebarProvider({
   );
 
   return (
-    <RightSidebarContext.Provider value={value}>
+    <MessagesRightSidebarContext.Provider value={value}>
       {children}
-    </RightSidebarContext.Provider>
+    </MessagesRightSidebarContext.Provider>
   );
 }
 
-export function useRightSidebar() {
-  const context = useContext(RightSidebarContext);
+export function useMessagesRightSidebar() {
+  const context = useContext(MessagesRightSidebarContext);
   if (!context) {
-    throw new Error('useRightSidebar must be used within RightSidebarProvider');
+    throw new Error(
+      'useMessagesRightSidebar must be used within MessagesRightSidebarProvider',
+    );
   }
   return context;
 }

@@ -3,7 +3,7 @@ export * from './sidebar';
 export * from './vm/shared';
 export * from './vm/calendar';
 export * from './vm/channel';
-export * from './vm/right-sidebar';
+export * from './vm/messages-right-sidebar';
 export * from './vm/activity-feed';
 export * from './vm/roles';
 export * from './vm/family';
