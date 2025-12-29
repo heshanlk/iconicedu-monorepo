@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { MessageList, type MessageListRef } from './message-list';
 import { MessageInput } from './message-input';
 import { useMessages } from '../../hooks/use-messages';
-import { useMessagesRightSidebar } from './messages-right-sidebar-provider';
+import { useMessagesState } from './messages-state-provider';
 import type {
   ChannelVM,
   EducatorProfileVM,
@@ -38,9 +38,10 @@ export function MessagesContainer({
     setCurrentUserId,
     setMessages,
     setCreateTextMessage,
+    setThreadHandlers,
     appendThreadMessage,
     setScrollToMessage,
-  } = useMessagesRightSidebar();
+  } = useMessagesState();
   const channelMessages = channel.messages?.items ?? [];
   const { messages, addMessage, toggleReaction, toggleSaved, toggleHidden } =
     useMessages(channelMessages);
@@ -59,7 +60,9 @@ export function MessagesContainer({
     (thread: ThreadVM, parentMessage: MessageVM) => {
       const threadMessages = messages
         .filter((message) => message.thread?.id === thread.id)
-        .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+        .sort(
+          (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
+        );
       const resolvedThreadMessages = threadMessages.length
         ? threadMessages
         : [parentMessage];
@@ -145,18 +148,28 @@ export function MessagesContainer({
 
   useEffect(() => {
     if (!senderProfile) return;
-    setCreateTextMessage((content: string): TextMessageVM => ({
-      id: `reply-${Date.now()}`,
-      type: 'text',
-      content,
-      sender: senderProfile,
-      timestamp: new Date().toISOString(),
-      reactions: [],
-      visibility: { type: 'all' },
-      isSaved: false,
-      isRead: true,
-    }));
+    setCreateTextMessage(
+      (content: string): TextMessageVM => ({
+        id: `reply-${Date.now()}`,
+        type: 'text',
+        content,
+        sender: senderProfile,
+        timestamp: new Date().toISOString(),
+        reactions: [],
+        visibility: { type: 'all' },
+        isSaved: false,
+        isRead: true,
+      }),
+    );
   }, [senderProfile, setCreateTextMessage]);
+
+  useEffect(() => {
+    setThreadHandlers({
+      onToggleReaction: handleToggleReaction,
+      onToggleSaved: handleToggleSaved,
+      onToggleHidden: handleToggleHidden,
+    });
+  }, [handleToggleReaction, handleToggleSaved, handleToggleHidden, setThreadHandlers]);
 
   useEffect(() => {
     setScrollToMessage(() => (messageId: string) => {

@@ -16,12 +16,13 @@ type ThreadData = {
   messages: MessageVM[];
 };
 
-interface MessagesRightSidebarContextValue {
+interface MessagesStateContextValue {
   channel: ChannelVM;
   currentUserId: string;
   savedCount: number;
   messages: MessageVM[];
   createTextMessage: (content: string) => TextMessageVM | null;
+  threadHandlers: ThreadActionHandlers;
   state: MessagesRightSidebarState;
   open: (intent: MessagesRightPanelIntent) => void;
   close: () => void;
@@ -34,6 +35,7 @@ interface MessagesRightSidebarContextValue {
   setSavedCount: (count: number) => void;
   setMessages: (messages: MessageVM[]) => void;
   setCreateTextMessage: (factory: (content: string) => TextMessageVM | null) => void;
+  setThreadHandlers: (handlers: ThreadActionHandlers) => void;
   appendThreadMessage: (threadId: string, message: MessageVM) => void;
   setThreadData: (thread: ThreadVM, messages: MessageVM[]) => void;
   getThreadData: (threadId: string) => ThreadData | undefined;
@@ -41,8 +43,13 @@ interface MessagesRightSidebarContextValue {
   scrollToMessage?: (messageId: string) => void;
 }
 
-const MessagesRightSidebarContext =
-  createContext<MessagesRightSidebarContextValue | null>(null);
+type ThreadActionHandlers = {
+  onToggleReaction?: (messageId: string, emoji: string) => void;
+  onToggleSaved?: (messageId: string) => void;
+  onToggleHidden?: (messageId: string) => void;
+};
+
+const MessagesStateContext = createContext<MessagesStateContextValue | null>(null);
 
 const isSameIntent = (
   a: MessagesRightPanelIntent | null,
@@ -59,7 +66,7 @@ const isSameIntent = (
   return true;
 };
 
-export function MessagesRightSidebarProvider({
+export function MessagesStateProvider({
   channel,
   children,
 }: {
@@ -75,7 +82,8 @@ export function MessagesRightSidebarProvider({
   const [messages, setMessages] = useState<MessageVM[]>([]);
   const [createTextMessage, setCreateTextMessage] = useState<
     (content: string) => TextMessageVM | null
-  >(() => null);
+  >(() => () => null);
+  const [threadHandlers, setThreadHandlers] = useState<ThreadActionHandlers>({});
   const [threadData, setThreadDataState] = useState<Record<string, ThreadData>>(
     {},
   );
@@ -135,6 +143,17 @@ export function MessagesRightSidebarProvider({
     [threadData],
   );
 
+  const setCreateTextMessageFactory = useCallback(
+    (factory: (content: string) => TextMessageVM | null) => {
+      setCreateTextMessage(() => factory);
+    },
+    [],
+  );
+
+  const setThreadHandlersFactory = useCallback((handlers: ThreadActionHandlers) => {
+    setThreadHandlers(handlers);
+  }, []);
+
   const value = useMemo(
     () => ({
       channel,
@@ -142,6 +161,7 @@ export function MessagesRightSidebarProvider({
       savedCount,
       messages,
       createTextMessage,
+      threadHandlers,
       state,
       open,
       close,
@@ -150,7 +170,8 @@ export function MessagesRightSidebarProvider({
       setCurrentUserId,
       setSavedCount,
       setMessages,
-      setCreateTextMessage,
+      setCreateTextMessage: setCreateTextMessageFactory,
+      setThreadHandlers: setThreadHandlersFactory,
       appendThreadMessage,
       setThreadData,
       getThreadData,
@@ -163,6 +184,7 @@ export function MessagesRightSidebarProvider({
       savedCount,
       messages,
       createTextMessage,
+      threadHandlers,
       state,
       open,
       close,
@@ -171,7 +193,8 @@ export function MessagesRightSidebarProvider({
       setCurrentUserId,
       setSavedCount,
       setMessages,
-      setCreateTextMessage,
+      setCreateTextMessageFactory,
+      setThreadHandlersFactory,
       appendThreadMessage,
       setThreadData,
       getThreadData,
@@ -181,17 +204,17 @@ export function MessagesRightSidebarProvider({
   );
 
   return (
-    <MessagesRightSidebarContext.Provider value={value}>
+    <MessagesStateContext.Provider value={value}>
       {children}
-    </MessagesRightSidebarContext.Provider>
+    </MessagesStateContext.Provider>
   );
 }
 
-export function useMessagesRightSidebar() {
-  const context = useContext(MessagesRightSidebarContext);
+export function useMessagesState() {
+  const context = useContext(MessagesStateContext);
   if (!context) {
     throw new Error(
-      'useMessagesRightSidebar must be used within MessagesRightSidebarProvider',
+      'useMessagesState must be used within MessagesStateProvider',
     );
   }
   return context;

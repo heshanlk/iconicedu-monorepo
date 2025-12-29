@@ -88,7 +88,7 @@ export function MessagesSidebar({
         'hidden md:flex overflow-hidden',
         'transition-[width,opacity,transform] duration-200 motion-reduce:transition-none',
         'data-[state=closed]:w-0 data-[state=closed]:pointer-events-none data-[state=closed]:opacity-0 data-[state=closed]:translate-x-4',
-        'data-[state=open]:w-[400px] data-[state=open]:opacity-100 data-[state=open]:translate-x-0',
+        'data-[state=open]:opacity-100 data-[state=open]:translate-x-0',
       )}
     >
       <Card className="w-full min-h-0 flex-col rounded-none border-0 border-l border-border bg-card">

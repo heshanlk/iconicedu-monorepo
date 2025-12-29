@@ -3,7 +3,7 @@
 import type { MessagesRightPanelIntent } from '@iconicedu/shared-types';
 import { ThreadPanel as DetailedThreadPanel } from '../thread-panel';
 import { ThreadSheet } from '../thread-sheet';
-import { useMessagesRightSidebar } from '../messages-right-sidebar-provider';
+import { useMessagesState } from '../messages-state-provider';
 import { useIsMobile } from '../../../hooks/use-mobile';
 
 interface ThreadPanelProps {
@@ -12,8 +12,14 @@ interface ThreadPanelProps {
 
 export function ThreadPanel({ intent }: ThreadPanelProps) {
   const isMobile = useIsMobile();
-  const { getThreadData, createTextMessage, appendThreadMessage, toggle, currentUserId } =
-    useMessagesRightSidebar();
+  const {
+    getThreadData,
+    createTextMessage,
+    appendThreadMessage,
+    toggle,
+    currentUserId,
+    threadHandlers,
+  } = useMessagesState();
   if (intent.key !== 'thread') return null;
   const threadData = getThreadData(intent.threadId);
   if (!threadData) return null;
@@ -31,6 +37,9 @@ export function ThreadPanel({ intent }: ThreadPanelProps) {
         messages={threadData.messages}
         onSendReply={onSendReply}
         onProfileClick={onProfileClick}
+        onToggleReaction={threadHandlers.onToggleReaction}
+        onToggleSaved={threadHandlers.onToggleSaved}
+        onToggleHidden={threadHandlers.onToggleHidden}
         currentUserId={currentUserId}
       />
     );
@@ -41,6 +50,9 @@ export function ThreadPanel({ intent }: ThreadPanelProps) {
       messages={threadData.messages}
       onSendReply={onSendReply}
       onProfileClick={onProfileClick}
+      onToggleReaction={threadHandlers.onToggleReaction}
+      onToggleSaved={threadHandlers.onToggleSaved}
+      onToggleHidden={threadHandlers.onToggleHidden}
       currentUserId={currentUserId}
     />
   );

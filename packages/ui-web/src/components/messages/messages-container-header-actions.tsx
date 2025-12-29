@@ -4,7 +4,7 @@ import { memo } from 'react';
 import { Info } from 'lucide-react';
 import { Button } from '../../ui/button';
 import { cn } from '../../lib/utils';
-import { useMessagesRightSidebar } from './messages-right-sidebar-provider';
+import { useMessagesState } from './messages-state-provider';
 
 const ActionButton = memo(function ActionButton({
   icon: Icon,
@@ -39,7 +39,7 @@ const ActionButton = memo(function ActionButton({
 
 export const MessagesContainerHeaderActions = memo(
   function MessagesContainerHeaderActions() {
-  const { toggle, isActive, channel, currentUserId } = useMessagesRightSidebar();
+  const { toggle, isActive, channel, currentUserId } = useMessagesState();
   const otherParticipant =
     channel.kind === 'dm'
       ? channel.participants.find((participant) => participant.id !== currentUserId)

@@ -3,7 +3,7 @@
 import type { MessagesRightPanelIntent } from '@iconicedu/shared-types';
 import { ProfilePanel as DetailedProfilePanel } from '../profile-panel';
 import { ProfileSheet } from '../profile-sheet';
-import { useMessagesRightSidebar } from '../messages-right-sidebar-provider';
+import { useMessagesState } from '../messages-state-provider';
 import { useIsMobile } from '../../../hooks/use-mobile';
 
 interface ProfilePanelProps {
@@ -12,7 +12,7 @@ interface ProfilePanelProps {
 
 export function ProfilePanel({ intent }: ProfilePanelProps) {
   const isMobile = useIsMobile();
-  const { channel, toggle } = useMessagesRightSidebar();
+  const { channel, toggle } = useMessagesState();
   if (intent.key !== 'profile') return null;
   const user = channel.participants.find(
     (participant) => participant.id === intent.userId,

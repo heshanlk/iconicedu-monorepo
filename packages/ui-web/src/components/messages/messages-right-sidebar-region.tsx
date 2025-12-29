@@ -7,7 +7,7 @@ import type {
   MessagesRightPanelRegistry,
 } from '@iconicedu/shared-types';
 import { MessagesSidebar } from './messages-sidebar';
-import { useMessagesRightSidebar } from './messages-right-sidebar-provider';
+import { useMessagesState } from './messages-state-provider';
 interface MessagesRightSidebarRegionProps {
   registry: MessagesRightPanelRegistry<ComponentType<MessagesRightPanelProps>>;
 }
@@ -35,7 +35,7 @@ const getSidebarMeta = (intent: MessagesRightPanelIntent | null) => {
 export const MessagesRightSidebarRegion = memo(function MessagesRightSidebarRegion({
   registry,
 }: MessagesRightSidebarRegionProps) {
-  const { state, close } = useMessagesRightSidebar();
+  const { state, close } = useMessagesState();
 
   const Panel = useMemo(() => {
     if (!state.intent) return null;

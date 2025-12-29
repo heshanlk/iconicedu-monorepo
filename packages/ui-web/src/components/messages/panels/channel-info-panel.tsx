@@ -2,14 +2,14 @@
 
 import type { MessagesRightPanelIntent } from '@iconicedu/shared-types';
 import { LearningSpaceInfoPanel } from '../../learning-space/learning-space-info-panel';
-import { useMessagesRightSidebar } from '../messages-right-sidebar-provider';
+import { useMessagesState } from '../messages-state-provider';
 
 interface ChannelInfoPanelProps {
   intent: MessagesRightPanelIntent;
 }
 
 export function ChannelInfoPanel(_: ChannelInfoPanelProps) {
-  const { channel } = useMessagesRightSidebar();
+  const { channel } = useMessagesState();
   const members = channel.participants.map((participant) => ({
     id: participant.id,
     name: participant.displayName,
