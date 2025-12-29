@@ -73,9 +73,9 @@ export function MessagesSidebar({
             <DrawerTitle className="sr-only">{title}</DrawerTitle>
             <SidebarHeader title={title} subtitle={subtitle} onClose={onClose} />
           </DrawerHeader>
-          <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-            <div className="flex min-h-0 flex-1 flex-col">{children}</div>
-          </div>
+          <ScrollArea className="flex min-h-0 flex-1">
+            <div className="flex min-h-0 flex-col">{children}</div>
+          </ScrollArea>
         </DrawerContent>
       </Drawer>
     );

@@ -6,9 +6,10 @@ import type {
   MessagesContainerProps,
   MessagesHeaderRenderProps,
 } from '../messages/messages-container';
-import { LearningSpaceHeader } from './learning-space-header';
+import { MessagesContainerHeader } from '../messages/messages-container-header';
 import { LearningSpaceInfoPanel } from './learning-space-info-panel';
 import { useIsMobile } from '../../hooks/use-mobile';
+import { Bookmark, Clock } from 'lucide-react';
 
 interface LearningSpaceMember {
   id: string;
@@ -45,12 +46,20 @@ export function LearningSpaceContainer({ space, ...props }: LearningSpaceContain
     onOpenInfo,
     isInfoActive,
   }: MessagesHeaderRenderProps) => (
-    <LearningSpaceHeader
+    <MessagesContainerHeader
       title={space.title}
-      schedule={space.schedule}
-      nextSession={space.nextSession}
-      savedCount={savedCount}
-      onSavedMessagesClick={onSavedMessagesClick}
+      subtitleItems={[
+        {
+          icon: Bookmark,
+          label: `${savedCount}`,
+          onClick: onSavedMessagesClick,
+          tooltip: 'View saved messages',
+        },
+        {
+          icon: Clock,
+          label: `Upcoming · ${space.nextSession}`,
+        },
+      ]}
       onOpenInfo={onOpenInfo}
       isInfoActive={isInfoActive}
     />

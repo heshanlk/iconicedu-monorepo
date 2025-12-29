@@ -15,6 +15,7 @@ import {
 import { AvatarWithStatus } from '../shared/avatar-with-status';
 import { Badge } from '../../ui/badge';
 import { Separator } from '../../ui/separator';
+import { ProfileActions } from './profile-actions';
 import type { GradeLevelOption, UserProfileVM } from '@iconicedu/shared-types';
 
 interface ProfilePanelProps {
@@ -35,9 +36,10 @@ interface ProfilePanelProps {
     }> | null;
     childrenNames?: string[];
   };
+  onSavedMessagesClick?: () => void;
 }
 
-export function ProfilePanel({ user }: ProfilePanelProps) {
+export function ProfilePanel({ user, onSavedMessagesClick }: ProfilePanelProps) {
   return (
     <>
       <div className="flex-1 overflow-y-auto">
@@ -63,6 +65,13 @@ export function ProfilePanel({ user }: ProfilePanelProps) {
               {user.role}
             </Badge>
           )}
+        </div>
+
+        <Separator />
+
+        <div className="space-y-4 p-4">
+          <h3 className="text-sm font-semibold text-foreground">Quick actions</h3>
+          <ProfileActions onSavedMessagesClick={onSavedMessagesClick} />
         </div>
 
         <Separator />

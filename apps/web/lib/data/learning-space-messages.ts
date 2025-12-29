@@ -12,8 +12,7 @@ import { MOCK_GUARDIAN, MOCK_EDUCATOR, MOCK_CHILDREN } from './people';
 
 export const LAST_READ_MESSAGE_ID = '4';
 
-const hoursAgo = (hours: number) =>
-  new Date(Date.now() - 3600000 * hours).toISOString();
+const hoursAgo = (hours: number) => new Date(Date.now() - 3600000 * hours).toISOString();
 const minutesAgo = (minutes: number) =>
   new Date(Date.now() - 60000 * minutes).toISOString();
 const hoursFromNow = (hours: number) =>
@@ -22,7 +21,7 @@ const hoursFromNow = (hours: number) =>
 export const LEARNING_SPACE = {
   title: `ELA • ${MOCK_EDUCATOR.displayName} • Fri 5 pm`,
   schedule: 'Every Wednesday • 4:30 PM',
-  nextSession: 'Next session • Wed 4:30 PM',
+  nextSession: 'Wed 4:30 PM',
   topic: 'Main discussion about work and our life.',
   description:
     'We live, we love, we grow together. Everything will be good if we stay together.',

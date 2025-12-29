@@ -10,7 +10,9 @@ import { ProfileSheet } from './profile-sheet';
 import { SavedMessagesPanel } from './saved-messages-panel';
 import { MessagesSidebar } from './messages-sidebar';
 import { MessageInput } from './message-input';
-import { MessageHeader } from './messages-header';
+import { MessagesContainerHeader } from './messages-container-header';
+import { AvatarWithStatus } from '../shared/avatar-with-status';
+import { Bookmark, Clock } from 'lucide-react';
 import { useIsMobile } from '../../hooks/use-mobile';
 import { useMessages } from '../../hooks/use-messages';
 import { useDMSidebar, type SidebarContent } from '../../hooks/use-messages-sidebar';
@@ -257,6 +259,24 @@ export function MessagesContainer({
 
   const savedCount = useMemo(() => messages.filter((m) => m.isSaved).length, [messages]);
 
+  const lastSeenLabel = useMemo(() => {
+    const lastSeenAt = educator.presence?.lastSeenAt;
+    if (!lastSeenAt) return 'Last seen recently';
+    const lastSeenDate = new Date(lastSeenAt);
+    if (Number.isNaN(lastSeenDate.getTime())) return 'Last seen recently';
+    return `Last seen ${lastSeenDate.toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+    })}`;
+  }, [educator.presence?.lastSeenAt]);
+
+  const isOnline =
+    educator.presence?.liveStatus !== undefined
+      ? educator.presence.liveStatus !== 'none'
+      : undefined;
+
   const headerNode = renderHeader ? (
     renderHeader({
       educator,
@@ -268,10 +288,31 @@ export function MessagesContainer({
       isInfoActive: sidebarContent === 'space-info',
     })
   ) : (
-    <MessageHeader
-      user={educator}
-      onProfileClick={() => handleProfileClick(educator.id)}
-      onSavedMessagesClick={handleSavedMessagesClick}
+    <MessagesContainerHeader
+      title={educator.displayName}
+      subtitleItems={[
+        {
+          icon: Bookmark,
+          label: `${savedCount}`,
+          onClick: handleSavedMessagesClick,
+          tooltip: 'View saved messages',
+        },
+        {
+          icon: Clock,
+          label: lastSeenLabel,
+        },
+      ]}
+      leading={
+        <AvatarWithStatus
+          name={educator.displayName}
+          avatar={educator.avatar.url ?? ''}
+          isOnline={isOnline}
+          sizeClassName="h-7 w-7"
+          initialsLength={1}
+        />
+      }
+      onOpenInfo={() => handleProfileClick(educator.id)}
+      isInfoActive={sidebarContent === 'profile'}
     />
   );
 
@@ -361,9 +402,15 @@ export function MessagesContainer({
             )}
             {sidebarContent === 'profile' &&
               (isMobile ? (
-                <ProfileSheet user={profileUser} />
+                <ProfileSheet
+                  user={profileUser}
+                  onSavedMessagesClick={handleSavedMessagesClick}
+                />
               ) : (
-                <ProfilePanel user={profileUser} />
+                <ProfilePanel
+                  user={profileUser}
+                  onSavedMessagesClick={handleSavedMessagesClick}
+                />
               ))}
             {sidebarContent === 'saved-messages' && (
               <SavedMessagesPanel {...savedMessagesPanelProps} />

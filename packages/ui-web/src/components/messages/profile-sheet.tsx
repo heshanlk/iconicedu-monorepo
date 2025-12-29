@@ -13,6 +13,7 @@ import {
 import { AvatarWithStatus } from '../shared/avatar-with-status';
 import { Badge } from '../../ui/badge';
 import { Separator } from '../../ui/separator';
+import { ProfileActions } from './profile-actions';
 import type { GradeLevelOption, UserProfileVM } from '@iconicedu/shared-types';
 
 interface ProfileSheetProps {
@@ -33,9 +34,10 @@ interface ProfileSheetProps {
     }> | null;
     childrenNames?: string[];
   };
+  onSavedMessagesClick?: () => void;
 }
 
-export function ProfileSheet({ user }: ProfileSheetProps) {
+export function ProfileSheet({ user, onSavedMessagesClick }: ProfileSheetProps) {
   return (
     <>
       <div className="flex-1 overflow-y-auto">
@@ -61,6 +63,13 @@ export function ProfileSheet({ user }: ProfileSheetProps) {
               {user.role}
             </Badge>
           )}
+        </div>
+
+        <Separator />
+
+        <div className="space-y-4 p-4">
+          <h3 className="text-sm font-semibold text-foreground">Quick actions</h3>
+          <ProfileActions onSavedMessagesClick={onSavedMessagesClick} />
         </div>
 
         <Separator />
