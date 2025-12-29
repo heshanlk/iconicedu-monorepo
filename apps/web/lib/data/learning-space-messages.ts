@@ -1,4 +1,5 @@
 import type {
+  ChannelVM,
   MessageVM,
   TextMessageVM,
   LessonAssignmentMessageVM,
@@ -17,37 +18,6 @@ const minutesAgo = (minutes: number) =>
   new Date(Date.now() - 60000 * minutes).toISOString();
 const hoursFromNow = (hours: number) =>
   new Date(Date.now() + 3600000 * hours).toISOString();
-
-export const LEARNING_SPACE = {
-  title: `ELA • ${MOCK_EDUCATOR.displayName} • Fri 5 pm`,
-  schedule: 'Every Wednesday • 4:30 PM',
-  nextSession: 'Wed 4:30 PM',
-  topic: 'Main discussion about work and our life.',
-  description:
-    'We live, we love, we grow together. Everything will be good if we stay together.',
-  joinUrl: 'https://meet.google.com/abc-defg-hij',
-  accentColor: 'bg-amber-100 text-amber-700',
-  members: [
-    {
-      id: MOCK_EDUCATOR.id,
-      name: MOCK_EDUCATOR.displayName,
-      role: 'Educator',
-      avatarUrl: MOCK_EDUCATOR.avatar.url,
-    },
-    {
-      id: MOCK_GUARDIAN.id,
-      name: MOCK_GUARDIAN.displayName,
-      role: 'Guardian',
-      avatarUrl: MOCK_GUARDIAN.avatar.url,
-    },
-    ...MOCK_CHILDREN.map((child) => ({
-      id: child.id,
-      name: child.displayName,
-      role: 'Child',
-      avatarUrl: child.avatar.url,
-    })),
-  ],
-};
 
 export const MOCK_MESSAGES: MessageVM[] = [
   {
@@ -404,4 +374,34 @@ export const MOCK_THREAD_MESSAGES: Record<string, MessageVM[]> = {
       isRead: false,
     },
   ] as TextMessageVM[],
+};
+
+export const LEARNING_SPACE: ChannelVM = {
+  id: 'learning-space-1',
+  orgId: 'org-1',
+  kind: 'channel',
+  topic: `ELA • ${MOCK_EDUCATOR.displayName} • Fri 5 pm`,
+  topicIconKey: 'sparkles',
+  description:
+    'We live, we love, we grow together. Everything will be good if we stay together.',
+  visibility: 'private',
+  purpose: 'learning-space',
+  status: 'active',
+  createdBy: MOCK_EDUCATOR.id,
+  createdAt: hoursAgo(24),
+  archivedAt: null,
+  postingPolicy: {
+    kind: 'members-only',
+    allowThreads: true,
+    allowReactions: true,
+  },
+  headerItems: [
+    { key: 'saved', label: '0', tooltip: 'View saved messages', isPrimary: true },
+    { key: 'next-session', label: 'Wed 4:30 PM' },
+  ],
+  participants: [MOCK_EDUCATOR, MOCK_GUARDIAN, ...MOCK_CHILDREN],
+  messages: {
+    items: MOCK_MESSAGES,
+    total: MOCK_MESSAGES.length,
+  },
 };

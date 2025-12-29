@@ -1,4 +1,5 @@
 import type {
+  ChannelVM,
   MessageVM,
   TextMessageVM,
   ImageMessageVM,
@@ -104,3 +105,32 @@ export const DIRECT_MESSAGES: MessageVM[] = [
 ];
 
 export const DIRECT_THREAD_MESSAGES: Record<string, MessageVM[]> = {};
+
+export const DIRECT_CHANNEL: ChannelVM = {
+  id: 'direct-channel-1',
+  orgId: 'org-1',
+  kind: 'dm',
+  topic: `${DIRECT_EDUCATOR.displayName} & ${DIRECT_GUARDIAN.displayName}`,
+  topicIconKey: 'user',
+  description: 'Direct messages between guardian and educator.',
+  visibility: 'private',
+  purpose: 'general',
+  status: 'active',
+  createdBy: DIRECT_EDUCATOR.id,
+  createdAt: hoursAgo(48),
+  archivedAt: null,
+  postingPolicy: {
+    kind: 'members-only',
+    allowThreads: true,
+    allowReactions: true,
+  },
+  headerItems: [
+    { key: 'saved', label: '0', tooltip: 'View saved messages', isPrimary: true },
+    { key: 'last-seen', label: 'Last seen 15m' },
+  ],
+  participants: [DIRECT_EDUCATOR, DIRECT_GUARDIAN],
+  messages: {
+    items: DIRECT_MESSAGES,
+    total: DIRECT_MESSAGES.length,
+  },
+};

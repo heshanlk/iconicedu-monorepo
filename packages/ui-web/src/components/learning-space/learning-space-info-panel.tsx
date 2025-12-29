@@ -32,11 +32,11 @@ interface LearningSpaceMember {
 
 interface LearningSpaceInfoPanelProps {
   title: string;
-  topic?: string;
-  description?: string;
+  topic?: string | null;
+  description?: string | null;
   members: LearningSpaceMember[];
-  schedule: string;
-  nextSession: string;
+  schedule?: string | null;
+  nextSession?: string | null;
   joinUrl?: string;
 }
 
@@ -105,6 +105,7 @@ export const LearningSpaceInfoPanel = memo(function LearningSpaceInfoPanel({
   joinUrl,
 }: LearningSpaceInfoPanelProps) {
   const isMobile = useIsMobile();
+  const hasSchedule = Boolean(schedule) || Boolean(nextSession);
   const getInitials = (name: string) =>
     name
       .split(' ')
@@ -122,10 +123,12 @@ export const LearningSpaceInfoPanel = memo(function LearningSpaceInfoPanel({
         </CardHeader>
         <CardContent className="pt-0">
           <div className="text-sm font-semibold text-foreground">{title}</div>
-          <div className="mt-2 flex flex-col gap-1 text-xs text-muted-foreground">
-            <span>{schedule}</span>
-            <span>{nextSession}</span>
-          </div>
+          {hasSchedule ? (
+            <div className="mt-2 flex flex-col gap-1 text-xs text-muted-foreground">
+              {schedule ? <span>{schedule}</span> : null}
+              {nextSession ? <span>{nextSession}</span> : null}
+            </div>
+          ) : null}
         </CardContent>
       </Card>
 

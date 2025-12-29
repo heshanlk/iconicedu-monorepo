@@ -9,29 +9,18 @@ import type {
 import { MessagesContainerHeader } from '../messages/messages-container-header';
 import { LearningSpaceInfoPanel } from './learning-space-info-panel';
 import { useIsMobile } from '../../hooks/use-mobile';
-import { Bookmark, Clock } from 'lucide-react';
-
-interface LearningSpaceMember {
-  id: string;
-  name: string;
-  role?: string;
-  avatarUrl?: string | null;
-}
-
-export interface LearningSpaceMeta {
-  title: string;
-  schedule: string;
-  nextSession: string;
-  topic?: string;
-  description?: string;
-  joinUrl?: string;
-  members: LearningSpaceMember[];
-  accentColor?: string;
-}
+import { Bookmark, Clock, Sparkles, BookOpen, Users } from 'lucide-react';
+import type { ChannelVM } from '@iconicedu/shared-types';
 
 export interface LearningSpaceContainerProps extends MessagesContainerProps {
-  space: LearningSpaceMeta;
+  space: ChannelVM;
 }
+
+const CHANNEL_ICON_MAP: Record<string, typeof Sparkles> = {
+  sparkles: Sparkles,
+  book: BookOpen,
+  users: Users,
+};
 
 export function LearningSpaceContainer({ space, ...props }: LearningSpaceContainerProps) {
   const isMobile = useIsMobile();
@@ -47,23 +36,35 @@ export function LearningSpaceContainer({ space, ...props }: LearningSpaceContain
     isInfoActive,
   }: MessagesHeaderRenderProps) => (
     <MessagesContainerHeader
-      title={space.title}
-      subtitleItems={[
-        {
-          icon: Bookmark,
-          label: `${savedCount}`,
-          onClick: onSavedMessagesClick,
-          tooltip: 'View saved messages',
-        },
-        {
-          icon: Clock,
-          label: `Upcoming · ${space.nextSession}`,
-        },
-      ]}
+      title={space.topic}
+      leading={
+        space.topicIconKey && CHANNEL_ICON_MAP[space.topicIconKey] ? (
+          <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+            {(() => {
+              const Icon = CHANNEL_ICON_MAP[space.topicIconKey!];
+              return <Icon className="h-3.5 w-3.5" />;
+            })()}
+          </span>
+        ) : undefined
+      }
+      subtitleItems={space.headerItems.map((item) => ({
+        icon: item.key === 'saved' ? Bookmark : item.key === 'next-session' ? Clock : undefined,
+        label: item.key === 'saved' ? `${savedCount}` : item.label,
+        onClick: item.key === 'saved' ? onSavedMessagesClick : undefined,
+        tooltip: item.tooltip ?? undefined,
+      }))}
       onOpenInfo={onOpenInfo}
       isInfoActive={isInfoActive}
     />
   );
+
+  const members = space.participants.map((participant) => ({
+    id: participant.id,
+    name: participant.displayName,
+    avatarUrl: participant.avatar.url ?? null,
+  }));
+
+  const nextSessionItem = space.headerItems.find((item) => item.key === 'next-session');
 
   return (
     <MessagesContainer
@@ -71,16 +72,16 @@ export function LearningSpaceContainer({ space, ...props }: LearningSpaceContain
       renderHeader={renderHeader}
       infoPanel={
         <LearningSpaceInfoPanel
-          title={space.title}
+          title={space.topic}
           topic={space.topic}
           description={space.description}
-          members={space.members}
-          schedule={space.schedule}
-          nextSession={space.nextSession}
-          joinUrl={space.joinUrl}
+          members={members}
+          schedule={null}
+          nextSession={nextSessionItem?.label}
+          joinUrl={undefined}
         />
       }
-      infoPanelMeta={{ title: 'Details', subtitle: space.title }}
+      infoPanelMeta={{ title: 'Details', subtitle: space.topic }}
       defaultSidebarContent={hasMounted && !isMobile ? 'space-info' : undefined}
     />
   );

@@ -2,6 +2,7 @@ export * from './vm/messages';
 export * from './sidebar';
 export * from './vm/shared';
 export * from './vm/calendar';
+export * from './vm/channel';
 export * from './vm/activity-feed';
 export * from './vm/roles';
 export * from './vm/family';

@@ -4,7 +4,12 @@ import { memo } from 'react';
 import type { ReactNode } from 'react';
 import { Info, Sparkles, type LucideIcon } from 'lucide-react';
 import { Button } from '../../ui/button';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../ui/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../../ui/tooltip';
 import { cn } from '../../lib/utils';
 
 interface HeaderSubtitleItem {
