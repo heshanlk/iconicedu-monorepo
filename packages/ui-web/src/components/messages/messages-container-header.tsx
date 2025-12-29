@@ -1,8 +1,17 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 import type { ReactNode } from 'react';
-import { Info, Sparkles, type LucideIcon } from 'lucide-react';
+import {
+  Info,
+  Sparkles,
+  User,
+  Users,
+  BookOpen,
+  Bookmark,
+  Clock,
+  type LucideIcon,
+} from 'lucide-react';
 import { Button } from '../../ui/button';
 import {
   Tooltip,
@@ -11,6 +20,9 @@ import {
   TooltipTrigger,
 } from '../../ui/tooltip';
 import { cn } from '../../lib/utils';
+import { AvatarWithStatus } from '../shared/avatar-with-status';
+import type { ChannelVM, UserProfileVM } from '@iconicedu/shared-types';
+import { useMessagesContainer } from './messages-container-context';
 
 interface HeaderSubtitleItem {
   icon?: LucideIcon;
@@ -20,11 +32,7 @@ interface HeaderSubtitleItem {
 }
 
 interface MessagesContainerHeaderProps {
-  title: string;
-  subtitleItems?: HeaderSubtitleItem[];
-  onOpenInfo: () => void;
-  isInfoActive?: boolean;
-  leading?: ReactNode;
+  channel: ChannelVM;
 }
 
 const HeaderSubtitleItem = memo(function HeaderSubtitleItem({
@@ -71,15 +79,11 @@ const HeaderTitle = memo(function HeaderTitle({
   leading,
 }: {
   title: string;
-  leading?: ReactNode;
+  leading: ReactNode;
 }) {
   return (
     <div className="flex items-center gap-2">
-      {leading ?? (
-        <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-muted text-muted-foreground">
-          <Sparkles className="h-3.5 w-3.5" />
-        </span>
-      )}
+      {leading}
       <span className="truncate text-sm font-semibold text-foreground">{title}</span>
     </div>
   );
@@ -136,22 +140,107 @@ const HeaderInfoButton = memo(function HeaderInfoButton({
   );
 });
 
+const CHANNEL_ICON_MAP: Record<string, LucideIcon> = {
+  sparkles: Sparkles,
+  book: BookOpen,
+  user: User,
+  users: Users,
+};
+
+const HEADER_ICON_MAP: Record<string, LucideIcon> = {
+  saved: Bookmark,
+  'next-session': Clock,
+  'last-seen': Clock,
+  info: Info,
+};
+
+const getOtherParticipant = (participants: UserProfileVM[], currentUserId: string) =>
+  participants.find((participant) => participant.id !== currentUserId) ?? participants[0];
+
 export const MessagesContainerHeader = memo(function MessagesContainerHeader({
-  title,
-  onOpenInfo,
-  subtitleItems,
-  isInfoActive = false,
-  leading,
+  channel,
 }: MessagesContainerHeaderProps) {
+  const {
+    currentUserId,
+    savedCount,
+    sidebarContent,
+    profileUserId,
+    openInfo,
+    openProfile,
+    openSavedMessages,
+  } = useMessagesContainer();
+
+  const otherParticipant = useMemo(
+    () => (channel.kind === 'dm' ? getOtherParticipant(channel.participants, currentUserId) : null),
+    [channel.kind, channel.participants, currentUserId],
+  );
+
+  const title = channel.kind === 'dm' ? otherParticipant?.displayName ?? channel.topic : channel.topic;
+  const leading = useMemo(() => {
+    if (channel.kind === 'dm') {
+      if (!otherParticipant) return null;
+      return (
+        <AvatarWithStatus
+          name={otherParticipant.displayName}
+          avatar={otherParticipant.avatar.url ?? ''}
+          isOnline={
+            otherParticipant.presence?.liveStatus !== undefined
+              ? otherParticipant.presence.liveStatus !== 'none'
+              : undefined
+          }
+          sizeClassName="h-7 w-7"
+          initialsLength={1}
+        />
+      );
+    }
+    const Icon =
+      (channel.topicIconKey && CHANNEL_ICON_MAP[channel.topicIconKey]) ?? Sparkles;
+    return (
+      <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+        <Icon className="h-3.5 w-3.5" />
+      </span>
+    );
+  }, [channel.kind, channel.topicIconKey, otherParticipant]);
+
+  const subtitleItems: HeaderSubtitleItem[] = useMemo(
+    () =>
+      channel.headerItems.map((item) => {
+        const icon = HEADER_ICON_MAP[item.key];
+        const label = item.key === 'saved' ? `${savedCount}` : item.label;
+        return {
+          icon,
+          label,
+          tooltip: item.tooltip ?? undefined,
+          onClick: item.key === 'saved' ? openSavedMessages : undefined,
+        };
+      }),
+    [channel.headerItems, savedCount, openSavedMessages],
+  );
+
+  const isInfoActive =
+    channel.kind === 'dm'
+      ? sidebarContent === 'profile' && profileUserId === otherParticipant?.id
+      : sidebarContent === 'space-info';
+
+  const handleOpenInfo = () => {
+    if (channel.kind === 'dm') {
+      if (otherParticipant) {
+        openProfile(otherParticipant.id);
+      }
+      return;
+    }
+    openInfo();
+  };
+
   return (
     <header className="flex min-h-16 items-center justify-between gap-3 border-b border-border px-4 py-3">
       <div className="flex min-w-0 flex-col">
         <HeaderTitle title={title} leading={leading} />
-        {subtitleItems?.length ? <HeaderSubtitleRow items={subtitleItems} /> : null}
+        {subtitleItems.length ? <HeaderSubtitleRow items={subtitleItems} /> : null}
       </div>
 
       <div className="flex items-center gap-3 sm:justify-end">
-        <HeaderInfoButton isActive={isInfoActive} onOpenInfo={onOpenInfo} />
+        <HeaderInfoButton isActive={isInfoActive} onOpenInfo={handleOpenInfo} />
       </div>
     </header>
   );

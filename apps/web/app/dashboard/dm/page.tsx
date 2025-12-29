@@ -1,5 +1,6 @@
 import { DirectMessagesContainer, DashboardHeader } from '@iconicedu/ui-web';
 import {
+  DIRECT_CHANNEL,
   DIRECT_EDUCATOR,
   DIRECT_LAST_READ_MESSAGE_ID,
   DIRECT_MESSAGES,
@@ -13,6 +14,7 @@ export default function Page() {
       <div className="flex h-[calc(100vh-1.0rem)] flex-col">
         <DashboardHeader />
         <DirectMessagesContainer
+          channel={DIRECT_CHANNEL}
           messages={DIRECT_MESSAGES}
           initialThreadMessages={DIRECT_THREAD_MESSAGES}
           educator={DIRECT_EDUCATOR}

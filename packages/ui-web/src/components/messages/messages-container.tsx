@@ -1,7 +1,6 @@
 'use client';
 
 import { useCallback, useMemo, useRef, useEffect } from 'react';
-import type { ReactNode } from 'react';
 import { MessageList, type MessageListRef } from './message-list';
 import { ThreadPanel } from './thread-panel';
 import { ThreadSheet } from './thread-sheet';
@@ -11,13 +10,13 @@ import { SavedMessagesPanel } from './saved-messages-panel';
 import { MessagesSidebar } from './messages-sidebar';
 import { MessageInput } from './message-input';
 import { MessagesContainerHeader } from './messages-container-header';
-import { AvatarWithStatus } from '../shared/avatar-with-status';
-import { Bookmark, Clock } from 'lucide-react';
+import { MessagesContainerProvider } from './messages-container-context';
 import { useIsMobile } from '../../hooks/use-mobile';
 import { useMessages } from '../../hooks/use-messages';
 import { useDMSidebar, type SidebarContent } from '../../hooks/use-messages-sidebar';
 import { useThread } from '../../hooks/use-thread';
 import type {
+  ChannelVM,
   ThreadVM,
   TextMessageVM,
   MessageVM,
@@ -25,34 +24,24 @@ import type {
 } from '@iconicedu/shared-types';
 
 export interface MessagesContainerProps {
+  channel: ChannelVM;
   messages: MessageVM[];
   initialThreadMessages: Record<string, MessageVM[]>;
   educator: UserProfileVM;
   guardian: UserProfileVM;
   lastReadMessageId?: string;
-  renderHeader?: (props: MessagesHeaderRenderProps) => ReactNode;
   infoPanel?: ReactNode;
   infoPanelMeta?: { title: string; subtitle?: string };
   defaultSidebarContent?: SidebarContent;
 }
 
-export interface MessagesHeaderRenderProps {
-  educator: UserProfileVM;
-  guardian: UserProfileVM;
-  savedCount: number;
-  onProfileClick: (userId: string) => void;
-  onSavedMessagesClick: () => void;
-  onOpenInfo: () => void;
-  isInfoActive: boolean;
-}
-
 export function MessagesContainer({
+  channel,
   messages: initialMessages,
   initialThreadMessages,
   educator,
   guardian,
   lastReadMessageId,
-  renderHeader,
   infoPanel,
   infoPanelMeta,
   defaultSidebarContent,
@@ -259,61 +248,29 @@ export function MessagesContainer({
 
   const savedCount = useMemo(() => messages.filter((m) => m.isSaved).length, [messages]);
 
-  const lastSeenLabel = useMemo(() => {
-    const lastSeenAt = educator.presence?.lastSeenAt;
-    if (!lastSeenAt) return 'Last seen recently';
-    const lastSeenDate = new Date(lastSeenAt);
-    if (Number.isNaN(lastSeenDate.getTime())) return 'Last seen recently';
-    return `Last seen ${lastSeenDate.toLocaleString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-    })}`;
-  }, [educator.presence?.lastSeenAt]);
+  const headerNode = <MessagesContainerHeader channel={channel} />;
 
-  const isOnline =
-    educator.presence?.liveStatus !== undefined
-      ? educator.presence.liveStatus !== 'none'
-      : undefined;
-
-  const headerNode = renderHeader ? (
-    renderHeader({
-      educator,
-      guardian,
+  const contextValue = useMemo(
+    () => ({
+      channel,
+      currentUserId: guardian.id,
       savedCount,
-      onProfileClick: handleProfileClick,
-      onSavedMessagesClick: handleSavedMessagesClick,
-      onOpenInfo: handleOpenInfo,
-      isInfoActive: sidebarContent === 'space-info',
-    })
-  ) : (
-    <MessagesContainerHeader
-      title={educator.displayName}
-      subtitleItems={[
-        {
-          icon: Bookmark,
-          label: `${savedCount}`,
-          onClick: handleSavedMessagesClick,
-          tooltip: 'View saved messages',
-        },
-        {
-          icon: Clock,
-          label: lastSeenLabel,
-        },
-      ]}
-      leading={
-        <AvatarWithStatus
-          name={educator.displayName}
-          avatar={educator.avatar.url ?? ''}
-          isOnline={isOnline}
-          sizeClassName="h-7 w-7"
-          initialsLength={1}
-        />
-      }
-      onOpenInfo={() => handleProfileClick(educator.id)}
-      isInfoActive={sidebarContent === 'profile'}
-    />
+      sidebarContent,
+      profileUserId,
+      openInfo: handleOpenInfo,
+      openProfile: handleProfileClick,
+      openSavedMessages: handleSavedMessagesClick,
+    }),
+    [
+      channel,
+      guardian.id,
+      savedCount,
+      sidebarContent,
+      profileUserId,
+      handleOpenInfo,
+      handleProfileClick,
+      handleSavedMessagesClick,
+    ],
   );
 
   const messageListProps = useMemo(
@@ -374,51 +331,53 @@ export function MessagesContainer({
 
   return (
     <div className="flex h-full min-h-0">
-      <div className="flex flex-1 flex-col">
-        {headerNode}
-        <div className="flex flex-1 overflow-hidden">
-          <div className="flex flex-1 min-h-0 flex-col">
-            <MessageList ref={messageListRef} {...messageListProps} />
-            <MessageInput
-              onSend={handleSendMessage}
-              placeholder={`Message ${educator.displayName}`}
-            />
-          </div>
-          <MessagesSidebar
-            open={Boolean(sidebarContent)}
-            title={sidebarMeta.title}
-            subtitle={sidebarMeta.subtitle}
-            onClose={handleCloseSidebar}
-            className={sidebarContent === 'thread' ? 'h-[85vh]' : undefined}
-          >
-            {sidebarContent === 'thread' && activeThread && (
-              <>
-                {isMobile ? (
-                  <ThreadSheet {...threadPanelProps} />
+      <MessagesContainerProvider value={contextValue}>
+        <div className="flex flex-1 flex-col">
+          {headerNode}
+          <div className="flex flex-1 overflow-hidden">
+            <div className="flex flex-1 min-h-0 flex-col">
+              <MessageList ref={messageListRef} {...messageListProps} />
+              <MessageInput
+                onSend={handleSendMessage}
+                placeholder={`Message ${educator.displayName}`}
+              />
+            </div>
+            <MessagesSidebar
+              open={Boolean(sidebarContent)}
+              title={sidebarMeta.title}
+              subtitle={sidebarMeta.subtitle}
+              onClose={handleCloseSidebar}
+              className={sidebarContent === 'thread' ? 'h-[85vh]' : undefined}
+            >
+              {sidebarContent === 'thread' && activeThread && (
+                <>
+                  {isMobile ? (
+                    <ThreadSheet {...threadPanelProps} />
+                  ) : (
+                    <ThreadPanel {...threadPanelProps} />
+                  )}
+                </>
+              )}
+              {sidebarContent === 'profile' &&
+                (isMobile ? (
+                  <ProfileSheet
+                    user={profileUser}
+                    onSavedMessagesClick={handleSavedMessagesClick}
+                  />
                 ) : (
-                  <ThreadPanel {...threadPanelProps} />
-                )}
-              </>
-            )}
-            {sidebarContent === 'profile' &&
-              (isMobile ? (
-                <ProfileSheet
-                  user={profileUser}
-                  onSavedMessagesClick={handleSavedMessagesClick}
-                />
-              ) : (
-                <ProfilePanel
-                  user={profileUser}
-                  onSavedMessagesClick={handleSavedMessagesClick}
-                />
-              ))}
-            {sidebarContent === 'saved-messages' && (
-              <SavedMessagesPanel {...savedMessagesPanelProps} />
-            )}
-            {sidebarContent === 'space-info' && infoPanel}
-          </MessagesSidebar>
+                  <ProfilePanel
+                    user={profileUser}
+                    onSavedMessagesClick={handleSavedMessagesClick}
+                  />
+                ))}
+              {sidebarContent === 'saved-messages' && (
+                <SavedMessagesPanel {...savedMessagesPanelProps} />
+              )}
+              {sidebarContent === 'space-info' && infoPanel}
+            </MessagesSidebar>
+          </div>
         </div>
-      </div>
+      </MessagesContainerProvider>
     </div>
   );
 }
