@@ -21,7 +21,6 @@ type ThreadData = {
 interface MessagesStateContextValue {
   channel: ChannelVM;
   currentUserId: string;
-  dmChannelByUserId?: Record<string, string>;
   savedCount: number;
   homeworkCount: number;
   sessionSummaryCount: number;
@@ -85,11 +84,9 @@ const isSameIntent = (
 
 export function MessagesStateProvider({
   channel,
-  dmChannelByUserId,
   children,
 }: {
   channel: ChannelVM;
-  dmChannelByUserId?: Record<string, string>;
   children: React.ReactNode;
 }) {
   const [state, setState] = useState<MessagesRightSidebarState>({
@@ -195,7 +192,6 @@ export function MessagesStateProvider({
     () => ({
       channel,
       currentUserId,
-      dmChannelByUserId,
       savedCount,
       homeworkCount,
       sessionSummaryCount,
@@ -225,7 +221,6 @@ export function MessagesStateProvider({
     [
       channel,
       currentUserId,
-      dmChannelByUserId,
       savedCount,
       homeworkCount,
       sessionSummaryCount,

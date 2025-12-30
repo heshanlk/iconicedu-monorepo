@@ -42,7 +42,7 @@ export const MessagesShell = memo(function MessagesShell(props: MessagesContaine
   );
 
   return (
-    <MessagesStateProvider channel={channel} dmChannelByUserId={props.dmChannelByUserId}>
+    <MessagesStateProvider channel={channel}>
       <MessagesShellLayout {...props} registry={rightPanelRegistry} />
     </MessagesStateProvider>
   );
