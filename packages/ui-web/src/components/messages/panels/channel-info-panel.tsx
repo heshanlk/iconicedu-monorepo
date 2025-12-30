@@ -19,6 +19,7 @@ import { Badge } from '../../../ui/badge';
 import { Separator } from '../../../ui/separator';
 import { Button } from '../../../ui/button';
 import { AvatarWithStatus } from '../../shared/avatar-with-status';
+import { MediaFilesPanel } from '../shared/media-files-panel';
 import { useMessagesState } from '../context/messages-state-provider';
 import {
   DropdownMenu,
@@ -40,7 +41,8 @@ const CHANNEL_ICON_MAP = {
 } as const;
 
 const ChannelInfoPanelContent = memo(function ChannelInfoPanelContent() {
-  const { channel, toggle, messageFilter, toggleMessageFilter } = useMessagesState();
+  const { channel, toggle, messageFilter, toggleMessageFilter, messages } =
+    useMessagesState();
   const topicIconKey = channel.topicIconKey ?? 'sparkles';
   const TopicIcon =
     CHANNEL_ICON_MAP[topicIconKey as keyof typeof CHANNEL_ICON_MAP] ?? Sparkles;
@@ -170,6 +172,12 @@ const ChannelInfoPanelContent = memo(function ChannelInfoPanelContent() {
             </div>
           ) : null}
         </div>
+      </div>
+
+      <Separator />
+
+      <div className="space-y-4 p-4 min-w-0">
+        <MediaFilesPanel messages={messages} />
       </div>
 
       <Separator />

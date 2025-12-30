@@ -15,6 +15,8 @@ import { Badge } from '../../ui/badge';
 import { Separator } from '../../ui/separator';
 import { ProfileActions } from './profile-actions';
 import type { GradeLevelOption, UserProfileVM } from '@iconicedu/shared-types';
+import type { MessageVM } from '@iconicedu/shared-types';
+import { MediaFilesPanel } from './shared/media-files-panel';
 
 export type ProfileDetailsUser = UserProfileVM & {
   role?: string;
@@ -36,9 +38,16 @@ export type ProfileDetailsUser = UserProfileVM & {
 
 interface ProfileSheetProps {
   user: ProfileDetailsUser;
+  messages?: MessageVM[];
 }
 
-export function ProfileContent({ user }: { user: ProfileDetailsUser }) {
+export function ProfileContent({
+  user,
+  messages = [],
+}: {
+  user: ProfileDetailsUser;
+  messages?: MessageVM[];
+}) {
   return (
     <div className="flex-1 overflow-y-auto">
       <div className="flex flex-col items-center gap-3 p-6 min-w-0">
@@ -70,6 +79,12 @@ export function ProfileContent({ user }: { user: ProfileDetailsUser }) {
       <div className="space-y-4 p-4 min-w-0">
         <h3 className="text-sm font-semibold text-foreground">Quick actions</h3>
         <ProfileActions />
+      </div>
+
+      <Separator />
+
+      <div className="space-y-4 p-4 min-w-0">
+        <MediaFilesPanel messages={messages} filterUserId={user.id} />
       </div>
 
       <Separator />
@@ -206,6 +221,6 @@ export function ProfileContent({ user }: { user: ProfileDetailsUser }) {
   );
 }
 
-export function ProfileSheet({ user }: ProfileSheetProps) {
-  return <ProfileContent user={user} />;
+export function ProfileSheet({ user, messages }: ProfileSheetProps) {
+  return <ProfileContent user={user} messages={messages} />;
 }

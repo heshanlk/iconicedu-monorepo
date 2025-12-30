@@ -15,14 +15,14 @@ interface ProfilePanelProps {
 
 export function ProfilePanel({ intent }: ProfilePanelProps) {
   const isMobile = useIsMobile();
-  const { channel } = useMessagesState();
+  const { channel, messages } = useMessagesState();
   if (intent.key !== 'profile') return null;
   const user = channel.participants.find(
     (participant) => participant.id === intent.userId,
   );
   if (!user) return null;
   if (isMobile) {
-    return <ProfileSheet user={user} />;
+    return <ProfileSheet user={user} messages={messages} />;
   }
-  return <ProfileContent user={user} />;
+  return <ProfileContent user={user} messages={messages} />;
 }
