@@ -41,8 +41,7 @@ const CHANNEL_ICON_MAP = {
 } as const;
 
 const ChannelInfoPanelContent = memo(function ChannelInfoPanelContent() {
-  const { channel, toggle, messageFilter, toggleMessageFilter, messages } =
-    useMessagesState();
+  const { channel, toggle, messageFilter, toggleMessageFilter } = useMessagesState();
   const topicIconKey = channel.topicIconKey ?? 'sparkles';
   const TopicIcon =
     CHANNEL_ICON_MAP[topicIconKey as keyof typeof CHANNEL_ICON_MAP] ?? Sparkles;
@@ -177,7 +176,7 @@ const ChannelInfoPanelContent = memo(function ChannelInfoPanelContent() {
       <Separator />
 
       <div className="space-y-4 p-4 min-w-0">
-        <MediaFilesPanel messages={messages} />
+        <MediaFilesPanel media={channel.media.items} files={channel.files.items} />
       </div>
 
       <Separator />

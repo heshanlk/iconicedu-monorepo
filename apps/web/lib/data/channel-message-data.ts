@@ -1,5 +1,8 @@
 import type {
+  AttachmentVM,
   AudioRecordingMessageVM,
+  ChannelFileItemVM,
+  ChannelMediaItemVM,
   ChannelVM,
   FileMessageVM,
   GuardianProfileVM,
@@ -39,6 +42,36 @@ const withMessages = (channel: ChannelVM, messages: MessageVM[]): ChannelVM => {
   const lastReadIndex = Math.max(0, messages.length - 3);
   const lastReadMessageId = messages[lastReadIndex]?.id;
   const unreadCount = Math.max(0, messages.length - (lastReadIndex + 1));
+  const attachments = messages.flatMap((message) => extractAttachments(message));
+  const mediaItems: ChannelMediaItemVM[] = attachments
+    .filter((attachment) => attachment.type === 'image')
+    .map((attachment, index) => ({
+      id: `media-${channel.id}-${index}`,
+      channelId: channel.id,
+      messageId: attachment.messageId,
+      senderId: attachment.senderId,
+      type: 'image',
+      url: attachment.url,
+      name: attachment.name,
+      width: attachment.width ?? null,
+      height: attachment.height ?? null,
+      createdAt: attachment.createdAt,
+    }));
+  const fileItems: ChannelFileItemVM[] = attachments
+    .filter((attachment) => attachment.type !== 'image')
+    .map((attachment, index) => ({
+      id: `file-${channel.id}-${index}`,
+      channelId: channel.id,
+      messageId: attachment.messageId,
+      senderId: attachment.senderId,
+      kind: attachment.type === 'design-file' ? 'design-file' : 'file',
+      url: attachment.url,
+      name: attachment.name,
+      mimeType: attachment.mimeType ?? null,
+      size: attachment.size ?? null,
+      tool: attachment.tool ?? null,
+      createdAt: attachment.createdAt,
+    }));
 
   return {
     ...channel,
@@ -49,6 +82,14 @@ const withMessages = (channel: ChannelVM, messages: MessageVM[]): ChannelVM => {
       items: messages,
       total: messages.length,
     },
+    media: {
+      items: mediaItems,
+      total: mediaItems.length,
+    },
+    files: {
+      items: fileItems,
+      total: fileItems.length,
+    },
     readState: {
       channelId: channel.id,
       lastReadAt: channel.readState?.lastReadAt ?? minutesAgo(30),
@@ -56,6 +97,38 @@ const withMessages = (channel: ChannelVM, messages: MessageVM[]): ChannelVM => {
       unreadCount,
     },
   };
+};
+
+const extractAttachments = (
+  message: MessageVM,
+): Array<
+  (AttachmentVM & { messageId: string; createdAt: string; mimeType?: string; size?: number }) & {
+    width?: number;
+    height?: number;
+    tool?: string;
+  }
+> => {
+  const base = {
+    messageId: message.id,
+    createdAt: message.createdAt,
+    senderId: message.sender.id,
+  };
+  if (message.type === 'image') {
+    return [{ ...message.attachment, ...base }];
+  }
+  if (message.type === 'file') {
+    return [{ ...message.attachment, ...base }];
+  }
+  if (message.type === 'design-file-update') {
+    return [{ ...message.attachment, ...base }];
+  }
+  if (message.type === 'lesson-assignment' && message.assignment.attachments?.length) {
+    return message.assignment.attachments.map((attachment) => ({ ...attachment, ...base }));
+  }
+  if (message.type === 'homework-submission' && message.homework.attachments?.length) {
+    return message.homework.attachments.map((attachment) => ({ ...attachment, ...base }));
+  }
+  return [];
 };
 
 const buildDirectMessages = (

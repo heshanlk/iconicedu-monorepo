@@ -14,8 +14,12 @@ import { AvatarWithStatus } from '../shared/avatar-with-status';
 import { Badge } from '../../ui/badge';
 import { Separator } from '../../ui/separator';
 import { ProfileActions } from './profile-actions';
-import type { GradeLevelOption, UserProfileVM } from '@iconicedu/shared-types';
-import type { MessageVM } from '@iconicedu/shared-types';
+import type {
+  ChannelFileItemVM,
+  ChannelMediaItemVM,
+  GradeLevelOption,
+  UserProfileVM,
+} from '@iconicedu/shared-types';
 import { MediaFilesPanel } from './shared/media-files-panel';
 
 export type ProfileDetailsUser = UserProfileVM & {
@@ -38,15 +42,18 @@ export type ProfileDetailsUser = UserProfileVM & {
 
 interface ProfileSheetProps {
   user: ProfileDetailsUser;
-  messages?: MessageVM[];
+  media?: ChannelMediaItemVM[];
+  files?: ChannelFileItemVM[];
 }
 
 export function ProfileContent({
   user,
-  messages = [],
+  media = [],
+  files = [],
 }: {
   user: ProfileDetailsUser;
-  messages?: MessageVM[];
+  media?: ChannelMediaItemVM[];
+  files?: ChannelFileItemVM[];
 }) {
   return (
     <div className="flex-1 overflow-y-auto">
@@ -84,7 +91,7 @@ export function ProfileContent({
       <Separator />
 
       <div className="space-y-4 p-4 min-w-0">
-        <MediaFilesPanel messages={messages} filterUserId={user.id} />
+        <MediaFilesPanel media={media} files={files} filterUserId={user.id} />
       </div>
 
       <Separator />
@@ -221,6 +228,6 @@ export function ProfileContent({
   );
 }
 
-export function ProfileSheet({ user, messages }: ProfileSheetProps) {
-  return <ProfileContent user={user} messages={messages} />;
+export function ProfileSheet({ user, media, files }: ProfileSheetProps) {
+  return <ProfileContent user={user} media={media} files={files} />;
 }

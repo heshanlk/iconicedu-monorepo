@@ -2,47 +2,30 @@
 
 import { memo, useMemo } from 'react';
 import { FileText } from 'lucide-react';
-import type {
-  DesignFileUpdateMessageVM,
-  FileMessageVM,
-  ImageMessageVM,
-  MessageVM,
-} from '@iconicedu/shared-types';
+import type { ChannelFileItemVM, ChannelMediaItemVM } from '@iconicedu/shared-types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../ui/tabs';
 
 type MediaFilesPanelProps = {
-  messages: MessageVM[];
+  media: ChannelMediaItemVM[];
+  files: ChannelFileItemVM[];
   title?: string;
   filterUserId?: string;
 };
 
-const isImageMessage = (message: MessageVM): message is ImageMessageVM =>
-  message.type === 'image';
-const isFileMessage = (message: MessageVM): message is FileMessageVM =>
-  message.type === 'file';
-const isDesignFileMessage = (
-  message: MessageVM,
-): message is DesignFileUpdateMessageVM => message.type === 'design-file-update';
-
 export const MediaFilesPanel = memo(function MediaFilesPanel({
-  messages,
+  media,
+  files,
   title = 'Media & files',
   filterUserId,
 }: MediaFilesPanelProps) {
-  const scopedMessages = useMemo(() => {
-    if (!filterUserId) return messages;
-    return messages.filter((message) => message.sender.id === filterUserId);
-  }, [filterUserId, messages]);
-
-  const mediaItems = useMemo(
-    () => scopedMessages.filter(isImageMessage),
-    [scopedMessages],
-  );
-  const fileItems = useMemo(
-    () =>
-      scopedMessages.filter((message) => isFileMessage(message) || isDesignFileMessage(message)),
-    [scopedMessages],
-  );
+  const scopedMedia = useMemo(() => {
+    if (!filterUserId) return media;
+    return media.filter((item) => item.senderId === filterUserId);
+  }, [filterUserId, media]);
+  const scopedFiles = useMemo(() => {
+    if (!filterUserId) return files;
+    return files.filter((item) => item.senderId === filterUserId);
+  }, [filterUserId, files]);
 
   return (
     <div className="space-y-3">
@@ -51,26 +34,26 @@ export const MediaFilesPanel = memo(function MediaFilesPanel({
         <TabsList className="w-full justify-between">
           <TabsTrigger value="media" className="flex-1">
             Media
-            <span className="text-xs text-muted-foreground">{mediaItems.length}</span>
+            <span className="text-xs text-muted-foreground">{scopedMedia.length}</span>
           </TabsTrigger>
           <TabsTrigger value="files" className="flex-1">
             File
-            <span className="text-xs text-muted-foreground">{fileItems.length}</span>
+            <span className="text-xs text-muted-foreground">{scopedFiles.length}</span>
           </TabsTrigger>
         </TabsList>
         <TabsContent value="media" className="min-w-0">
-          {mediaItems.length === 0 ? (
+          {scopedMedia.length === 0 ? (
             <p className="text-xs text-muted-foreground">No media yet.</p>
           ) : (
             <div className="grid grid-cols-2 gap-3">
-              {mediaItems.slice(0, 6).map((item) => (
+              {scopedMedia.slice(0, 6).map((item) => (
                 <div
                   key={item.id}
                   className="aspect-square overflow-hidden rounded-xl bg-muted"
                 >
                   <img
-                    src={item.attachment.url}
-                    alt={item.attachment.name}
+                    src={item.url}
+                    alt={item.name ?? 'Media'}
                     className="h-full w-full object-cover"
                   />
                 </div>
@@ -79,11 +62,11 @@ export const MediaFilesPanel = memo(function MediaFilesPanel({
           )}
         </TabsContent>
         <TabsContent value="files" className="min-w-0">
-          {fileItems.length === 0 ? (
+          {scopedFiles.length === 0 ? (
             <p className="text-xs text-muted-foreground">No files yet.</p>
           ) : (
             <div className="space-y-2">
-              {fileItems.slice(0, 6).map((item) => (
+              {scopedFiles.slice(0, 6).map((item) => (
                 <div
                   key={item.id}
                   className="flex items-center gap-3 rounded-lg border border-border p-2"
@@ -93,14 +76,10 @@ export const MediaFilesPanel = memo(function MediaFilesPanel({
                   </div>
                   <div className="min-w-0">
                     <p className="truncate text-sm text-foreground">
-                      {item.type === 'design-file-update'
-                        ? item.attachment.name
-                        : item.attachment.name}
+                      {item.name}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {item.type === 'design-file-update'
-                        ? item.attachment.tool
-                        : item.attachment.mimeType ?? 'File'}
+                      {item.kind === 'design-file' ? item.tool ?? 'Design file' : item.mimeType ?? 'File'}
                     </p>
                   </div>
                 </div>

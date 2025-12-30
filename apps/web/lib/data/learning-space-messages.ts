@@ -395,4 +395,12 @@ export const LEARNING_SPACE: ChannelVM = {
     items: MOCK_MESSAGES,
     total: MOCK_MESSAGES.length,
   },
+  media: {
+    items: [],
+    total: 0,
+  },
+  files: {
+    items: [],
+    total: 0,
+  },
 };

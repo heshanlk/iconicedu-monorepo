@@ -30,6 +30,37 @@ export interface ChannelHeaderItemVM {
   isPrimary?: boolean;
 }
 
+export type ChannelMediaType = 'image';
+
+export interface ChannelMediaItemVM {
+  id: UUID;
+  channelId: UUID;
+  messageId?: UUID | null;
+  senderId?: UUID | null;
+  type: ChannelMediaType;
+  url: string;
+  name?: string | null;
+  width?: number | null;
+  height?: number | null;
+  createdAt: ISODateTime;
+}
+
+export type ChannelFileKind = 'file' | 'design-file';
+
+export interface ChannelFileItemVM {
+  id: UUID;
+  channelId: UUID;
+  messageId?: UUID | null;
+  senderId?: UUID | null;
+  kind: ChannelFileKind;
+  url: string;
+  name: string;
+  mimeType?: string | null;
+  size?: number | null;
+  tool?: string | null;
+  createdAt: ISODateTime;
+}
+
 export interface ChannelVM {
   id: UUID;
   orgId: UUID;
@@ -52,6 +83,8 @@ export interface ChannelVM {
   headerItems: ChannelHeaderItemVM[];
   participants: UserProfileVM[];
   messages: ConnectionVM<MessageVM>;
+  media: ConnectionVM<ChannelMediaItemVM>;
+  files: ConnectionVM<ChannelFileItemVM>;
   readState?: MessageReadStateVM;
   defaultRightPanelOpen?: boolean;
   defaultRightPanelKey?: MessagesRightPanelIntentKey;

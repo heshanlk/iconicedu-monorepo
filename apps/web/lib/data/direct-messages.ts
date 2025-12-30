@@ -226,4 +226,12 @@ export const DIRECT_CHANNEL: ChannelVM = {
     items: DIRECT_MESSAGES,
     total: DIRECT_MESSAGES.length,
   },
+  media: {
+    items: [],
+    total: 0,
+  },
+  files: {
+    items: [],
+    total: 0,
+  },
 };

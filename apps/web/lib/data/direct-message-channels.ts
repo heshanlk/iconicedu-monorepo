@@ -40,6 +40,14 @@ export const DIRECT_MESSAGE_CHANNELS: ChannelVM[] = [
       items: [],
       total: 0,
     },
+    media: {
+      items: [],
+      total: 0,
+    },
+    files: {
+      items: [],
+      total: 0,
+    },
     readState: {
       channelId: 'dm-channel-1',
       lastReadAt: hoursAgo(2),
@@ -72,6 +80,14 @@ export const DIRECT_MESSAGE_CHANNELS: ChannelVM[] = [
     ],
     participants: [MOCK_GUARDIAN, MOCK_EDUCATOR_2],
     messages: {
+      items: [],
+      total: 0,
+    },
+    media: {
+      items: [],
+      total: 0,
+    },
+    files: {
       items: [],
       total: 0,
     },
@@ -110,6 +126,14 @@ export const DIRECT_MESSAGE_CHANNELS: ChannelVM[] = [
       items: [],
       total: 0,
     },
+    media: {
+      items: [],
+      total: 0,
+    },
+    files: {
+      items: [],
+      total: 0,
+    },
     readState: {
       channelId: 'dm-channel-3',
       lastReadAt: hoursAgo(8),
@@ -145,6 +169,14 @@ export const DIRECT_MESSAGE_CHANNELS: ChannelVM[] = [
       items: [],
       total: 0,
     },
+    media: {
+      items: [],
+      total: 0,
+    },
+    files: {
+      items: [],
+      total: 0,
+    },
     readState: {
       channelId: 'dm-channel-4',
       lastReadAt: hoursAgo(24),
@@ -177,6 +209,14 @@ export const DIRECT_MESSAGE_CHANNELS: ChannelVM[] = [
     ],
     participants: [MOCK_GUARDIAN, MOCK_EDUCATOR_5],
     messages: {
+      items: [],
+      total: 0,
+    },
+    media: {
+      items: [],
+      total: 0,
+    },
+    files: {
       items: [],
       total: 0,
     },

@@ -41,6 +41,14 @@ export const LEARNING_SPACES: ChannelVM[] = [
       items: [],
       total: 0,
     },
+    media: {
+      items: [],
+      total: 0,
+    },
+    files: {
+      items: [],
+      total: 0,
+    },
     readState: {
       channelId: 'learning-space-sarah-ela',
       lastReadMessageId: 'ls-sarah-1',
@@ -76,6 +84,14 @@ export const LEARNING_SPACES: ChannelVM[] = [
     ],
     participants: [MOCK_EDUCATOR_2, MOCK_GUARDIAN, MOCK_CHILDREN[0]],
     messages: {
+      items: [],
+      total: 0,
+    },
+    media: {
+      items: [],
+      total: 0,
+    },
+    files: {
       items: [],
       total: 0,
     },
@@ -116,6 +132,14 @@ export const LEARNING_SPACES: ChannelVM[] = [
       items: [],
       total: 0,
     },
+    media: {
+      items: [],
+      total: 0,
+    },
+    files: {
+      items: [],
+      total: 0,
+    },
     readState: {
       channelId: 'learning-space-sarah-science',
       lastReadAt: hoursAgo(12),
@@ -150,6 +174,14 @@ export const LEARNING_SPACES: ChannelVM[] = [
     ],
     participants: [MOCK_EDUCATOR_2, MOCK_GUARDIAN, MOCK_CHILDREN[1]],
     messages: {
+      items: [],
+      total: 0,
+    },
+    media: {
+      items: [],
+      total: 0,
+    },
+    files: {
       items: [],
       total: 0,
     },
@@ -191,6 +223,14 @@ export const LEARNING_SPACES: ChannelVM[] = [
       items: [],
       total: 0,
     },
+    media: {
+      items: [],
+      total: 0,
+    },
+    files: {
+      items: [],
+      total: 0,
+    },
     readState: {
       channelId: 'learning-space-zayne-math',
       lastReadAt: hoursAgo(5),
@@ -225,6 +265,14 @@ export const LEARNING_SPACES: ChannelVM[] = [
     ],
     participants: [MOCK_EDUCATOR, MOCK_GUARDIAN, MOCK_CHILDREN[1]],
     messages: {
+      items: [],
+      total: 0,
+    },
+    media: {
+      items: [],
+      total: 0,
+    },
+    files: {
       items: [],
       total: 0,
     },
@@ -265,6 +313,14 @@ export const LEARNING_SPACES: ChannelVM[] = [
       items: [],
       total: 0,
     },
+    media: {
+      items: [],
+      total: 0,
+    },
+    files: {
+      items: [],
+      total: 0,
+    },
     readState: {
       channelId: 'learning-space-sophia-ela',
       lastReadAt: hoursAgo(4),
@@ -302,6 +358,14 @@ export const LEARNING_SPACES: ChannelVM[] = [
       items: [],
       total: 0,
     },
+    media: {
+      items: [],
+      total: 0,
+    },
+    files: {
+      items: [],
+      total: 0,
+    },
     readState: {
       channelId: 'learning-space-sophia-math',
       lastReadAt: hoursAgo(7),
@@ -336,6 +400,14 @@ export const LEARNING_SPACES: ChannelVM[] = [
     ],
     participants: [MOCK_EDUCATOR_2, MOCK_GUARDIAN, MOCK_CHILDREN[2]],
     messages: {
+      items: [],
+      total: 0,
+    },
+    media: {
+      items: [],
+      total: 0,
+    },
+    files: {
       items: [],
       total: 0,
     },
