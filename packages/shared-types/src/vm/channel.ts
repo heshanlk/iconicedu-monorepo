@@ -50,3 +50,15 @@ export interface ChannelVM {
   defaultRightPanelOpen?: boolean;
   defaultRightPanelKey?: MessagesRightPanelIntentKey;
 }
+
+export interface ChannelMiniVM {
+  id: UUID;
+  orgId: UUID;
+  kind: ChannelKind;
+  purpose: ChannelPurpose;
+  topic: string;
+  topicIconKey?: ChannelTopicIconKey | null;
+  status: ChannelStatus;
+  visibility: ChannelVisibility;
+  participants: UserProfileVM[];
+}

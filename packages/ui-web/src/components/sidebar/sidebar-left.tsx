@@ -46,7 +46,6 @@ import { SiteLogoWithName } from '../site-logo-wt-name';
 import { Empty } from '../../ui/empty';
 import { EmptyContent } from '../../ui/empty';
 import type {
-  SidebarClassroomItem,
   SidebarLeftData,
   SidebarNavItem,
   SidebarSecondaryItem,
@@ -72,21 +71,16 @@ export function SidebarLeft({
     ...item,
     icon: ICONS[item.icon],
   }));
-  const classrooms: SidebarClassroomItem[] = data.CLASSROOMS.map((item) => ({
-    ...item,
-    icon: ICONS[item.icon],
-  }));
   const navSecondary: SidebarSecondaryItem[] = data.navSecondary.map((item) => ({
     ...item,
     icon: ICONS[item.icon],
   }));
 
-  const children =
-    'children' in data.user ? data.user.children?.items ?? [] : [];
-  const classroomsByChild = children.map((child) => ({
+  const children = 'children' in data.user ? (data.user.children?.items ?? []) : [];
+  const learningSpacesByChild = children.map((child) => ({
     child,
-    classrooms: classrooms.filter((classroom) =>
-      classroom.participants.includes(child.accountId),
+    learningSpaces: data.LEARNING_SPACES.filter((space) =>
+      space.participants.some((participant) => participant.accountId === child.accountId),
     ),
   }));
 
@@ -140,7 +134,7 @@ export function SidebarLeft({
               </DropdownMenu>
               <SidebarGroupContent />
             </SidebarGroup>
-            {classroomsByChild.length === 0 ? (
+            {learningSpacesByChild.length === 0 ? (
               <SidebarGroup className="group-data-[collapsible=icon]:hidden">
                 <SidebarGroupContent>
                   <Empty>
@@ -155,12 +149,12 @@ export function SidebarLeft({
                 </SidebarGroupContent>
               </SidebarGroup>
             ) : (
-              classroomsByChild.map(({ child, classrooms }, index) => (
+              learningSpacesByChild.map(({ child, learningSpaces }, index) => (
                 <NavLearningSpaces
                   key={child.accountId}
                   title={child.displayName}
                   child={child}
-                  classrooms={classrooms}
+                  learningSpaces={learningSpaces}
                   defaultOpen={index === 0}
                 />
               ))
@@ -168,7 +162,7 @@ export function SidebarLeft({
           </>
         ) : null}
         <SidebarSeparator className="mx-2" />
-        <NavDirectMessages dms={data.DIRECT_MESSAGES} />
+        <NavDirectMessages dms={data.DIRECT_MESSAGES} currentUserId={data.user.accountId} />
         <NavSecondary items={navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

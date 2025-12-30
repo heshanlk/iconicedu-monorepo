@@ -2,14 +2,19 @@
 
 import { useState } from 'react';
 import {
+  ChefHat,
   ChevronDown,
   ChevronUp,
+  Earth,
+  Languages,
   ListXIcon,
   MessageSquarePlus,
   MoreHorizontal,
+  SquarePi,
   StarOff,
 } from 'lucide-react';
-import type { SidebarClassroomItem, SidebarChild } from '@iconicedu/shared-types';
+import type { LucideIcon } from 'lucide-react';
+import type { ChannelMiniVM, SidebarChild } from '@iconicedu/shared-types';
 
 import {
   Collapsible,
@@ -38,12 +43,12 @@ import { Empty, EmptyContent } from '../../ui/empty';
 import { AvatarWithStatus } from '../shared/avatar-with-status';
 
 export function NavLearningSpaces({
-  classrooms,
+  learningSpaces,
   title,
   child,
   defaultOpen = false,
 }: {
-  classrooms: SidebarClassroomItem[];
+  learningSpaces: ChannelMiniVM[];
   title: string;
   child: SidebarChild;
   defaultOpen?: boolean;
@@ -75,7 +80,7 @@ export function NavLearningSpaces({
           </SidebarGroupLabel>
         </CollapsibleTrigger>
         <CollapsibleContent className="rounded-md rounded-t-none">
-          {classrooms.length === 0 ? (
+          {learningSpaces.length === 0 ? (
             <Empty>
               <EmptyContent>
                 <div className="flex">
@@ -87,51 +92,47 @@ export function NavLearningSpaces({
             </Empty>
           ) : (
             <SidebarMenu>
-              {classrooms.map((item, index) => (
-                <SidebarMenuItem key={`${item.name}-${index}`}>
-                  <SidebarMenuButton asChild tooltip={item.name}>
-                    <a href={item.url}>
-                      {item.hasUnread ? (
-                        <>
-                          <item.icon />
-                          {/* <span className="relative flex size-2">
-                            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
-                            <span className="relative inline-flex size-2 rounded-full bg-green-500"></span>
-                          </span> */}
-                        </>
-                      ) : (
-                        <item.icon />
-                      )}
-                      <span className={cn(item.hasUnread && 'font-semibold')}>
-                        {item.name}
-                      </span>
-                    </a>
-                  </SidebarMenuButton>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <SidebarMenuAction>
-                        <MoreHorizontal />
-                        <span className="sr-only">More</span>
-                      </SidebarMenuAction>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                      className="w-56"
-                      side={isMobile ? 'bottom' : 'right'}
-                      align={isMobile ? 'end' : 'start'}
-                    >
-                      <DropdownMenuItem>
-                        <StarOff className="text-muted-foreground" />
-                        <span>Add to Favorites</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem className="text-red-400">
-                        <ListXIcon className="text-red-500" />
-                        <span>Hide</span>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </SidebarMenuItem>
-              ))}
+              {learningSpaces.map((space, index) => {
+                const Icon: LucideIcon = space.topicIconKey
+                  ? (LEARNING_SPACE_ICONS[space.topicIconKey] ?? Languages)
+                  : Languages;
+                const href =
+                  space.kind === 'dm' ? '/dashboard/dm' : '/dashboard/learning-space';
+
+                return (
+                  <SidebarMenuItem key={`${space.id}-${index}`}>
+                    <SidebarMenuButton asChild tooltip={space.topic}>
+                      <a href={href}>
+                        <Icon />
+                        <span>{space.topic}</span>
+                      </a>
+                    </SidebarMenuButton>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <SidebarMenuAction>
+                          <MoreHorizontal />
+                          <span className="sr-only">More</span>
+                        </SidebarMenuAction>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent
+                        className="w-56"
+                        side={isMobile ? 'bottom' : 'right'}
+                        align={isMobile ? 'end' : 'start'}
+                      >
+                        <DropdownMenuItem>
+                          <StarOff className="text-muted-foreground" />
+                          <span>Add to Favorites</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem className="text-red-400">
+                          <ListXIcon className="text-red-500" />
+                          <span>Hide</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           )}
         </CollapsibleContent>
@@ -139,3 +140,10 @@ export function NavLearningSpaces({
     </SidebarGroup>
   );
 }
+
+const LEARNING_SPACE_ICONS: Record<string, LucideIcon> = {
+  languages: Languages,
+  'chef-hat': ChefHat,
+  earth: Earth,
+  'square-pi': SquarePi,
+};

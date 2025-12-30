@@ -1,5 +1,6 @@
 import type React from 'react';
 import type { ChildProfileVM, UserProfileVM } from './vm/profile';
+import type { ChannelMiniVM } from './vm/channel';
 
 export type SidebarIconKey =
   | 'home'
@@ -28,24 +29,6 @@ export type SidebarNavItem = Omit<SidebarNavItemData, 'icon'> & {
   icon: SidebarIconComponent;
 };
 
-export type SidebarClassroomItemData = {
-  id: number;
-  name: string;
-  participants: string[];
-  url: string;
-  icon: SidebarIconKey;
-  isFavorite?: boolean;
-  hasUnread?: boolean;
-  items?: {
-    title: string;
-    url: string;
-  }[];
-};
-
-export type SidebarClassroomItem = Omit<SidebarClassroomItemData, 'icon'> & {
-  icon: SidebarIconComponent;
-};
-
 export type SidebarSecondaryItemData = {
   title: string;
   url: string;
@@ -56,21 +39,12 @@ export type SidebarSecondaryItem = Omit<SidebarSecondaryItemData, 'icon'> & {
   icon: SidebarIconComponent;
 };
 
-export type SidebarDirectMessageItem = {
-  id: number;
-  name: string;
-  avatar: string;
-  status: string;
-  participants: string[];
-  url?: string;
-};
-
 export type SidebarChild = Pick<ChildProfileVM, 'accountId' | 'displayName' | 'color'>;
 
 export type SidebarLeftData = {
   user: UserProfileVM & { email?: string | null };
   navMain: SidebarNavItemData[];
-  CLASSROOMS: SidebarClassroomItemData[];
+  LEARNING_SPACES: ChannelMiniVM[];
   navSecondary: SidebarSecondaryItemData[];
-  DIRECT_MESSAGES: SidebarDirectMessageItem[];
+  DIRECT_MESSAGES: ChannelMiniVM[];
 };

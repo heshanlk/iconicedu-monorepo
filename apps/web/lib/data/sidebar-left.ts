@@ -1,20 +1,11 @@
 import type { SidebarLeftData } from '@iconicedu/shared-types';
-import {
-  MOCK_CHILDREN_IDS,
-  MOCK_GUARDIAN,
-  MOCK_EDUCATOR,
-  MOCK_EDUCATOR_2,
-  MOCK_EDUCATOR_3,
-  MOCK_EDUCATOR_4,
-  MOCK_EDUCATOR_5,
-  MOCK_USER_ACCOUNTS,
-  toProfileUser,
-} from './people';
+import { MOCK_GUARDIAN, MOCK_USER_ACCOUNTS, toProfileUser } from './people';
+import { LEARNING_SPACES } from './learning-spaces';
+import { DIRECT_MESSAGE_CHANNELS } from './direct-message-channels';
 
 const guardianAccount = MOCK_USER_ACCOUNTS.find(
   (account) => account.id === MOCK_GUARDIAN.accountId,
 );
-
 export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
   user: toProfileUser(MOCK_GUARDIAN, guardianAccount),
   navMain: [
@@ -37,125 +28,7 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
       count: 11,
     },
   ],
-  CLASSROOMS: [
-    {
-      id: 1,
-      name: `ELA • ${MOCK_EDUCATOR.displayName} • Fri 5 pm`,
-      participants: [
-        MOCK_GUARDIAN.accountId,
-        MOCK_EDUCATOR.accountId,
-        MOCK_CHILDREN_IDS.sarah,
-      ],
-      url: '/dashboard/learning-space',
-      icon: 'languages',
-      isFavorite: true,
-      hasUnread: true,
-    },
-    {
-      id: 2,
-      name: `ELA • ${MOCK_EDUCATOR_2.displayName} • Fri 4 pm`,
-      participants: [
-        MOCK_GUARDIAN.accountId,
-        MOCK_EDUCATOR_2.accountId,
-        MOCK_CHILDREN_IDS.zayne,
-      ],
-      url: '/dashboard/learning-space',
-      icon: 'languages',
-      isFavorite: true,
-      hasUnread: false,
-    },
-    {
-      id: 3,
-      name: `ELA • ${MOCK_EDUCATOR_3.displayName} • Fri 6 pm`,
-      participants: [
-        MOCK_GUARDIAN.accountId,
-        MOCK_EDUCATOR_3.accountId,
-        MOCK_CHILDREN_IDS.sophia,
-      ],
-      url: '/dashboard/learning-space',
-      icon: 'languages',
-      isFavorite: true,
-      hasUnread: true,
-    },
-    {
-      id: 4,
-      name: `Chess • ${MOCK_EDUCATOR_4.displayName} • Sat 10 am`,
-      participants: [
-        MOCK_GUARDIAN.accountId,
-        MOCK_EDUCATOR_4.accountId,
-        MOCK_CHILDREN_IDS.sarah,
-      ],
-      url: '/dashboard/learning-space',
-      icon: 'chef-hat',
-      isFavorite: true,
-      hasUnread: false,
-    },
-    {
-      id: 5,
-      name: `Chess • ${MOCK_EDUCATOR_5.displayName} • Fri 6 pm`,
-      participants: [
-        MOCK_GUARDIAN.accountId,
-        MOCK_EDUCATOR_5.accountId,
-        MOCK_CHILDREN_IDS.zayne,
-      ],
-      url: '/dashboard/learning-space',
-      icon: 'chef-hat',
-      isFavorite: true,
-      hasUnread: true,
-    },
-    {
-      id: 6,
-      name: `Chess • ${MOCK_EDUCATOR_2.displayName} • Fri 6 pm`,
-      participants: [
-        MOCK_GUARDIAN.accountId,
-        MOCK_EDUCATOR_2.accountId,
-        MOCK_CHILDREN_IDS.sophia,
-      ],
-      url: '/dashboard/learning-space',
-      icon: 'chef-hat',
-      isFavorite: true,
-      hasUnread: false,
-    },
-    {
-      id: 7,
-      name: `Math • ${MOCK_EDUCATOR_3.displayName} • Fri 6 pm`,
-      participants: [
-        MOCK_GUARDIAN.accountId,
-        MOCK_EDUCATOR_3.accountId,
-        MOCK_CHILDREN_IDS.sarah,
-      ],
-      url: '/dashboard/learning-space',
-      icon: 'earth',
-      isFavorite: true,
-      hasUnread: false,
-    },
-    {
-      id: 8,
-      name: `Math • ${MOCK_EDUCATOR_4.displayName} • Fri 6 pm`,
-      participants: [
-        MOCK_GUARDIAN.accountId,
-        MOCK_EDUCATOR_4.accountId,
-        MOCK_CHILDREN_IDS.zayne,
-      ],
-      url: '/dashboard/learning-space',
-      icon: 'square-pi',
-      isFavorite: false,
-      hasUnread: false,
-    },
-    {
-      id: 9,
-      name: `Math • ${MOCK_EDUCATOR_5.displayName} • Fri 6 pm`,
-      participants: [
-        MOCK_GUARDIAN.accountId,
-        MOCK_EDUCATOR_5.accountId,
-        MOCK_CHILDREN_IDS.sophia,
-      ],
-      url: '/dashboard/learning-space',
-      icon: 'square-pi',
-      isFavorite: false,
-      hasUnread: true,
-    },
-  ],
+  LEARNING_SPACES,
   navSecondary: [
     {
       title: 'Support',
@@ -168,46 +41,5 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
       icon: 'send',
     },
   ],
-  DIRECT_MESSAGES: [
-    {
-      id: 1,
-      name: MOCK_EDUCATOR.displayName,
-      avatar: MOCK_EDUCATOR.avatar.url ?? '',
-      status: 'online',
-      participants: [MOCK_GUARDIAN.accountId, MOCK_EDUCATOR.accountId],
-      url: '/dashboard/dm',
-    },
-    {
-      id: 2,
-      name: MOCK_EDUCATOR_2.displayName,
-      avatar: MOCK_EDUCATOR_2.avatar.url ?? '',
-      status: 'away',
-      participants: [MOCK_GUARDIAN.accountId, MOCK_EDUCATOR_2.accountId],
-      url: '/dashboard/dm',
-    },
-    {
-      id: 3,
-      name: MOCK_EDUCATOR_3.displayName,
-      avatar: MOCK_EDUCATOR_3.avatar.url ?? '',
-      status: 'online',
-      participants: [MOCK_GUARDIAN.accountId, MOCK_EDUCATOR_3.accountId],
-      url: '/dashboard/dm',
-    },
-    {
-      id: 4,
-      name: MOCK_EDUCATOR_4.displayName,
-      avatar: MOCK_EDUCATOR_4.avatar.url ?? '',
-      status: 'offline',
-      participants: [MOCK_GUARDIAN.accountId, MOCK_EDUCATOR_4.accountId],
-      url: '/dashboard/dm',
-    },
-    {
-      id: 5,
-      name: MOCK_EDUCATOR_5.displayName,
-      avatar: MOCK_EDUCATOR_5.avatar.url ?? '',
-      status: 'idle',
-      participants: [MOCK_GUARDIAN.accountId, MOCK_EDUCATOR_5.accountId],
-      url: '/dashboard/dm',
-    },
-  ],
+  DIRECT_MESSAGES: DIRECT_MESSAGE_CHANNELS,
 };

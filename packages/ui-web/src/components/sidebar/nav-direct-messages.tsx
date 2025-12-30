@@ -20,12 +20,14 @@ import {
   useSidebar,
 } from '../../ui/sidebar';
 import { AvatarWithStatus } from '../shared/avatar-with-status';
-import type { SidebarDirectMessageItem } from '@iconicedu/shared-types';
+import type { ChannelMiniVM } from '@iconicedu/shared-types';
 
 export function NavDirectMessages({
   dms,
+  currentUserId,
 }: {
-  dms: SidebarDirectMessageItem[];
+  dms: ChannelMiniVM[];
+  currentUserId: string;
 }) {
   const { isMobile } = useSidebar();
   return (
@@ -35,20 +37,37 @@ export function NavDirectMessages({
         <Plus /> <span className="sr-only">Add Project</span>
       </SidebarGroupAction>
       <SidebarMenu>
-        {dms.map((item) => (
-          <SidebarMenuItem key={item.name}>
+        {dms.map((item) => {
+          const otherParticipant =
+            item.participants.find(
+              (participant) => participant.accountId !== currentUserId,
+            ) ??
+            item.participants[0];
+          const liveStatus = otherParticipant?.presence?.liveStatus ?? 'none';
+          const status =
+            liveStatus === 'teaching' || liveStatus === 'in_class'
+              ? 'online'
+              : liveStatus === 'reviewing_work'
+                ? 'idle'
+                : liveStatus === 'busy'
+                  ? 'away'
+                  : 'offline';
+          const name = otherParticipant?.displayName ?? item.topic;
+          const avatar = otherParticipant?.avatar.url ?? '';
+          return (
+          <SidebarMenuItem key={item.id}>
             <SidebarMenuButton asChild>
-              <a href={item.url}>
+              <a href="/dashboard/dm">
                 <AvatarWithStatus
-                  name={item.name}
-                  avatar={item.avatar}
-                  status={item.status as 'online' | 'away' | 'idle' | 'offline'}
+                  name={name}
+                  avatar={avatar}
+                  status={status}
                   sizeClassName="size-6"
                   statusClassName="bottom-0 right-0 h-2 w-2 border border-background"
                   fallbackClassName="text-xs font-medium"
                   initialsLength={1}
                 />
-                <span>{item.name}</span>
+                <span>{name}</span>
               </a>
             </SidebarMenuButton>
             <DropdownMenu>
@@ -80,7 +99,8 @@ export function NavDirectMessages({
               </DropdownMenuContent>
             </DropdownMenu>
           </SidebarMenuItem>
-        ))}
+          );
+        })}
       </SidebarMenu>
     </SidebarGroup>
   );
