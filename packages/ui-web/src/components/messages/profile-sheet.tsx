@@ -42,16 +42,31 @@ interface ProfileSheetProps {
   user: ProfileDetailsUser;
   media?: ChannelMediaItemVM[];
   files?: ChannelFileItemVM[];
+  onCallClick?: () => void;
+  onDmClick?: () => void;
+  onScheduleClick?: () => void;
+  onShareClick?: () => void;
+  onReportClick?: () => void;
 }
 
 export function ProfileContent({
   user,
   media = [],
   files = [],
+  onCallClick,
+  onDmClick,
+  onScheduleClick,
+  onShareClick,
+  onReportClick,
 }: {
   user: ProfileDetailsUser;
   media?: ChannelMediaItemVM[];
   files?: ChannelFileItemVM[];
+  onCallClick?: () => void;
+  onDmClick?: () => void;
+  onScheduleClick?: () => void;
+  onShareClick?: () => void;
+  onReportClick?: () => void;
 }) {
   return (
     <div className="flex-1 overflow-y-auto">
@@ -83,7 +98,13 @@ export function ProfileContent({
 
       <div className="space-y-4 p-4 min-w-0">
         <h3 className="text-sm font-semibold text-foreground">Quick actions</h3>
-        <ProfileActions />
+        <ProfileActions
+          onCallClick={onCallClick}
+          onDmClick={onDmClick}
+          onScheduleClick={onScheduleClick}
+          onShareClick={onShareClick}
+          onReportClick={onReportClick}
+        />
       </div>
 
       <Separator />
@@ -198,6 +219,26 @@ export function ProfileContent({
   );
 }
 
-export function ProfileSheet({ user, media, files }: ProfileSheetProps) {
-  return <ProfileContent user={user} media={media} files={files} />;
+export function ProfileSheet({
+  user,
+  media,
+  files,
+  onCallClick,
+  onDmClick,
+  onScheduleClick,
+  onShareClick,
+  onReportClick,
+}: ProfileSheetProps) {
+  return (
+    <ProfileContent
+      user={user}
+      media={media}
+      files={files}
+      onCallClick={onCallClick}
+      onDmClick={onDmClick}
+      onScheduleClick={onScheduleClick}
+      onShareClick={onShareClick}
+      onReportClick={onReportClick}
+    />
+  );
 }

@@ -13,7 +13,8 @@ import { MOCK_GUARDIAN, MOCK_EDUCATOR } from './people';
 export const DIRECT_GUARDIAN = MOCK_GUARDIAN;
 export const DIRECT_EDUCATOR = MOCK_EDUCATOR;
 
-const DIRECT_CHANNEL_ID = 'direct-channel-1';
+const DIRECT_CHANNEL_ID = '7e1a2b3c-4d5e-4f70-8a9b-0c1d2e3f4a50';
+const messageId = (suffix: string) => `${DIRECT_CHANNEL_ID.slice(0, -4)}${suffix}`;
 
 const hoursAgo = (hours: number) =>
   new Date(Date.now() - 1000 * 60 * 60 * hours).toISOString();
@@ -22,14 +23,14 @@ const minutesAgo = (minutes: number) =>
 
 export const DIRECT_READ_STATE: MessageReadStateVM = {
   channelId: DIRECT_CHANNEL_ID,
-  lastReadMessageId: 'dm-7',
+  lastReadMessageId: messageId('0007'),
   lastReadAt: minutesAgo(12),
   unreadCount: 3,
 };
 
 const DIRECT_THREAD_ONE: ThreadVM = {
-  id: 'dm-thread-1',
-  parentMessageId: 'dm-2',
+  id: messageId('1001'),
+  parentMessageId: messageId('0002'),
   parentMessageSnippet:
     "Good morning, Ms. Williams! Yes, I've been wanting to talk about her recent test results. Is everything okay?",
   parentMessageAuthorId: DIRECT_GUARDIAN.id,
@@ -38,14 +39,14 @@ const DIRECT_THREAD_ONE: ThreadVM = {
   lastReplyAt: hoursAgo(2),
   participants: [DIRECT_EDUCATOR, DIRECT_GUARDIAN],
   readState: {
-    lastReadMessageId: 'dm-t1-2',
+    lastReadMessageId: messageId('0003'),
     unreadCount: 1,
   },
 };
 
 const DIRECT_THREAD_TWO: ThreadVM = {
-  id: 'dm-thread-2',
-  parentMessageId: 'dm-7',
+  id: messageId('1002'),
+  parentMessageId: messageId('0007'),
   parentMessageSnippet:
     'Can you share the updated reading plan for this week? Sarah wants to get a head start.',
   parentMessageAuthorId: DIRECT_GUARDIAN.id,
@@ -54,14 +55,14 @@ const DIRECT_THREAD_TWO: ThreadVM = {
   lastReplyAt: minutesAgo(30),
   participants: [DIRECT_EDUCATOR, DIRECT_GUARDIAN],
   readState: {
-    lastReadMessageId: 'dm-t2-2',
+    lastReadMessageId: messageId('0008'),
     unreadCount: 2,
   },
 };
 
 export const DIRECT_MESSAGES: MessageVM[] = [
   {
-    id: 'dm-1',
+    id: messageId('0001'),
     type: 'text',
     content: 'Hey! Are we still on for the session this afternoon?',
     sender: DIRECT_EDUCATOR,
@@ -71,7 +72,7 @@ export const DIRECT_MESSAGES: MessageVM[] = [
     isSaved: true,
   } as TextMessageVM,
   {
-    id: 'dm-2',
+    id: messageId('0002'),
     type: 'text',
     content:
       "Good morning, Ms. Williams! Yes, I've been wanting to talk about her recent test results. Is everything okay?",
@@ -82,7 +83,7 @@ export const DIRECT_MESSAGES: MessageVM[] = [
     thread: DIRECT_THREAD_ONE,
   } as TextMessageVM,
   {
-    id: 'dm-3',
+    id: messageId('0003'),
     type: 'text',
     content:
       'Everything is going well overall! Sarah is a bright child. I just wanted to go over some areas where we can help her improve even more.',
@@ -93,7 +94,7 @@ export const DIRECT_MESSAGES: MessageVM[] = [
     thread: DIRECT_THREAD_ONE,
   } as TextMessageVM,
   {
-    id: 'dm-4',
+    id: messageId('0004'),
     type: 'text',
     content: 'That sounds great! I appreciate you taking the time to help Sarah succeed.',
     sender: DIRECT_GUARDIAN,
@@ -103,7 +104,7 @@ export const DIRECT_MESSAGES: MessageVM[] = [
     thread: DIRECT_THREAD_ONE,
   } as TextMessageVM,
   {
-    id: 'dm-5',
+    id: messageId('0005'),
     type: 'image',
     content: 'Here is the worksheet photo from today.',
     sender: DIRECT_GUARDIAN,
@@ -119,7 +120,7 @@ export const DIRECT_MESSAGES: MessageVM[] = [
     },
   } as ImageMessageVM,
   {
-    id: 'dm-6',
+    id: messageId('0006'),
     type: 'file',
     content: 'Sharing the updated notes PDF before class.',
     sender: DIRECT_EDUCATOR,
@@ -135,7 +136,7 @@ export const DIRECT_MESSAGES: MessageVM[] = [
     },
   } as FileMessageVM,
   {
-    id: 'dm-7',
+    id: messageId('0007'),
     type: 'text',
     content:
       'Can you share the updated reading plan for this week? Sarah wants to get a head start.',
@@ -146,7 +147,7 @@ export const DIRECT_MESSAGES: MessageVM[] = [
     thread: DIRECT_THREAD_TWO,
   } as TextMessageVM,
   {
-    id: 'dm-8',
+    id: messageId('0008'),
     type: 'text',
     content: "Absolutely. I'll send the plan and a short checklist for daily practice.",
     sender: DIRECT_EDUCATOR,
@@ -156,7 +157,7 @@ export const DIRECT_MESSAGES: MessageVM[] = [
     thread: DIRECT_THREAD_TWO,
   } as TextMessageVM,
   {
-    id: 'dm-9',
+    id: messageId('0009'),
     type: 'text',
     content: 'Thank you! Also, should we review any specific vocabulary lists this week?',
     sender: DIRECT_GUARDIAN,
@@ -166,7 +167,7 @@ export const DIRECT_MESSAGES: MessageVM[] = [
     thread: DIRECT_THREAD_TWO,
   } as TextMessageVM,
   {
-    id: 'dm-10',
+    id: messageId('000a'),
     type: 'text',
     content: 'Yes—chapters 6–7. I can add a quick quizlet link in the plan.',
     sender: DIRECT_EDUCATOR,
@@ -176,7 +177,7 @@ export const DIRECT_MESSAGES: MessageVM[] = [
     thread: DIRECT_THREAD_TWO,
   } as TextMessageVM,
   {
-    id: 'dm-11',
+    id: messageId('000b'),
     type: 'audio-recording',
     content: "Quick voice note about Sarah's science project",
     sender: DIRECT_EDUCATOR,
@@ -198,7 +199,7 @@ export const DIRECT_MESSAGES: MessageVM[] = [
 
 export const DIRECT_CHANNEL: ChannelVM = {
   id: DIRECT_CHANNEL_ID,
-  orgId: 'org-1',
+  orgId: '4fca0d16-5d72-4a24-9a0d-6f8c0bf2b652',
   kind: 'dm',
   topic: `${DIRECT_EDUCATOR.displayName} & ${DIRECT_GUARDIAN.displayName}`,
   topicIconKey: 'user',

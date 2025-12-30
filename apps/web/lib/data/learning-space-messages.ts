@@ -20,18 +20,19 @@ const minutesAgo = (minutes: number) =>
 const hoursFromNow = (hours: number) =>
   new Date(Date.now() + 3600000 * hours).toISOString();
 
-const LEARNING_SPACE_ID = 'learning-space-1';
+const LEARNING_SPACE_ID = '11111111-2222-4333-8444-555555555555';
+const messageId = (suffix: string) => `${LEARNING_SPACE_ID.slice(0, -4)}${suffix}`;
 
 export const LEARNING_SPACE_READ_STATE: MessageReadStateVM = {
   channelId: LEARNING_SPACE_ID,
-  lastReadMessageId: '4',
+  lastReadMessageId: messageId('0004'),
   lastReadAt: hoursAgo(1),
   unreadCount: 6,
 };
 
 const THREAD_ONE: ThreadVM = {
-  id: 'thread-1',
-  parentMessageId: '2',
+  id: messageId('1001'),
+  parentMessageId: messageId('0002'),
   parentMessageSnippet:
     "Good morning, Ms. Williams! Yes, I've been wanting to talk about her recent test results. Is everything okay?",
   parentMessageAuthorId: MOCK_GUARDIAN.id,
@@ -40,13 +41,13 @@ const THREAD_ONE: ThreadVM = {
   lastReplyAt: hoursAgo(2),
   participants: [MOCK_EDUCATOR, MOCK_GUARDIAN],
   readState: {
-    lastReadMessageId: 't1-2',
+    lastReadMessageId: messageId('0003'),
     unreadCount: 1,
   },
 };
 
 const THREAD_ONE_PARENT_MESSAGE: TextMessageVM = {
-  id: '2',
+  id: messageId('0002'),
   type: 'text',
   content:
     "Good morning, Ms. Williams! Yes, I've been wanting to talk about her recent test results. Is everything okay?",
@@ -60,7 +61,7 @@ const THREAD_ONE_PARENT_MESSAGE: TextMessageVM = {
 const THREAD_ONE_MESSAGES: TextMessageVM[] = [
   THREAD_ONE_PARENT_MESSAGE,
   {
-    id: 't1-2',
+    id: messageId('0003'),
     type: 'text',
     content:
       'Everything is going well overall! Sarah is a bright child. I just wanted to go over some areas where we can help her improve even more.',
@@ -71,7 +72,7 @@ const THREAD_ONE_MESSAGES: TextMessageVM[] = [
     thread: THREAD_ONE,
   },
   {
-    id: 't1-3',
+    id: messageId('0004'),
     type: 'text',
     content: 'That sounds great! I appreciate you taking the time to help Sarah succeed.',
     sender: MOCK_GUARDIAN,
@@ -84,7 +85,7 @@ const THREAD_ONE_MESSAGES: TextMessageVM[] = [
 
 export const MOCK_MESSAGES: MessageVM[] = [
   {
-    id: '1',
+    id: messageId('0001'),
     type: 'text',
     content:
       "Good morning! Thank you for scheduling this guardian-educator conference. I wanted to discuss Sarah's progress in math this semester.",
@@ -97,7 +98,7 @@ export const MOCK_MESSAGES: MessageVM[] = [
   THREAD_ONE_PARENT_MESSAGE,
   ...THREAD_ONE_MESSAGES.slice(1),
   {
-    id: '3',
+    id: messageId('0005'),
     type: 'lesson-assignment',
     content:
       "Here's the homework assignment for next week. Sarah will need to complete these problems for Monday.",
@@ -117,7 +118,7 @@ export const MOCK_MESSAGES: MessageVM[] = [
     },
   } as LessonAssignmentMessageVM,
   {
-    id: '4',
+    id: messageId('0006'),
     type: 'session-booking',
     content:
       "I've scheduled our next guardian-educator meeting to discuss Sarah's semester progress.",
@@ -137,7 +138,7 @@ export const MOCK_MESSAGES: MessageVM[] = [
     },
   } as SessionBookingMessageVM,
   {
-    id: '5',
+    id: messageId('0007'),
     type: 'homework-submission',
     content:
       'Sarah completed her homework assignment last night. I helped her review the problems she found challenging.',
@@ -160,7 +161,7 @@ export const MOCK_MESSAGES: MessageVM[] = [
     },
   } as HomeworkSubmissionMessageVM,
   {
-    id: '5b',
+    id: messageId('0008'),
     type: 'session-summary',
     content: 'Quick recap from today’s session.',
     sender: MOCK_EDUCATOR,
@@ -178,7 +179,7 @@ export const MOCK_MESSAGES: MessageVM[] = [
     },
   } as SessionSummaryMessageVM,
   {
-    id: '6',
+    id: messageId('0009'),
     type: 'progress-update',
     content:
       'Great news! Sarah has shown significant improvement in her math skills this month!',
@@ -201,7 +202,7 @@ export const MOCK_MESSAGES: MessageVM[] = [
     },
   } as ProgressUpdateMessageVM,
   {
-    id: '7',
+    id: messageId('000a'),
     type: 'text',
     content:
       "That's wonderful to hear! We've been working on math together at home. Thank you for your support and guidance.",
@@ -211,7 +212,7 @@ export const MOCK_MESSAGES: MessageVM[] = [
     visibility: { type: 'all' },
   } as TextMessageVM,
   {
-    id: '8',
+    id: messageId('000b'),
     type: 'link-preview',
     content: 'I found this helpful resource for practicing fractions at home!',
     sender: MOCK_GUARDIAN,
@@ -230,7 +231,7 @@ export const MOCK_MESSAGES: MessageVM[] = [
     },
   } as LinkPreviewMessageVM,
   {
-    id: '9',
+    id: messageId('000c'),
     type: 'audio-recording',
     content: "Quick voice note about Sarah's science project",
     sender: MOCK_EDUCATOR,
@@ -249,7 +250,7 @@ export const MOCK_MESSAGES: MessageVM[] = [
     },
   } as AudioRecordingMessageVM,
   {
-    id: '10',
+    id: messageId('000d'),
     type: 'text',
     content:
       "Hi Mr. Chen! Just a quick reminder that Sarah's quiz is on Thursday. Please make sure she reviews chapters 6 and 7.",
@@ -259,7 +260,7 @@ export const MOCK_MESSAGES: MessageVM[] = [
     visibility: { type: 'all' },
   } as TextMessageVM,
   {
-    id: '11',
+    id: messageId('000e'),
     type: 'text',
     content:
       "Thanks for the heads-up! We'll review those chapters tonight. Appreciate it.",
@@ -269,7 +270,7 @@ export const MOCK_MESSAGES: MessageVM[] = [
     visibility: { type: 'all' },
   } as TextMessageVM,
   {
-    id: '12',
+    id: messageId('000f'),
     type: 'progress-update',
     content: 'Sarah reached her reading goal for the week.',
     sender: MOCK_EDUCATOR,
@@ -287,7 +288,7 @@ export const MOCK_MESSAGES: MessageVM[] = [
     },
   } as ProgressUpdateMessageVM,
   {
-    id: '13',
+    id: messageId('0010'),
     type: 'link-preview',
     content: 'Optional enrichment: math games for fractions.',
     sender: MOCK_EDUCATOR,
@@ -304,7 +305,7 @@ export const MOCK_MESSAGES: MessageVM[] = [
     },
   } as LinkPreviewMessageVM,
   {
-    id: '14',
+    id: messageId('0011'),
     type: 'lesson-assignment',
     content: 'New practice worksheet assigned for Friday.',
     sender: MOCK_EDUCATOR,
@@ -321,7 +322,7 @@ export const MOCK_MESSAGES: MessageVM[] = [
     },
   } as LessonAssignmentMessageVM,
   {
-    id: '15',
+    id: messageId('0012'),
     type: 'session-booking',
     content: 'Scheduling a short check-in call next week.',
     sender: MOCK_GUARDIAN,
@@ -339,7 +340,7 @@ export const MOCK_MESSAGES: MessageVM[] = [
     },
   } as SessionBookingMessageVM,
   {
-    id: '16',
+    id: messageId('0013'),
     type: 'homework-submission',
     content: 'Attached the completed worksheet.',
     sender: MOCK_GUARDIAN,
@@ -364,7 +365,7 @@ export const MOCK_MESSAGES: MessageVM[] = [
 
 export const LEARNING_SPACE: ChannelVM = {
   id: LEARNING_SPACE_ID,
-  orgId: 'org-1',
+  orgId: '4fca0d16-5d72-4a24-9a0d-6f8c0bf2b652',
   kind: 'channel',
   topic: `ELA • ${MOCK_EDUCATOR.displayName}'s Class`,
   topicIconKey: 'sparkles',

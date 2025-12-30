@@ -21,8 +21,30 @@ export function ProfilePanel({ intent }: ProfilePanelProps) {
     (participant) => participant.id === intent.userId,
   );
   if (!user) return null;
+  const handleDmClick =
+    channel.kind === 'dm'
+      ? () => {
+          if (typeof window !== 'undefined') {
+            window.location.href = `/dashboard/dm/${channel.id}`;
+          }
+        }
+      : undefined;
   if (isMobile) {
-    return <ProfileSheet user={user} media={channel.media.items} files={channel.files.items} />;
+    return (
+      <ProfileSheet
+        user={user}
+        media={channel.media.items}
+        files={channel.files.items}
+        onDmClick={handleDmClick}
+      />
+    );
   }
-  return <ProfileContent user={user} media={channel.media.items} files={channel.files.items} />;
+  return (
+    <ProfileContent
+      user={user}
+      media={channel.media.items}
+      files={channel.files.items}
+      onDmClick={handleDmClick}
+    />
+  );
 }

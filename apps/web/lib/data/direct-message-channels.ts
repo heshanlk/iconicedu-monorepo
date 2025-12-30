@@ -14,7 +14,7 @@ const hoursAgo = (hours: number) =>
 
 export const DIRECT_MESSAGE_CHANNELS: ChannelVM[] = [
   {
-    id: 'dm-channel-1',
+    id: '7e1a2b3c-4d5e-4f70-8a9b-0c1d2e3f4a50',
     orgId: MOCK_ORG_ID,
     kind: 'dm',
     topic: MOCK_EDUCATOR.displayName,
@@ -49,7 +49,7 @@ export const DIRECT_MESSAGE_CHANNELS: ChannelVM[] = [
       total: 0,
     },
     readState: {
-      channelId: 'dm-channel-1',
+      channelId: '7e1a2b3c-4d5e-4f70-8a9b-0c1d2e3f4a50',
       lastReadAt: hoursAgo(2),
       unreadCount: 1,
     },
@@ -57,7 +57,7 @@ export const DIRECT_MESSAGE_CHANNELS: ChannelVM[] = [
     defaultRightPanelKey: 'channel_info',
   },
   {
-    id: 'dm-channel-2',
+    id: '8f2b3c4d-5e6f-4012-9abc-1d2e3f4a5b60',
     orgId: MOCK_ORG_ID,
     kind: 'dm',
     topic: MOCK_EDUCATOR_2.displayName,
@@ -92,7 +92,7 @@ export const DIRECT_MESSAGE_CHANNELS: ChannelVM[] = [
       total: 0,
     },
     readState: {
-      channelId: 'dm-channel-2',
+      channelId: '8f2b3c4d-5e6f-4012-9abc-1d2e3f4a5b60',
       lastReadAt: hoursAgo(5),
       unreadCount: 0,
     },
@@ -100,7 +100,7 @@ export const DIRECT_MESSAGE_CHANNELS: ChannelVM[] = [
     defaultRightPanelKey: 'channel_info',
   },
   {
-    id: 'dm-channel-3',
+    id: '9a3b4c5d-6e7f-4a23-bcde-2e3f4a5b6c70',
     orgId: MOCK_ORG_ID,
     kind: 'dm',
     topic: MOCK_EDUCATOR_3.displayName,
@@ -135,7 +135,7 @@ export const DIRECT_MESSAGE_CHANNELS: ChannelVM[] = [
       total: 0,
     },
     readState: {
-      channelId: 'dm-channel-3',
+      channelId: '9a3b4c5d-6e7f-4a23-bcde-2e3f4a5b6c70',
       lastReadAt: hoursAgo(8),
       unreadCount: 3,
     },
@@ -143,7 +143,7 @@ export const DIRECT_MESSAGE_CHANNELS: ChannelVM[] = [
     defaultRightPanelKey: 'channel_info',
   },
   {
-    id: 'dm-channel-4',
+    id: 'ab4c5d6e-7f80-4b34-cdef-3f4a5b6c7d80',
     orgId: MOCK_ORG_ID,
     kind: 'dm',
     topic: MOCK_EDUCATOR_4.displayName,
@@ -178,7 +178,7 @@ export const DIRECT_MESSAGE_CHANNELS: ChannelVM[] = [
       total: 0,
     },
     readState: {
-      channelId: 'dm-channel-4',
+      channelId: 'ab4c5d6e-7f80-4b34-cdef-3f4a5b6c7d80',
       lastReadAt: hoursAgo(24),
       unreadCount: 0,
     },
@@ -186,7 +186,7 @@ export const DIRECT_MESSAGE_CHANNELS: ChannelVM[] = [
     defaultRightPanelKey: 'channel_info',
   },
   {
-    id: 'dm-channel-5',
+    id: 'bc5d6e7f-8091-4c45-def0-4a5b6c7d8e90',
     orgId: MOCK_ORG_ID,
     kind: 'dm',
     topic: MOCK_EDUCATOR_5.displayName,
@@ -221,7 +221,7 @@ export const DIRECT_MESSAGE_CHANNELS: ChannelVM[] = [
       total: 0,
     },
     readState: {
-      channelId: 'dm-channel-5',
+      channelId: 'bc5d6e7f-8091-4c45-def0-4a5b6c7d8e90',
       lastReadAt: hoursAgo(72),
       unreadCount: 5,
     },

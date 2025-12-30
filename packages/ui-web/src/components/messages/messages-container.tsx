@@ -17,6 +17,7 @@ import type {
 
 export interface MessagesContainerProps {
   channel: ChannelVM;
+  dmChannelByUserId?: Record<string, string>;
 }
 
 const isGuardianProfile = (profile: UserProfileVM): profile is GuardianProfileVM =>

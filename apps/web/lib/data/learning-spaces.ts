@@ -13,7 +13,7 @@ const hoursAgo = (hours: number) =>
 
 export const LEARNING_SPACES: ChannelVM[] = [
   {
-    id: 'learning-space-sarah-ela',
+    id: '11111111-2222-4333-8444-555555555555',
     orgId: MOCK_ORG_ID,
     kind: 'channel',
     topic: `ELA • ${MOCK_EDUCATOR.displayName} • Mon 4 pm`,
@@ -50,8 +50,8 @@ export const LEARNING_SPACES: ChannelVM[] = [
       total: 0,
     },
     readState: {
-      channelId: 'learning-space-sarah-ela',
-      lastReadMessageId: 'ls-sarah-1',
+      channelId: '11111111-2222-4333-8444-555555555555',
+      lastReadMessageId: '11111111-2222-4333-8444-555555555001',
       lastReadAt: hoursAgo(3),
       unreadCount: 1,
     },
@@ -59,7 +59,7 @@ export const LEARNING_SPACES: ChannelVM[] = [
     defaultRightPanelKey: 'channel_info',
   },
   {
-    id: 'learning-space-sarah-math',
+    id: '22222222-3333-4444-8555-666666666666',
     orgId: MOCK_ORG_ID,
     kind: 'channel',
     topic: `Math • ${MOCK_EDUCATOR_2.displayName} • Wed 5 pm`,
@@ -96,7 +96,7 @@ export const LEARNING_SPACES: ChannelVM[] = [
       total: 0,
     },
     readState: {
-      channelId: 'learning-space-sarah-math',
+      channelId: '22222222-3333-4444-8555-666666666666',
       lastReadAt: hoursAgo(6),
       unreadCount: 0,
     },
@@ -104,7 +104,7 @@ export const LEARNING_SPACES: ChannelVM[] = [
     defaultRightPanelKey: 'channel_info',
   },
   {
-    id: 'learning-space-sarah-science',
+    id: '33333333-4444-4555-8666-777777777777',
     orgId: MOCK_ORG_ID,
     kind: 'channel',
     topic: `Science • ${MOCK_EDUCATOR_3.displayName} • Fri 3 pm`,
@@ -141,7 +141,7 @@ export const LEARNING_SPACES: ChannelVM[] = [
       total: 0,
     },
     readState: {
-      channelId: 'learning-space-sarah-science',
+      channelId: '33333333-4444-4555-8666-777777777777',
       lastReadAt: hoursAgo(12),
       unreadCount: 3,
     },
@@ -149,7 +149,7 @@ export const LEARNING_SPACES: ChannelVM[] = [
     defaultRightPanelKey: 'channel_info',
   },
   {
-    id: 'learning-space-zayne-ela',
+    id: '44444444-5555-4666-8777-888888888888',
     orgId: MOCK_ORG_ID,
     kind: 'channel',
     topic: `ELA • ${MOCK_EDUCATOR_2.displayName} • Tue 4 pm`,
@@ -186,8 +186,8 @@ export const LEARNING_SPACES: ChannelVM[] = [
       total: 0,
     },
     readState: {
-      channelId: 'learning-space-zayne-ela',
-      lastReadMessageId: 'ls-zayne-1',
+      channelId: '44444444-5555-4666-8777-888888888888',
+      lastReadMessageId: '44444444-5555-4666-8777-888888888001',
       lastReadAt: hoursAgo(2),
       unreadCount: 2,
     },
@@ -195,7 +195,7 @@ export const LEARNING_SPACES: ChannelVM[] = [
     defaultRightPanelKey: 'channel_info',
   },
   {
-    id: 'learning-space-zayne-math',
+    id: '55555555-6666-4777-8888-999999999999',
     orgId: MOCK_ORG_ID,
     kind: 'channel',
     topic: `Math • ${MOCK_EDUCATOR_3.displayName} • Thu 6 pm`,
@@ -232,7 +232,7 @@ export const LEARNING_SPACES: ChannelVM[] = [
       total: 0,
     },
     readState: {
-      channelId: 'learning-space-zayne-math',
+      channelId: '55555555-6666-4777-8888-999999999999',
       lastReadAt: hoursAgo(5),
       unreadCount: 0,
     },
@@ -240,7 +240,7 @@ export const LEARNING_SPACES: ChannelVM[] = [
     defaultRightPanelKey: 'channel_info',
   },
   {
-    id: 'learning-space-zayne-science',
+    id: '66666666-7777-4888-8999-aaaaaaaaaaaa',
     orgId: MOCK_ORG_ID,
     kind: 'channel',
     topic: `Science • ${MOCK_EDUCATOR.displayName} • Fri 2 pm`,
@@ -277,7 +277,7 @@ export const LEARNING_SPACES: ChannelVM[] = [
       total: 0,
     },
     readState: {
-      channelId: 'learning-space-zayne-science',
+      channelId: '66666666-7777-4888-8999-aaaaaaaaaaaa',
       lastReadAt: hoursAgo(9),
       unreadCount: 5,
     },
@@ -285,7 +285,7 @@ export const LEARNING_SPACES: ChannelVM[] = [
     defaultRightPanelKey: 'channel_info',
   },
   {
-    id: 'learning-space-sophia-ela',
+    id: '77777777-8888-4999-8aaa-bbbbbbbbbbbb',
     orgId: MOCK_ORG_ID,
     kind: 'channel',
     topic: `ELA • ${MOCK_EDUCATOR_3.displayName} • Mon 3 pm`,
@@ -322,7 +322,7 @@ export const LEARNING_SPACES: ChannelVM[] = [
       total: 0,
     },
     readState: {
-      channelId: 'learning-space-sophia-ela',
+      channelId: '77777777-8888-4999-8aaa-bbbbbbbbbbbb',
       lastReadAt: hoursAgo(4),
       unreadCount: 1,
     },
@@ -330,7 +330,7 @@ export const LEARNING_SPACES: ChannelVM[] = [
     defaultRightPanelKey: 'channel_info',
   },
   {
-    id: 'learning-space-sophia-math',
+    id: '88888888-9999-4aaa-8bbb-cccccccccccc',
     orgId: MOCK_ORG_ID,
     kind: 'channel',
     topic: `Math • ${MOCK_EDUCATOR.displayName} • Wed 4 pm`,
@@ -367,7 +367,7 @@ export const LEARNING_SPACES: ChannelVM[] = [
       total: 0,
     },
     readState: {
-      channelId: 'learning-space-sophia-math',
+      channelId: '88888888-9999-4aaa-8bbb-cccccccccccc',
       lastReadAt: hoursAgo(7),
       unreadCount: 0,
     },
@@ -375,7 +375,7 @@ export const LEARNING_SPACES: ChannelVM[] = [
     defaultRightPanelKey: 'channel_info',
   },
   {
-    id: 'learning-space-sophia-science',
+    id: '99999999-aaaa-4bbb-8ccc-dddddddddddd',
     orgId: MOCK_ORG_ID,
     kind: 'channel',
     topic: `Science • ${MOCK_EDUCATOR_2.displayName} • Thu 5 pm`,
@@ -412,7 +412,7 @@ export const LEARNING_SPACES: ChannelVM[] = [
       total: 0,
     },
     readState: {
-      channelId: 'learning-space-sophia-science',
+      channelId: '99999999-aaaa-4bbb-8ccc-dddddddddddd',
       lastReadAt: hoursAgo(11),
       unreadCount: 3,
     },

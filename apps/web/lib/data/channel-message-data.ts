@@ -38,6 +38,10 @@ const isEducatorProfile = (profile: UserProfileVM): profile is EducatorProfileVM
 const isChildProfile = (profile: UserProfileVM): profile is ChildProfileVM =>
   'color' in profile;
 
+const withSuffix = (uuid: string, suffix: string) => `${uuid.slice(0, -4)}${suffix}`;
+const withIndexedSuffix = (uuid: string, start: number, index: number) =>
+  withSuffix(uuid, (start + index).toString(16).padStart(4, '0'));
+
 const withMessages = (channel: ChannelVM, messages: MessageVM[]): ChannelVM => {
   const savedCount = messages.filter((message) => message.isSaved).length;
   const lastReadIndex = Math.max(0, messages.length - 3);
@@ -47,7 +51,7 @@ const withMessages = (channel: ChannelVM, messages: MessageVM[]): ChannelVM => {
   const mediaItems: ChannelMediaItemVM[] = attachments
     .filter((attachment) => attachment.type === 'image')
     .map((attachment, index) => ({
-      id: `media-${channel.id}-${index}`,
+      id: withIndexedSuffix(channel.id, 0x3000, index),
       channelId: channel.id,
       messageId: attachment.messageId,
       senderId: attachment.senderId,
@@ -61,7 +65,7 @@ const withMessages = (channel: ChannelVM, messages: MessageVM[]): ChannelVM => {
   const fileItems: ChannelFileItemVM[] = attachments
     .filter((attachment) => attachment.type !== 'image')
     .map((attachment, index) => ({
-      id: `file-${channel.id}-${index}`,
+      id: withIndexedSuffix(channel.id, 0x4000, index),
       channelId: channel.id,
       messageId: attachment.messageId,
       senderId: attachment.senderId,
@@ -138,9 +142,9 @@ const buildDirectMessages = (
   educator: EducatorProfileVM,
   index: number,
 ): MessageVM[] => {
-  const prefix = `dm-${channel.id}`;
-  const threadId = `${prefix}-thread-1`;
-  const threadParentId = `${prefix}-2`;
+  const messageId = (suffix: string) => withSuffix(channel.id, suffix);
+  const threadId = withSuffix(channel.id, '1001');
+  const threadParentId = messageId('0002');
   const thread: ThreadVM = {
     id: threadId,
     parentMessageId: threadParentId,
@@ -151,14 +155,14 @@ const buildDirectMessages = (
     lastReplyAt: hoursAgo(2 + index),
     participants: [educator, guardian],
     readState: {
-      lastReadMessageId: `${prefix}-3`,
+      lastReadMessageId: messageId('0003'),
       unreadCount: 1,
     },
   };
 
   return [
     {
-      id: `${prefix}-1`,
+      id: messageId('0001'),
       type: 'text',
       content: `Hi ${guardian.firstName ?? guardian.displayName}, here's a quick recap from today.`,
       sender: educator,
@@ -178,7 +182,7 @@ const buildDirectMessages = (
       thread,
     } as TextMessageVM,
     {
-      id: `${prefix}-3`,
+      id: messageId('0003'),
       type: 'text',
       content: "Absolutely—I'll send the PDF and a short checklist.",
       sender: educator,
@@ -188,7 +192,7 @@ const buildDirectMessages = (
       thread,
     } as TextMessageVM,
     {
-      id: `${prefix}-4`,
+      id: messageId('0004'),
       type: 'image',
       content: 'Snapshot of today’s notes.',
       sender: guardian,
@@ -204,7 +208,7 @@ const buildDirectMessages = (
       },
     } as ImageMessageVM,
     {
-      id: `${prefix}-4b`,
+      id: messageId('0005'),
       type: 'image',
       content: 'Reference photo from today’s session.',
       sender: educator,
@@ -220,7 +224,7 @@ const buildDirectMessages = (
       },
     } as ImageMessageVM,
     {
-      id: `${prefix}-4c`,
+      id: messageId('0006'),
       type: 'image',
       content: 'Student work snapshot.',
       sender: guardian,
@@ -236,7 +240,7 @@ const buildDirectMessages = (
       },
     } as ImageMessageVM,
     {
-      id: `${prefix}-4d`,
+      id: messageId('0007'),
       type: 'image',
       content: 'Workbook close-up.',
       sender: guardian,
@@ -252,7 +256,7 @@ const buildDirectMessages = (
       },
     } as ImageMessageVM,
     {
-      id: `${prefix}-4e`,
+      id: messageId('0008'),
       type: 'image',
       content: 'Classroom setup preview.',
       sender: educator,
@@ -268,7 +272,7 @@ const buildDirectMessages = (
       },
     } as ImageMessageVM,
     {
-      id: `${prefix}-5`,
+      id: messageId('0009'),
       type: 'file',
       content: 'Weekly practice plan.',
       sender: educator,
@@ -284,7 +288,7 @@ const buildDirectMessages = (
       },
     } as FileMessageVM,
     {
-      id: `${prefix}-5c`,
+      id: messageId('000a'),
       type: 'file',
       content: 'Reading checklist and rubric.',
       sender: educator,
@@ -300,7 +304,7 @@ const buildDirectMessages = (
       },
     } as FileMessageVM,
     {
-      id: `${prefix}-5b`,
+      id: messageId('000b'),
       type: 'design-file-update',
       content: 'Updated visual worksheet layout.',
       sender: educator,
@@ -316,7 +320,7 @@ const buildDirectMessages = (
       },
     } as DesignFileUpdateMessageVM,
     {
-      id: `${prefix}-5d`,
+      id: messageId('000c'),
       type: 'design-file-update',
       content: 'Slide deck refresh for next session.',
       sender: educator,
@@ -332,7 +336,7 @@ const buildDirectMessages = (
       },
     } as DesignFileUpdateMessageVM,
     {
-      id: `${prefix}-6`,
+      id: messageId('000d'),
       type: 'audio-recording',
       content: 'Quick voice note with tips for home practice.',
       sender: educator,
@@ -357,10 +361,10 @@ const buildLearningSpaceMessages = (
   child: ChildProfileVM,
   index: number,
 ): MessageVM[] => {
-  const prefix = `ls-${channel.id}`;
-  const threadParentId = `${prefix}-2`;
+  const messageId = (suffix: string) => withSuffix(channel.id, suffix);
+  const threadParentId = messageId('0002');
   const thread: ThreadVM = {
-    id: `${prefix}-thread-1`,
+    id: withSuffix(channel.id, '2001'),
     parentMessageId: threadParentId,
     parentMessageSnippet: `Quick question about ${child.firstName ?? child.displayName}'s homework.`,
     parentMessageAuthorId: guardian.id,
@@ -372,7 +376,7 @@ const buildLearningSpaceMessages = (
 
   return [
     {
-      id: `${prefix}-1`,
+      id: messageId('0001'),
       type: 'text',
       content: `Welcome to this week's learning space! ${child.firstName ?? child.displayName} made great progress.`,
       sender: educator,
@@ -392,7 +396,7 @@ const buildLearningSpaceMessages = (
       thread,
     } as TextMessageVM,
     {
-      id: `${prefix}-3`,
+      id: messageId('0003'),
       type: 'text',
       content: `Keep it short and focus on accuracy over speed.`,
       sender: educator,
@@ -402,7 +406,7 @@ const buildLearningSpaceMessages = (
       thread,
     } as TextMessageVM,
     {
-      id: `${prefix}-4`,
+      id: messageId('0004'),
       type: 'lesson-assignment',
       content: 'New practice set for this week.',
       sender: educator,
@@ -420,7 +424,7 @@ const buildLearningSpaceMessages = (
       },
     } as LessonAssignmentMessageVM,
     {
-      id: `${prefix}-5`,
+      id: messageId('0005'),
       type: 'progress-update',
       content: `${child.firstName ?? child.displayName} reached this week's goal.`,
       sender: educator,
@@ -438,7 +442,7 @@ const buildLearningSpaceMessages = (
       },
     } as ProgressUpdateMessageVM,
     {
-      id: `${prefix}-6`,
+      id: messageId('0006'),
       type: 'session-booking',
       content: 'Next session is confirmed.',
       sender: educator,
@@ -456,7 +460,7 @@ const buildLearningSpaceMessages = (
       },
     } as SessionBookingMessageVM,
     {
-      id: `${prefix}-6b`,
+      id: messageId('0007'),
       type: 'session-summary',
       content: 'Today we focused on core skills and practice routines.',
       sender: educator,
@@ -474,7 +478,7 @@ const buildLearningSpaceMessages = (
       },
     } as SessionSummaryMessageVM,
     {
-      id: `${prefix}-7`,
+      id: messageId('0008'),
       type: 'homework-submission',
       content: 'Submitted today’s worksheet.',
       sender: guardian,
@@ -496,7 +500,7 @@ const buildLearningSpaceMessages = (
       },
     } as HomeworkSubmissionMessageVM,
     {
-      id: `${prefix}-7b`,
+      id: messageId('0009'),
       type: 'homework-submission',
       content: 'Second worksheet submission.',
       sender: guardian,
@@ -518,7 +522,7 @@ const buildLearningSpaceMessages = (
       },
     } as HomeworkSubmissionMessageVM,
     {
-      id: `${prefix}-8`,
+      id: messageId('000a'),
       type: 'link-preview',
       content: 'Optional enrichment resource.',
       sender: educator,
