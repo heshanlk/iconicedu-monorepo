@@ -1,13 +1,12 @@
-import { MessagesShell, DashboardHeader } from '@iconicedu/ui-web';
-import { LEARNING_SPACE } from '../../../lib/data/learning-space-messages';
+import { redirect } from 'next/navigation';
+import { LEARNING_SPACE_CHANNELS_WITH_MESSAGES } from '../../../lib/data/channel-message-data';
 
 export default function Page() {
-  return (
-    <>
-      <div className="flex h-[calc(100vh-1.0rem)] flex-col">
-        <DashboardHeader />
-        <MessagesShell channel={LEARNING_SPACE} />
-      </div>
-    </>
-  );
+  const firstChannel = LEARNING_SPACE_CHANNELS_WITH_MESSAGES[0];
+
+  if (!firstChannel) {
+    return null;
+  }
+
+  redirect(`/dashboard/learning-space/${firstChannel.id}`);
 }

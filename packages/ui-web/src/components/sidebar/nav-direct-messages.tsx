@@ -56,7 +56,7 @@ export function NavDirectMessages({
           return (
             <SidebarMenuItem key={item.id}>
               <SidebarMenuButton asChild>
-                <a href="/dashboard/dm">
+                <a href={`/dashboard/dm/${item.id}`}>
                   <AvatarWithStatus
                     name={name}
                     avatar={avatar}

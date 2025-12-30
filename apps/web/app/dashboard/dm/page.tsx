@@ -1,13 +1,12 @@
-import { MessagesShell, DashboardHeader } from '@iconicedu/ui-web';
-import { DIRECT_CHANNEL } from '../../../lib/data/direct-messages';
+import { redirect } from 'next/navigation';
+import { DIRECT_MESSAGE_CHANNELS_WITH_MESSAGES } from '../../../lib/data/channel-message-data';
 
 export default function Page() {
-  return (
-    <>
-      <div className="flex h-[calc(100vh-1.0rem)] flex-col">
-        <DashboardHeader />
-        <MessagesShell channel={DIRECT_CHANNEL} />
-      </div>
-    </>
-  );
+  const firstChannel = DIRECT_MESSAGE_CHANNELS_WITH_MESSAGES[0];
+
+  if (!firstChannel) {
+    return null;
+  }
+
+  redirect(`/dashboard/dm/${firstChannel.id}`);
 }

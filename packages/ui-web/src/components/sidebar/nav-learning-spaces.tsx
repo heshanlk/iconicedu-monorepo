@@ -92,15 +92,15 @@ export function NavLearningSpaces({
             </Empty>
           ) : (
             <SidebarMenu>
-              {learningSpaces.map((space, index) => {
+              {learningSpaces.map((space) => {
                 const Icon: LucideIcon = space.topicIconKey
                   ? (LEARNING_SPACE_ICONS[space.topicIconKey] ?? Languages)
                   : Languages;
 
                 return (
-                  <SidebarMenuItem key={`${space.id}-${index}`}>
+                  <SidebarMenuItem key={space.id}>
                     <SidebarMenuButton asChild tooltip={space.topic}>
-                      <a href={'/dashboard/learning-space'}>
+                      <a href={`/dashboard/learning-space/${space.id}`}>
                         <Icon />
                         <span>{space.topic}</span>
                       </a>
