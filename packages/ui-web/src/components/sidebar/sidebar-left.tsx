@@ -65,15 +65,24 @@ const ICONS = {
 
 export function SidebarLeft({
   data,
+  activePath,
   ...props
-}: React.ComponentProps<typeof Sidebar> & { data: SidebarLeftData }) {
+}: React.ComponentProps<typeof Sidebar> & {
+  data: SidebarLeftData;
+  activePath?: string | null;
+}) {
   const navMain: SidebarNavItem[] = data.navMain.map((item) => ({
     ...item,
     icon: ICONS[item.icon],
+    isActive:
+      item.url === '/dashboard'
+        ? activePath === item.url
+        : activePath?.startsWith(item.url) ?? false,
   }));
   const navSecondary: SidebarSecondaryItem[] = data.navSecondary.map((item) => ({
     ...item,
     icon: ICONS[item.icon],
+    isActive: activePath ? activePath.startsWith(item.url) : false,
   }));
 
   const children = 'children' in data.user ? (data.user.children?.items ?? []) : [];
@@ -83,6 +92,38 @@ export function SidebarLeft({
       space.participants.some((participant) => participant.accountId === child.accountId),
     ),
   }));
+
+  const activeLearningSpaceId = React.useMemo(() => {
+    if (!activePath) return null;
+    if (activePath.startsWith('/dashboard/ls/')) {
+      return activePath.split('/').pop() ?? null;
+    }
+    if (activePath.startsWith('/dashboard/learning-space/')) {
+      return activePath.split('/').pop() ?? null;
+    }
+    return null;
+  }, [activePath]);
+  const activeDirectMessageId = React.useMemo(() => {
+    if (!activePath) return null;
+    if (activePath.startsWith('/dashboard/dm/')) {
+      return activePath.split('/').pop() ?? null;
+    }
+    return null;
+  }, [activePath]);
+  const activeChildId = React.useMemo(() => {
+    if (!activeLearningSpaceId) return null;
+    const match = learningSpacesByChild.find(({ learningSpaces }) =>
+      learningSpaces.some((space) => space.id === activeLearningSpaceId),
+    );
+    return match?.child.accountId ?? null;
+  }, [activeLearningSpaceId, learningSpacesByChild]);
+  const [openChildId, setOpenChildId] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    if (activeChildId) {
+      setOpenChildId(activeChildId);
+    }
+  }, [activeChildId]);
 
   const { isMobile } = useSidebar();
   return (
@@ -149,20 +190,28 @@ export function SidebarLeft({
                 </SidebarGroupContent>
               </SidebarGroup>
             ) : (
-              learningSpacesByChild.map(({ child, learningSpaces }, index) => (
+              learningSpacesByChild.map(({ child, learningSpaces }) => (
                 <NavLearningSpaces
                   key={child.accountId}
                   title={child.displayName}
                   child={child}
                   learningSpaces={learningSpaces}
-                  defaultOpen={index === 0}
+                  isOpen={openChildId === child.accountId}
+                  onOpenChange={(nextOpen) =>
+                    setOpenChildId(nextOpen ? child.accountId : null)
+                  }
+                  activeChannelId={activeLearningSpaceId}
                 />
               ))
             )}
           </>
         ) : null}
         <SidebarSeparator className="mx-2" />
-        <NavDirectMessages dms={data.DIRECT_MESSAGES} currentUserId={data.user.accountId} />
+        <NavDirectMessages
+          dms={data.DIRECT_MESSAGES}
+          currentUserId={data.user.accountId}
+          activeChannelId={activeDirectMessageId ?? null}
+        />
         <NavSecondary items={navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

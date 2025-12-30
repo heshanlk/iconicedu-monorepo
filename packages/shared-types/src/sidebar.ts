@@ -33,6 +33,7 @@ export type SidebarSecondaryItemData = {
   title: string;
   url: string;
   icon: SidebarIconKey;
+  isActive?: boolean;
 };
 
 export type SidebarSecondaryItem = Omit<SidebarSecondaryItemData, 'icon'> & {

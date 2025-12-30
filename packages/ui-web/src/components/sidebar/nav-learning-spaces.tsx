@@ -1,6 +1,4 @@
 'use client';
-
-import { useState } from 'react';
 import {
   ChefHat,
   ChevronDown,
@@ -46,19 +44,22 @@ export function NavLearningSpaces({
   learningSpaces,
   title,
   child,
-  defaultOpen = false,
+  isOpen,
+  onOpenChange,
+  activeChannelId,
 }: {
   learningSpaces: ChannelMiniVM[];
   title: string;
   child: SidebarChild;
-  defaultOpen?: boolean;
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+  activeChannelId?: string | null;
 }) {
   const { isMobile } = useSidebar();
-  const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
     <SidebarGroup className="py-0 group-data-[collapsible=icon]:hidden">
-      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Collapsible open={isOpen} onOpenChange={onOpenChange}>
         <CollapsibleTrigger asChild>
           <SidebarGroupLabel className="flex cursor-pointer items-center gap-2 rounded-md rounded-b-none px-2 py-1 uppercase">
             <AvatarWithStatus
@@ -96,10 +97,11 @@ export function NavLearningSpaces({
                 const Icon: LucideIcon = space.topicIconKey
                   ? (LEARNING_SPACE_ICONS[space.topicIconKey] ?? Languages)
                   : Languages;
+                const isActive = activeChannelId === space.id;
 
                 return (
                   <SidebarMenuItem key={space.id}>
-                    <SidebarMenuButton asChild tooltip={space.topic}>
+                    <SidebarMenuButton asChild tooltip={space.topic} isActive={isActive}>
                       <a href={`/dashboard/ls/${space.id}`}>
                         <Icon />
                         <span>{space.topic}</span>

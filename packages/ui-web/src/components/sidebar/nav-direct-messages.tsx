@@ -25,9 +25,11 @@ import type { ChannelMiniVM } from '@iconicedu/shared-types';
 export function NavDirectMessages({
   dms,
   currentUserId,
+  activeChannelId,
 }: {
   dms: ChannelMiniVM[];
   currentUserId: string;
+  activeChannelId?: string | null;
 }) {
   const { isMobile } = useSidebar();
   return (
@@ -38,6 +40,7 @@ export function NavDirectMessages({
       </SidebarGroupAction>
       <SidebarMenu>
         {dms.map((item) => {
+          const isActive = item.id === activeChannelId;
           const otherParticipant =
             item.participants.find(
               (participant) => participant.accountId !== currentUserId,
@@ -55,7 +58,7 @@ export function NavDirectMessages({
           const avatar = otherParticipant?.avatar.url ?? '';
           return (
             <SidebarMenuItem key={item.id}>
-              <SidebarMenuButton asChild>
+              <SidebarMenuButton asChild isActive={isActive}>
                 <a href={`/dashboard/dm/${item.id}`}>
                   <AvatarWithStatus
                     name={name}
