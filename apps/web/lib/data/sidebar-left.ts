@@ -7,10 +7,16 @@ import {
   MOCK_EDUCATOR_3,
   MOCK_EDUCATOR_4,
   MOCK_EDUCATOR_5,
+  MOCK_USER_ACCOUNTS,
+  toProfileUser,
 } from './people';
 
+const guardianAccount = MOCK_USER_ACCOUNTS.find(
+  (account) => account.id === MOCK_GUARDIAN.accountId,
+);
+
 export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
-  user: MOCK_GUARDIAN,
+  user: toProfileUser(MOCK_GUARDIAN, guardianAccount),
   navMain: [
     {
       title: 'Home',

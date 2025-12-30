@@ -68,7 +68,7 @@ export type SidebarDirectMessageItem = {
 export type SidebarChild = Pick<ChildProfileVM, 'accountId' | 'displayName' | 'color'>;
 
 export type SidebarLeftData = {
-  user: UserProfileVM;
+  user: UserProfileVM & { email?: string | null };
   navMain: SidebarNavItemData[];
   CLASSROOMS: SidebarClassroomItemData[];
   navSecondary: SidebarSecondaryItemData[];

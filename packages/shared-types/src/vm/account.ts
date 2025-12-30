@@ -20,15 +20,14 @@ export interface UserAccountVM {
 
   contacts: UserContactVM;
 
-  // VM convenience: populated from user_roles join
-  userRoles?: UserRoleVM[] | null;
-
-  status?: AccountStatus;
+  status: AccountStatus;
 
   createdAt: ISODateTime;
   updatedAt: ISODateTime;
   archivedAt?: ISODateTime | null;
 
+  // Use userRoles for all roles; activeContext is the currently selected role + role-specific context.
+  userRoles?: UserRoleVM[] | null;
   // Active role context for "single login → multiple roles"
   activeContext?: AccountRoleContextVM | null;
 }

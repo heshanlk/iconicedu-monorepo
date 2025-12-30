@@ -25,17 +25,13 @@ import {
   useSidebar,
 } from '../../ui/sidebar';
 
-export function NavUser({
-  user,
-}: {
-  user: UserProfileVM;
-}) {
+export function NavUser({ user }: { user: UserProfileVM & { email?: string | null } }) {
   const { isMobile } = useSidebar();
   const isOnline =
     user.presence?.liveStatus !== undefined
       ? user.presence.liveStatus !== 'none'
       : undefined;
-  const secondaryLabel = user.locale ?? user.timezone ?? '';
+  const secondaryLabel = user.email ?? user.locale ?? user.timezone ?? '';
 
   return (
     <SidebarMenu>

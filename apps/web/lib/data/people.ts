@@ -1,6 +1,8 @@
 import type {
   ChildProfileVM,
   EducatorProfileVM,
+  FamilyLinkVM,
+  FamilyVM,
   GradeLevelOption,
   GuardianProfileVM,
   LiveStatus,
@@ -33,6 +35,44 @@ export const MOCK_CHILDREN_IDS = {
   zayne: '4c5b2c1d-1f33-4f5d-9d74-6c784b8d5f0e',
   sophia: 'f9d3c9a2-6e0a-4a31-9f28-5b0a3f8a1e62',
 } as const;
+
+export const MOCK_FAMILY_ID = '1f9c7e3a-1b88-4d0a-8c27-6a22c9b0f2a1';
+
+export const MOCK_FAMILY: FamilyVM = {
+  orgId: MOCK_ORG_ID,
+  id: MOCK_FAMILY_ID,
+  displayName: 'Chen Family',
+};
+
+export const MOCK_FAMILY_LINKS: FamilyLinkVM[] = [
+  {
+    orgId: MOCK_ORG_ID,
+    id: 'family-link-guardian-sarah',
+    familyId: MOCK_FAMILY_ID,
+    guardianAccountId: 'c4b0e8d2-7d33-4c1a-8d6f-5a2b3c4d5e6f',
+    childAccountId: MOCK_CHILDREN_IDS.sarah,
+    relation: 'guardian',
+    permissionsScope: ['messages', 'calendar', 'learning-spaces'],
+  },
+  {
+    orgId: MOCK_ORG_ID,
+    id: 'family-link-guardian-zayne',
+    familyId: MOCK_FAMILY_ID,
+    guardianAccountId: 'c4b0e8d2-7d33-4c1a-8d6f-5a2b3c4d5e6f',
+    childAccountId: MOCK_CHILDREN_IDS.zayne,
+    relation: 'guardian',
+    permissionsScope: ['messages', 'calendar', 'learning-spaces'],
+  },
+  {
+    orgId: MOCK_ORG_ID,
+    id: 'family-link-guardian-sophia',
+    familyId: MOCK_FAMILY_ID,
+    guardianAccountId: 'c4b0e8d2-7d33-4c1a-8d6f-5a2b3c4d5e6f',
+    childAccountId: MOCK_CHILDREN_IDS.sophia,
+    relation: 'guardian',
+    permissionsScope: ['messages', 'calendar', 'learning-spaces'],
+  },
+];
 
 export const MOCK_CHILDREN: ChildProfileVM[] = [
   {
@@ -371,6 +411,7 @@ export const MOCK_USER_ACCOUNTS: UserAccountVM[] = [
         assignedAt: '2016-08-15T00:00:00.000Z',
       },
     ],
+    activeContext: { roleKey: 'educator' },
     status: 'active',
     createdAt: '2016-08-15T00:00:00.000Z',
     updatedAt: '2024-02-01T00:00:00.000Z',
@@ -387,6 +428,7 @@ export const MOCK_USER_ACCOUNTS: UserAccountVM[] = [
         assignedAt: '2017-08-20T00:00:00.000Z',
       },
     ],
+    activeContext: { roleKey: 'educator' },
     status: 'active',
     createdAt: '2017-08-20T00:00:00.000Z',
     updatedAt: '2024-02-01T00:00:00.000Z',
@@ -403,6 +445,7 @@ export const MOCK_USER_ACCOUNTS: UserAccountVM[] = [
         assignedAt: '2018-08-15T00:00:00.000Z',
       },
     ],
+    activeContext: { roleKey: 'educator' },
     status: 'active',
     createdAt: '2018-08-15T00:00:00.000Z',
     updatedAt: '2024-02-01T00:00:00.000Z',
@@ -419,6 +462,7 @@ export const MOCK_USER_ACCOUNTS: UserAccountVM[] = [
         assignedAt: '2016-01-10T00:00:00.000Z',
       },
     ],
+    activeContext: { roleKey: 'educator' },
     status: 'active',
     createdAt: '2016-01-10T00:00:00.000Z',
     updatedAt: '2024-02-01T00:00:00.000Z',
@@ -435,6 +479,7 @@ export const MOCK_USER_ACCOUNTS: UserAccountVM[] = [
         assignedAt: '2020-08-25T00:00:00.000Z',
       },
     ],
+    activeContext: { roleKey: 'educator' },
     status: 'active',
     createdAt: '2020-08-25T00:00:00.000Z',
     updatedAt: '2024-02-01T00:00:00.000Z',
@@ -451,6 +496,7 @@ export const MOCK_USER_ACCOUNTS: UserAccountVM[] = [
         assignedAt: '2022-01-05T00:00:00.000Z',
       },
     ],
+    activeContext: { roleKey: 'guardian', familyLink: MOCK_FAMILY_LINKS[0] },
     status: 'active',
     createdAt: '2022-01-05T00:00:00.000Z',
     updatedAt: '2024-02-01T00:00:00.000Z',
@@ -467,6 +513,7 @@ export const MOCK_USER_ACCOUNTS: UserAccountVM[] = [
         assignedAt: '2021-08-20T00:00:00.000Z',
       },
     ],
+    activeContext: { roleKey: 'child', familyLink: MOCK_FAMILY_LINKS[0] },
     status: 'active',
     createdAt: '2021-08-20T00:00:00.000Z',
     updatedAt: '2024-02-01T00:00:00.000Z',
@@ -483,6 +530,7 @@ export const MOCK_USER_ACCOUNTS: UserAccountVM[] = [
         assignedAt: '2020-01-15T00:00:00.000Z',
       },
     ],
+    activeContext: { roleKey: 'child', familyLink: MOCK_FAMILY_LINKS[1] },
     status: 'active',
     createdAt: '2020-01-15T00:00:00.000Z',
     updatedAt: '2024-02-01T00:00:00.000Z',
@@ -499,6 +547,7 @@ export const MOCK_USER_ACCOUNTS: UserAccountVM[] = [
         assignedAt: '2020-03-10T00:00:00.000Z',
       },
     ],
+    activeContext: { roleKey: 'child', familyLink: MOCK_FAMILY_LINKS[2] },
     status: 'active',
     createdAt: '2020-03-10T00:00:00.000Z',
     updatedAt: '2024-02-01T00:00:00.000Z',
