@@ -1,5 +1,5 @@
 export * from './vm/messages';
-export * from './sidebar';
+export * from './vm/sidebar';
 export * from './vm/shared';
 export * from './vm/calendar';
 export * from './vm/channel';

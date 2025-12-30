@@ -1,6 +1,6 @@
 import type React from 'react';
-import type { ChildProfileVM, UserProfileVM } from './vm/profile';
-import type { ChannelMiniVM } from './vm/channel';
+import type { ChildProfileVM, UserProfileVM } from './profile';
+import type { ChannelMiniVM } from './channel';
 
 export type SidebarIconKey =
   | 'home'
