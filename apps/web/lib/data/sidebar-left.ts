@@ -16,7 +16,7 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
       isActive: true,
     },
     {
-      title: 'Class Schedule',
+      title: 'Calendar',
       url: '/dashboard/class-schedule',
       icon: 'class-schedule',
     },
