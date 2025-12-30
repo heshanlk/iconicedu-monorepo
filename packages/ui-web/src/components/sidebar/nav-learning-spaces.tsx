@@ -96,13 +96,11 @@ export function NavLearningSpaces({
                 const Icon: LucideIcon = space.topicIconKey
                   ? (LEARNING_SPACE_ICONS[space.topicIconKey] ?? Languages)
                   : Languages;
-                const href =
-                  space.kind === 'dm' ? '/dashboard/dm' : '/dashboard/learning-space';
 
                 return (
                   <SidebarMenuItem key={`${space.id}-${index}`}>
                     <SidebarMenuButton asChild tooltip={space.topic}>
-                      <a href={href}>
+                      <a href={'/dashboard/learning-space'}>
                         <Icon />
                         <span>{space.topic}</span>
                       </a>

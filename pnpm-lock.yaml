@@ -250,9 +250,6 @@ importers:
       '@hookform/resolvers':
         specifier: ^3.10.0
         version: 3.10.0(react-hook-form@7.68.0(react@19.2.0))
-      '@iconicedu/shared-types':
-        specifier: workspace:*
-        version: link:../shared-types
       '@radix-ui/react-accordion':
         specifier: ^1.2.12
         version: 1.2.12(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -413,6 +410,9 @@ importers:
         specifier: ^4.1.13
         version: 4.1.13
     devDependencies:
+      '@iconicedu/shared-types':
+        specifier: workspace:*
+        version: link:../shared-types
       '@tailwindcss/postcss':
         specifier: ^4.1.9
         version: 4.1.18
