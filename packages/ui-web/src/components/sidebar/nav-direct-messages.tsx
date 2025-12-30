@@ -41,8 +41,7 @@ export function NavDirectMessages({
           const otherParticipant =
             item.participants.find(
               (participant) => participant.accountId !== currentUserId,
-            ) ??
-            item.participants[0];
+            ) ?? item.participants[0];
           const liveStatus = otherParticipant?.presence?.liveStatus ?? 'none';
           const status =
             liveStatus === 'teaching' || liveStatus === 'in_class'
@@ -55,50 +54,50 @@ export function NavDirectMessages({
           const name = otherParticipant?.displayName ?? item.topic;
           const avatar = otherParticipant?.avatar.url ?? '';
           return (
-          <SidebarMenuItem key={item.id}>
-            <SidebarMenuButton asChild>
-              <a href="/dashboard/dm">
-                <AvatarWithStatus
-                  name={name}
-                  avatar={avatar}
-                  status={status}
-                  sizeClassName="size-6"
-                  statusClassName="bottom-0 right-0 h-2 w-2 border border-background"
-                  fallbackClassName="text-xs font-medium"
-                  initialsLength={1}
-                />
-                <span>{name}</span>
-              </a>
-            </SidebarMenuButton>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuAction showOnHover>
-                  <MoreHorizontal />
-                  <span className="sr-only">More</span>
-                </SidebarMenuAction>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                className="w-56"
-                side={isMobile ? 'bottom' : 'right'}
-                align={isMobile ? 'end' : 'start'}
-              >
-                <DropdownMenuItem>
-                  <StarOff className="text-muted-foreground" />
-                  <span>Add to Favorites</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Share className="text-muted-foreground" />
-                  <span>Share</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Trash2 className="text-muted-foreground" />
-                  <span>Delete Project</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </SidebarMenuItem>
+            <SidebarMenuItem key={item.id}>
+              <SidebarMenuButton asChild>
+                <a href="/dashboard/dm">
+                  <AvatarWithStatus
+                    name={name}
+                    avatar={avatar}
+                    status={status}
+                    sizeClassName="size-6"
+                    statusClassName="bottom-0 right-0 h-2 w-2 border border-background"
+                    fallbackClassName="text-xs font-medium"
+                    initialsLength={1}
+                  />
+                  <span>{name}</span>
+                </a>
+              </SidebarMenuButton>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <SidebarMenuAction showOnHover>
+                    <MoreHorizontal />
+                    <span className="sr-only">More</span>
+                  </SidebarMenuAction>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  className="w-56"
+                  side={isMobile ? 'bottom' : 'right'}
+                  align={isMobile ? 'end' : 'start'}
+                >
+                  <DropdownMenuItem>
+                    <StarOff className="text-muted-foreground" />
+                    <span>Add to Favorites</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <Share className="text-muted-foreground" />
+                    <span>Share</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <Trash2 className="text-muted-foreground" />
+                    <span>Delete Project</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </SidebarMenuItem>
           );
         })}
       </SidebarMenu>
