@@ -1,12 +1,16 @@
 'use client';
 
 import { memo } from 'react';
-import { Bookmark, Phone, Video, MoreHorizontal } from 'lucide-react';
+import { Phone, MessageCircle, Calendar, Share2, Flag } from 'lucide-react';
 import { Button } from '../../ui/button';
 import { cn } from '../../lib/utils';
 
 interface ProfileActionsProps {
-  onSavedMessagesClick?: () => void;
+  onCallClick?: () => void;
+  onDmClick?: () => void;
+  onScheduleClick?: () => void;
+  onShareClick?: () => void;
+  onReportClick?: () => void;
 }
 
 const ActionButton = memo(function ActionButton({
@@ -14,7 +18,7 @@ const ActionButton = memo(function ActionButton({
   label,
   onClick,
 }: {
-  icon: typeof Bookmark;
+  icon: typeof Phone;
   label: string;
   onClick?: () => void;
 }) {
@@ -22,28 +26,33 @@ const ActionButton = memo(function ActionButton({
     <Button
       variant="ghost"
       className={cn(
-        'h-auto flex-col gap-2 px-1 py-2 text-xs font-medium text-muted-foreground',
+        'group h-auto w-16 shrink-0 flex-col items-center gap-2 px-1 py-2 text-[11px] font-medium text-muted-foreground hover:bg-transparent',
         onClick && 'text-foreground',
       )}
       onClick={onClick}
     >
-      <span className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground">
+      <span className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors group-hover:bg-primary/15 group-hover:text-primary">
         <Icon className="h-4 w-4" />
       </span>
-      <span>{label}</span>
+      <span className="w-full truncate text-center">{label}</span>
     </Button>
   );
 });
 
 export const ProfileActions = memo(function ProfileActions({
-  onSavedMessagesClick,
+  onCallClick,
+  onDmClick,
+  onScheduleClick,
+  onShareClick,
+  onReportClick,
 }: ProfileActionsProps) {
   return (
-    <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-      <ActionButton icon={Bookmark} label="Saved" onClick={onSavedMessagesClick} />
-      <ActionButton icon={Phone} label="Call" />
-      <ActionButton icon={Video} label="Video" />
-      <ActionButton icon={MoreHorizontal} label="More" />
+    <div className="flex flex-nowrap items-start gap-4 overflow-x-auto pb-1">
+      <ActionButton icon={Phone} label="Call" onClick={onCallClick} />
+      <ActionButton icon={MessageCircle} label="DM" onClick={onDmClick} />
+      <ActionButton icon={Calendar} label="Schedule" onClick={onScheduleClick} />
+      <ActionButton icon={Share2} label="Share" onClick={onShareClick} />
+      <ActionButton icon={Flag} label="Report" onClick={onReportClick} />
     </div>
   );
 });

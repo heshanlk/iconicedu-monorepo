@@ -216,9 +216,9 @@ export const MessagesContainerHeader = memo(function MessagesContainerHeader({
           item.key === 'saved'
             ? `${savedCount}`
             : item.key === 'homework'
-              ? `${homeworkCount}`
+              ? 'HW'
               : item.key === 'session-summary'
-                ? `${sessionSummaryCount}`
+                ? 'SS'
                 : item.label,
         tooltip: item.tooltip ?? undefined,
         onClick:

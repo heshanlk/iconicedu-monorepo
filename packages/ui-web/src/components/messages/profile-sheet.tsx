@@ -34,10 +34,9 @@ interface ProfileSheetProps {
     }> | null;
     childrenNames?: string[];
   };
-  onSavedMessagesClick?: () => void;
 }
 
-export function ProfileSheet({ user, onSavedMessagesClick }: ProfileSheetProps) {
+export function ProfileSheet({ user }: ProfileSheetProps) {
   return (
     <>
       <div className="flex-1 overflow-y-auto">
@@ -51,9 +50,7 @@ export function ProfileSheet({ user, onSavedMessagesClick }: ProfileSheetProps) 
             initialsLength={1}
           />
           <div className="text-center">
-            <h2 className="text-lg font-semibold text-foreground">
-              {user.displayName}
-            </h2>
+            <h2 className="text-lg font-semibold text-foreground">{user.displayName}</h2>
             {user.status && (
               <p className="text-sm text-muted-foreground">{user.status}</p>
             )}
@@ -69,7 +66,7 @@ export function ProfileSheet({ user, onSavedMessagesClick }: ProfileSheetProps) 
 
         <div className="space-y-4 p-4">
           <h3 className="text-sm font-semibold text-foreground">Quick actions</h3>
-          <ProfileActions onSavedMessagesClick={onSavedMessagesClick} />
+          <ProfileActions />
         </div>
 
         <Separator />
@@ -149,9 +146,7 @@ export function ProfileSheet({ user, onSavedMessagesClick }: ProfileSheetProps) 
                 <Clock className="mt-0.5 h-4 w-4 text-muted-foreground" />
                 <div className="flex-1">
                   <p className="text-xs text-muted-foreground">Experience</p>
-                  <p className="text-sm text-foreground">
-                    {user.experienceYears} years
-                  </p>
+                  <p className="text-sm text-foreground">{user.experienceYears} years</p>
                 </div>
               </div>
             ) : null}

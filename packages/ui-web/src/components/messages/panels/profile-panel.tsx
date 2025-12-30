@@ -47,10 +47,9 @@ interface ProfileDetailsProps {
     }> | null;
     childrenNames?: string[];
   };
-  onSavedMessagesClick?: () => void;
 }
 
-function ProfileDetails({ user, onSavedMessagesClick }: ProfileDetailsProps) {
+function ProfileDetails({ user }: ProfileDetailsProps) {
   return (
     <div className="flex-1 overflow-y-auto">
       <div className="flex flex-col items-center gap-3 p-6">
@@ -77,7 +76,7 @@ function ProfileDetails({ user, onSavedMessagesClick }: ProfileDetailsProps) {
 
       <div className="space-y-4 p-4">
         <h3 className="text-sm font-semibold text-foreground">Quick actions</h3>
-        <ProfileActions onSavedMessagesClick={onSavedMessagesClick} />
+        <ProfileActions />
       </div>
 
       <Separator />
@@ -212,18 +211,14 @@ function ProfileDetails({ user, onSavedMessagesClick }: ProfileDetailsProps) {
 
 export function ProfilePanel({ intent }: ProfilePanelProps) {
   const isMobile = useIsMobile();
-  const { channel, toggle } = useMessagesState();
+  const { channel } = useMessagesState();
   if (intent.key !== 'profile') return null;
   const user = channel.participants.find(
     (participant) => participant.id === intent.userId,
   );
   if (!user) return null;
   if (isMobile) {
-    return (
-      <ProfileSheet user={user} onSavedMessagesClick={() => toggle({ key: 'saved' })} />
-    );
+    return <ProfileSheet user={user} />;
   }
-  return (
-    <ProfileDetails user={user} onSavedMessagesClick={() => toggle({ key: 'saved' })} />
-  );
+  return <ProfileDetails user={user} />;
 }
