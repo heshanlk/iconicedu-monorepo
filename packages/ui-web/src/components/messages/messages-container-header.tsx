@@ -75,14 +75,29 @@ const HeaderSubtitleItem = memo(function HeaderSubtitleItem({
 const HeaderTitle = memo(function HeaderTitle({
   title,
   leading,
+  onClick,
+  ariaLabel,
 }: {
   title: string;
   leading: ReactNode;
+  onClick?: () => void;
+  ariaLabel?: string;
 }) {
   return (
     <div className="flex items-center gap-2">
       {leading}
-      <span className="truncate text-sm font-semibold text-foreground">{title}</span>
+      {onClick ? (
+        <button
+          type="button"
+          onClick={onClick}
+          className="truncate text-sm font-semibold text-foreground hover:underline"
+          aria-label={ariaLabel ?? title}
+        >
+          {title}
+        </button>
+      ) : (
+        <span className="truncate text-sm font-semibold text-foreground">{title}</span>
+      )}
     </div>
   );
 });
@@ -190,7 +205,20 @@ export const MessagesContainerHeader = memo(function MessagesContainerHeader({
 
   return (
     <div className="flex min-w-0 flex-col">
-      <HeaderTitle title={title} leading={leading} />
+      <HeaderTitle
+        title={title}
+        leading={leading}
+        onClick={
+          channel.kind === 'dm' && otherParticipant
+            ? () => toggle({ key: 'profile', userId: otherParticipant.id })
+            : undefined
+        }
+        ariaLabel={
+          channel.kind === 'dm' && otherParticipant
+            ? `View ${otherParticipant.displayName} profile`
+            : undefined
+        }
+      />
       {subtitleItems.length ? <HeaderSubtitleRow items={subtitleItems} /> : null}
     </div>
   );
