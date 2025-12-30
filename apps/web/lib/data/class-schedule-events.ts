@@ -1,4 +1,7 @@
-import type { CalendarEventVM, CalendarParticipantVM } from '@iconicedu/shared-types';
+import type {
+  ClassScheduleParticipantVM,
+  ClassScheduleVM,
+} from '@iconicedu/shared-types';
 import {
   MOCK_CHILDREN,
   MOCK_EDUCATOR,
@@ -22,8 +25,8 @@ const makeIsoAt = (daysOffset: number, hours: number, minutes: number) => {
 
 const makeParticipant = (
   user: { accountId: string; displayName: string; avatar: { url?: string | null } },
-  role: CalendarParticipantVM['role'],
-): CalendarParticipantVM => ({
+  role: ClassScheduleParticipantVM['role'],
+): ClassScheduleParticipantVM => ({
   userId: user.accountId,
   role,
   displayName: user.displayName,
@@ -40,7 +43,7 @@ const educatorThree = makeParticipant(MOCK_EDUCATOR_3, 'educator');
 
 const createdAt = now.toISOString();
 
-export const baseEvents: CalendarEventVM[] = [
+export const baseEvents: ClassScheduleVM[] = [
   {
     id: 'class-math-sarah',
     title: `${MOCK_CHILDREN[0].displayName} • Math with ${MOCK_EDUCATOR.displayName}`,

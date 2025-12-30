@@ -2,27 +2,27 @@
 
 import { Button } from '../../ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { getDaysInMonth, getEventDate, isSameDay } from '../../lib/calendar-utils';
+import { getDaysInMonth, getEventDate, isSameDay } from '../../lib/class-schedule-utils';
 import { cn } from '../../lib/utils';
-import type { CalendarEventVM } from '@iconicedu/shared-types';
+import type { ClassScheduleVM } from '@iconicedu/shared-types';
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader } from '../../ui/card';
 
-interface MiniCalendarProps {
+interface MiniClassScheduleProps {
   currentDate: Date;
   selectedDate: Date;
   onDateSelect: (date: Date) => void;
-  events?: CalendarEventVM[];
+  events?: ClassScheduleVM[];
   onMonthChange?: (date: Date) => void;
 }
 
-export function MiniCalendar({
+export function MiniClassSchedule({
   currentDate,
   selectedDate,
   onDateSelect,
   events = [],
   onMonthChange,
-}: MiniCalendarProps) {
+}: MiniClassScheduleProps) {
   const [displayMonth, setDisplayMonth] = useState(currentDate.getMonth());
   const [displayYear, setDisplayYear] = useState(currentDate.getFullYear());
 

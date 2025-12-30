@@ -1,11 +1,11 @@
-import type { CalendarEventVM } from '@iconicedu/shared-types';
+import type { ClassScheduleVM } from '@iconicedu/shared-types';
 import { cn } from '../../lib/utils';
 import { AvatarGroup, AvatarGroupCount } from '../../ui/avatar';
 import { AvatarWithStatus } from '../shared/avatar-with-status';
-import { formatEventTime } from '../../lib/calendar-utils';
+import { formatEventTime } from '../../lib/class-schedule-utils';
 
 interface EventDetailsHeaderProps {
-  event: CalendarEventVM;
+  event: ClassScheduleVM;
 }
 
 export function EventDetailsHeader({ event }: EventDetailsHeaderProps) {

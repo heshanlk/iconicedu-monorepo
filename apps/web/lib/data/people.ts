@@ -52,7 +52,7 @@ export const MOCK_FAMILY_LINKS: FamilyLinkVM[] = [
     guardianAccountId: 'c4b0e8d2-7d33-4c1a-8d6f-5a2b3c4d5e6f',
     childAccountId: MOCK_CHILDREN_IDS.sarah,
     relation: 'guardian',
-    permissionsScope: ['messages', 'calendar', 'learning-spaces'],
+    permissionsScope: ['messages', 'class-schedule', 'learning-spaces'],
   },
   {
     orgId: MOCK_ORG_ID,
@@ -61,7 +61,7 @@ export const MOCK_FAMILY_LINKS: FamilyLinkVM[] = [
     guardianAccountId: 'c4b0e8d2-7d33-4c1a-8d6f-5a2b3c4d5e6f',
     childAccountId: MOCK_CHILDREN_IDS.zayne,
     relation: 'guardian',
-    permissionsScope: ['messages', 'calendar', 'learning-spaces'],
+    permissionsScope: ['messages', 'class-schedule', 'learning-spaces'],
   },
   {
     orgId: MOCK_ORG_ID,
@@ -70,7 +70,7 @@ export const MOCK_FAMILY_LINKS: FamilyLinkVM[] = [
     guardianAccountId: 'c4b0e8d2-7d33-4c1a-8d6f-5a2b3c4d5e6f',
     childAccountId: MOCK_CHILDREN_IDS.sophia,
     relation: 'guardian',
-    permissionsScope: ['messages', 'calendar', 'learning-spaces'],
+    permissionsScope: ['messages', 'class-schedule', 'learning-spaces'],
   },
 ];
 

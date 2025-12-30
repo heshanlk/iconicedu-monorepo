@@ -1,18 +1,18 @@
 'use client';
 
 import { useState } from 'react';
-import type { CalendarEventVM } from '@iconicedu/shared-types';
+import type { ClassScheduleVM } from '@iconicedu/shared-types';
 import { cn } from '@iconicedu/ui-web/lib/utils';
 import {
   formatEventTime,
   isEventLive,
   colorVariants,
-} from '../../lib/calendar-utils';
+} from '../../lib/class-schedule-utils';
 import { EventDialog } from './event-dialog';
 import { EventLiveIndicator } from './event-live-indicator';
 
 interface EventCardProps {
-  event: CalendarEventVM;
+  event: ClassScheduleVM;
   compact?: boolean;
 }
 

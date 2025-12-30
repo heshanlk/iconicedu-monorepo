@@ -5,14 +5,14 @@ import type React from 'react';
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '../../ui/dialog';
 import { Drawer, DrawerContent, DrawerTitle, DrawerTrigger } from '../../ui/drawer';
 import { Separator } from '../../ui/separator';
-import type { CalendarEventVM } from '@iconicedu/shared-types';
+import type { ClassScheduleVM } from '@iconicedu/shared-types';
 import { EventDetailsHeader } from './event-details-header';
 import { EventDetailsInfo } from './event-details-info';
 import { EventActions } from './event-actions';
 import { useIsMobile } from '../../hooks/use-mobile';
 
 interface EventDialogProps {
-  event: CalendarEventVM;
+  event: ClassScheduleVM;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   children: React.ReactNode;
@@ -41,7 +41,7 @@ export function EventDialog({ event, open, onOpenChange, children }: EventDialog
         <DrawerTrigger asChild>{children}</DrawerTrigger>
         <DrawerContent className="flex flex-col overflow-hidden bg-background p-0 rounded-t-xl before:inset-0 before:rounded-t-xl">
           <DrawerTitle className="sr-only">
-            {event.title || 'Calendar event details'}
+            {event.title || 'Class schedule details'}
           </DrawerTitle>
           {content}
         </DrawerContent>
@@ -54,7 +54,7 @@ export function EventDialog({ event, open, onOpenChange, children }: EventDialog
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="max-w-lg max-h-[85vh] p-0 gap-0 [&>button]:hidden">
         <DialogTitle className="sr-only">
-          {event.title || 'Calendar event details'}
+          {event.title || 'Class schedule details'}
         </DialogTitle>
         {content}
       </DialogContent>

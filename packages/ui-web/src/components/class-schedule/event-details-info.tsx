@@ -1,9 +1,9 @@
-import type { CalendarEventVM } from '@iconicedu/shared-types';
+import type { ClassScheduleVM } from '@iconicedu/shared-types';
 import { Separator } from '@iconicedu/ui-web/ui/separator';
 import { User, MapPin, Globe } from 'lucide-react';
 
 interface EventDetailsInfoProps {
-  event: CalendarEventVM;
+  event: ClassScheduleVM;
 }
 
 export function EventDetailsInfo({ event }: EventDetailsInfoProps) {

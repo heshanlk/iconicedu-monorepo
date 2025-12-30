@@ -53,7 +53,7 @@ import type {
 
 const ICONS = {
   home: Home,
-  calendar: Calendar,
+  'class-schedule': Calendar,
   inbox: Inbox,
   languages: Languages,
   'chef-hat': ChefHat,

@@ -1,42 +1,46 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import type { CalendarEventVM, CalendarViewVM } from '@iconicedu/shared-types';
-import { CalendarHeader } from './calendar-header';
+import type {
+  ClassScheduleVM,
+  ClassScheduleViewVM,
+} from '@iconicedu/shared-types';
+import { ClassScheduleHeader } from './class-schedule-header';
 import { WeekView } from './week-view';
 import { DayView } from './day-view';
 import {
-  getCalendarEventsForMonthRange,
-  getCalendarEventsForView,
-} from '../../lib/calendar-utils';
+  getClassScheduleEventsForMonthRange,
+  getClassScheduleEventsForView,
+} from '../../lib/class-schedule-utils';
 
-interface CalendarContainerProps {
+interface ClassScheduleContainerProps {
   currentDate: Date;
-  view: CalendarViewVM;
-  onViewChange: (view: CalendarViewVM) => void;
+  view: ClassScheduleViewVM;
+  onViewChange: (view: ClassScheduleViewVM) => void;
   onDateSelect: (date: Date) => void;
-  events: CalendarEventVM[];
+  events: ClassScheduleVM[];
   childrenCount?: number;
 }
 
-export function CalendarContainer({
+export function ClassScheduleContainer({
   currentDate,
   view,
   onViewChange,
   onDateSelect,
   events,
   childrenCount,
-}: CalendarContainerProps) {
-  const [calendarMonthAnchor, setCalendarMonthAnchor] = useState(
+}: ClassScheduleContainerProps) {
+  const [classScheduleMonthAnchor, setClassScheduleMonthAnchor] = useState(
     new Date(currentDate.getFullYear(), currentDate.getMonth(), 1),
   );
 
-  const calendarEventsForDots = useMemo(
-    () => getCalendarEventsForMonthRange(events, calendarMonthAnchor, 1, 1),
-    [events, calendarMonthAnchor],
+  const classScheduleEventsForDots = useMemo(
+    () =>
+      getClassScheduleEventsForMonthRange(events, classScheduleMonthAnchor, 1, 1),
+    [events, classScheduleMonthAnchor],
   );
-  const calendarEventsForView = useMemo(
-    () => getCalendarEventsForView(events, currentDate, view),
+  const classScheduleEventsForView = useMemo(
+    () => getClassScheduleEventsForView(events, currentDate, view),
     [events, currentDate, view],
   );
 
@@ -55,7 +59,7 @@ export function CalendarContainer({
 
   return (
     <>
-      <CalendarHeader
+      <ClassScheduleHeader
         currentDate={currentDate}
         view={view}
         onViewChange={onViewChange}
@@ -65,18 +69,18 @@ export function CalendarContainer({
       {view === 'week' ? (
         <WeekView
           currentDate={currentDate}
-          events={calendarEventsForView}
+          events={classScheduleEventsForView}
           onDateSelect={onDateSelect}
           onSwitchToDay={() => onViewChange('day')}
         />
       ) : (
         <DayView
           currentDate={currentDate}
-          events={calendarEventsForView}
-          calendarEvents={calendarEventsForDots}
+          events={classScheduleEventsForView}
+          classScheduleEvents={classScheduleEventsForDots}
           childrenCount={childrenCount}
           onDateSelect={onDateSelect}
-          onMonthChange={setCalendarMonthAnchor}
+          onMonthChange={setClassScheduleMonthAnchor}
         />
       )}
     </>

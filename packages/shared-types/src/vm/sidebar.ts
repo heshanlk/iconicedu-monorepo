@@ -4,7 +4,7 @@ import type { ChannelMiniVM } from './channel';
 
 export type SidebarIconKey =
   | 'home'
-  | 'calendar'
+  | 'class-schedule'
   | 'inbox'
   | 'languages'
   | 'chef-hat'

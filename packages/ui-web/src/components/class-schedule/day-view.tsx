@@ -1,6 +1,6 @@
 'use client';
 
-import type { CalendarEventVM } from '@iconicedu/shared-types';
+import type { ClassScheduleVM } from '@iconicedu/shared-types';
 import {
   isSameDay,
   getEventDate,
@@ -8,9 +8,9 @@ import {
   getTimeSlots,
   timeToMinutes,
   getEventLayout,
-} from '../../lib/calendar-utils';
+} from '../../lib/class-schedule-utils';
 import { EventCard } from './event-card';
-import { MiniCalendar } from './mini-calendar';
+import { MiniClassSchedule } from './mini-class-schedule';
 import { ScrollArea } from '../../ui/scroll-area';
 import { Button } from '../../ui/button';
 import { ArrowRight, MessageSquarePlus, UserPlus } from 'lucide-react';
@@ -19,8 +19,8 @@ import { useEffect, useRef } from 'react';
 
 interface DayViewProps {
   currentDate: Date;
-  events: CalendarEventVM[];
-  calendarEvents?: CalendarEventVM[];
+  events: ClassScheduleVM[];
+  classScheduleEvents?: ClassScheduleVM[];
   childrenCount?: number;
   onDateSelect: (date: Date) => void;
   onMonthChange?: (date: Date) => void;
@@ -29,7 +29,7 @@ interface DayViewProps {
 export function DayView({
   currentDate,
   events,
-  calendarEvents,
+  classScheduleEvents,
   childrenCount,
   onDateSelect,
   onMonthChange,
@@ -38,10 +38,10 @@ export function DayView({
   const dayEvents = events.filter((event) =>
     isSameDay(getEventDate(event), currentDate),
   );
-  const miniCalendarEvents = calendarEvents ?? events;
+  const miniScheduleEvents = classScheduleEvents ?? events;
   const hasChildren = childrenCount === undefined ? true : childrenCount > 0;
-  const hasClasses = miniCalendarEvents.length > 0;
-  const nextEvent = [...miniCalendarEvents]
+  const hasClasses = miniScheduleEvents.length > 0;
+  const nextEvent = [...miniScheduleEvents]
     .filter((event) => getEventDate(event) > currentDate)
     .sort((a, b) => {
       const dateDiff = getEventDate(a).getTime() - getEventDate(b).getTime();
@@ -52,7 +52,7 @@ export function DayView({
   const maxVisibleColumns = 3;
   const clusterInfo = new Map<
     number,
-    { startMinutes: number; hiddenEvents: CalendarEventVM[]; columns: number }
+    { startMinutes: number; hiddenEvents: ClassScheduleVM[]; columns: number }
   >();
 
   dayEvents.forEach((event) => {
@@ -304,11 +304,11 @@ export function DayView({
       <aside className="hidden lg:flex w-80 flex-shrink-0 bg-muted/30">
         <ScrollArea className="w-full">
           <div className="p-4 space-y-4">
-            <MiniCalendar
+            <MiniClassSchedule
               currentDate={currentDate}
               selectedDate={currentDate}
               onDateSelect={onDateSelect}
-              events={miniCalendarEvents}
+              events={miniScheduleEvents}
               onMonthChange={onMonthChange}
             />
           </div>

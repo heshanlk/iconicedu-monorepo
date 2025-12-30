@@ -1,14 +1,14 @@
 import type { IANATimezone, ISODateTime, UUID } from './shared';
 
 export type WeekdayVM = 'MO' | 'TU' | 'WE' | 'TH' | 'FR' | 'SA' | 'SU';
-export type CalendarViewVM = 'week' | 'day' | 'month' | 'agenda';
+export type ClassScheduleViewVM = 'week' | 'day' | 'month' | 'agenda';
 
-export type CalendarVisibilityVM =
+export type ClassScheduleVisibilityVM =
   | 'private'
   | 'internal'
   | 'class-members'
   | 'public';
-export type CalendarColorTokenVM =
+export type ClassScheduleColorTokenVM =
   | 'blue'
   | 'pink'
   | 'green'
@@ -17,16 +17,11 @@ export type CalendarColorTokenVM =
   | 'purple'
   | 'gray';
 
-export type ParticipantRoleVM =
-  | 'educator'
-  | 'child'
-  | 'guardian'
-  | 'staff'
-  | 'observer';
+export type ParticipantRoleVM = 'educator' | 'child' | 'guardian' | 'staff' | 'observer';
 
 export type ParticipationStatusVM = 'invited' | 'accepted' | 'declined' | 'tentative';
 
-export interface CalendarParticipantVM {
+export interface ClassScheduleParticipantVM {
   userId: UUID;
   role: ParticipantRoleVM;
   status?: ParticipationStatusVM;
@@ -67,7 +62,7 @@ export interface RecurrenceOverrideVM {
   occurrenceKey: ISODateTime;
   patch: Partial<
     Pick<
-      CalendarEventVM,
+      ClassScheduleVM,
       | 'title'
       | 'description'
       | 'location'
@@ -94,7 +89,7 @@ export interface RecurrenceVM {
   overrides?: RecurrenceOverrideVM[];
 }
 
-export interface CalendarEventVM {
+export interface ClassScheduleVM {
   id: UUID;
   title: string;
   startAt: ISODateTime;
@@ -103,9 +98,9 @@ export interface CalendarEventVM {
   status: EventStatusVM;
   description?: string | null;
   location?: string | null;
-  visibility: CalendarVisibilityVM;
-  color?: CalendarColorTokenVM;
-  participants: CalendarParticipantVM[];
+  visibility: ClassScheduleVisibilityVM;
+  color?: ClassScheduleColorTokenVM;
+  participants: ClassScheduleParticipantVM[];
   source: EventSourceVM;
   recurrence?: RecurrenceVM;
   audit: EventAuditInfoVM;

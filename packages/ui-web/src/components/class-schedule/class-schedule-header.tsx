@@ -3,21 +3,21 @@
 import { Button } from '../../ui/button';
 import { ButtonGroup } from '../../ui/button-group';
 import { ChevronLeft, ChevronRight, Columns4, Columns } from 'lucide-react';
-import type { CalendarViewVM } from '@iconicedu/shared-types';
+import type { ClassScheduleViewVM } from '@iconicedu/shared-types';
 
-interface CalendarHeaderProps {
+interface ClassScheduleHeaderProps {
   currentDate: Date;
-  view: CalendarViewVM;
-  onViewChange: (view: CalendarViewVM) => void;
+  view: ClassScheduleViewVM;
+  onViewChange: (view: ClassScheduleViewVM) => void;
   onNavigate: (direction: 'prev' | 'next' | 'today') => void;
 }
 
-export function CalendarHeader({
+export function ClassScheduleHeader({
   currentDate,
   view,
   onViewChange,
   onNavigate,
-}: CalendarHeaderProps) {
+}: ClassScheduleHeaderProps) {
   const monthYear = currentDate.toLocaleDateString('en-US', {
     month: 'long',
     year: 'numeric',

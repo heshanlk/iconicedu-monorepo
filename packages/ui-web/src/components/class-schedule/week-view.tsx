@@ -1,6 +1,6 @@
 'use client';
 
-import type { CalendarEventVM } from '@iconicedu/shared-types';
+import type { ClassScheduleVM } from '@iconicedu/shared-types';
 import {
   getWeekDays,
   formatDayName,
@@ -9,7 +9,7 @@ import {
   getTimeSlots,
   timeToMinutes,
   getEventLayout,
-} from '../../lib/calendar-utils';
+} from '../../lib/class-schedule-utils';
 import { EventCard } from './event-card';
 import { cn } from '@iconicedu/ui-web/lib/utils';
 import { useEffect, useRef } from 'react';
@@ -17,7 +17,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
 
 interface WeekViewProps {
   currentDate: Date;
-  events: CalendarEventVM[];
+  events: ClassScheduleVM[];
   onDateSelect?: (date: Date) => void;
   onSwitchToDay?: () => void;
 }
@@ -152,7 +152,7 @@ export function WeekView({
               const dayLayout = getEventLayout(dayEvents);
               const clusterInfo = new Map<
                 number,
-                { startMinutes: number; hiddenEvents: CalendarEventVM[]; columns: number }
+                { startMinutes: number; hiddenEvents: ClassScheduleVM[]; columns: number }
               >();
               const isToday = isSameDay(day, today);
               const isSelected = isSameDay(day, currentDate);

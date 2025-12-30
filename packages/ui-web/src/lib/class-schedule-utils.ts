@@ -1,6 +1,6 @@
 import type {
-  CalendarEventVM,
-  CalendarViewVM,
+  ClassScheduleVM,
+  ClassScheduleViewVM,
   WeekdayVM,
 } from '@iconicedu/shared-types';
 
@@ -44,7 +44,7 @@ export function formatEventTime(isoTime: string): string {
   });
 }
 
-export function getEventDate(event: CalendarEventVM): Date {
+export function getEventDate(event: ClassScheduleVM): Date {
   return new Date(event.startAt);
 }
 
@@ -99,7 +99,7 @@ export function getDaysInMonth(year: number, month: number): Date[] {
   return days;
 }
 
-export function getEventLayout(events: CalendarEventVM[]) {
+export function getEventLayout(events: ClassScheduleVM[]) {
   const sorted = [...events].sort((a, b) => {
     const aStart = timeToMinutes(a.startAt);
     const bStart = timeToMinutes(b.startAt);
@@ -107,8 +107,8 @@ export function getEventLayout(events: CalendarEventVM[]) {
     return timeToMinutes(a.endAt) - timeToMinutes(b.endAt);
   });
 
-  const clusters: CalendarEventVM[][] = [];
-  let currentCluster: CalendarEventVM[] = [];
+  const clusters: ClassScheduleVM[][] = [];
+  let currentCluster: ClassScheduleVM[] = [];
   let currentEnd = -1;
 
   sorted.forEach((event) => {
@@ -194,11 +194,11 @@ const getMonthRange = (date: Date) => {
 };
 
 export const expandRecurringEvents = (
-  events: CalendarEventVM[],
+  events: ClassScheduleVM[],
   rangeStart: Date,
   rangeEnd: Date,
 ) => {
-  const expanded: CalendarEventVM[] = [];
+  const expanded: ClassScheduleVM[] = [];
   const rangeStartDay = startOfDay(rangeStart);
   const rangeEndDay = startOfDay(rangeEnd);
 
@@ -269,7 +269,7 @@ export const expandRecurringEvents = (
       if (rule.count && occurrenceCount >= rule.count) break;
 
       const occurrenceEnd = new Date(occurrenceStart.getTime() + durationMs);
-      const occurrence: CalendarEventVM = {
+      const occurrence: ClassScheduleVM = {
         ...event,
         ...override,
         id: `${event.id}__${occurrenceKey}`,
@@ -286,10 +286,10 @@ export const expandRecurringEvents = (
   return expanded;
 };
 
-export const getCalendarEventsForView = (
-  events: CalendarEventVM[],
+export const getClassScheduleEventsForView = (
+  events: ClassScheduleVM[],
   currentDate: Date,
-  view: CalendarViewVM,
+  view: ClassScheduleViewVM,
 ) => {
   const rangeStart =
     view === 'week' ? getWeekStart(currentDate) : startOfDay(currentDate);
@@ -297,16 +297,16 @@ export const getCalendarEventsForView = (
   return expandRecurringEvents(events, rangeStart, rangeEnd);
 };
 
-export const getCalendarEventsForMonth = (
-  events: CalendarEventVM[],
+export const getClassScheduleEventsForMonth = (
+  events: ClassScheduleVM[],
   currentDate: Date,
 ) => {
   const { start, end } = getMonthRange(currentDate);
   return expandRecurringEvents(events, start, end);
 };
 
-export const getCalendarEventsForMonthRange = (
-  events: CalendarEventVM[],
+export const getClassScheduleEventsForMonthRange = (
+  events: ClassScheduleVM[],
   currentDate: Date,
   monthsBefore = 1,
   monthsAfter = 1,
@@ -324,7 +324,7 @@ export const getCalendarEventsForMonthRange = (
   return expandRecurringEvents(events, startOfDay(start), startOfDay(end));
 };
 
-export const isEventLive = (event: CalendarEventVM): boolean => {
+export const isEventLive = (event: ClassScheduleVM): boolean => {
   const now = new Date();
   const startTime = new Date(event.startAt);
   const endTime = new Date(event.endAt);
