@@ -100,7 +100,7 @@ export function NavLearningSpaces({
                 return (
                   <SidebarMenuItem key={space.id}>
                     <SidebarMenuButton asChild tooltip={space.topic}>
-                      <a href={`/dashboard/learning-space/${space.id}`}>
+                      <a href={`/dashboard/ls/${space.id}`}>
                         <Icon />
                         <span>{space.topic}</span>
                       </a>
