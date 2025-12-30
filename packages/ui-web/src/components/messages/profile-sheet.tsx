@@ -1,6 +1,4 @@
 import {
-  Mail,
-  Phone,
   Calendar,
   BookOpen,
   GraduationCap,
@@ -93,34 +91,6 @@ export function ProfileContent({
       <div className="space-y-4 p-4 min-w-0">
         <MediaFilesPanel media={media} files={files} filterUserId={user.id} />
       </div>
-
-      <Separator />
-
-      <div className="space-y-4 p-4 min-w-0">
-        <h3 className="text-sm font-semibold text-foreground">Contact Information</h3>
-        <div className="space-y-3 min-w-0">
-          {user.email && (
-            <div className="flex items-start gap-3">
-              <Mail className="mt-0.5 h-4 w-4 text-muted-foreground" />
-              <div className="flex-1 min-w-0">
-                <p className="text-xs text-muted-foreground">Email</p>
-                <p className="text-sm text-foreground break-words">{user.email}</p>
-              </div>
-            </div>
-          )}
-          {user.phone && (
-            <div className="flex items-start gap-3">
-              <Phone className="mt-0.5 h-4 w-4 text-muted-foreground" />
-              <div className="flex-1 min-w-0">
-                <p className="text-xs text-muted-foreground">Phone</p>
-                <p className="text-sm text-foreground break-words">{user.phone}</p>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      <Separator />
 
       <div className="space-y-4 p-4 min-w-0">
         <h3 className="text-sm font-semibold text-foreground">About</h3>
