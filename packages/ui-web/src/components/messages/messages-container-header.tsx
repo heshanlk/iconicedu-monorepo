@@ -9,6 +9,8 @@ import {
   BookOpen,
   Bookmark,
   Clock,
+  ClipboardCheck,
+  FileText,
   type LucideIcon,
 } from 'lucide-react';
 import {
@@ -27,6 +29,7 @@ interface HeaderSubtitleItem {
   label: string;
   onClick?: () => void;
   tooltip?: string;
+  isActive?: boolean;
 }
 
 interface MessagesContainerHeaderProps {
@@ -39,18 +42,21 @@ const HeaderSubtitleItem = memo(function HeaderSubtitleItem({
   onClick,
   className,
   tooltip,
+  isActive,
 }: {
   icon?: LucideIcon;
   label: string;
   onClick?: () => void;
   className?: string;
   tooltip?: string;
+  isActive?: boolean;
 }) {
   const content = (
     <span
       className={cn(
         'inline-flex items-center gap-1.5 text-xs text-muted-foreground',
         onClick && 'cursor-pointer',
+        isActive && 'text-primary font-medium',
         className,
       )}
       onClick={onClick}
@@ -138,6 +144,8 @@ const HEADER_ICON_MAP: Record<string, LucideIcon> = {
   saved: Bookmark,
   'next-session': Clock,
   'last-seen': Clock,
+  homework: ClipboardCheck,
+  'session-summary': FileText,
 };
 
 const getOtherParticipant = (participants: UserProfileVM[], currentUserId: string) =>
@@ -146,7 +154,15 @@ const getOtherParticipant = (participants: UserProfileVM[], currentUserId: strin
 export const MessagesContainerHeader = memo(function MessagesContainerHeader({
   channel,
 }: MessagesContainerHeaderProps) {
-  const { savedCount, currentUserId, toggle } = useMessagesState();
+  const {
+    savedCount,
+    homeworkCount,
+    sessionSummaryCount,
+    currentUserId,
+    toggle,
+    messageFilter,
+    toggleMessageFilter,
+  } = useMessagesState();
 
   const otherParticipant = useMemo(
     () =>
@@ -196,11 +212,39 @@ export const MessagesContainerHeader = memo(function MessagesContainerHeader({
     () =>
       channel.headerItems.map((item) => ({
         icon: HEADER_ICON_MAP[item.key],
-        label: item.key === 'saved' ? `${savedCount}` : item.label,
+        label:
+          item.key === 'saved'
+            ? `${savedCount}`
+            : item.key === 'homework'
+              ? `${homeworkCount}`
+              : item.key === 'session-summary'
+                ? `${sessionSummaryCount}`
+                : item.label,
         tooltip: item.tooltip ?? undefined,
-        onClick: item.key === 'saved' ? () => toggle({ key: 'saved' }) : undefined,
+        onClick:
+          item.key === 'saved'
+            ? () => toggle({ key: 'saved' })
+            : item.key === 'homework'
+              ? () => toggleMessageFilter('homework')
+              : item.key === 'session-summary'
+                ? () => toggleMessageFilter('session-summary')
+                : undefined,
+        isActive:
+          item.key === 'homework'
+            ? messageFilter === 'homework'
+            : item.key === 'session-summary'
+              ? messageFilter === 'session-summary'
+              : undefined,
       })),
-    [channel.headerItems, savedCount, toggle],
+    [
+      channel.headerItems,
+      savedCount,
+      homeworkCount,
+      sessionSummaryCount,
+      toggle,
+      toggleMessageFilter,
+      messageFilter,
+    ],
   );
 
   return (

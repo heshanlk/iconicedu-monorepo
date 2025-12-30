@@ -32,6 +32,8 @@ export const LEARNING_SPACES: ChannelVM[] = [
     },
     headerItems: [
       { key: 'saved', label: '2', tooltip: 'View saved messages', isPrimary: true },
+      { key: 'homework', label: 'Homework', tooltip: 'Filter homework messages' },
+      { key: 'session-summary', label: 'Summary', tooltip: 'Filter session summaries' },
       { key: 'next-session', label: 'Mon 4:00 PM' },
     ],
     participants: [MOCK_EDUCATOR, MOCK_GUARDIAN, MOCK_CHILDREN[0]],
@@ -68,6 +70,8 @@ export const LEARNING_SPACES: ChannelVM[] = [
     },
     headerItems: [
       { key: 'saved', label: '1', tooltip: 'View saved messages', isPrimary: true },
+      { key: 'homework', label: 'Homework', tooltip: 'Filter homework messages' },
+      { key: 'session-summary', label: 'Summary', tooltip: 'Filter session summaries' },
       { key: 'next-session', label: 'Wed 5:00 PM' },
     ],
     participants: [MOCK_EDUCATOR_2, MOCK_GUARDIAN, MOCK_CHILDREN[0]],
@@ -103,6 +107,8 @@ export const LEARNING_SPACES: ChannelVM[] = [
     },
     headerItems: [
       { key: 'saved', label: '0', tooltip: 'View saved messages', isPrimary: true },
+      { key: 'homework', label: 'Homework', tooltip: 'Filter homework messages' },
+      { key: 'session-summary', label: 'Summary', tooltip: 'Filter session summaries' },
       { key: 'next-session', label: 'Fri 3:00 PM' },
     ],
     participants: [MOCK_EDUCATOR_3, MOCK_GUARDIAN, MOCK_CHILDREN[0]],
@@ -138,6 +144,8 @@ export const LEARNING_SPACES: ChannelVM[] = [
     },
     headerItems: [
       { key: 'saved', label: '4', tooltip: 'View saved messages', isPrimary: true },
+      { key: 'homework', label: 'Homework', tooltip: 'Filter homework messages' },
+      { key: 'session-summary', label: 'Summary', tooltip: 'Filter session summaries' },
       { key: 'next-session', label: 'Tue 4:00 PM' },
     ],
     participants: [MOCK_EDUCATOR_2, MOCK_GUARDIAN, MOCK_CHILDREN[1]],
@@ -174,6 +182,8 @@ export const LEARNING_SPACES: ChannelVM[] = [
     },
     headerItems: [
       { key: 'saved', label: '1', tooltip: 'View saved messages', isPrimary: true },
+      { key: 'homework', label: 'Homework', tooltip: 'Filter homework messages' },
+      { key: 'session-summary', label: 'Summary', tooltip: 'Filter session summaries' },
       { key: 'next-session', label: 'Thu 6:00 PM' },
     ],
     participants: [MOCK_EDUCATOR_3, MOCK_GUARDIAN, MOCK_CHILDREN[1]],
@@ -209,6 +219,8 @@ export const LEARNING_SPACES: ChannelVM[] = [
     },
     headerItems: [
       { key: 'saved', label: '0', tooltip: 'View saved messages', isPrimary: true },
+      { key: 'homework', label: 'Homework', tooltip: 'Filter homework messages' },
+      { key: 'session-summary', label: 'Summary', tooltip: 'Filter session summaries' },
       { key: 'next-session', label: 'Fri 2:00 PM' },
     ],
     participants: [MOCK_EDUCATOR, MOCK_GUARDIAN, MOCK_CHILDREN[1]],
@@ -244,6 +256,8 @@ export const LEARNING_SPACES: ChannelVM[] = [
     },
     headerItems: [
       { key: 'saved', label: '2', tooltip: 'View saved messages', isPrimary: true },
+      { key: 'homework', label: 'Homework', tooltip: 'Filter homework messages' },
+      { key: 'session-summary', label: 'Summary', tooltip: 'Filter session summaries' },
       { key: 'next-session', label: 'Mon 3:00 PM' },
     ],
     participants: [MOCK_EDUCATOR_3, MOCK_GUARDIAN, MOCK_CHILDREN[2]],
@@ -279,6 +293,8 @@ export const LEARNING_SPACES: ChannelVM[] = [
     },
     headerItems: [
       { key: 'saved', label: '1', tooltip: 'View saved messages', isPrimary: true },
+      { key: 'homework', label: 'Homework', tooltip: 'Filter homework messages' },
+      { key: 'session-summary', label: 'Summary', tooltip: 'Filter session summaries' },
       { key: 'next-session', label: 'Wed 4:00 PM' },
     ],
     participants: [MOCK_EDUCATOR, MOCK_GUARDIAN, MOCK_CHILDREN[2]],
@@ -314,6 +330,8 @@ export const LEARNING_SPACES: ChannelVM[] = [
     },
     headerItems: [
       { key: 'saved', label: '0', tooltip: 'View saved messages', isPrimary: true },
+      { key: 'homework', label: 'Homework', tooltip: 'Filter homework messages' },
+      { key: 'session-summary', label: 'Summary', tooltip: 'Filter session summaries' },
       { key: 'next-session', label: 'Thu 5:00 PM' },
     ],
     participants: [MOCK_EDUCATOR_2, MOCK_GUARDIAN, MOCK_CHILDREN[2]],

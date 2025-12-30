@@ -9,4 +9,5 @@ export { EventReminderMessage } from './event-reminder-message';
 export { LessonAssignmentMessage } from './lesson-assignment-message';
 export { ProgressUpdateMessage } from './progress-update-message';
 export { SessionBookingMessage } from './session-booking-message';
+export { SessionSummaryMessage } from './session-summary-message';
 export { HomeworkSubmissionMessage } from './homework-submission-message';

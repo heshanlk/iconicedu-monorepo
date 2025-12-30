@@ -86,6 +86,7 @@ export type MessageTypeVM =
   | 'lesson-assignment'
   | 'progress-update'
   | 'session-booking'
+  | 'session-summary'
   | 'homework-submission'
   | 'link-preview'
   | 'audio-recording';
@@ -200,6 +201,19 @@ export interface SessionBookingMessageVM extends BaseMessageVM {
   };
 }
 
+export interface SessionSummaryMessageVM extends BaseMessageVM {
+  type: 'session-summary';
+  content?: string;
+  session: {
+    title: string;
+    startAt: ISODateTime;
+    durationMinutes?: number;
+    summary: string;
+    highlights?: string[];
+    nextSteps?: string[];
+  };
+}
+
 export interface HomeworkSubmissionMessageVM extends BaseMessageVM {
   type: 'homework-submission';
   content: string;
@@ -248,6 +262,7 @@ export type MessageVM =
   | LessonAssignmentMessageVM
   | ProgressUpdateMessageVM
   | SessionBookingMessageVM
+  | SessionSummaryMessageVM
   | HomeworkSubmissionMessageVM
   | LinkPreviewMessageVM
   | AudioRecordingMessageVM;

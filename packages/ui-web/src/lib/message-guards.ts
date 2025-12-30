@@ -9,6 +9,7 @@ import type {
   LessonAssignmentMessageVM,
   ProgressUpdateMessageVM,
   SessionBookingMessageVM,
+  SessionSummaryMessageVM,
   HomeworkSubmissionMessageVM,
   LinkPreviewMessageVM,
   AudioRecordingMessageVM,
@@ -61,6 +62,12 @@ export function isSessionBookingMessage(
   message: MessageVM,
 ): message is SessionBookingMessageVM {
   return message.type === 'session-booking';
+}
+
+export function isSessionSummaryMessage(
+  message: MessageVM,
+): message is SessionSummaryMessageVM {
+  return message.type === 'session-summary';
 }
 
 export function isHomeworkSubmissionMessage(

@@ -12,6 +12,7 @@ import {
   isLessonAssignmentMessage,
   isProgressUpdateMessage,
   isSessionBookingMessage,
+  isSessionSummaryMessage,
   isHomeworkSubmissionMessage,
   isLinkPreviewMessage,
   isAudioRecordingMessage,
@@ -27,6 +28,7 @@ import {
   LessonAssignmentMessage,
   ProgressUpdateMessage,
   SessionBookingMessage,
+  SessionSummaryMessage,
   HomeworkSubmissionMessage,
   AudioMessage,
   LinkPreviewMessage,
@@ -119,6 +121,10 @@ export const MessageItem = memo(function MessageItem({
 
   if (isSessionBookingMessage(message)) {
     return <SessionBookingMessage message={message} {...commonProps} />;
+  }
+
+  if (isSessionSummaryMessage(message)) {
+    return <SessionSummaryMessage message={message} {...commonProps} />;
   }
 
   if (isHomeworkSubmissionMessage(message)) {

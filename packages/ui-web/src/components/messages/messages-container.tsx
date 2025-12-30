@@ -30,12 +30,15 @@ export function MessagesContainer({ channel }: MessagesContainerProps) {
   const {
     toggle,
     setSavedCount,
+    setHomeworkCount,
+    setSessionSummaryCount,
     setThreadData,
     setCurrentUserId,
     setMessages,
     setCreateTextMessage,
     setThreadHandlers,
     setScrollToMessage,
+    messageFilter,
   } = useMessagesState();
   const channelMessages = channel.messages?.items ?? [];
   const {
@@ -133,8 +136,6 @@ export function MessagesContainer({ channel }: MessagesContainerProps) {
     [toggleHidden],
   );
 
-  const savedCount = useMemo(() => messages.filter((m) => m.isSaved).length, [messages]);
-
   const visibleMessages = useMemo(
     () =>
       messages.filter(
@@ -145,9 +146,42 @@ export function MessagesContainer({ channel }: MessagesContainerProps) {
     [messages],
   );
 
+  const savedCount = useMemo(() => messages.filter((m) => m.isSaved).length, [messages]);
+  const homeworkCount = useMemo(
+    () =>
+      visibleMessages.filter(
+        (message) =>
+          message.type === 'lesson-assignment' || message.type === 'homework-submission',
+      ).length,
+    [visibleMessages],
+  );
+  const sessionSummaryCount = useMemo(
+    () => visibleMessages.filter((message) => message.type === 'session-summary').length,
+    [visibleMessages],
+  );
+
+  const filteredMessages = useMemo(() => {
+    if (!messageFilter) return visibleMessages;
+    if (messageFilter === 'homework') {
+      return visibleMessages.filter(
+        (message) =>
+          message.type === 'lesson-assignment' || message.type === 'homework-submission',
+      );
+    }
+    if (messageFilter === 'session-summary') {
+      return visibleMessages.filter((message) => message.type === 'session-summary');
+    }
+    return visibleMessages;
+  }, [messageFilter, visibleMessages]);
+
   useEffect(() => {
     setSavedCount(savedCount);
   }, [savedCount, setSavedCount]);
+
+  useEffect(() => {
+    setHomeworkCount(homeworkCount);
+    setSessionSummaryCount(sessionSummaryCount);
+  }, [homeworkCount, sessionSummaryCount, setHomeworkCount, setSessionSummaryCount]);
 
   useEffect(() => {
     if (currentUserId) {
@@ -202,7 +236,7 @@ export function MessagesContainer({ channel }: MessagesContainerProps) {
 
   const messageListProps = useMemo(
     () => ({
-      messages: visibleMessages,
+      messages: filteredMessages,
       onOpenThread: handleOpenThread,
       onProfileClick: handleProfileClick,
       onToggleReaction: handleToggleReaction,
@@ -212,7 +246,7 @@ export function MessagesContainer({ channel }: MessagesContainerProps) {
       lastReadMessageId: channel.readState?.lastReadMessageId,
     }),
     [
-      visibleMessages,
+      filteredMessages,
       handleOpenThread,
       handleProfileClick,
       handleToggleReaction,

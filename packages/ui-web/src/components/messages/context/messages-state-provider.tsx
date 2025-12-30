@@ -22,7 +22,10 @@ interface MessagesStateContextValue {
   channel: ChannelVM;
   currentUserId: string;
   savedCount: number;
+  homeworkCount: number;
+  sessionSummaryCount: number;
   messages: MessageVM[];
+  messageFilter: MessageFilterKey | null;
   createTextMessage: (content: string) => TextMessageVM | null;
   threadHandlers: ThreadActionHandlers;
   state: MessagesRightSidebarState;
@@ -35,9 +38,12 @@ interface MessagesStateContextValue {
   ) => boolean;
   setCurrentUserId: (userId: string) => void;
   setSavedCount: (count: number) => void;
+  setHomeworkCount: (count: number) => void;
+  setSessionSummaryCount: (count: number) => void;
   setMessages: (messages: MessageVM[]) => void;
   setCreateTextMessage: (factory: (content: string) => TextMessageVM | null) => void;
   setThreadHandlers: (handlers: ThreadActionHandlers) => void;
+  toggleMessageFilter: (key: MessageFilterKey) => void;
   appendThreadMessage: (threadId: string, message: MessageVM) => void;
   setThreadData: (
     thread: ThreadVM,
@@ -56,6 +62,8 @@ type ThreadActionHandlers = {
   onToggleSaved?: (messageId: string) => void;
   onToggleHidden?: (messageId: string) => void;
 };
+
+export type MessageFilterKey = 'homework' | 'session-summary';
 
 const MessagesStateContext = createContext<MessagesStateContextValue | null>(null);
 
@@ -87,7 +95,10 @@ export function MessagesStateProvider({
   });
   const [currentUserId, setCurrentUserId] = useState('');
   const [savedCount, setSavedCount] = useState(0);
+  const [homeworkCount, setHomeworkCount] = useState(0);
+  const [sessionSummaryCount, setSessionSummaryCount] = useState(0);
   const [messages, setMessages] = useState<MessageVM[]>([]);
+  const [messageFilter, setMessageFilter] = useState<MessageFilterKey | null>(null);
   const [createTextMessage, setCreateTextMessage] = useState<
     (content: string) => TextMessageVM | null
   >(() => () => null);
@@ -112,6 +123,10 @@ export function MessagesStateProvider({
       }
       return { ...prev, isOpen: true, intent };
     });
+  }, []);
+
+  const toggleMessageFilter = useCallback((key: MessageFilterKey) => {
+    setMessageFilter((prev) => (prev === key ? null : key));
   }, []);
 
   const isActive = useCallback(
@@ -178,7 +193,10 @@ export function MessagesStateProvider({
       channel,
       currentUserId,
       savedCount,
+      homeworkCount,
+      sessionSummaryCount,
       messages,
+      messageFilter,
       createTextMessage,
       threadHandlers,
       state,
@@ -188,9 +206,12 @@ export function MessagesStateProvider({
       isActive,
       setCurrentUserId,
       setSavedCount,
+      setHomeworkCount,
+      setSessionSummaryCount,
       setMessages,
       setCreateTextMessage: setCreateTextMessageFactory,
       setThreadHandlers: setThreadHandlersFactory,
+      toggleMessageFilter,
       appendThreadMessage,
       setThreadData,
       getThreadData,
@@ -201,7 +222,10 @@ export function MessagesStateProvider({
       channel,
       currentUserId,
       savedCount,
+      homeworkCount,
+      sessionSummaryCount,
       messages,
+      messageFilter,
       createTextMessage,
       threadHandlers,
       state,
@@ -211,9 +235,12 @@ export function MessagesStateProvider({
       isActive,
       setCurrentUserId,
       setSavedCount,
+      setHomeworkCount,
+      setSessionSummaryCount,
       setMessages,
       setCreateTextMessageFactory,
       setThreadHandlersFactory,
+      toggleMessageFilter,
       appendThreadMessage,
       setThreadData,
       getThreadData,

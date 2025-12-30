@@ -7,6 +7,7 @@ import type {
   LessonAssignmentMessageVM,
   ProgressUpdateMessageVM,
   SessionBookingMessageVM,
+  SessionSummaryMessageVM,
   HomeworkSubmissionMessageVM,
   LinkPreviewMessageVM,
   AudioRecordingMessageVM,
@@ -158,6 +159,24 @@ export const MOCK_MESSAGES: MessageVM[] = [
       status: 'submitted',
     },
   } as HomeworkSubmissionMessageVM,
+  {
+    id: '5b',
+    type: 'session-summary',
+    content: 'Quick recap from today’s session.',
+    sender: MOCK_EDUCATOR,
+    createdAt: hoursAgo(3.5),
+    reactions: [],
+    visibility: { type: 'all' },
+    session: {
+      title: "Sarah's ELA session",
+      startAt: hoursAgo(4),
+      durationMinutes: 30,
+      summary:
+        'Focused on reading fluency, new vocabulary, and a short comprehension exercise.',
+      highlights: ['Great participation', 'Improved speed on passages'],
+      nextSteps: ['Practice sight words', 'Read 10 minutes nightly'],
+    },
+  } as SessionSummaryMessageVM,
   {
     id: '6',
     type: 'progress-update',
@@ -367,6 +386,8 @@ export const LEARNING_SPACE: ChannelVM = {
   readState: LEARNING_SPACE_READ_STATE,
   headerItems: [
     { key: 'saved', label: '0', tooltip: 'View saved messages' },
+    { key: 'homework', label: 'Homework', tooltip: 'Filter homework messages' },
+    { key: 'session-summary', label: 'Summary', tooltip: 'Filter session summaries' },
     { key: 'next-session', label: 'Wed 4:30 PM' },
   ],
   participants: [MOCK_EDUCATOR, MOCK_GUARDIAN, ...MOCK_CHILDREN],

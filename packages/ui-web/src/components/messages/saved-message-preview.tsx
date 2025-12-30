@@ -35,6 +35,8 @@ export function SavedMessagePreview({ message, onClick }: SavedMessagePreviewPro
         return `📊 Progress: ${msg.progress.subject}`;
       case 'session-booking':
         return `🕒 Session: ${msg.session.title}`;
+      case 'session-summary':
+        return `📝 Summary: ${msg.session.title}`;
       case 'homework-submission':
         return `✏️ Homework: ${msg.homework.assignmentTitle}`;
       default:

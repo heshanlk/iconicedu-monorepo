@@ -9,6 +9,7 @@ import type {
   MessageVM,
   ProgressUpdateMessageVM,
   SessionBookingMessageVM,
+  SessionSummaryMessageVM,
   TextMessageVM,
   ThreadVM,
   HomeworkSubmissionMessageVM,
@@ -268,6 +269,24 @@ const buildLearningSpaceMessages = (
         topics: ['Weekly review', 'Practice goals'],
       },
     } as SessionBookingMessageVM,
+    {
+      id: `${prefix}-6b`,
+      type: 'session-summary',
+      content: 'Today we focused on core skills and practice routines.',
+      sender: educator,
+      createdAt: hoursAgo(2.5 + index),
+      reactions: [],
+      visibility: { type: 'all' },
+      session: {
+        title: `${child.firstName ?? child.displayName}'s session recap`,
+        startAt: hoursAgo(3 + index),
+        durationMinutes: 30,
+        summary:
+          'Reviewed foundational concepts, completed guided practice, and set goals for the next session.',
+        highlights: ['Strong participation', 'Improved accuracy on drills'],
+        nextSteps: ['Practice 10 minutes daily', 'Review flashcards'],
+      },
+    } as SessionSummaryMessageVM,
     {
       id: `${prefix}-7`,
       type: 'homework-submission',

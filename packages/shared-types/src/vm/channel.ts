@@ -15,7 +15,13 @@ export interface ChannelPostingPolicyVM {
 }
 
 export type ChannelTopicIconKey = string;
-export type ChannelHeaderIconKey = 'saved' | 'next-session' | 'last-seen' | 'info';
+export type ChannelHeaderIconKey =
+  | 'saved'
+  | 'next-session'
+  | 'last-seen'
+  | 'info'
+  | 'homework'
+  | 'session-summary';
 
 export interface ChannelHeaderItemVM {
   key: ChannelHeaderIconKey;
