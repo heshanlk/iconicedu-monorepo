@@ -19,7 +19,7 @@ import type {
   MessagesRightPanelRegistry,
   MessagesRightPanelIntent,
 } from '@iconicedu/shared-types';
-import { useIsMobile } from '../../hooks/use-mobile';
+import { useHasHydrated, useIsMobile } from '../../hooks/use-mobile';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '../../ui/resizable';
 
 interface MessagesRightPanelProps {
@@ -57,17 +57,19 @@ const MessagesShellLayout = memo(function MessagesShellLayout({
   ...props
 }: MessagesShellLayoutProps) {
   const isMobile = useIsMobile();
+  const hasHydrated = useHasHydrated();
   const { state, open } = useMessagesState();
   const hasAutoOpened = useRef(false);
 
   useEffect(() => {
-    if (isMobile || hasAutoOpened.current || state.isOpen) return;
+    if (!hasHydrated || isMobile || hasAutoOpened.current || state.isOpen) return;
     if (!props.channel.defaultRightPanelOpen) return;
     const defaultKey = props.channel.defaultRightPanelKey ?? 'channel_info';
     if (defaultKey === 'profile' || defaultKey === 'thread') return;
     open({ key: defaultKey });
     hasAutoOpened.current = true;
   }, [
+    hasHydrated,
     isMobile,
     open,
     props.channel.defaultRightPanelKey,
