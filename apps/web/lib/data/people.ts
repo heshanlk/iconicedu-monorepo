@@ -257,7 +257,7 @@ export const MOCK_EDUCATOR_1: EducatorProfileVM = {
   notificationDefaults: null,
   presence: {
     state: { text: 'Office hours', emoji: '📚' },
-    liveStatus: 'teaching',
+    liveStatus: 'busy',
     lastSeenAt: '2025-01-10T19:15:00.000Z',
     presenceLoaded: true,
   },
@@ -306,7 +306,7 @@ export const MOCK_EDUCATOR_2: EducatorProfileVM = {
   notificationDefaults: null,
   presence: {
     state: { text: 'Reviewing work', emoji: '🧮' },
-    liveStatus: 'reviewing_work',
+    liveStatus: 'away',
     lastSeenAt: '2025-01-10T18:50:00.000Z',
     presenceLoaded: true,
   },
@@ -402,7 +402,7 @@ export const MOCK_EDUCATOR_4: EducatorProfileVM = {
   notificationDefaults: null,
   presence: {
     state: { text: 'Reviewing games', emoji: '♟️' },
-    liveStatus: 'reviewing_work',
+    liveStatus: 'busy',
     lastSeenAt: '2025-01-10T17:45:00.000Z',
     presenceLoaded: true,
   },
