@@ -225,7 +225,7 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
               {overflowLinks.map((link) => {
                 const linkIconKey = link.iconKey ?? undefined;
                 const LinkIcon = linkIconKey
-                  ? LEARNING_SPACE_LINK_ICONS[linkIconKey] ?? Link2
+                  ? (LEARNING_SPACE_LINK_ICONS[linkIconKey] ?? Link2)
                   : Link2;
                 if (link.url && link.status !== 'inactive') {
                   return (
@@ -322,7 +322,7 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
                       <div className="text-base font-semibold">{dates[2].getDate()}</div>
                       <div className="text-[10px] uppercase">{getMonth(dates[2])}</div>
                     </div>
-                    <div className="relative z-10 w-[150px] rounded-2xl border bg-background px-3 py-2 text-center">
+                    <div className="relative z-10 w-[150px] rounded-2xl border bg-muted px-3 py-2 text-center">
                       <div className="text-[10px] font-semibold uppercase text-muted-foreground">
                         {getWeekday(dates[1])}
                       </div>
