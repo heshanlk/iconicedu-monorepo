@@ -48,13 +48,13 @@ export function ClassScheduleHeader({
           <span className="text-[10px] font-medium text-muted-foreground uppercase leading-tight">
             {currentDate.toLocaleDateString('en-US', { month: 'short' })}
           </span>
-          <span className="text-lg font-semibold leading-tight">
+          <span className="text-base font-semibold leading-tight">
             {currentDate.getDate()}
           </span>
         </div>
 
         <div>
-          <h1 className="text-lg font-semibold">{monthYear}</h1>
+          <h1 className="text-base font-semibold">{monthYear}</h1>
           <p className="text-xs text-muted-foreground">{dateRange}</p>
         </div>
       </div>

@@ -312,17 +312,17 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
                     className="relative flex h-[86px] w-full max-w-[300px] items-center justify-center"
                     aria-label={`Open schedule for ${getDateLabel(scheduleDate)}`}
                   >
-                    <div className="absolute left-2 top-1/2 z-0 w-[92px] -translate-y-1/2 rounded-2xl border bg-muted/20 px-2.5 py-1.5 text-center text-muted-foreground shadow-sm">
+                    <div className="absolute left-2 top-1/2 z-0 w-[92px] -translate-y-1/2 rounded-2xl border bg-muted/20 px-2.5 py-1.5 text-center text-muted-foreground">
                       <div className="text-[10px] font-semibold uppercase">Previous</div>
                       <div className="text-base font-semibold">{dates[0].getDate()}</div>
                       <div className="text-[10px] uppercase">{getMonth(dates[0])}</div>
                     </div>
-                    <div className="absolute right-2 top-1/2 z-0 w-[92px] -translate-y-1/2 rounded-2xl border bg-muted/20 px-2.5 py-1.5 text-center text-muted-foreground shadow-sm">
+                    <div className="absolute right-2 top-1/2 z-0 w-[92px] -translate-y-1/2 rounded-2xl border bg-muted/20 px-2.5 py-1.5 text-center text-muted-foreground">
                       <div className="text-[10px] font-semibold uppercase">Next</div>
                       <div className="text-base font-semibold">{dates[2].getDate()}</div>
                       <div className="text-[10px] uppercase">{getMonth(dates[2])}</div>
                     </div>
-                    <div className="relative z-10 w-[150px] rounded-2xl border bg-background px-3 py-2 text-center shadow-md">
+                    <div className="relative z-10 w-[150px] rounded-2xl border bg-background px-3 py-2 text-center">
                       <div className="text-[10px] font-semibold uppercase text-muted-foreground">
                         {getWeekday(dates[1])}
                       </div>

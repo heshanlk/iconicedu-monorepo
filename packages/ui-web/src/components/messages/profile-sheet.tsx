@@ -141,9 +141,7 @@ export function ProfileContent({
               <FileText className="mt-0.5 h-4 w-4 text-muted-foreground" />
               <div className="flex-1 min-w-0">
                 <p className="text-xs text-muted-foreground">Bio</p>
-                <p className="text-sm text-foreground break-words">
-                  {user.profile.bio}
-                </p>
+                <p className="text-sm text-foreground break-words">{user.profile.bio}</p>
               </div>
             </div>
           )}

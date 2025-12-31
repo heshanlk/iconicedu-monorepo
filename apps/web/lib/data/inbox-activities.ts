@@ -140,10 +140,10 @@ const homeworkGroupItem: ActivityFeedItemVM = {
     createdAt: '2026-02-08T22:30:00.000Z',
   },
   tabKey: 'classes',
-    audience: {
-      scope: { kind: 'learning_space', learningSpaceId: LEARNING_SPACE_IDS.science },
-      visibility: 'public',
-    },
+  audience: {
+    scope: { kind: 'learning_space', learningSpaceId: LEARNING_SPACE_IDS.science },
+    visibility: 'public',
+  },
   verb: 'homework.assigned',
   refs: {
     actor: ACTOR_PRIYA,
@@ -175,15 +175,15 @@ const homeworkGroupItem: ActivityFeedItemVM = {
         },
         tabKey: 'classes',
         audience: {
-      scope: { kind: 'learning_space', learningSpaceId: LEARNING_SPACE_IDS.science },
-      visibility: 'public',
-    },
+          scope: { kind: 'learning_space', learningSpaceId: LEARNING_SPACE_IDS.science },
+          visibility: 'public',
+        },
         verb: 'file.uploaded',
         refs: {
           actor: ACTOR_PRIYA,
           object: { kind: 'file', id: ACTIVITY_IDS.sub1 },
-      target: { kind: 'learning_space', id: LEARNING_SPACE_IDS.science },
-    },
+          target: { kind: 'learning_space', id: LEARNING_SPACE_IDS.science },
+        },
         content: {
           headline: {
             primary: 'Lab guide uploaded',
@@ -200,15 +200,15 @@ const homeworkGroupItem: ActivityFeedItemVM = {
         },
         tabKey: 'classes',
         audience: {
-      scope: { kind: 'learning_space', learningSpaceId: LEARNING_SPACE_IDS.science },
-      visibility: 'public',
-    },
+          scope: { kind: 'learning_space', learningSpaceId: LEARNING_SPACE_IDS.science },
+          visibility: 'public',
+        },
         verb: 'notes.posted',
         refs: {
           actor: ACTOR_PRIYA,
-          object: { kind: 'notes', id: ACTIVITY_IDS.sub2 },
-      target: { kind: 'learning_space', id: LEARNING_SPACE_IDS.science },
-    },
+          object: { kind: 'message', id: ACTIVITY_IDS.sub2 },
+          target: { kind: 'learning_space', id: LEARNING_SPACE_IDS.science },
+        },
         content: {
           headline: {
             primary: 'Reflection prompts posted',
@@ -225,15 +225,15 @@ const homeworkGroupItem: ActivityFeedItemVM = {
         },
         tabKey: 'classes',
         audience: {
-      scope: { kind: 'learning_space', learningSpaceId: LEARNING_SPACE_IDS.science },
-      visibility: 'public',
-    },
+          scope: { kind: 'learning_space', learningSpaceId: LEARNING_SPACE_IDS.science },
+          visibility: 'public',
+        },
         verb: 'message.posted',
         refs: {
           actor: ACTOR_PRIYA,
           object: { kind: 'message', id: ACTIVITY_IDS.sub3 },
-      target: { kind: 'learning_space', id: LEARNING_SPACE_IDS.science },
-    },
+          target: { kind: 'learning_space', id: LEARNING_SPACE_IDS.science },
+        },
         content: {
           headline: {
             primary: 'Quick check-in posted',

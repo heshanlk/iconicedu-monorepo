@@ -133,7 +133,7 @@ export const CHILD_MILO: ChildProfileVM = {
     updatedAt: '2026-01-15T00:00:00.000Z',
   },
   ui: {
-    color: 'bg-emerald-500 text-white',
+    color: 'bg-yellow-500 text-white',
   },
   gradeLevel: { id: 5, label: 'Grade 5' },
   birthYear: 2014,
@@ -189,7 +189,7 @@ export const CHILD_MAYA: ChildProfileVM = {
     updatedAt: '2026-01-15T00:00:00.000Z',
   },
   ui: {
-    color: 'bg-teal-500 text-white',
+    color: 'bg-red-500 text-white',
   },
   gradeLevel: { id: 6, label: 'Grade 6' },
   birthYear: 2013,
@@ -245,7 +245,7 @@ export const GUARDIAN_MORGAN: GuardianProfileVM = {
     updatedAt: '2026-01-20T00:00:00.000Z',
   },
   ui: {
-    color: 'bg-emerald-600 text-white',
+    color: 'bg-yellow-500 text-white',
   },
   joinedDate: '2020-02-14T00:00:00.000Z',
   sessionNotesVisibility: 'shared',
@@ -298,12 +298,13 @@ export const EDUCATOR_ELENA: EducatorProfileVM = {
   },
   headline: 'Middle School ELA Coach',
   subjects: ['ELA', 'Writing'],
-  gradesSupported: [{ id: 5, label: 'Grade 5' }, { id: 6, label: 'Grade 6' }],
+  gradesSupported: [
+    { id: 5, label: 'Grade 5' },
+    { id: 6, label: 'Grade 6' },
+  ],
   education: 'M.Ed., Literacy Education',
   experienceYears: 8,
-  certifications: [
-    { name: 'Reading Specialist', issuer: 'NYS', year: 2020 },
-  ],
+  certifications: [{ name: 'Reading Specialist', issuer: 'NYS', year: 2020 }],
   joinedDate: '2018-06-01T00:00:00.000Z',
   ageGroupsComfortableWith: ['upper-elementary', 'middle-school'],
   identityVerificationStatus: 'verified',
@@ -471,7 +472,10 @@ export const EDUCATOR_LEO: EducatorProfileVM = {
   },
   headline: 'Chess Strategy Coach',
   subjects: ['Chess'],
-  gradesSupported: [{ id: 4, label: 'Grade 4' }, { id: 6, label: 'Grade 6' }],
+  gradesSupported: [
+    { id: 4, label: 'Grade 4' },
+    { id: 6, label: 'Grade 6' },
+  ],
   education: 'B.A. Education',
   experienceYears: 9,
   certifications: [{ name: 'USCF Coach', issuer: 'US Chess', year: 2018 }],
@@ -528,7 +532,10 @@ export const EDUCATOR_SOFIA: EducatorProfileVM = {
   },
   headline: 'Learning Strategist',
   subjects: ['Study Skills'],
-  gradesSupported: [{ id: 5, label: 'Grade 5' }, { id: 6, label: 'Grade 6' }],
+  gradesSupported: [
+    { id: 5, label: 'Grade 5' },
+    { id: 6, label: 'Grade 6' },
+  ],
   education: 'M.A. Educational Psychology',
   experienceYears: 4,
   certifications: [{ name: 'Learning Coach', issuer: 'IEP', year: 2022 }],

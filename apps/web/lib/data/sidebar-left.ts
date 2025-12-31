@@ -17,12 +17,7 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftDataVM = {
         icon: 'home',
       },
       {
-        title: 'Learning Spaces',
-        url: '/dashboard/ls',
-        icon: 'languages',
-      },
-      {
-        title: 'Class Schedule',
+        title: 'Calendar',
         url: '/dashboard/class-schedule',
         icon: 'class-schedule',
       },
