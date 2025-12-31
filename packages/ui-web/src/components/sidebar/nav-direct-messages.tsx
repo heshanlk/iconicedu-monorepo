@@ -54,12 +54,29 @@ export function NavDirectMessages({
                     name={name}
                     avatar={otherParticipant?.avatar}
                     presence={otherParticipant?.presence}
-                    sizeClassName="size-6"
+                    sizeClassName="size-7"
                     statusClassName="bottom-0 right-0 h-2 w-2 border border-background"
                     fallbackClassName="text-xs font-medium"
                     initialsLength={1}
                   />
-                  <span>{name}</span>
+                  <div className="min-w-0 flex-1">
+                    <div className="truncate text-sm font-medium">{name}</div>
+                    {(otherParticipant?.presence?.state?.emoji ||
+                      otherParticipant?.presence?.state?.text) && (
+                      <div className="truncate text-xs text-muted-foreground">
+                        <span className="inline-flex items-center gap-1.5">
+                          {otherParticipant?.presence?.state?.emoji ? (
+                            <span>{otherParticipant.presence.state.emoji}</span>
+                          ) : null}
+                          {otherParticipant?.presence?.state?.text ? (
+                            <span className="truncate">
+                              {otherParticipant.presence.state.text}
+                            </span>
+                          ) : null}
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 </a>
               </SidebarMenuButton>
               <DropdownMenu>

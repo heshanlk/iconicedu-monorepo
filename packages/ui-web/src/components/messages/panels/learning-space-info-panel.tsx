@@ -345,15 +345,23 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
                   avatar={member.avatar}
                   sizeClassName="h-9 w-9"
                   initialsLength={1}
-                  showStatus={false}
+                  presence={member.presence}
+                  showStatus
                 />
                 <div className="min-w-0 flex-1">
                   <div className="truncate text-sm font-medium text-foreground">
                     {member.displayName}
                   </div>
-                  {member.status ? (
+                  {(member.presence?.state?.emoji || member.presence?.state?.text) ? (
                     <div className="truncate text-xs text-muted-foreground">
-                      {member.status}
+                      <span className="inline-flex items-center gap-1.5">
+                        {member.presence?.state?.emoji ? (
+                          <span>{member.presence.state.emoji}</span>
+                        ) : null}
+                        {member.presence?.state?.text ? (
+                          <span className="truncate">{member.presence.state.text}</span>
+                        ) : null}
+                      </span>
                     </div>
                   ) : null}
                 </div>

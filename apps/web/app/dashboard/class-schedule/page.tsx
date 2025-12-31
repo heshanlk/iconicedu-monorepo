@@ -38,7 +38,7 @@ export default function ClassSchedulePage() {
 
   return (
     <div className="flex flex-col h-[calc(100vh-3.5rem)]">
-      <DashboardHeader title="Class Schedule" />
+      <DashboardHeader title="Calendar" />
       <ClassScheduleContainer
         currentDate={currentDate}
         view={view}
