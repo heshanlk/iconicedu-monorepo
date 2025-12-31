@@ -45,22 +45,17 @@ export type AudienceRuleVM =
 export type ActivityImportanceVM = 'normal' | 'important' | 'urgent';
 
 export type ActivityVerbVM =
-  // class / scheduling
   | 'class.created'
   | 'class.updated'
   | 'session.scheduled'
   | 'session.rescheduled'
   | 'session.canceled'
   | 'session.completed'
-
-  // communication
   | 'message.posted'
   | 'message.edited'
   | 'message.deleted'
   | 'reaction.added'
   | 'reaction.removed'
-
-  // learning artifacts
   | 'homework.assigned'
   | 'homework.submitted'
   | 'homework.reviewed'
@@ -68,8 +63,6 @@ export type ActivityVerbVM =
   | 'notes.posted'
   | 'file.uploaded'
   | 'file.deleted'
-
-  // membership / access
   | 'member.invited'
   | 'member.joined'
   | 'member.removed'

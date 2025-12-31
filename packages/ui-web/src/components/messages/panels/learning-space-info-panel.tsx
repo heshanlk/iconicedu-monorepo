@@ -222,13 +222,15 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-48">
               {overflowLinks.map((link) => {
-                const Icon =
-                  (link.iconKey && LEARNING_SPACE_LINK_ICONS[link.iconKey]) ?? Link2;
+                const linkIconKey = link.iconKey ?? undefined;
+                const LinkIcon = linkIconKey
+                  ? LEARNING_SPACE_LINK_ICONS[linkIconKey] ?? Link2
+                  : Link2;
                 if (link.url && link.status !== 'inactive') {
                   return (
                     <DropdownMenuItem key={link.label} asChild>
                       <a href={link.url} className="flex items-center gap-2">
-                        <Icon className="h-4 w-4 text-muted-foreground" />
+                        <LinkIcon className="h-4 w-4 text-muted-foreground" />
                         <span>{link.label}</span>
                       </a>
                     </DropdownMenuItem>
@@ -236,7 +238,7 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
                 }
                 return (
                   <DropdownMenuItem key={link.label} disabled>
-                    <Icon className="h-4 w-4 text-muted-foreground" />
+                    <LinkIcon className="h-4 w-4 text-muted-foreground" />
                     <span>{link.label}</span>
                   </DropdownMenuItem>
                 );

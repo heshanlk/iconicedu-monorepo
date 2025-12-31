@@ -34,8 +34,6 @@ export interface PresenceVM {
   liveStatus: LiveStatusVM;
   displayStatus?: PresenceDisplayStatusVM;
   lastSeenAt?: ISODateTime | null;
-
-  // Helpful FE flags for hydration
   presenceLoaded?: boolean;
 }
 
@@ -56,11 +54,15 @@ export interface BaseUserProfileVM {
   languagesSpoken?: string[] | null;
 
   notificationDefaults?: Record<string, unknown> | null;
-
-  // Presence is a separately hydrated chunk in many UIs
   presence?: PresenceVM | null;
 
   status?: AccountStatus;
+
+  countryCode?: string | null;
+  countryName?: string | null;
+  region?: string | null;
+  city?: string | null;
+  postalCode?: string | null;
 
   createdAt: ISODateTime;
   updatedAt: ISODateTime;
@@ -68,11 +70,7 @@ export interface BaseUserProfileVM {
 
 export interface EducatorProfileVM extends BaseUserProfileVM {
   headline?: string | null;
-
-  // Tags/labels for UI (can be stored as text[] or join tables)
   subjects?: string[] | null;
-
-  // UI options for display
   gradesSupported?: GradeLevelOption[] | null;
 
   education?: string | null;
@@ -103,7 +101,6 @@ export interface EducatorProfileVM extends BaseUserProfileVM {
 }
 
 export interface ChildProfileVM extends BaseUserProfileVM {
-  // UI option for display
   gradeLevel?: GradeLevelOption | null;
   birthYear?: number | null;
 
@@ -123,7 +120,6 @@ export interface ChildProfileVM extends BaseUserProfileVM {
 }
 
 export interface GuardianProfileVM extends BaseUserProfileVM {
-  // Use a connection for scalable UI + consistent patterns
   children?: ConnectionVM<ChildProfileVM> | null;
 
   joinedDate: ISODateTime;
@@ -144,8 +140,6 @@ export interface StaffProfileVM extends BaseUserProfileVM {
   notesInternal?: string | null;
   workingHoursRules?: string[] | null;
 }
-
-// Union for FE usage
 export type UserProfileVM =
   | EducatorProfileVM
   | GuardianProfileVM

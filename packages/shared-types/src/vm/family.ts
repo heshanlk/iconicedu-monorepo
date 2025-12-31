@@ -22,7 +22,5 @@ export interface FamilyLinkVM {
   childAccountId: UUID;
 
   relation: FamilyRelation;
-
-  // Optional fine-grained scoping used by UI (tabs/features)
   permissionsScope?: string[] | null;
 }

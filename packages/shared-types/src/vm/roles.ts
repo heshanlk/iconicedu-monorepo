@@ -16,8 +16,6 @@ export interface UserRoleVM {
   assignedBy?: UUID | null;
   assignedAt: ISODateTime;
 }
-
-// Replace GuardianAccount/ChildAccount extends UserAccountVM with role context union
 export type AccountRoleContextVM =
   | {
       roleKey: 'guardian';

@@ -61,17 +61,11 @@ export interface ChannelFileItemVM {
   createdAt: ISODateTime;
 }
 
-/**
- * ✅ CHANGE: optional context that tells the UI what this channel "belongs to"
- * without embedding or depending on other domain models.
- */
+
 export interface ChannelContextVM {
   primaryEntity?: EntityRefVM | null;
 
-  /**
-   * UI hints. Optional and safe to omit.
-   * Useful for quickly rendering Info tab sections, header icons, etc.
-   */
+  
   capabilities?: Array<'has_schedule' | 'has_homework' | 'has_summaries'>;
 }
 
@@ -96,16 +90,10 @@ export interface ChannelVM {
 
   headerItems: ChannelHeaderItemVM[];
 
-  /**
-   * ✅ CHANGE: deterministic key used ONLY for dm/group_dm to prevent duplicates
-   * - dm: "dm:<minUserId>-<maxUserId>"
-   * - group_dm: "gdm:<hash(sortedUserIds)>"
-   */
+  
   dmKey?: string | null;
 
-  /**
-   * ✅ CHANGE: channel context for linking to LearningSpace (or others) by ID only
-   */
+  
   context?: ChannelContextVM | null;
 
   participants: UserProfileVM[];
@@ -127,9 +115,7 @@ export interface ChannelMiniVM {
   status: ChannelStatus;
   visibility: ChannelVisibility;
 
-  /**
-   * ✅ CHANGE: include these in Mini too so lists + routing are easy
-   */
+  
   dmKey?: string | null;
   context?: ChannelContextVM | null;
 

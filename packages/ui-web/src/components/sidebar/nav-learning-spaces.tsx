@@ -72,7 +72,7 @@ export function NavLearningSpaces({
               )}
               initialsLength={1}
             />
-            <span className="flex-1">{title}</span>
+            <span className="flex-1">{title.split(' ')[0]}</span>
             {isOpen ? (
               <ChevronUp className="size-4" />
             ) : (
