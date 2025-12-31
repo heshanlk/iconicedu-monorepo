@@ -7,7 +7,6 @@ import { useMessages } from '../../hooks/use-messages';
 import { useMessagesState } from './context/messages-state-provider';
 import type {
   ChannelVM,
-  LearningSpaceVM,
   EducatorProfileVM,
   GuardianProfileVM,
   MessageVM,
@@ -18,7 +17,6 @@ import type {
 
 export interface MessagesContainerProps {
   channel: ChannelVM;
-  learningSpace?: LearningSpaceVM | null;
 }
 
 const isGuardianProfile = (profile: UserProfileVM): profile is GuardianProfileVM =>

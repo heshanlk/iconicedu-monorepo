@@ -30,7 +30,6 @@ import { AvatarWithStatus } from '../../shared/avatar-with-status';
 import { MediaFilesPanel } from '../shared/media-files-panel';
 import { useMessagesState } from '../context/messages-state-provider';
 import { formatEventTime } from '../../../lib/class-schedule-utils';
-import { ChannelInfoPanel } from './channel-info-panel';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -41,6 +40,7 @@ import {
 
 interface LearningSpaceInfoPanelProps {
   intent: MessagesRightPanelIntent;
+  learningSpace?: LearningSpaceVM | null;
 }
 
 const LEARNING_SPACE_ICON_MAP = {
@@ -109,8 +109,7 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
 
   const iconKey = learningSpace.iconKey ?? channel.topicIconKey ?? 'sparkles';
   const Icon =
-    LEARNING_SPACE_ICON_MAP[iconKey as keyof typeof LEARNING_SPACE_ICON_MAP] ??
-    Sparkles;
+    LEARNING_SPACE_ICON_MAP[iconKey as keyof typeof LEARNING_SPACE_ICON_MAP] ?? Sparkles;
   const schedule = learningSpace.scheduleSeries;
   const quickLinks = learningSpace.links ?? [];
 
@@ -315,11 +314,12 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
   );
 });
 
-export function LearningSpaceInfoPanel({ intent }: LearningSpaceInfoPanelProps) {
-  const { learningSpace } = useMessagesState();
-
+export function LearningSpaceInfoPanel({
+  intent,
+  learningSpace,
+}: LearningSpaceInfoPanelProps) {
   if (!learningSpace) {
-    return <ChannelInfoPanel intent={intent} />;
+    return null;
   }
 
   return (

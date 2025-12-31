@@ -24,6 +24,7 @@ export * from './components/site-logo';
 export * from './components/site-logo-wt-name';
 export * from './components/messages/messages-container';
 export * from './components/messages/messages-shell';
+export * from './components/messages/panels/learning-space-info-panel';
 export * from './components/error-boundary';
 export * from './components/inbox/inbox-container';
 export * from './components/class-schedule/class-schedule-header';

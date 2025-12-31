@@ -11,7 +11,7 @@ import {
   useMessagesState,
 } from './context/messages-state-provider';
 import { MessagesRightSidebarRegion } from './messages-right-sidebar-region';
-import { LearningSpaceInfoPanel } from './panels/learning-space-info-panel';
+import { ChannelInfoPanel } from './panels/channel-info-panel';
 import { ProfilePanel } from './panels/profile-panel';
 import { SavedPanel } from './panels/saved-panel';
 import { ThreadPanel } from './panels/thread-panel';
@@ -26,29 +26,35 @@ interface MessagesRightPanelProps {
   intent: MessagesRightPanelIntent;
 }
 
-export const MessagesShell = memo(function MessagesShell(props: MessagesContainerProps) {
+type MessagesShellProps = MessagesContainerProps & {
+  panelRegistry?: Partial<MessagesRightPanelRegistry<ComponentType<MessagesRightPanelProps>>>;
+};
+
+export const MessagesShell = memo(function MessagesShell(props: MessagesShellProps) {
   const { channel } = props;
 
   const rightPanelRegistry = useMemo<
     MessagesRightPanelRegistry<ComponentType<MessagesRightPanelProps>>
-  >(
-    () => ({
-      channel_info: LearningSpaceInfoPanel,
+  >(() => {
+    const defaultRegistry: MessagesRightPanelRegistry<
+      ComponentType<MessagesRightPanelProps>
+    > = {
+      channel_info: ChannelInfoPanel,
       saved: SavedPanel,
       profile: ProfilePanel,
       thread: ThreadPanel,
-    }),
-    [],
-  );
+    };
+    return { ...defaultRegistry, ...(props.panelRegistry ?? {}) };
+  }, [props.panelRegistry]);
 
   return (
-    <MessagesStateProvider channel={channel} learningSpace={props.learningSpace}>
+    <MessagesStateProvider channel={channel}>
       <MessagesShellLayout {...props} registry={rightPanelRegistry} />
     </MessagesStateProvider>
   );
 });
 
-interface MessagesShellLayoutProps extends MessagesContainerProps {
+interface MessagesShellLayoutProps extends MessagesShellProps {
   registry: MessagesRightPanelRegistry<ComponentType<MessagesRightPanelProps>>;
 }
 
