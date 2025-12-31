@@ -102,11 +102,25 @@ export function NavLearningSpaces({
                 const isActive = activeChannelId === channel.id;
 
                 return (
-                  <SidebarMenuItem key={space.id}>
-                    <SidebarMenuButton asChild tooltip={space.title} isActive={isActive}>
+                  <SidebarMenuItem key={space.id} className="py-0.5">
+                    <SidebarMenuButton
+                      asChild
+                      tooltip={space.title}
+                      isActive={isActive}
+                      className="px-2.5"
+                    >
                       <a href={`/dashboard/ls/${channel.id}`}>
-                        <Icon />
-                        <span>{space.title}</span>
+                        <span className="flex size-8 items-center justify-center rounded-full border border-border bg-muted text-muted-foreground overflow-hidden">
+                          <Icon className="size-4.5" />
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <div className="truncate text-sm font-medium">
+                            {space.title}
+                          </div>
+                          <div className="truncate text-xs text-muted-foreground">
+                            {space.subject ?? 'General'}
+                          </div>
+                        </div>
                       </a>
                     </SidebarMenuButton>
                     <DropdownMenu>

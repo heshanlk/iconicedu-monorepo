@@ -115,7 +115,7 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
   return (
     <div className="flex-1 min-w-0">
       <div className="flex flex-col items-center gap-3 p-6 min-w-0 text-center">
-        <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-muted text-muted-foreground">
+        <div className="flex h-20 w-20 items-center justify-center rounded-full bg-muted text-muted-foreground">
           <Icon className="h-8 w-8" />
         </div>
         <div className="text-center min-w-0">
@@ -352,7 +352,7 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
                   <div className="truncate text-sm font-medium text-foreground">
                     {member.displayName}
                   </div>
-                  {(member.presence?.state?.emoji || member.presence?.state?.text) ? (
+                  {member.presence?.state?.emoji || member.presence?.state?.text ? (
                     <div className="truncate text-xs text-muted-foreground">
                       <span className="inline-flex items-center gap-1.5">
                         {member.presence?.state?.emoji ? (
