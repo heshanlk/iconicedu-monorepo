@@ -39,7 +39,12 @@ export interface ClassScheduleParticipantVM {
 
 
 export type EventSourceVM =
-  | { kind: 'class_session'; learningSpaceId: UUID; sessionId?: UUID }
+  | {
+      kind: 'class_session';
+      learningSpaceId: UUID;
+      channelId?: UUID;
+      sessionId?: UUID;
+    }
   | { kind: 'availability_block'; ownerUserId: UUID }
   | {
       kind: 'manual';
@@ -116,6 +121,7 @@ export interface ClassScheduleVM {
   title: string;
   description?: string | null;
   location?: string | null;
+  meetingLink?: string | null;
 
   
   startAt: ISODateTime;
@@ -146,6 +152,7 @@ export type ClassSchedulePatchVM = Partial<
     | 'title'
     | 'description'
     | 'location'
+    | 'meetingLink'
     | 'startAt'
     | 'endAt'
     | 'status'
@@ -184,6 +191,7 @@ export interface ClassScheduleInstanceVM {
   title: string;
   description?: string | null;
   location?: string | null;
+  meetingLink?: string | null;
 
   
   visibility: ClassScheduleVisibilityVM;

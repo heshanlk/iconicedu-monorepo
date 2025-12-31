@@ -24,6 +24,7 @@ export const MATH_SCHEDULE: ClassScheduleVM = {
   title: 'Math Mastery • Weekly',
   description: 'Number fluency and problem-solving practice.',
   location: 'Zoom',
+  meetingLink: 'https://zoom.us/j/98643123456',
   startAt: '2026-03-04T22:30:00.000Z',
   endAt: '2026-03-04T23:15:00.000Z',
   timezone: 'America/New_York',
@@ -56,7 +57,7 @@ export const MATH_SCHEDULE: ClassScheduleVM = {
   source: {
     kind: 'class_session',
     learningSpaceId: LEARNING_SPACE_IDS.math,
-    sessionId: CHANNEL_IDS.math,
+    channelId: CHANNEL_IDS.math,
   },
   recurrence: {
     seriesId: SCHEDULE_SERIES_IDS.math,
@@ -97,6 +98,7 @@ export const SCIENCE_SCHEDULE: ClassScheduleVM = {
   title: 'Science Lab • Weekly',
   description: 'Hands-on experiments and lab reflection.',
   location: 'Zoom',
+  meetingLink: 'https://zoom.us/j/98100555112',
   startAt: '2026-03-03T22:00:00.000Z',
   endAt: '2026-03-03T22:45:00.000Z',
   timezone: 'America/New_York',
@@ -129,7 +131,7 @@ export const SCIENCE_SCHEDULE: ClassScheduleVM = {
   source: {
     kind: 'class_session',
     learningSpaceId: LEARNING_SPACE_IDS.science,
-    sessionId: CHANNEL_IDS.science,
+    channelId: CHANNEL_IDS.science,
   },
   recurrence: {
     seriesId: SCHEDULE_SERIES_IDS.science,
@@ -163,6 +165,7 @@ export const ELA_SCHEDULE: ClassScheduleVM = {
   title: 'ELA Studio • Weekly',
   description: 'Reading circles and writing workshops.',
   location: 'Zoom',
+  meetingLink: 'https://zoom.us/j/98643123456',
   startAt: '2026-03-06T21:00:00.000Z',
   endAt: '2026-03-06T21:50:00.000Z',
   timezone: 'America/New_York',
@@ -195,7 +198,7 @@ export const ELA_SCHEDULE: ClassScheduleVM = {
   source: {
     kind: 'class_session',
     learningSpaceId: LEARNING_SPACE_IDS.ela,
-    sessionId: CHANNEL_IDS.ela,
+    channelId: CHANNEL_IDS.ela,
   },
   recurrence: {
     seriesId: SCHEDULE_SERIES_IDS.ela,
@@ -226,6 +229,7 @@ export const CHESS_SCHEDULE: ClassScheduleVM = {
   title: 'Chess Studio • Weekly',
   description: 'Tactical puzzles and game review.',
   location: 'Zoom',
+  meetingLink: 'https://zoom.us/j/98007771234',
   startAt: '2026-03-07T20:00:00.000Z',
   endAt: '2026-03-07T20:45:00.000Z',
   timezone: 'America/New_York',
@@ -258,7 +262,7 @@ export const CHESS_SCHEDULE: ClassScheduleVM = {
   source: {
     kind: 'class_session',
     learningSpaceId: LEARNING_SPACE_IDS.chess,
-    sessionId: CHANNEL_IDS.chess,
+    channelId: CHANNEL_IDS.chess,
   },
   recurrence: {
     seriesId: SCHEDULE_SERIES_IDS.chess,

@@ -28,7 +28,7 @@ export function EventDialog({ event, open, onOpenChange, children }: EventDialog
         <div className="px-4 space-y-3">
           <EventDetailsInfo event={event} />
           <Separator />
-          <EventActions onClose={() => onOpenChange(false)} />
+          <EventActions event={event} onClose={() => onOpenChange(false)} />
         </div>
       </div>
     </div>

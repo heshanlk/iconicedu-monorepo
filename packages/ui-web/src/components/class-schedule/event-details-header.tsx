@@ -15,7 +15,7 @@ export function EventDetailsHeader({ event }: EventDetailsHeaderProps) {
   const startDate = new Date(event.startAt);
 
   return (
-    <div className="bg-background border rounded-xl shadow-sm p-4 space-y-3">
+    <div className="bg-background border rounded-xl p-4 space-y-3">
       <p className="text-sm font-medium">
         {startDate.toLocaleDateString('en-US', {
           weekday: 'long',
