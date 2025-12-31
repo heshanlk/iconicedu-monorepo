@@ -14,9 +14,6 @@ import {
   SquarePi,
   ChefHat,
   Earth,
-  Calendar,
-  Clock,
-  MapPin,
   Video,
   Bookmark,
   Flag,
@@ -235,41 +232,86 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
       <Separator />
 
       <div className="space-y-4 p-4 min-w-0">
-        <h3 className="text-sm font-semibold text-foreground">Next Session</h3>
+        <h3 className="text-sm font-semibold text-foreground text-center">Next Up</h3>
         {schedule ? (
-          <div className="space-y-2 text-sm text-muted-foreground min-w-0">
-            <div className="flex items-start gap-2">
-              <Calendar className="mt-0.5 h-4 w-4 text-muted-foreground" />
-              <div className="min-w-0">
-                <div className="text-sm text-foreground break-words">
-                  {schedule.title}
-                </div>
-                <div className="text-xs text-muted-foreground">
-                  {new Date(schedule.startAt).toLocaleDateString('en-US', {
-                    weekday: 'long',
-                    month: 'short',
-                    day: 'numeric',
-                  })}
+          (() => {
+            const scheduleDate = new Date(schedule.startAt);
+            const getDateLabel = (date: Date) =>
+              date.toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+              });
+            const getWeekday = (date: Date) =>
+              date.toLocaleDateString('en-US', { weekday: 'short' });
+            const getMonth = (date: Date) =>
+              date.toLocaleDateString('en-US', { month: 'short' });
+            const dateParam = scheduleDate.toISOString().slice(0, 10);
+            const calendarUrl = `/dashboard/class-schedule?view=day&date=${dateParam}`;
+
+            const shiftDate = (date: Date, offset: number) => {
+              const next = new Date(date);
+              const frequency = schedule.recurrence?.rule.frequency ?? 'daily';
+              if (frequency === 'weekly') {
+                next.setDate(next.getDate() + offset * 7);
+              } else if (frequency === 'monthly') {
+                next.setMonth(next.getMonth() + offset);
+              } else if (frequency === 'yearly') {
+                next.setFullYear(next.getFullYear() + offset);
+              } else {
+                next.setDate(next.getDate() + offset);
+              }
+              return next;
+            };
+
+            const dates = [
+              shiftDate(scheduleDate, -1),
+              scheduleDate,
+              shiftDate(scheduleDate, 1),
+            ];
+
+            return (
+              <div className="space-y-4">
+                <div className="flex items-center justify-center">
+                  <a
+                    href={calendarUrl}
+                    className="relative flex h-[86px] w-full max-w-[300px] items-center justify-center"
+                    aria-label={`Open schedule for ${getDateLabel(scheduleDate)}`}
+                  >
+                    <div className="absolute left-2 top-1/2 z-0 w-[92px] -translate-y-1/2 rounded-2xl border bg-muted/20 px-2.5 py-1.5 text-center text-muted-foreground shadow-sm">
+                      <div className="text-[10px] font-semibold uppercase">Previous</div>
+                      <div className="text-base font-semibold">{dates[0].getDate()}</div>
+                      <div className="text-[10px] uppercase">{getMonth(dates[0])}</div>
+                    </div>
+                    <div className="absolute right-2 top-1/2 z-0 w-[92px] -translate-y-1/2 rounded-2xl border bg-muted/20 px-2.5 py-1.5 text-center text-muted-foreground shadow-sm">
+                      <div className="text-[10px] font-semibold uppercase">Next</div>
+                      <div className="text-base font-semibold">{dates[2].getDate()}</div>
+                      <div className="text-[10px] uppercase">{getMonth(dates[2])}</div>
+                    </div>
+                    <div className="relative z-10 w-[150px] rounded-2xl border bg-background px-3 py-2 text-center shadow-md">
+                      <div className="text-[10px] font-semibold uppercase text-muted-foreground">
+                        {getWeekday(dates[1])}
+                      </div>
+                      <div className="text-lg font-semibold text-foreground">
+                        {dates[1].getDate()}
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        {getMonth(dates[1])}
+                      </div>
+                      <div className="text-[11px] text-muted-foreground">
+                        {formatEventTime(schedule.startAt)} -{' '}
+                        {formatEventTime(schedule.endAt)}
+                      </div>
+                    </div>
+                  </a>
                 </div>
               </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm text-foreground">
-                {formatEventTime(schedule.startAt)} - {formatEventTime(schedule.endAt)}
-              </span>
-            </div>
-            {schedule.location ? (
-              <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm text-foreground break-words">
-                  {schedule.location}
-                </span>
-              </div>
-            ) : null}
-          </div>
+            );
+          })()
         ) : (
-          <div className="text-sm text-muted-foreground">No upcoming session.</div>
+          <div className="text-sm text-muted-foreground text-center">
+            No upcoming session.
+          </div>
         )}
       </div>
 
