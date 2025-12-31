@@ -110,7 +110,7 @@ export function MiniClassSchedule({
             return (
               <Button
                 key={index}
-                variant={isToday ? 'default' : isSelected ? 'secondary' : 'ghost'}
+                variant="ghost"
                 size="icon"
                 onClick={() => onDateSelect(day)}
                 disabled={isPast}
@@ -118,7 +118,8 @@ export function MiniClassSchedule({
                   'relative h-8 w-8 p-0 font-normal',
                   !isCurrentMonth && 'text-muted-foreground/50 opacity-50',
                   isPast && 'text-muted-foreground/40 opacity-50 pointer-events-none',
-                  isToday && 'font-semibold',
+                  isToday && 'font-semibold border border-primary/40',
+                  isSelected && 'bg-primary/15 text-primary',
                 )}
               >
                 {day.getDate()}

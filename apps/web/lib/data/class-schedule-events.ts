@@ -14,8 +14,8 @@ export const MATH_SCHEDULE: ClassScheduleVM = {
   id: 'c1111111-1111-4111-8111-111111111111',
   orgId: MOCK_ORG_ID,
   title: 'Math Foundations',
-  startAt: '2025-01-13T21:00:00.000Z',
-  endAt: '2025-01-13T22:00:00.000Z',
+  startAt: '2026-01-12T21:00:00.000Z',
+  endAt: '2026-01-12T22:00:00.000Z',
   timezone: 'America/New_York',
   status: 'scheduled',
   description: 'Core number sense and reasoning.',
@@ -59,14 +59,14 @@ export const MATH_SCHEDULE: ClassScheduleVM = {
       timezone: 'America/New_York',
     },
     exceptions: [
-      { occurrenceKey: '2025-02-17T21:00:00.000Z', reason: 'Winter break' },
+      { occurrenceKey: '2026-02-16T21:00:00.000Z', reason: 'Winter break' },
     ],
     overrides: [
       {
-        occurrenceKey: '2025-02-03T21:00:00.000Z',
+        occurrenceKey: '2026-02-02T21:00:00.000Z',
         patch: {
-          startAt: '2025-02-03T22:00:00.000Z',
-          endAt: '2025-02-03T23:00:00.000Z',
+          startAt: '2026-02-02T22:00:00.000Z',
+          endAt: '2026-02-02T23:00:00.000Z',
           status: 'rescheduled',
           location: 'Zoom (rescheduled)',
         },
@@ -83,8 +83,8 @@ export const SCIENCE_SCHEDULE: ClassScheduleVM = {
   id: 'c2222222-2222-4222-8222-222222222222',
   orgId: MOCK_ORG_ID,
   title: 'Science Lab',
-  startAt: '2025-01-15T22:00:00.000Z',
-  endAt: '2025-01-15T23:00:00.000Z',
+  startAt: '2026-01-14T22:00:00.000Z',
+  endAt: '2026-01-14T23:00:00.000Z',
   timezone: 'America/New_York',
   status: 'scheduled',
   description: 'Hands-on experiments and lab notes.',
@@ -129,14 +129,14 @@ export const SCIENCE_SCHEDULE: ClassScheduleVM = {
     },
     overrides: [
       {
-        occurrenceKey: '2025-02-12T22:00:00.000Z',
+        occurrenceKey: '2026-02-11T22:00:00.000Z',
         patch: {
           status: 'cancelled',
           description: 'Cancelled due to teacher conference.',
         },
       },
       {
-        occurrenceKey: '2025-02-26T22:00:00.000Z',
+        occurrenceKey: '2026-02-25T22:00:00.000Z',
         patch: {
           location: 'Room 14 (lab kit pickup)',
           status: 'scheduled',
@@ -154,8 +154,8 @@ export const ELA_SCHEDULE: ClassScheduleVM = {
   id: 'c3333333-3333-4333-8333-333333333333',
   orgId: MOCK_ORG_ID,
   title: 'ELA Writing Studio',
-  startAt: '2025-01-17T22:30:00.000Z',
-  endAt: '2025-01-17T23:30:00.000Z',
+  startAt: '2026-01-16T22:30:00.000Z',
+  endAt: '2026-01-16T23:30:00.000Z',
   timezone: 'America/New_York',
   status: 'scheduled',
   description: 'Writing practice and reading circles.',
@@ -199,14 +199,14 @@ export const ELA_SCHEDULE: ClassScheduleVM = {
       timezone: 'America/New_York',
     },
     exceptions: [
-      { occurrenceKey: '2025-02-14T22:30:00.000Z', reason: 'Holiday' },
+      { occurrenceKey: '2026-02-13T22:30:00.000Z', reason: 'Holiday' },
     ],
     overrides: [
       {
-        occurrenceKey: '2025-02-07T22:30:00.000Z',
+        occurrenceKey: '2026-02-06T22:30:00.000Z',
         patch: {
-          startAt: '2025-02-07T21:30:00.000Z',
-          endAt: '2025-02-07T22:30:00.000Z',
+          startAt: '2026-02-06T21:30:00.000Z',
+          endAt: '2026-02-06T22:30:00.000Z',
           status: 'rescheduled',
         },
       },
@@ -222,8 +222,8 @@ export const CHESS_SCHEDULE: ClassScheduleVM = {
   id: 'c4444444-4444-4444-8444-444444444444',
   orgId: MOCK_ORG_ID,
   title: 'Chess Tactics',
-  startAt: '2025-01-18T19:00:00.000Z',
-  endAt: '2025-01-18T20:00:00.000Z',
+  startAt: '2026-01-17T19:00:00.000Z',
+  endAt: '2026-01-17T20:00:00.000Z',
   timezone: 'America/New_York',
   status: 'scheduled',
   description: 'Tactics training and game review.',
@@ -267,14 +267,14 @@ export const CHESS_SCHEDULE: ClassScheduleVM = {
       timezone: 'America/New_York',
     },
     exceptions: [
-      { occurrenceKey: '2025-02-15T19:00:00.000Z', reason: 'Tournament' },
+      { occurrenceKey: '2026-02-14T19:00:00.000Z', reason: 'Tournament' },
     ],
     overrides: [
       {
-        occurrenceKey: '2025-02-01T19:00:00.000Z',
+        occurrenceKey: '2026-01-31T19:00:00.000Z',
         patch: {
-          startAt: '2025-02-01T20:00:00.000Z',
-          endAt: '2025-02-01T21:00:00.000Z',
+          startAt: '2026-01-31T20:00:00.000Z',
+          endAt: '2026-01-31T21:00:00.000Z',
           status: 'rescheduled',
         },
       },
