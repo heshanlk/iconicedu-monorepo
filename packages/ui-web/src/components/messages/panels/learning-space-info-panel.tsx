@@ -28,6 +28,7 @@ import { AvatarWithStatus } from '../../shared/avatar-with-status';
 import { MediaFilesPanel } from '../shared/media-files-panel';
 import { useMessagesState } from '../context/messages-state-provider';
 import { formatEventTime } from '../../../lib/class-schedule-utils';
+import { useIsMobile } from '../../../hooks/use-mobile';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -74,7 +75,7 @@ const ActionButton = memo(function ActionButton({
       <Button
         asChild
         variant="ghost"
-        className="group h-auto w-20 shrink-0 flex-col items-center gap-2 px-1 py-2 text-[11px] font-medium text-muted-foreground hover:bg-transparent"
+        className="group h-auto w-16 shrink-0 basis-16 flex-col items-center gap-2 px-1 py-2 text-[11px] font-medium text-muted-foreground hover:bg-transparent"
       >
         <a href={href}>{content}</a>
       </Button>
@@ -84,7 +85,7 @@ const ActionButton = memo(function ActionButton({
   return (
     <Button
       variant="ghost"
-      className="group h-auto w-20 shrink-0 flex-col items-center gap-2 px-1 py-2 text-[11px] font-medium text-muted-foreground hover:bg-transparent"
+      className="group h-auto w-16 shrink-0 basis-16 flex-col items-center gap-2 px-1 py-2 text-[11px] font-medium text-muted-foreground hover:bg-transparent"
       disabled={isInactive}
     >
       {content}
@@ -105,12 +106,17 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
 }) {
   const { channel, toggle, messageFilter, toggleMessageFilter, currentUserId } =
     useMessagesState();
+  const isMobile = useIsMobile();
 
   const iconKey = learningSpace.iconKey ?? channel.topicIconKey ?? 'sparkles';
   const Icon =
     LEARNING_SPACE_ICON_MAP[iconKey as keyof typeof LEARNING_SPACE_ICON_MAP] ?? Sparkles;
   const schedule = learningSpace.scheduleSeries;
   const quickLinks = learningSpace.links ?? [];
+  const visibleLinks = quickLinks.filter((link) => !link.hidden);
+  const maxVisibleLinks = isMobile ? 1 : 2;
+  const primaryLinks = visibleLinks.slice(0, maxVisibleLinks);
+  const overflowLinks = visibleLinks.slice(maxVisibleLinks);
 
   return (
     <div className="flex-1 min-w-0">
@@ -141,23 +147,21 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
         <h3 className="text-sm font-semibold text-foreground text-center">
           Quick Actions
         </h3>
-        <ButtonGroup className="mx-auto flex-wrap justify-center">
-          {quickLinks
-            .filter((link) => !link.hidden)
-            .map((link) => {
-              const icon = link.iconKey
-                ? (LEARNING_SPACE_LINK_ICONS[link.iconKey] ?? Link2)
-                : Link2;
-              return (
-                <ActionButton
-                  key={link.label}
-                  icon={icon}
-                  label={link.label}
-                  href={link.url}
-                  isInactive={link.status === 'inactive'}
-                />
-              );
-            })}
+        <ButtonGroup className="mx-auto flex-nowrap justify-center overflow-hidden">
+          {primaryLinks.map((link) => {
+            const icon = link.iconKey
+              ? (LEARNING_SPACE_LINK_ICONS[link.iconKey] ?? Link2)
+              : Link2;
+            return (
+              <ActionButton
+                key={link.label}
+                icon={icon}
+                label={link.label}
+                href={link.url}
+                isInactive={link.status === 'inactive'}
+              />
+            );
+          })}
           <Button
             variant="ghost"
             className="group h-auto w-16 shrink-0 flex-col items-center gap-2 px-1 py-2 text-[11px] font-medium text-muted-foreground hover:bg-transparent"
@@ -217,6 +221,27 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-48">
+              {overflowLinks.map((link) => {
+                const Icon =
+                  (link.iconKey && LEARNING_SPACE_LINK_ICONS[link.iconKey]) ?? Link2;
+                if (link.url && link.status !== 'inactive') {
+                  return (
+                    <DropdownMenuItem key={link.label} asChild>
+                      <a href={link.url} className="flex items-center gap-2">
+                        <Icon className="h-4 w-4 text-muted-foreground" />
+                        <span>{link.label}</span>
+                      </a>
+                    </DropdownMenuItem>
+                  );
+                }
+                return (
+                  <DropdownMenuItem key={link.label} disabled>
+                    <Icon className="h-4 w-4 text-muted-foreground" />
+                    <span>{link.label}</span>
+                  </DropdownMenuItem>
+                );
+              })}
+              {overflowLinks.length > 0 && <DropdownMenuSeparator />}
               <DropdownMenuItem>
                 <LogOut className="h-4 w-4 text-muted-foreground" />
                 <span>Leave</span>
