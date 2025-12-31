@@ -4,6 +4,7 @@ import {
   MOCK_EDUCATOR_1,
   MOCK_EDUCATOR_2,
   MOCK_EDUCATOR_3,
+  MOCK_EDUCATOR_4,
   MOCK_GUARDIAN,
 } from './people';
 import { LEARNING_SPACE_IDS, LEARNING_SPACE_CHANNEL_IDS } from './learning-space-ids';
@@ -146,7 +147,10 @@ export const INBOX_ACTIVITY_FEED: ActivityFeedVM = {
                 occurredAt: '2025-01-09T17:40:00.000Z',
                 createdAt: '2025-01-09T17:41:00.000Z',
                 tabKey: 'classes',
-                scope: { kind: 'learning_space', learningSpaceId: LEARNING_SPACE_IDS.chess },
+                scope: {
+                  kind: 'learning_space',
+                  learningSpaceId: LEARNING_SPACE_IDS.chess,
+                },
                 visibility: 'scope_only',
                 verb: 'homework.assigned',
                 actor: {
@@ -166,7 +170,10 @@ export const INBOX_ACTIVITY_FEED: ActivityFeedVM = {
                 occurredAt: '2025-01-09T17:55:00.000Z',
                 createdAt: '2025-01-09T17:56:00.000Z',
                 tabKey: 'classes',
-                scope: { kind: 'learning_space', learningSpaceId: LEARNING_SPACE_IDS.chess },
+                scope: {
+                  kind: 'learning_space',
+                  learningSpaceId: LEARNING_SPACE_IDS.chess,
+                },
                 visibility: 'scope_only',
                 verb: 'homework.submitted',
                 actor: {
