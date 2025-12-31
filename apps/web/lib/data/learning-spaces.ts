@@ -1,366 +1,172 @@
-import type { ChannelVM, LearningSpaceVM } from '@iconicedu/shared-types';
-import {
-  MOCK_CHILDREN,
-  MOCK_EDUCATOR_1,
-  MOCK_EDUCATOR_2,
-  MOCK_EDUCATOR_3,
-  MOCK_EDUCATOR_4,
-  MOCK_GUARDIAN,
-  MOCK_ORG_ID,
-} from './people';
-import { LEARNING_SPACE_CHANNEL_IDS, LEARNING_SPACE_IDS } from './learning-space-ids';
+import type { LearningSpaceVM } from '@iconicedu/shared-types';
+import { LEARNING_SPACE_IDS, ORG_ID } from './ids';
 import {
   CHESS_SCHEDULE,
   ELA_SCHEDULE,
   MATH_SCHEDULE,
   SCIENCE_SCHEDULE,
 } from './class-schedule-events';
+import {
+  CHESS_LEARNING_LINKS,
+  ELA_LEARNING_LINKS,
+  MATH_LEARNING_LINKS,
+  SCIENCE_LEARNING_LINKS,
+} from './learning-space-links';
+import {
+  CHESS_CHANNEL,
+  ELA_CHANNEL,
+  MATH_CHANNEL,
+  SCIENCE_CHANNEL,
+} from './learning-space-channels';
+import {
+  CHILD_AVA,
+  CHILD_MAYA,
+  CHILD_MILO,
+  EDUCATOR_ELENA,
+  EDUCATOR_KAI,
+  EDUCATOR_LEO,
+  EDUCATOR_PRIYA,
+  GUARDIAN_MORGAN,
+} from './profiles';
 
-const MATH_CHANNEL: ChannelVM = {
-  id: LEARNING_SPACE_CHANNEL_IDS.math,
-  orgId: MOCK_ORG_ID,
-  kind: 'channel',
-  topic: `Math • ${MOCK_EDUCATOR_2.profile.displayName} • Mon 4 PM`,
-  topicIconKey: 'square-pi',
-  description: 'Foundations, fluency, and confidence.',
-  visibility: 'private',
-  purpose: 'learning-space',
-  status: 'active',
-  createdBy: MOCK_EDUCATOR_2.ids.id,
-  createdAt: '2025-01-02T16:00:00.000Z',
-  archivedAt: null,
-  postingPolicy: {
-    kind: 'members-only',
-    allowThreads: true,
-    allowReactions: true,
+export const LEARNING_SPACE_MATH: LearningSpaceVM = {
+  ids: {
+    id: LEARNING_SPACE_IDS.math,
+    orgId: ORG_ID,
   },
-  headerItems: [
-    { key: 'saved', label: 'Saved' },
-    { key: 'homework', label: 'HW' },
-    { key: 'session-summary', label: 'SS' },
-    { key: 'next-session', label: 'Mon 4 PM' },
-    { key: 'info', label: 'Info', isPrimary: true },
-  ],
-  dmKey: null,
-  context: {
-    primaryEntity: { kind: 'learning_space', id: LEARNING_SPACE_IDS.math },
-    capabilities: ['has_schedule', 'has_homework', 'has_summaries'],
+  basics: {
+    kind: 'one_on_one',
+    status: 'active',
+    title: 'Math Mastery',
+    iconKey: 'square-pi',
+    subject: 'MATH',
+    description: 'Number fluency, reasoning, and problem solving.',
   },
-  participants: [MOCK_EDUCATOR_2, MOCK_GUARDIAN, MOCK_CHILDREN[0]],
-  messages: { items: [], total: 0 },
-  media: { items: [], total: 0 },
-  files: { items: [], total: 0 },
-  readState: {
-    channelId: LEARNING_SPACE_CHANNEL_IDS.math,
-    lastReadAt: '2025-01-10T19:30:00.000Z',
-    unreadCount: 0,
+  channels: {
+    primaryChannel: MATH_CHANNEL,
   },
-  defaultRightPanelOpen: true,
-  defaultRightPanelKey: 'channel_info',
+  schedule: {
+    scheduleSeries: MATH_SCHEDULE,
+  },
+  resources: {
+    links: MATH_LEARNING_LINKS,
+  },
+  lifecycle: {
+    createdAt: '2025-09-01T00:00:00.000Z',
+    createdBy: EDUCATOR_KAI.ids.id,
+    archivedAt: null,
+  },
+  people: {
+    participants: [GUARDIAN_MORGAN, CHILD_AVA, EDUCATOR_KAI],
+  },
 };
 
-const SCIENCE_CHANNEL: ChannelVM = {
-  id: LEARNING_SPACE_CHANNEL_IDS.science,
-  orgId: MOCK_ORG_ID,
-  kind: 'channel',
-  topic: `Science • ${MOCK_EDUCATOR_3.profile.displayName} • Wed 5 PM`,
-  topicIconKey: 'earth',
-  description: 'Weekly labs and observation logs.',
-  visibility: 'private',
-  purpose: 'learning-space',
-  status: 'active',
-  createdBy: MOCK_EDUCATOR_3.ids.id,
-  createdAt: '2025-01-02T16:10:00.000Z',
-  archivedAt: null,
-  postingPolicy: {
-    kind: 'members-only',
-    allowThreads: true,
-    allowReactions: true,
+export const LEARNING_SPACE_SCIENCE: LearningSpaceVM = {
+  ids: {
+    id: LEARNING_SPACE_IDS.science,
+    orgId: ORG_ID,
   },
-  headerItems: [
-    { key: 'saved', label: 'Saved' },
-    { key: 'homework', label: 'HW' },
-    { key: 'session-summary', label: 'SS' },
-    { key: 'next-session', label: 'Wed 5 PM' },
-    { key: 'info', label: 'Info', isPrimary: true },
-  ],
-  dmKey: null,
-  context: {
-    primaryEntity: { kind: 'learning_space', id: LEARNING_SPACE_IDS.science },
-    capabilities: ['has_schedule', 'has_homework', 'has_summaries'],
+  basics: {
+    kind: 'small_group',
+    status: 'active',
+    title: 'Science Lab',
+    iconKey: 'earth',
+    subject: 'SCIENCE',
+    description: 'Hands-on labs with weekly reflections.',
   },
-  participants: [MOCK_EDUCATOR_3, MOCK_GUARDIAN, MOCK_CHILDREN[1]],
-  messages: { items: [], total: 0 },
-  media: { items: [], total: 0 },
-  files: { items: [], total: 0 },
-  readState: {
-    channelId: LEARNING_SPACE_CHANNEL_IDS.science,
-    lastReadAt: '2025-01-10T19:10:00.000Z',
-    unreadCount: 0,
+  channels: {
+    primaryChannel: SCIENCE_CHANNEL,
   },
-  defaultRightPanelOpen: true,
-  defaultRightPanelKey: 'channel_info',
+  schedule: {
+    scheduleSeries: SCIENCE_SCHEDULE,
+  },
+  resources: {
+    links: SCIENCE_LEARNING_LINKS,
+  },
+  lifecycle: {
+    createdAt: '2025-09-02T00:00:00.000Z',
+    createdBy: EDUCATOR_PRIYA.ids.id,
+    archivedAt: null,
+  },
+  people: {
+    participants: [GUARDIAN_MORGAN, CHILD_MILO, EDUCATOR_PRIYA],
+  },
 };
 
-const ELA_CHANNEL: ChannelVM = {
-  id: LEARNING_SPACE_CHANNEL_IDS.ela,
-  orgId: MOCK_ORG_ID,
-  kind: 'channel',
-  topic: `ELA • ${MOCK_EDUCATOR_1.profile.displayName} • Fri 5:30 PM`,
-  topicIconKey: 'languages',
-  description: 'Reading circles and writing practice.',
-  visibility: 'private',
-  purpose: 'learning-space',
-  status: 'active',
-  createdBy: MOCK_EDUCATOR_1.ids.id,
-  createdAt: '2025-01-02T16:20:00.000Z',
-  archivedAt: null,
-  postingPolicy: {
-    kind: 'members-only',
-    allowThreads: true,
-    allowReactions: true,
+export const LEARNING_SPACE_ELA: LearningSpaceVM = {
+  ids: {
+    id: LEARNING_SPACE_IDS.ela,
+    orgId: ORG_ID,
   },
-  headerItems: [
-    { key: 'saved', label: 'Saved' },
-    { key: 'homework', label: 'HW' },
-    { key: 'session-summary', label: 'SS' },
-    { key: 'next-session', label: 'Fri 5:30 PM' },
-    { key: 'info', label: 'Info', isPrimary: true },
-  ],
-  dmKey: null,
-  context: {
-    primaryEntity: { kind: 'learning_space', id: LEARNING_SPACE_IDS.ela },
-    capabilities: ['has_schedule', 'has_homework', 'has_summaries'],
+  basics: {
+    kind: 'one_on_one',
+    status: 'active',
+    title: 'ELA Studio',
+    iconKey: 'languages',
+    subject: 'ELA',
+    description: 'Reading circles and narrative writing.',
   },
-  participants: [MOCK_EDUCATOR_1, MOCK_GUARDIAN, MOCK_CHILDREN[2]],
-  messages: { items: [], total: 0 },
-  media: { items: [], total: 0 },
-  files: { items: [], total: 0 },
-  readState: {
-    channelId: LEARNING_SPACE_CHANNEL_IDS.ela,
-    lastReadAt: '2025-01-10T18:45:00.000Z',
-    unreadCount: 0,
+  channels: {
+    primaryChannel: ELA_CHANNEL,
   },
-  defaultRightPanelOpen: true,
-  defaultRightPanelKey: 'channel_info',
+  schedule: {
+    scheduleSeries: ELA_SCHEDULE,
+  },
+  resources: {
+    links: ELA_LEARNING_LINKS,
+  },
+  lifecycle: {
+    createdAt: '2025-09-03T00:00:00.000Z',
+    createdBy: EDUCATOR_ELENA.ids.id,
+    archivedAt: null,
+  },
+  people: {
+    participants: [GUARDIAN_MORGAN, CHILD_MAYA, EDUCATOR_ELENA],
+  },
 };
 
-const CHESS_CHANNEL: ChannelVM = {
-  id: LEARNING_SPACE_CHANNEL_IDS.chess,
-  orgId: MOCK_ORG_ID,
-  kind: 'channel',
-  topic: `Chess • ${MOCK_EDUCATOR_4.profile.displayName} • Sat 2 PM`,
-  topicIconKey: 'sparkles',
-  description: 'Strategy, tactics, and game review.',
-  visibility: 'private',
-  purpose: 'learning-space',
-  status: 'active',
-  createdBy: MOCK_EDUCATOR_4.ids.id,
-  createdAt: '2025-01-02T16:30:00.000Z',
-  archivedAt: null,
-  postingPolicy: {
-    kind: 'members-only',
-    allowThreads: true,
-    allowReactions: true,
+export const LEARNING_SPACE_CHESS: LearningSpaceVM = {
+  ids: {
+    id: LEARNING_SPACE_IDS.chess,
+    orgId: ORG_ID,
   },
-  headerItems: [
-    { key: 'saved', label: 'Saved' },
-    { key: 'homework', label: 'HW' },
-    { key: 'session-summary', label: 'SS' },
-    { key: 'next-session', label: 'Sat 2 PM' },
-    { key: 'info', label: 'Info', isPrimary: true },
-  ],
-  dmKey: null,
-  context: {
-    primaryEntity: { kind: 'learning_space', id: LEARNING_SPACE_IDS.chess },
-    capabilities: ['has_schedule', 'has_homework', 'has_summaries'],
+  basics: {
+    kind: 'small_group',
+    status: 'active',
+    title: 'Chess Studio',
+    iconKey: 'chef-hat',
+    subject: 'CHESS',
+    description: 'Tactics, openings, and game review.',
   },
-  participants: [MOCK_EDUCATOR_4, MOCK_GUARDIAN, MOCK_CHILDREN[0]],
-  messages: { items: [], total: 0 },
-  media: { items: [], total: 0 },
-  files: { items: [], total: 0 },
-  readState: {
-    channelId: LEARNING_SPACE_CHANNEL_IDS.chess,
-    lastReadAt: '2025-01-10T18:20:00.000Z',
-    unreadCount: 0,
+  channels: {
+    primaryChannel: CHESS_CHANNEL,
   },
-  defaultRightPanelOpen: true,
-  defaultRightPanelKey: 'channel_info',
+  schedule: {
+    scheduleSeries: CHESS_SCHEDULE,
+  },
+  resources: {
+    links: CHESS_LEARNING_LINKS,
+  },
+  lifecycle: {
+    createdAt: '2025-09-04T00:00:00.000Z',
+    createdBy: EDUCATOR_LEO.ids.id,
+    archivedAt: null,
+  },
+  people: {
+    participants: [GUARDIAN_MORGAN, CHILD_AVA, EDUCATOR_LEO],
+  },
 };
 
 export const LEARNING_SPACES: LearningSpaceVM[] = [
-  {
-    id: LEARNING_SPACE_IDS.math,
-    orgId: MOCK_ORG_ID,
-    kind: 'one_on_one',
-    status: 'active',
-    title: `Math • ${MOCK_CHILDREN[0].profile.displayName} • ${MOCK_EDUCATOR_2.profile.displayName}`,
-    iconKey: 'square-pi',
-    subject: 'Math',
-    description: 'Weekly math coaching focused on confidence and fluency.',
-    primaryChannel: MATH_CHANNEL,
-    relatedChannels: [],
-    scheduleSeries: MATH_SCHEDULE,
-    links: [
-      {
-        label: 'Join',
-        iconKey: 'video',
-        url: 'https://zoom.us/j/123456789?pwd=math-session',
-        status: 'active',
-        hidden: false,
-      },
-      {
-        label: 'Classroom',
-        iconKey: 'graduation-cap',
-        url: 'https://classroom.google.com/c/math',
-        status: 'active',
-        hidden: false,
-      },
-      {
-        label: 'Resources',
-        iconKey: 'folder',
-        url: 'https://drive.google.com/math-resources',
-        status: 'active',
-        hidden: false,
-      },
-    ],
-    createdAt: '2025-01-02T16:00:00.000Z',
-    createdBy: MOCK_EDUCATOR_2.ids.id,
-    archivedAt: null,
-    participants: [MOCK_EDUCATOR_2, MOCK_GUARDIAN, MOCK_CHILDREN[0]],
-  },
-  {
-    id: LEARNING_SPACE_IDS.science,
-    orgId: MOCK_ORG_ID,
-    kind: 'one_on_one',
-    status: 'active',
-    title: `Science • ${MOCK_CHILDREN[1].profile.displayName} • ${MOCK_EDUCATOR_3.profile.displayName}`,
-    iconKey: 'earth',
-    subject: 'Science',
-    description: 'Hands-on experiments and observation journals.',
-    primaryChannel: SCIENCE_CHANNEL,
-    relatedChannels: [],
-    scheduleSeries: SCIENCE_SCHEDULE,
-    links: [
-      {
-        label: 'Join',
-        iconKey: 'video',
-        url: 'https://zoom.us/j/987654321?pwd=science-session',
-        status: 'active',
-        hidden: false,
-      },
-      {
-        label: 'Classroom',
-        iconKey: 'graduation-cap',
-        url: 'https://classroom.google.com/c/science',
-        status: 'active',
-        hidden: false,
-      },
-      {
-        label: 'Resources',
-        iconKey: 'folder',
-        url: 'https://drive.google.com/science-resources',
-        status: 'active',
-        hidden: false,
-      },
-    ],
-    createdAt: '2025-01-02T16:10:00.000Z',
-    createdBy: MOCK_EDUCATOR_3.ids.id,
-    archivedAt: null,
-    participants: [MOCK_EDUCATOR_3, MOCK_GUARDIAN, MOCK_CHILDREN[1]],
-  },
-  {
-    id: LEARNING_SPACE_IDS.ela,
-    orgId: MOCK_ORG_ID,
-    kind: 'one_on_one',
-    status: 'active',
-    title: `ELA • ${MOCK_CHILDREN[2].profile.displayName} • ${MOCK_EDUCATOR_1.profile.displayName}`,
-    iconKey: 'languages',
-    subject: 'ELA',
-    description: 'Reading, writing, and creative expression.',
-    primaryChannel: ELA_CHANNEL,
-    relatedChannels: [],
-    scheduleSeries: ELA_SCHEDULE,
-    links: [
-      {
-        label: 'Join',
-        iconKey: 'video',
-        url: 'https://zoom.us/j/456789123?pwd=ela-session',
-        status: 'active',
-        hidden: false,
-      },
-      {
-        label: 'Classroom',
-        iconKey: 'graduation-cap',
-        url: 'https://classroom.google.com/c/ela',
-        status: 'active',
-        hidden: false,
-      },
-      {
-        label: 'Resources',
-        iconKey: 'folder',
-        url: 'https://drive.google.com/ela-resources',
-        status: 'active',
-        hidden: false,
-      },
-    ],
-    createdAt: '2025-01-02T16:20:00.000Z',
-    createdBy: MOCK_EDUCATOR_1.ids.id,
-    archivedAt: null,
-    participants: [MOCK_EDUCATOR_1, MOCK_GUARDIAN, MOCK_CHILDREN[2]],
-  },
-  {
-    id: LEARNING_SPACE_IDS.chess,
-    orgId: MOCK_ORG_ID,
-    kind: 'one_on_one',
-    status: 'active',
-    title: `Chess • ${MOCK_CHILDREN[0].profile.displayName} • ${MOCK_EDUCATOR_4.profile.displayName}`,
-    iconKey: 'sparkles',
-    subject: 'Chess',
-    description: 'Tactics training and match prep.',
-    primaryChannel: CHESS_CHANNEL,
-    relatedChannels: [],
-    scheduleSeries: CHESS_SCHEDULE,
-    links: [
-      {
-        label: 'Join',
-        iconKey: 'video',
-        url: 'https://zoom.us/j/246813579?pwd=chess-session',
-        status: 'active',
-        hidden: false,
-      },
-      {
-        label: 'Classroom',
-        iconKey: 'graduation-cap',
-        url: 'https://classroom.google.com/c/chess',
-        status: 'active',
-        hidden: false,
-      },
-      {
-        label: 'Resources',
-        iconKey: 'folder',
-        url: 'https://drive.google.com/chess-resources',
-        status: 'active',
-        hidden: false,
-      },
-    ],
-    createdAt: '2025-01-02T16:30:00.000Z',
-    createdBy: MOCK_EDUCATOR_4.ids.id,
-    archivedAt: null,
-    participants: [MOCK_EDUCATOR_4, MOCK_GUARDIAN, MOCK_CHILDREN[0]],
-  },
-];
-
-export const LEARNING_SPACE_CHANNELS: ChannelVM[] = [
-  MATH_CHANNEL,
-  SCIENCE_CHANNEL,
-  ELA_CHANNEL,
-  CHESS_CHANNEL,
+  LEARNING_SPACE_MATH,
+  LEARNING_SPACE_SCIENCE,
+  LEARNING_SPACE_ELA,
+  LEARNING_SPACE_CHESS,
 ];
 
 export const LEARNING_SPACE_BY_CHANNEL_ID: Record<string, LearningSpaceVM> = {
-  [LEARNING_SPACE_CHANNEL_IDS.math]: LEARNING_SPACES[0],
-  [LEARNING_SPACE_CHANNEL_IDS.science]: LEARNING_SPACES[1],
-  [LEARNING_SPACE_CHANNEL_IDS.ela]: LEARNING_SPACES[2],
-  [LEARNING_SPACE_CHANNEL_IDS.chess]: LEARNING_SPACES[3],
+  [MATH_CHANNEL.ids.id]: LEARNING_SPACE_MATH,
+  [SCIENCE_CHANNEL.ids.id]: LEARNING_SPACE_SCIENCE,
+  [ELA_CHANNEL.ids.id]: LEARNING_SPACE_ELA,
+  [CHESS_CHANNEL.ids.id]: LEARNING_SPACE_CHESS,
 };

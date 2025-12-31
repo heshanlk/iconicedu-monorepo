@@ -1,15 +1,13 @@
 import type { SidebarLeftDataVM } from '@iconicedu/shared-types';
-import { MOCK_GUARDIAN, MOCK_USER_ACCOUNTS } from './people';
-import { LEARNING_SPACES } from './learning-spaces';
+import { ACCOUNT_GUARDIAN } from './accounts';
 import { DIRECT_MESSAGE_CHANNELS } from './direct-message-channels';
+import { LEARNING_SPACES } from './learning-spaces';
+import { GUARDIAN_MORGAN } from './profiles';
 
-const guardianAccount = MOCK_USER_ACCOUNTS.find(
-  (account) => account.ids.id === MOCK_GUARDIAN.ids.accountId,
-);
 export const SIDEBAR_LEFT_DATA: SidebarLeftDataVM = {
   user: {
-    profile: MOCK_GUARDIAN,
-    account: guardianAccount ?? null,
+    profile: GUARDIAN_MORGAN,
+    account: ACCOUNT_GUARDIAN,
   },
   navigation: {
     navMain: [
@@ -17,10 +15,14 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftDataVM = {
         title: 'Home',
         url: '/dashboard',
         icon: 'home',
-        isActive: true,
       },
       {
-        title: 'Calendar',
+        title: 'Learning Spaces',
+        url: '/dashboard/ls',
+        icon: 'languages',
+      },
+      {
+        title: 'Class Schedule',
         url: '/dashboard/class-schedule',
         icon: 'class-schedule',
       },
@@ -28,19 +30,17 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftDataVM = {
         title: 'Inbox',
         url: '/dashboard/inbox',
         icon: 'inbox',
-        badge: '10',
-        count: 11,
       },
     ],
     navSecondary: [
       {
         title: 'Support',
-        url: '#',
+        url: '/dashboard/support',
         icon: 'life-buoy',
       },
       {
         title: 'Feedback',
-        url: '#',
+        url: '/dashboard/feedback',
         icon: 'send',
       },
     ],

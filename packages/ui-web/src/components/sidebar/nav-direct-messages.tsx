@@ -22,14 +22,14 @@ import {
 import { Badge } from '../../ui/badge';
 import { Separator } from '../../ui/separator';
 import { AvatarWithStatus } from '../shared/avatar-with-status';
-import type { ChannelMiniVM, ChannelReadStateVM } from '@iconicedu/shared-types';
+import type { ChannelVM } from '@iconicedu/shared-types';
 
 export function NavDirectMessages({
   dms,
   currentUserId,
   activeChannelId,
 }: {
-  dms: Array<ChannelMiniVM & { readState?: ChannelReadStateVM }>;
+  dms: ChannelVM[];
   currentUserId: string;
   activeChannelId?: string | null;
 }) {
@@ -44,11 +44,11 @@ export function NavDirectMessages({
         {dms.map((item) => {
           const isActive = item.ids.id === activeChannelId;
           const otherParticipant =
-            item.participants.find(
+            item.collections.participants.find(
               (participant) => participant.ids.accountId !== currentUserId,
-            ) ?? item.participants[0];
+            ) ?? item.collections.participants[0];
           const name = otherParticipant?.profile.displayName ?? item.basics.topic;
-          const unreadCount = item.readState?.unreadCount ?? 0;
+          const unreadCount = item.collections.readState?.unreadCount ?? 0;
           return (
             <SidebarMenuItem key={item.ids.id} className="py-1">
               <SidebarMenuButton

@@ -8,7 +8,9 @@ import {
 export default function Page({ params }: { params: { channelId: string } }) {
   const channel =
     DIRECT_MESSAGE_CHANNELS_BY_ID[params.channelId] ??
-    DIRECT_MESSAGE_CHANNELS_WITH_MESSAGES.find((item) => item.dmKey === params.channelId);
+    DIRECT_MESSAGE_CHANNELS_WITH_MESSAGES.find(
+      (item) => item.dm?.dmKey === params.channelId,
+    );
 
   if (!channel) {
     notFound();

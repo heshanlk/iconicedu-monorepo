@@ -8,5 +8,5 @@ export default function Page() {
     return null;
   }
 
-  redirect(`/dashboard/dm/${firstChannel.id}`);
+  redirect(`/dashboard/dm/${firstChannel.ids.id}`);
 }
