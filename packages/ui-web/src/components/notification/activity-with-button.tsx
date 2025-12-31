@@ -17,19 +17,22 @@ export function ActivityWithButton({
     return null;
   }
 
+  const href = actionButton.href ?? undefined;
+
   return (
     <div className={cn('flex items-center gap-2', className)}>
       <Button
         size="sm"
         variant={actionButton.variant}
-        onClick={(e) => {
-          e.stopPropagation();
-          actionButton.onClick?.();
-        }}
         data-action-button="true"
         className="h-7 text-xs"
+        disabled={!href}
+        asChild={Boolean(href)}
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
       >
-        {actionButton.label}
+        {href ? <a href={href}>{actionButton.label}</a> : actionButton.label}
       </Button>
     </div>
   );

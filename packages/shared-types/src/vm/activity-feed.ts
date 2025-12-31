@@ -1,4 +1,4 @@
-import type { AvatarVM, UserProfileVM } from './profile';
+import type { AvatarVM } from './profile';
 import { ConnectionVM, EntityRefVM, ISODateTime, UUID } from './shared';
 
 export type ActivityGroupKeyVM =
@@ -27,7 +27,13 @@ export type SystemProfileVM = {
   avatar: AvatarVM;
 };
 
-export type ActivityActorVM = UserProfileVM | SystemProfileVM;
+export interface ActivityActorProfileVM {
+  id: UUID;
+  displayName: string;
+  avatar: AvatarVM;
+}
+
+export type ActivityActorVM = ActivityActorProfileVM | SystemProfileVM;
 
 export type ActivityVisibilityVM = 'public' | 'scope_only' | 'direct';
 export type AudienceRuleVM =
@@ -104,7 +110,9 @@ export type InboxHeadlineVM = {
 export type InboxActionButtonVM = {
   label: string;
   variant: 'default' | 'outline' | 'secondary';
-  onClick?: () => void;
+  href?: string | null;
+  actionKey?: string | null;
+  payload?: Record<string, unknown> | null;
 };
 
 export interface ActivityFeedItemBaseVM {

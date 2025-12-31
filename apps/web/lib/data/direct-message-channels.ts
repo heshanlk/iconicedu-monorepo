@@ -43,7 +43,6 @@ export const DIRECT_MESSAGE_CHANNELS: ChannelVM[] = [
     files: { items: [], total: 0 },
     readState: {
       channelId: '7a111111-1111-4111-8111-111111111111',
-      lastReadMessageId: null,
       lastReadAt: '2025-01-10T19:00:00.000Z',
       unreadCount: 0,
     },
@@ -81,7 +80,6 @@ export const DIRECT_MESSAGE_CHANNELS: ChannelVM[] = [
     files: { items: [], total: 0 },
     readState: {
       channelId: '7a222222-2222-4222-8222-222222222222',
-      lastReadMessageId: null,
       lastReadAt: '2025-01-10T18:30:00.000Z',
       unreadCount: 0,
     },
@@ -119,7 +117,6 @@ export const DIRECT_MESSAGE_CHANNELS: ChannelVM[] = [
     files: { items: [], total: 0 },
     readState: {
       channelId: '7a333333-3333-4333-8333-333333333333',
-      lastReadMessageId: null,
       lastReadAt: '2025-01-10T17:50:00.000Z',
       unreadCount: 0,
     },
@@ -157,7 +154,6 @@ export const DIRECT_MESSAGE_CHANNELS: ChannelVM[] = [
     files: { items: [], total: 0 },
     readState: {
       channelId: '7a444444-4444-4444-8444-444444444444',
-      lastReadMessageId: null,
       lastReadAt: '2025-01-10T16:45:00.000Z',
       unreadCount: 0,
     },
@@ -195,7 +191,6 @@ export const DIRECT_MESSAGE_CHANNELS: ChannelVM[] = [
     files: { items: [], total: 0 },
     readState: {
       channelId: '7a555555-5555-4555-8555-555555555555',
-      lastReadMessageId: null,
       lastReadAt: '2025-01-09T18:05:00.000Z',
       unreadCount: 0,
     },

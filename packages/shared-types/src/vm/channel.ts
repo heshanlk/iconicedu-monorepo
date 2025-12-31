@@ -1,7 +1,7 @@
 import type { ConnectionVM, EntityRefVM, ISODateTime, UUID } from './shared';
 import type { UserProfileVM } from './profile';
-import type { MessageReadStateVM, MessageVM } from './messages';
-import type { MessagesRightPanelIntentKey } from './messages-right-sidebar';
+import type { ChannelReadStateVM, MessageVM } from './message';
+import type { MessagesRightPanelIntentKey } from './message';
 
 export type ChannelVisibility = 'private' | 'public';
 export type ChannelStatus = 'active' | 'archived';
@@ -112,7 +112,7 @@ export interface ChannelVM {
   messages: ConnectionVM<MessageVM>;
   media: ConnectionVM<ChannelMediaItemVM>;
   files: ConnectionVM<ChannelFileItemVM>;
-  readState?: MessageReadStateVM;
+  readState?: ChannelReadStateVM;
   defaultRightPanelOpen?: boolean;
   defaultRightPanelKey?: MessagesRightPanelIntentKey;
 }

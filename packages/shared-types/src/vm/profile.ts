@@ -21,10 +21,18 @@ export type PresenceStateVM = {
 };
 
 export type PresenceDisplayStatusVM = 'online' | 'idle' | 'busy' | 'away' | 'offline';
+export type LiveStatusVM =
+  | 'in_class'
+  | 'teaching'
+  | 'reviewing_work'
+  | 'busy'
+  | 'away'
+  | 'offline';
 
 export interface PresenceVM {
   state: PresenceStateVM;
-  liveStatus: PresenceDisplayStatusVM;
+  liveStatus: LiveStatusVM;
+  displayStatus?: PresenceDisplayStatusVM;
   lastSeenAt?: ISODateTime | null;
 
   // Helpful FE flags for hydration

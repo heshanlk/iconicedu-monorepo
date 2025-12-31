@@ -52,7 +52,6 @@ const MATH_CHANNEL: ChannelVM = {
   files: { items: [], total: 0 },
   readState: {
     channelId: LEARNING_SPACE_CHANNEL_IDS.math,
-    lastReadMessageId: null,
     lastReadAt: '2025-01-10T19:30:00.000Z',
     unreadCount: 0,
   },
@@ -96,7 +95,6 @@ const SCIENCE_CHANNEL: ChannelVM = {
   files: { items: [], total: 0 },
   readState: {
     channelId: LEARNING_SPACE_CHANNEL_IDS.science,
-    lastReadMessageId: null,
     lastReadAt: '2025-01-10T19:10:00.000Z',
     unreadCount: 0,
   },
@@ -140,7 +138,6 @@ const ELA_CHANNEL: ChannelVM = {
   files: { items: [], total: 0 },
   readState: {
     channelId: LEARNING_SPACE_CHANNEL_IDS.ela,
-    lastReadMessageId: null,
     lastReadAt: '2025-01-10T18:45:00.000Z',
     unreadCount: 0,
   },
@@ -184,7 +181,6 @@ const CHESS_CHANNEL: ChannelVM = {
   files: { items: [], total: 0 },
   readState: {
     channelId: LEARNING_SPACE_CHANNEL_IDS.chess,
-    lastReadMessageId: null,
     lastReadAt: '2025-01-10T18:20:00.000Z',
     unreadCount: 0,
   },

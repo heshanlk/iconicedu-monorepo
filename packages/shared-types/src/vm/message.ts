@@ -8,7 +8,15 @@ export interface ReactionVM {
   sampleUserIds?: UUID[];
 }
 
-export interface MessageReadStateVM {
+export interface ChannelReadStateVM {
+  channelId: UUID;
+  lastReadMessageId?: UUID;
+  lastReadAt?: ISODateTime;
+  unreadCount?: number;
+}
+
+export interface ThreadReadStateVM {
+  threadId: UUID;
   channelId?: UUID;
   lastReadMessageId?: UUID;
   lastReadAt?: ISODateTime;
@@ -54,7 +62,7 @@ export interface ThreadVM {
   messageCount: number;
   lastReplyAt: ISODateTime;
   participants: UserProfileVM[];
-  readState?: MessageReadStateVM;
+  readState?: ThreadReadStateVM;
 }
 
 export interface ThreadPanelPropsVM {
@@ -63,12 +71,28 @@ export interface ThreadPanelPropsVM {
   parentMessage?: MessageVM;
   onSendReply: (content: string) => void;
   onProfileClick: (userId: UUID) => void;
-  readState?: MessageReadStateVM;
+  readState?: ThreadReadStateVM;
   onToggleReaction?: (messageId: UUID, emoji: string) => void;
   onToggleSaved?: (messageId: UUID) => void;
   onToggleHidden?: (messageId: UUID) => void;
   currentUserId?: UUID;
 }
+
+export type MessagesRightPanelIntent =
+  | { key: 'channel_info' }
+  | { key: 'saved' }
+  | { key: 'profile'; userId: UUID }
+  | { key: 'thread'; threadId: UUID };
+
+export type MessagesRightPanelIntentKey = MessagesRightPanelIntent['key'];
+
+export interface MessagesRightSidebarState {
+  isOpen: boolean;
+  intent: MessagesRightPanelIntent | null;
+  width?: number;
+}
+
+export type MessagesRightPanelRegistry<T> = Record<MessagesRightPanelIntentKey, T>;
 
 export type MessageVisibilityVM =
   | { type: 'all' }

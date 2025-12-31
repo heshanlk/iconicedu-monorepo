@@ -10,6 +10,7 @@ import type {
   MessageVM,
   TextMessageVM,
   ThreadVM,
+  UUID,
 } from '@iconicedu/shared-types';
 
 type ThreadData = {
@@ -44,12 +45,12 @@ interface MessagesStateContextValue {
   setCreateTextMessage: (factory: (content: string) => TextMessageVM | null) => void;
   setThreadHandlers: (handlers: ThreadActionHandlers) => void;
   toggleMessageFilter: (key: MessageFilterKey) => void;
-  appendThreadMessage: (threadId: string, message: MessageVM) => void;
+  appendThreadMessage: (threadId: UUID, message: MessageVM) => void;
   setThreadData: (
     thread: ThreadVM,
     data: { replies: ConnectionVM<MessageVM>; parentMessage?: MessageVM },
   ) => void;
-  getThreadData: (threadId: string) => ThreadData | undefined;
+  getThreadData: (threadId: UUID) => ThreadData | undefined;
   setScrollToMessage: (handler: (messageId: string) => void) => void;
   scrollToMessage?: (messageId: string) => void;
 }
@@ -103,7 +104,7 @@ export function MessagesStateProvider({
     (content: string) => TextMessageVM | null
   >(() => () => null);
   const [threadHandlers, setThreadHandlers] = useState<ThreadActionHandlers>({});
-  const [threadData, setThreadDataState] = useState<Record<string, ThreadData>>({});
+  const [threadData, setThreadDataState] = useState<Record<UUID, ThreadData>>({});
   const [scrollToMessage, setScrollToMessage] = useState<
     ((messageId: string) => void) | undefined
   >(undefined);
@@ -151,7 +152,7 @@ export function MessagesStateProvider({
     [],
   );
 
-  const appendThreadMessage = useCallback((threadId: string, message: MessageVM) => {
+  const appendThreadMessage = useCallback((threadId: UUID, message: MessageVM) => {
     setThreadDataState((prev) => {
       const existing = prev[threadId];
       if (!existing) return prev;
@@ -173,7 +174,7 @@ export function MessagesStateProvider({
   }, []);
 
   const getThreadData = useCallback(
-    (threadId: string) => threadData[threadId],
+    (threadId: UUID) => threadData[threadId],
     [threadData],
   );
 

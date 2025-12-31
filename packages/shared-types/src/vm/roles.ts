@@ -1,7 +1,13 @@
 import type { FamilyLinkVM } from './family';
 import type { ISODateTime, UUID } from './shared';
 
-export type RoleKey = 'owner' | 'admin' | 'educator' | 'guardian' | 'child';
+export type RoleKey =
+  | 'owner'
+  | 'admin'
+  | 'educator'
+  | 'guardian'
+  | 'child'
+  | 'staff';
 
 export interface UserRoleVM {
   orgId: UUID;

@@ -10,7 +10,7 @@ import type {
   ImageMessageVM,
   LessonAssignmentMessageVM,
   LinkPreviewMessageVM,
-  MessageReadStateVM,
+  ChannelReadStateVM,
   MessageVM,
   PaymentReminderMessageVM,
   ProgressUpdateMessageVM,
@@ -198,7 +198,7 @@ const mathFileItems: ChannelFileItemVM[] = [
   },
 ];
 
-const mathReadState: MessageReadStateVM = {
+const mathReadState: ChannelReadStateVM = {
   channelId: LEARNING_SPACE_CHANNEL_IDS.math,
   lastReadMessageId: 'a1111111-1111-4111-8111-111111111114',
   lastReadAt: '2025-01-10T19:00:00.000Z',
@@ -383,7 +383,7 @@ const scienceFileItems: ChannelFileItemVM[] = [
   },
 ];
 
-const scienceReadState: MessageReadStateVM = {
+const scienceReadState: ChannelReadStateVM = {
   channelId: LEARNING_SPACE_CHANNEL_IDS.science,
   lastReadMessageId: 'b2222222-2222-4222-8222-222222222224',
   lastReadAt: '2025-01-10T18:10:00.000Z',
@@ -568,7 +568,7 @@ const elaFileItems: ChannelFileItemVM[] = [
   },
 ];
 
-const elaReadState: MessageReadStateVM = {
+const elaReadState: ChannelReadStateVM = {
   channelId: LEARNING_SPACE_CHANNEL_IDS.ela,
   lastReadMessageId: 'c3333333-3333-4333-8333-333333333334',
   lastReadAt: '2025-01-10T17:30:00.000Z',
@@ -700,7 +700,7 @@ const chessFileItems: ChannelFileItemVM[] = [
   },
 ];
 
-const chessReadState: MessageReadStateVM = {
+const chessReadState: ChannelReadStateVM = {
   channelId: LEARNING_SPACE_CHANNEL_IDS.chess,
   lastReadMessageId: 'd4444444-4444-4444-8444-444444444442',
   lastReadAt: '2025-01-10T14:00:00.000Z',

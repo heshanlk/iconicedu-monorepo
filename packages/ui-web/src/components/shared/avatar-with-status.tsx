@@ -2,6 +2,7 @@
 
 import type {
   AvatarVM,
+  LiveStatusVM,
   PresenceDisplayStatusVM,
   PresenceVM,
 } from '@iconicedu/shared-types';
@@ -15,6 +16,15 @@ const STATUS_COLORS: Record<PresenceDisplayStatusVM, string> = {
   idle: 'bg-gray-400',
   busy: 'bg-red-600',
   offline: 'bg-gray-600',
+};
+
+const LIVE_STATUS_TO_DISPLAY: Record<LiveStatusVM, PresenceDisplayStatusVM> = {
+  in_class: 'online',
+  teaching: 'online',
+  reviewing_work: 'idle',
+  busy: 'busy',
+  away: 'away',
+  offline: 'offline',
 };
 
 interface AvatarWithStatusProps {
@@ -48,8 +58,10 @@ export function AvatarWithStatus({
   statusClassName,
   fallbackClassName,
 }: AvatarWithStatusProps) {
-  const liveStatus = presence?.liveStatus || 'offline';
-  const displayStatus = showStatus !== undefined ? showStatus : !!presence;
+  const liveStatus = presence?.liveStatus ?? 'offline';
+  const derivedDisplayStatus =
+    presence?.displayStatus ?? LIVE_STATUS_TO_DISPLAY[liveStatus];
+  const shouldShowStatus = showStatus !== undefined ? showStatus : !!presence;
   const avatarUrl = avatar?.url ?? '/placeholder.svg';
   const tooltipText = presence?.state?.text?.trim();
   const tooltipEmoji = presence?.state?.emoji?.trim();
@@ -63,14 +75,14 @@ export function AvatarWithStatus({
           {getInitials(name, initialsLength)}
         </AvatarFallback>
       </Avatar>
-      {displayStatus && (
+      {shouldShowStatus && (
         <span
           className={cn(
             'absolute rounded-full border-2 border-card',
-            STATUS_COLORS[liveStatus],
+            STATUS_COLORS[derivedDisplayStatus],
             statusClassName ?? 'bottom-0 right-0 h-2.5 w-2.5',
           )}
-          aria-label={`Status: ${liveStatus}`}
+          aria-label={`Status: ${derivedDisplayStatus}`}
         />
       )}
     </div>
