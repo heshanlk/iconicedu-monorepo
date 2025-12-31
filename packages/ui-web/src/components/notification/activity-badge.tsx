@@ -49,14 +49,14 @@ export function ActivityBadge({ activity, className }: ActivityBadgeProps) {
   }
 
   const actor = activity.actor;
-  const actorName = 'kind' in actor ? 'System' : actor.displayName;
-  const actorAvatar = 'kind' in actor ? '' : actor.avatarUrl ?? '';
+  const actorName = actor.displayName;
+  const actorAvatar = actor.avatar;
   const initials = getInitials(actorName);
 
   return (
     <AvatarWithStatus
       name={actorName}
-      avatar={{ source: 'external', url: actorAvatar }}
+      avatar={actorAvatar}
       showStatus={false}
       sizeClassName={cn('size-6 shrink-0', className)}
       fallbackClassName="text-[10px]"

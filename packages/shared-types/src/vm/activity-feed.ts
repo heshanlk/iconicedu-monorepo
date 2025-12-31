@@ -1,4 +1,4 @@
-import { AvatarVM } from './profile';
+import type { AvatarVM, UserProfileVM } from './profile';
 import { ConnectionVM, EntityRefVM, ISODateTime, UUID } from './shared';
 
 export type ActivityGroupKeyVM =
@@ -20,12 +20,14 @@ export type FeedScopeVM =
   | { kind: 'dm'; threadId: UUID }
   | { kind: 'user'; userId: UUID };
 
-export type ActorVM = {
+export type SystemProfileVM = {
+  kind: 'system';
   id: UUID;
   displayName: string;
-  avatarUrl?: string | null;
-  roleKey?: 'owner' | 'admin' | 'educator' | 'guardian' | 'child' | 'staff' | string;
+  avatar: AvatarVM;
 };
+
+export type ActivityActorVM = UserProfileVM | SystemProfileVM;
 
 export type ActivityVisibilityVM = 'public' | 'scope_only' | 'direct';
 export type AudienceRuleVM =
@@ -119,7 +121,7 @@ export interface ActivityFeedItemBaseVM {
 
   verb: ActivityVerbVM;
 
-  actor: ActorVM | { kind: 'system' };
+  actor: ActivityActorVM;
 
   object?: EntityRefVM;
   target?: EntityRefVM;

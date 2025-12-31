@@ -9,6 +9,18 @@ import {
 } from './people';
 import { LEARNING_SPACE_IDS, LEARNING_SPACE_CHANNEL_IDS } from './learning-space-ids';
 
+const SYSTEM_PROFILE = {
+  kind: 'system',
+  id: 'c7c88924-6c2d-48d6-9f2f-2ac684e59f01',
+  displayName: 'System',
+  avatar: {
+    source: 'seed',
+    seed: 'system',
+    url: null,
+    updatedAt: null,
+  },
+} as const;
+
 export const INBOX_ACTIVITY_FEED: ActivityFeedVM = {
   activeTab: 'all',
   tabs: [
@@ -30,12 +42,7 @@ export const INBOX_ACTIVITY_FEED: ActivityFeedVM = {
           scope: { kind: 'learning_space', learningSpaceId: LEARNING_SPACE_IDS.math },
           visibility: 'scope_only',
           verb: 'summary.posted',
-          actor: {
-            id: MOCK_EDUCATOR_2.id,
-            displayName: MOCK_EDUCATOR_2.displayName,
-            avatarUrl: MOCK_EDUCATOR_2.avatar.url ?? null,
-            roleKey: 'educator',
-          },
+          actor: MOCK_EDUCATOR_2,
           object: { kind: 'summary', id: 'summary-math-2025-01-10' },
           target: { kind: 'learning_space', id: LEARNING_SPACE_IDS.math },
           leading: { kind: 'icon', iconKey: 'Sparkles', tone: 'info' },
@@ -57,12 +64,7 @@ export const INBOX_ACTIVITY_FEED: ActivityFeedVM = {
           scope: { kind: 'channel', channelId: LEARNING_SPACE_CHANNEL_IDS.science },
           visibility: 'scope_only',
           verb: 'file.uploaded',
-          actor: {
-            id: MOCK_EDUCATOR_3.id,
-            displayName: MOCK_EDUCATOR_3.displayName,
-            avatarUrl: MOCK_EDUCATOR_3.avatar.url ?? null,
-            roleKey: 'educator',
-          },
+          actor: MOCK_EDUCATOR_3,
           object: { kind: 'file', id: 'science-density-worksheet' },
           target: { kind: 'learning_space', id: LEARNING_SPACE_IDS.science },
           leading: { kind: 'icon', iconKey: 'FileText', tone: 'neutral' },
@@ -85,12 +87,7 @@ export const INBOX_ACTIVITY_FEED: ActivityFeedVM = {
           visibility: 'direct',
           audience: [{ kind: 'users_only', userIds: [MOCK_GUARDIAN.id] }],
           verb: 'message.posted',
-          actor: {
-            id: MOCK_EDUCATOR_1.id,
-            displayName: MOCK_EDUCATOR_1.displayName,
-            avatarUrl: MOCK_EDUCATOR_1.avatar.url ?? null,
-            roleKey: 'educator',
-          },
+          actor: MOCK_EDUCATOR_1,
           object: { kind: 'file', id: 'INV-ELA-2025-01' },
           target: { kind: 'learning_space', id: LEARNING_SPACE_IDS.ela },
           leading: { kind: 'icon', iconKey: 'CreditCard', tone: 'warning' },
@@ -117,12 +114,7 @@ export const INBOX_ACTIVITY_FEED: ActivityFeedVM = {
           scope: { kind: 'learning_space', learningSpaceId: LEARNING_SPACE_IDS.chess },
           visibility: 'scope_only',
           verb: 'homework.assigned',
-          actor: {
-            id: MOCK_EDUCATOR_4.id,
-            displayName: 'Coach Leo Kim',
-            avatarUrl: null,
-            roleKey: 'educator',
-          },
+          actor: MOCK_EDUCATOR_4,
           object: { kind: 'homework', id: 'chess-puzzles-pack' },
           target: { kind: 'learning_space', id: LEARNING_SPACE_IDS.chess },
           groupKey: 'chess-homework-2025-01-09',
@@ -153,12 +145,7 @@ export const INBOX_ACTIVITY_FEED: ActivityFeedVM = {
                 },
                 visibility: 'scope_only',
                 verb: 'homework.assigned',
-                actor: {
-                  id: MOCK_EDUCATOR_4.id,
-                  displayName: MOCK_EDUCATOR_4.displayName,
-                  avatarUrl: null,
-                  roleKey: 'educator',
-                },
+                actor: MOCK_EDUCATOR_4,
                 headline: {
                   primary: 'Puzzle pack assigned',
                   secondary: 'Chess Tactics',
@@ -176,12 +163,7 @@ export const INBOX_ACTIVITY_FEED: ActivityFeedVM = {
                 },
                 visibility: 'scope_only',
                 verb: 'homework.submitted',
-                actor: {
-                  id: MOCK_CHILDREN[0].id,
-                  displayName: MOCK_CHILDREN[0].displayName,
-                  avatarUrl: null,
-                  roleKey: 'child',
-                },
+                actor: MOCK_CHILDREN[0],
                 headline: {
                   primary: 'Puzzle pack submitted',
                   secondary: 'Awaiting review',
@@ -200,7 +182,7 @@ export const INBOX_ACTIVITY_FEED: ActivityFeedVM = {
           scope: { kind: 'global' },
           visibility: 'public',
           verb: 'member.joined',
-          actor: { kind: 'system' },
+          actor: SYSTEM_PROFILE,
           leading: { kind: 'icon', iconKey: 'Bell', tone: 'info' },
           headline: {
             primary: 'Welcome to IconicEdu',
