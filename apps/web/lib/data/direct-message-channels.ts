@@ -44,7 +44,7 @@ export const DIRECT_MESSAGE_CHANNELS: ChannelVM[] = [
     readState: {
       channelId: '7a111111-1111-4111-8111-111111111111',
       lastReadAt: '2025-01-10T19:00:00.000Z',
-      unreadCount: 0,
+      unreadCount: 2,
     },
   },
   {
@@ -81,7 +81,7 @@ export const DIRECT_MESSAGE_CHANNELS: ChannelVM[] = [
     readState: {
       channelId: '7a222222-2222-4222-8222-222222222222',
       lastReadAt: '2025-01-10T18:30:00.000Z',
-      unreadCount: 0,
+      unreadCount: 1,
     },
   },
   {
@@ -118,7 +118,7 @@ export const DIRECT_MESSAGE_CHANNELS: ChannelVM[] = [
     readState: {
       channelId: '7a333333-3333-4333-8333-333333333333',
       lastReadAt: '2025-01-10T17:50:00.000Z',
-      unreadCount: 0,
+      unreadCount: 3,
     },
   },
   {

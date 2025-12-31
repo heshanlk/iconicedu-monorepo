@@ -19,15 +19,17 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '../../ui/sidebar';
+import { Badge } from '../../ui/badge';
+import { Separator } from '../../ui/separator';
 import { AvatarWithStatus } from '../shared/avatar-with-status';
-import type { ChannelMiniVM } from '@iconicedu/shared-types';
+import type { ChannelMiniVM, ChannelReadStateVM } from '@iconicedu/shared-types';
 
 export function NavDirectMessages({
   dms,
   currentUserId,
   activeChannelId,
 }: {
-  dms: ChannelMiniVM[];
+  dms: Array<ChannelMiniVM & { readState?: ChannelReadStateVM }>;
   currentUserId: string;
   activeChannelId?: string | null;
 }) {
@@ -46,9 +48,14 @@ export function NavDirectMessages({
               (participant) => participant.accountId !== currentUserId,
             ) ?? item.participants[0];
           const name = otherParticipant?.displayName ?? item.topic;
+          const unreadCount = item.readState?.unreadCount ?? 0;
           return (
-            <SidebarMenuItem key={item.id}>
-              <SidebarMenuButton asChild isActive={isActive}>
+            <SidebarMenuItem key={item.id} className="py-1">
+              <SidebarMenuButton
+                asChild
+                isActive={isActive}
+                className="px-2.5 group-data-[collapsible=icon]:px-0"
+              >
                 <a href={`/dashboard/dm/${item.id}`}>
                   <AvatarWithStatus
                     name={name}
@@ -77,6 +84,11 @@ export function NavDirectMessages({
                       </div>
                     )}
                   </div>
+                  {unreadCount > 0 && (
+                    <Badge className="ml-auto h-5 px-1.5 text-[10px] group-data-[collapsible=icon]:hidden">
+                      {unreadCount}
+                    </Badge>
+                  )}
                 </a>
               </SidebarMenuButton>
               <DropdownMenu>
