@@ -74,6 +74,8 @@ export function ProfileContent({
         <AvatarWithStatus
           name={user.displayName}
           avatar={user.avatar}
+          presence={user.presence}
+          showStatus
           sizeClassName="h-20 w-20"
           statusClassName="bottom-1 right-1 h-4 w-4"
           fallbackClassName="text-2xl"
@@ -83,8 +85,17 @@ export function ProfileContent({
           <h2 className="text-lg font-semibold text-foreground break-words">
             {user.displayName}
           </h2>
-          {user.status && (
-            <p className="text-sm text-muted-foreground">{user.status}</p>
+          {(user.presence?.state?.emoji || user.presence?.state?.text) && (
+            <Badge variant="secondary" className="mt-1 max-w-full">
+              <span className="inline-flex items-center gap-1.5 truncate">
+                {user.presence?.state?.emoji ? (
+                  <span>{user.presence.state.emoji}</span>
+                ) : null}
+                {user.presence?.state?.text ? (
+                  <span className="truncate">{user.presence.state.text}</span>
+                ) : null}
+              </span>
+            </Badge>
           )}
         </div>
         {user.role && (
