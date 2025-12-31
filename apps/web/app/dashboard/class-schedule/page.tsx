@@ -1,13 +1,40 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { ClassScheduleContainer, DashboardHeader } from '@iconicedu/ui-web';
 import type { ClassScheduleViewVM } from '@iconicedu/shared-types';
 import { baseEvents } from '../../../lib/data/class-schedule-events';
 
 export default function ClassSchedulePage() {
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [view, setView] = useState<ClassScheduleViewVM>('day');
+  const searchParams = useSearchParams();
+  const dateParam = searchParams.get('date');
+  const viewParam = searchParams.get('view');
+
+  const initialDate = useMemo(() => {
+    if (!dateParam) return new Date();
+    const [year, month, day] = dateParam.split('-').map(Number);
+    if (!year || !month || !day) return new Date();
+    return new Date(year, month - 1, day);
+  }, [dateParam]);
+
+  const initialView = useMemo<ClassScheduleViewVM>(() => {
+    if (viewParam === 'week' || viewParam === 'day' || viewParam === 'month') {
+      return viewParam;
+    }
+    return 'day';
+  }, [viewParam]);
+
+  const [currentDate, setCurrentDate] = useState(initialDate);
+  const [view, setView] = useState<ClassScheduleViewVM>(initialView);
+
+  useEffect(() => {
+    setCurrentDate(initialDate);
+  }, [initialDate]);
+
+  useEffect(() => {
+    setView(initialView);
+  }, [initialView]);
 
   return (
     <div className="flex flex-col h-[calc(100vh-3.5rem)]">

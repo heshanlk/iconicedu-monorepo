@@ -559,6 +559,12 @@ export const DIRECT_MESSAGE_CHANNELS_BY_ID = Object.fromEntries(
   DIRECT_MESSAGE_CHANNELS_WITH_MESSAGES.map((channel) => [channel.id, channel]),
 );
 
+export const DIRECT_MESSAGE_CHANNEL_BY_USER_ID = Object.fromEntries(
+  DIRECT_MESSAGE_CHANNELS_WITH_MESSAGES.flatMap((channel) =>
+    channel.participants.map((participant) => [participant.id, channel.id]),
+  ),
+);
+
 export const LEARNING_SPACE_CHANNELS_WITH_MESSAGES = LEARNING_SPACE_CHANNELS.map(
   (channel, index) => {
     const participants = channel.participants;

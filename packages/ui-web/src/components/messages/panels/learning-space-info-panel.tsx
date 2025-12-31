@@ -17,6 +17,7 @@ import {
   Video,
   Bookmark,
   Flag,
+  MessageCircle,
 } from 'lucide-react';
 import type { LearningSpaceVM, MessagesRightPanelIntent } from '@iconicedu/shared-types';
 import { Badge } from '../../../ui/badge';
@@ -38,6 +39,7 @@ import {
 interface LearningSpaceInfoPanelProps {
   intent: MessagesRightPanelIntent;
   learningSpace?: LearningSpaceVM | null;
+  dmChannelByUserId?: Record<string, string>;
 }
 
 const LEARNING_SPACE_ICON_MAP = {
@@ -99,8 +101,10 @@ const LEARNING_SPACE_LINK_ICONS: Record<string, typeof Link2> = {
 
 const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelContent({
   learningSpace,
+  dmChannelByUserId,
 }: {
   learningSpace: LearningSpaceVM;
+  dmChannelByUserId?: Record<string, string>;
 }) {
   const { channel, toggle, messageFilter, toggleMessageFilter } = useMessagesState();
 
@@ -246,7 +250,11 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
               date.toLocaleDateString('en-US', { weekday: 'short' });
             const getMonth = (date: Date) =>
               date.toLocaleDateString('en-US', { month: 'short' });
-            const dateParam = scheduleDate.toISOString().slice(0, 10);
+            const dateParam = [
+              scheduleDate.getFullYear(),
+              String(scheduleDate.getMonth() + 1).padStart(2, '0'),
+              String(scheduleDate.getDate()).padStart(2, '0'),
+            ].join('-');
             const calendarUrl = `/dashboard/class-schedule?view=day&date=${dateParam}`;
 
             const shiftDate = (date: Date, offset: number) => {
@@ -326,27 +334,44 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
       <div className="space-y-4 p-4 min-w-0">
         <h3 className="text-sm font-semibold text-foreground">Members</h3>
         <div className="space-y-3 min-w-0">
-          {learningSpace.participants.map((member) => (
-            <div key={member.id} className="flex items-center gap-3">
-              <AvatarWithStatus
-                name={member.displayName}
-                avatar={member.avatar.url ?? ''}
-                sizeClassName="h-9 w-9"
-                initialsLength={1}
-                showStatus={false}
-              />
-              <div className="min-w-0">
-                <div className="truncate text-sm font-medium text-foreground">
-                  {member.displayName}
-                </div>
-                {member.status ? (
-                  <div className="truncate text-xs text-muted-foreground">
-                    {member.status}
+          {learningSpace.participants.map((member) => {
+            const dmChannelId = dmChannelByUserId?.[member.id];
+
+            return (
+              <div key={member.id} className="flex items-center gap-3">
+                <AvatarWithStatus
+                  name={member.displayName}
+                  avatar={member.avatar.url ?? ''}
+                  sizeClassName="h-9 w-9"
+                  initialsLength={1}
+                  showStatus={false}
+                />
+                <div className="min-w-0 flex-1">
+                  <div className="truncate text-sm font-medium text-foreground">
+                    {member.displayName}
                   </div>
+                  {member.status ? (
+                    <div className="truncate text-xs text-muted-foreground">
+                      {member.status}
+                    </div>
+                  ) : null}
+                </div>
+                {dmChannelId ? (
+                  <Button
+                    asChild
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 shrink-0 text-muted-foreground hover:bg-primary/15 hover:text-primary"
+                    aria-label={`Message ${member.displayName}`}
+                  >
+                    <a href={`/dashboard/dm/${dmChannelId}`}>
+                      <MessageCircle className="h-4 w-4" />
+                    </a>
+                  </Button>
                 ) : null}
               </div>
-            </div>
-          ))}
+            );
+          })}
           {learningSpace.participants.length === 0 ? (
             <div className="text-sm text-muted-foreground">No members added yet.</div>
           ) : null}
@@ -359,6 +384,7 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
 export function LearningSpaceInfoPanel({
   intent,
   learningSpace,
+  dmChannelByUserId,
 }: LearningSpaceInfoPanelProps) {
   if (!learningSpace) {
     return null;
@@ -366,7 +392,10 @@ export function LearningSpaceInfoPanel({
 
   return (
     <div className="flex h-full min-h-0 flex-col overflow-y-auto">
-      <LearningSpaceInfoPanelContent learningSpace={learningSpace} />
+      <LearningSpaceInfoPanelContent
+        learningSpace={learningSpace}
+        dmChannelByUserId={dmChannelByUserId}
+      />
     </div>
   );
 }
