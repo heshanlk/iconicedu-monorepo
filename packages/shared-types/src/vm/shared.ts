@@ -17,3 +17,16 @@ export interface ConnectionVM<T> {
   nextCursor?: string | null;
   total?: number | null;
 }
+
+export type EntityRefVM =
+  | { kind: 'class_space'; id: UUID }
+  | { kind: 'session'; id: UUID }
+  | { kind: 'homework'; id: UUID }
+  | { kind: 'summary'; id: UUID }
+  | { kind: 'message'; id: UUID }
+  | { kind: 'file'; id: UUID }
+  | { kind: 'user'; id: UUID }
+  | { kind: 'educator'; id: UUID }
+  | { kind: 'guardian'; id: UUID }
+  | { kind: 'child'; id: UUID }
+  | { kind: 'staff'; id: UUID };

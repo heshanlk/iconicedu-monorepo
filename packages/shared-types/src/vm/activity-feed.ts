@@ -1,5 +1,5 @@
 import { AvatarVM } from './profile';
-import { ConnectionVM, ISODateTime, UUID } from './shared';
+import { ConnectionVM, EntityRefVM, ISODateTime, UUID } from './shared';
 
 export type ActivityGroupKeyVM =
   | 'homework'
@@ -26,19 +26,6 @@ export type ActorVM = {
   avatarUrl?: string | null;
   roleKey?: 'owner' | 'admin' | 'educator' | 'guardian' | 'child' | 'staff' | string;
 };
-
-export type EntityRefVM =
-  | { type: 'class_space'; id: UUID }
-  | { type: 'session'; id: UUID }
-  | { type: 'homework'; id: UUID }
-  | { type: 'summary'; id: UUID }
-  | { type: 'message'; id: UUID }
-  | { type: 'file'; id: UUID }
-  | { type: 'user'; id: UUID }
-  | { type: 'educator'; id: UUID }
-  | { type: 'guardian'; id: UUID }
-  | { type: 'child'; id: UUID }
-  | { type: 'staff'; id: UUID };
 
 export type ActivityVisibilityVM = 'public' | 'scope_only' | 'direct';
 export type AudienceRuleVM =

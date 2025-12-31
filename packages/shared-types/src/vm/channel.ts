@@ -1,4 +1,4 @@
-import type { ConnectionVM, ISODateTime, UUID } from './shared';
+import type { ConnectionVM, EntityRefVM, ISODateTime, UUID } from './shared';
 import type { UserProfileVM } from './profile';
 import type { MessageReadStateVM, MessageVM } from './messages';
 import type { MessagesRightPanelIntentKey } from './messages-right-sidebar';
@@ -60,12 +60,6 @@ export interface ChannelFileItemVM {
   tool?: string | null;
   createdAt: ISODateTime;
 }
-
-/**
- * ✅ CHANGE: lightweight entity reference to avoid importing other VMs.
- * This prevents tight coupling between channels and class-space/schedule domains.
- */
-export type EntityRefVM = { kind: 'class_space'; id: UUID } | { kind: 'user'; id: UUID };
 
 /**
  * ✅ CHANGE: optional context that tells the UI what this channel "belongs to"

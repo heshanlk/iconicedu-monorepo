@@ -128,8 +128,25 @@ const buildClassSpace = ({
   relatedChannels,
   scheduleSeries: baseEvents[scheduleIndex % baseEvents.length] ?? null,
   links: [
-    { label: 'Classroom', url: 'https://classroom.google.com' },
-    { label: 'Resources', url: 'https://drive.google.com' },
+    {
+      label: 'Join',
+      iconKey: 'video',
+      url: 'https://zoom.us/j/1234567890',
+      status: 'active',
+    },
+    {
+      label: 'Classroom',
+      iconKey: 'graduation-cap',
+      url: 'https://classroom.google.com',
+      status: 'active',
+    },
+    {
+      label: 'Resources',
+      iconKey: 'folder',
+      url: 'https://drive.google.com',
+      status: 'inactive',
+      hidden: true,
+    },
   ],
   participants,
   createdAt,
@@ -410,4 +427,8 @@ export const CLASS_SPACES: ClassSpaceVM[] = (() => {
 
 export const CLASS_SPACE_CHANNELS: ChannelVM[] = CLASS_SPACES.map(
   (space) => space.primaryChannel,
+);
+
+export const CLASS_SPACE_BY_CHANNEL_ID = Object.fromEntries(
+  CLASS_SPACES.map((space) => [space.primaryChannel.id, space]),
 );

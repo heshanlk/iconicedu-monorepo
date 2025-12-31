@@ -11,7 +11,7 @@ import {
   useMessagesState,
 } from './context/messages-state-provider';
 import { MessagesRightSidebarRegion } from './messages-right-sidebar-region';
-import { ChannelInfoPanel } from './panels/channel-info-panel';
+import { ClassSpaceInfoPanel } from './panels/class-space-info-panel';
 import { ProfilePanel } from './panels/profile-panel';
 import { SavedPanel } from './panels/saved-panel';
 import { ThreadPanel } from './panels/thread-panel';
@@ -33,7 +33,7 @@ export const MessagesShell = memo(function MessagesShell(props: MessagesContaine
     MessagesRightPanelRegistry<ComponentType<MessagesRightPanelProps>>
   >(
     () => ({
-      channel_info: ChannelInfoPanel,
+      channel_info: ClassSpaceInfoPanel,
       saved: SavedPanel,
       profile: ProfilePanel,
       thread: ThreadPanel,
@@ -42,7 +42,7 @@ export const MessagesShell = memo(function MessagesShell(props: MessagesContaine
   );
 
   return (
-    <MessagesStateProvider channel={channel}>
+    <MessagesStateProvider channel={channel} classSpace={props.classSpace}>
       <MessagesShellLayout {...props} registry={rightPanelRegistry} />
     </MessagesStateProvider>
   );

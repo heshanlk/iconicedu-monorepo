@@ -16,7 +16,10 @@ export type ClassSpaceStatusVM = 'active' | 'archived' | 'completed' | 'paused';
 // Zoom / Meet link,  Google Classroom link, Drive folder, etc.
 export interface ClassSpaceLink {
   label: string;
+  iconKey: string | null;
   url?: string | null;
+  status?: 'active' | 'inactive' | null;
+  hidden?: boolean | null;
 }
 
 export interface ClassSpaceVM {
