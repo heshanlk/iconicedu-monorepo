@@ -21,7 +21,7 @@ import {
   Bookmark,
   Flag,
 } from 'lucide-react';
-import type { MessagesRightPanelIntent } from '@iconicedu/shared-types';
+import type { ClassSpaceVM, MessagesRightPanelIntent } from '@iconicedu/shared-types';
 import { Badge } from '../../../ui/badge';
 import { Button } from '../../../ui/button';
 import { ButtonGroup } from '../../../ui/button-group';
@@ -100,9 +100,12 @@ const CLASS_SPACE_LINK_ICONS: Record<string, typeof Link2> = {
   folder: Folder,
 };
 
-const ClassSpaceInfoPanelContent = memo(function ClassSpaceInfoPanelContent() {
-  const { channel, classSpace, toggle, messageFilter, toggleMessageFilter } =
-    useMessagesState();
+const ClassSpaceInfoPanelContent = memo(function ClassSpaceInfoPanelContent({
+  classSpace,
+}: {
+  classSpace: ClassSpaceVM;
+}) {
+  const { channel, toggle, messageFilter, toggleMessageFilter } = useMessagesState();
 
   const iconKey = classSpace.iconKey ?? channel.topicIconKey ?? 'sparkles';
   const Icon =
@@ -320,7 +323,7 @@ export function ClassSpaceInfoPanel({ intent }: ClassSpaceInfoPanelProps) {
 
   return (
     <div className="flex h-full min-h-0 flex-col overflow-y-auto">
-      <ClassSpaceInfoPanelContent />
+      <ClassSpaceInfoPanelContent classSpace={classSpace} />
     </div>
   );
 }
