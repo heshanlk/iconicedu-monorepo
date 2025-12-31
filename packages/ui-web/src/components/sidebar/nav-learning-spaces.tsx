@@ -12,7 +12,7 @@ import {
   StarOff,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import type { ChannelMiniVM, SidebarChild } from '@iconicedu/shared-types';
+import type { ClassSpaceVM, SidebarChild } from '@iconicedu/shared-types';
 
 import {
   Collapsible,
@@ -48,7 +48,7 @@ export function NavLearningSpaces({
   onOpenChange,
   activeChannelId,
 }: {
-  learningSpaces: ChannelMiniVM[];
+  learningSpaces: ClassSpaceVM[];
   title: string;
   child: SidebarChild;
   isOpen: boolean;
@@ -94,17 +94,19 @@ export function NavLearningSpaces({
           ) : (
             <SidebarMenu>
               {learningSpaces.map((space) => {
-                const Icon: LucideIcon = space.topicIconKey
-                  ? (LEARNING_SPACE_ICONS[space.topicIconKey] ?? Languages)
+                const channel = space.primaryChannel;
+                const iconKey = space.iconKey ?? channel.topicIconKey ?? null;
+                const Icon: LucideIcon = iconKey
+                  ? (LEARNING_SPACE_ICONS[iconKey] ?? Languages)
                   : Languages;
-                const isActive = activeChannelId === space.id;
+                const isActive = activeChannelId === channel.id;
 
                 return (
                   <SidebarMenuItem key={space.id}>
-                    <SidebarMenuButton asChild tooltip={space.topic} isActive={isActive}>
-                      <a href={`/dashboard/ls/${space.id}`}>
+                    <SidebarMenuButton asChild tooltip={space.title} isActive={isActive}>
+                      <a href={`/dashboard/ls/${channel.id}`}>
                         <Icon />
-                        <span>{space.topic}</span>
+                        <span>{space.title}</span>
                       </a>
                     </SidebarMenuButton>
                     <DropdownMenu>

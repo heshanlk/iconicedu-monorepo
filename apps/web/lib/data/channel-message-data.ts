@@ -22,7 +22,7 @@ import type {
   ChildProfileVM,
 } from '@iconicedu/shared-types';
 import { DIRECT_MESSAGE_CHANNELS } from './direct-message-channels';
-import { LEARNING_SPACES } from './learning-spaces';
+import { CLASS_SPACE_CHANNELS } from './class-spaces';
 
 const minutesAgo = (minutes: number) =>
   new Date(Date.now() - 1000 * 60 * minutes).toISOString();
@@ -559,7 +559,7 @@ export const DIRECT_MESSAGE_CHANNELS_BY_ID = Object.fromEntries(
   DIRECT_MESSAGE_CHANNELS_WITH_MESSAGES.map((channel) => [channel.id, channel]),
 );
 
-export const LEARNING_SPACE_CHANNELS_WITH_MESSAGES = LEARNING_SPACES.map(
+export const LEARNING_SPACE_CHANNELS_WITH_MESSAGES = CLASS_SPACE_CHANNELS.map(
   (channel, index) => {
     const participants = channel.participants;
     const guardian =

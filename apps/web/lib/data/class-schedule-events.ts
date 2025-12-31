@@ -9,6 +9,7 @@ import {
   MOCK_EDUCATOR_3,
   MOCK_GUARDIAN,
 } from './people';
+import { CLASS_SPACE_IDS } from './class-space-ids';
 
 const now = new Date();
 const makeDateOffset = (daysOffset: number) => {
@@ -58,7 +59,7 @@ export const baseEvents: ClassScheduleVM[] = [
     participants: [guardian, childOne, educatorOne],
     source: {
       kind: 'class_session',
-      classSpaceId: 'class-space-math-sarah',
+      classSpaceId: CLASS_SPACE_IDS.childOneMath,
       sessionId: 'session-math-001',
     },
     recurrence: {
@@ -111,7 +112,7 @@ export const baseEvents: ClassScheduleVM[] = [
     participants: [guardian, childTwo, educatorTwo],
     source: {
       kind: 'class_session',
-      classSpaceId: 'class-space-science-zayne',
+      classSpaceId: CLASS_SPACE_IDS.childTwoScience,
       sessionId: 'session-science-002',
     },
     recurrence: {
@@ -153,7 +154,7 @@ export const baseEvents: ClassScheduleVM[] = [
     participants: [guardian, childThree, educatorThree],
     source: {
       kind: 'class_session',
-      classSpaceId: 'class-space-ela-sophia',
+      classSpaceId: CLASS_SPACE_IDS.childThreeEla,
       sessionId: 'session-ela-003',
     },
     recurrence: {

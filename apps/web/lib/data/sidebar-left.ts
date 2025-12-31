@@ -1,6 +1,6 @@
 import type { SidebarLeftData } from '@iconicedu/shared-types';
 import { MOCK_GUARDIAN, MOCK_USER_ACCOUNTS, toProfileUser } from './people';
-import { LEARNING_SPACES } from './learning-spaces';
+import { CLASS_SPACES } from './class-spaces';
 import { DIRECT_MESSAGE_CHANNELS } from './direct-message-channels';
 
 const guardianAccount = MOCK_USER_ACCOUNTS.find(
@@ -28,7 +28,7 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftData = {
       count: 11,
     },
   ],
-  LEARNING_SPACES,
+  LEARNING_SPACES: CLASS_SPACES,
   navSecondary: [
     {
       title: 'Support',

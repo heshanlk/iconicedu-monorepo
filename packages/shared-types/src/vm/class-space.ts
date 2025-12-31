@@ -1,7 +1,8 @@
 // class-space.ts
 import type { ISODateTime, UUID } from './shared';
-import type { ChannelMiniVM, ChannelVM } from './channel';
+import type { ChannelVM } from './channel';
 import type { ClassScheduleVM } from './class-schedule';
+import type { UserProfileVM } from './profile';
 
 /**
  * A "Class Space" is the aggregate users think of as "the class".
@@ -50,4 +51,6 @@ export interface ClassSpaceVM {
   createdAt: ISODateTime;
   createdBy: UUID;
   archivedAt?: ISODateTime | null;
+
+  participants: UserProfileVM[];
 }

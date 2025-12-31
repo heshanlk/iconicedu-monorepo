@@ -89,7 +89,9 @@ export function SidebarLeft({
   const learningSpacesByChild = children.map((child) => ({
     child,
     learningSpaces: data.LEARNING_SPACES.filter((space) =>
-      space.participants.some((participant) => participant.accountId === child.accountId),
+      space.primaryChannel.participants.some(
+        (participant) => participant.accountId === child.accountId,
+      ),
     ),
   }));
 
@@ -113,7 +115,7 @@ export function SidebarLeft({
   const activeChildId = React.useMemo(() => {
     if (!activeLearningSpaceId) return null;
     const match = learningSpacesByChild.find(({ learningSpaces }) =>
-      learningSpaces.some((space) => space.id === activeLearningSpaceId),
+      learningSpaces.some((space) => space.primaryChannel.id === activeLearningSpaceId),
     );
     return match?.child.accountId ?? null;
   }, [activeLearningSpaceId, learningSpacesByChild]);

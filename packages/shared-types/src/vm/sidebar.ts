@@ -1,6 +1,7 @@
 import type React from 'react';
 import type { ChildProfileVM, UserProfileVM } from './profile';
 import type { ChannelMiniVM } from './channel';
+import type { ClassSpaceVM } from './class-space';
 
 export type SidebarIconKey =
   | 'home'
@@ -45,7 +46,7 @@ export type SidebarChild = Pick<ChildProfileVM, 'accountId' | 'displayName' | 'c
 export type SidebarLeftData = {
   user: UserProfileVM & { email?: string | null };
   navMain: SidebarNavItemData[];
-  LEARNING_SPACES: ChannelMiniVM[];
+  LEARNING_SPACES: ClassSpaceVM[];
   navSecondary: SidebarSecondaryItemData[];
   DIRECT_MESSAGES: ChannelMiniVM[];
 };
