@@ -1,246 +1,294 @@
-import type {
-  ClassScheduleParticipantVM,
-  ClassScheduleVM,
-} from '@iconicedu/shared-types';
+import type { ClassScheduleVM } from '@iconicedu/shared-types';
 import {
+  MOCK_GUARDIAN,
   MOCK_CHILDREN,
-  MOCK_EDUCATOR,
+  MOCK_EDUCATOR_1,
   MOCK_EDUCATOR_2,
   MOCK_EDUCATOR_3,
-  MOCK_GUARDIAN,
+  MOCK_EDUCATOR_4,
+  MOCK_ORG_ID,
 } from './people';
 import { LEARNING_SPACE_IDS } from './learning-space-ids';
 
-const now = new Date();
-const makeDateOffset = (daysOffset: number) => {
-  const date = new Date();
-  date.setDate(date.getDate() + daysOffset);
-  return date;
+export const MATH_SCHEDULE: ClassScheduleVM = {
+  id: 'c1111111-1111-4111-8111-111111111111',
+  orgId: MOCK_ORG_ID,
+  title: 'Math Foundations',
+  startAt: '2025-01-13T21:00:00.000Z',
+  endAt: '2025-01-13T22:00:00.000Z',
+  timezone: 'America/New_York',
+  status: 'scheduled',
+  description: 'Core number sense and reasoning.',
+  location: 'Zoom',
+  visibility: 'class-members',
+  color: 'blue',
+  participants: [
+    {
+      userId: MOCK_EDUCATOR_2.id,
+      role: 'educator',
+      status: 'accepted',
+      displayName: MOCK_EDUCATOR_2.displayName,
+      avatarUrl: MOCK_EDUCATOR_2.avatar.url ?? null,
+    },
+    {
+      userId: MOCK_CHILDREN[0].id,
+      role: 'child',
+      status: 'accepted',
+      displayName: MOCK_CHILDREN[0].displayName,
+      avatarUrl: MOCK_CHILDREN[0].avatar.url ?? null,
+    },
+    {
+      userId: MOCK_GUARDIAN.id,
+      role: 'guardian',
+      status: 'accepted',
+      displayName: MOCK_GUARDIAN.displayName,
+      avatarUrl: MOCK_GUARDIAN.avatar.url ?? null,
+    },
+  ],
+  source: {
+    kind: 'class_session',
+    learningSpaceId: LEARNING_SPACE_IDS.math,
+    sessionId: '9a0d0b58-9d9b-4212-8f45-8a2e8c0b7001',
+  },
+  recurrence: {
+    seriesId: 'a1b2c3d4-1111-4111-8111-111111111111',
+    rule: {
+      frequency: 'weekly',
+      interval: 1,
+      byWeekday: ['MO'],
+      timezone: 'America/New_York',
+    },
+    exceptions: [
+      { occurrenceKey: '2025-02-17T21:00:00.000Z', reason: 'Winter break' },
+    ],
+    overrides: [
+      {
+        occurrenceKey: '2025-02-03T21:00:00.000Z',
+        patch: {
+          startAt: '2025-02-03T22:00:00.000Z',
+          endAt: '2025-02-03T23:00:00.000Z',
+          status: 'rescheduled',
+          location: 'Zoom (rescheduled)',
+        },
+      },
+    ],
+  },
+  audit: {
+    createdAt: '2025-01-02T15:00:00.000Z',
+    createdBy: MOCK_EDUCATOR_2.id,
+  },
 };
 
-const makeIsoAt = (daysOffset: number, hours: number, minutes: number) => {
-  const date = makeDateOffset(daysOffset);
-  date.setHours(hours, minutes, 0, 0);
-  return date.toISOString();
+export const SCIENCE_SCHEDULE: ClassScheduleVM = {
+  id: 'c2222222-2222-4222-8222-222222222222',
+  orgId: MOCK_ORG_ID,
+  title: 'Science Lab',
+  startAt: '2025-01-15T22:00:00.000Z',
+  endAt: '2025-01-15T23:00:00.000Z',
+  timezone: 'America/New_York',
+  status: 'scheduled',
+  description: 'Hands-on experiments and lab notes.',
+  location: 'Zoom',
+  visibility: 'class-members',
+  color: 'green',
+  participants: [
+    {
+      userId: MOCK_EDUCATOR_3.id,
+      role: 'educator',
+      status: 'accepted',
+      displayName: MOCK_EDUCATOR_3.displayName,
+      avatarUrl: MOCK_EDUCATOR_3.avatar.url ?? null,
+    },
+    {
+      userId: MOCK_CHILDREN[1].id,
+      role: 'child',
+      status: 'accepted',
+      displayName: MOCK_CHILDREN[1].displayName,
+      avatarUrl: MOCK_CHILDREN[1].avatar.url ?? null,
+    },
+    {
+      userId: MOCK_GUARDIAN.id,
+      role: 'guardian',
+      status: 'accepted',
+      displayName: MOCK_GUARDIAN.displayName,
+      avatarUrl: MOCK_GUARDIAN.avatar.url ?? null,
+    },
+  ],
+  source: {
+    kind: 'class_session',
+    learningSpaceId: LEARNING_SPACE_IDS.science,
+    sessionId: '9a0d0b58-9d9b-4212-8f45-8a2e8c0b7002',
+  },
+  recurrence: {
+    seriesId: 'a1b2c3d4-2222-4222-8222-222222222222',
+    rule: {
+      frequency: 'weekly',
+      interval: 1,
+      byWeekday: ['WE'],
+      timezone: 'America/New_York',
+    },
+    overrides: [
+      {
+        occurrenceKey: '2025-02-12T22:00:00.000Z',
+        patch: {
+          status: 'cancelled',
+          description: 'Cancelled due to teacher conference.',
+        },
+      },
+      {
+        occurrenceKey: '2025-02-26T22:00:00.000Z',
+        patch: {
+          location: 'Room 14 (lab kit pickup)',
+          status: 'scheduled',
+        },
+      },
+    ],
+  },
+  audit: {
+    createdAt: '2025-01-02T15:05:00.000Z',
+    createdBy: MOCK_EDUCATOR_3.id,
+  },
 };
 
-const makeParticipant = (
-  user: { accountId: string; displayName: string; avatar: { url?: string | null } },
-  role: ClassScheduleParticipantVM['role'],
-): ClassScheduleParticipantVM => ({
-  userId: user.accountId,
-  role,
-  displayName: user.displayName,
-  avatarUrl: user.avatar.url ?? null,
-});
+export const ELA_SCHEDULE: ClassScheduleVM = {
+  id: 'c3333333-3333-4333-8333-333333333333',
+  orgId: MOCK_ORG_ID,
+  title: 'ELA Writing Studio',
+  startAt: '2025-01-17T22:30:00.000Z',
+  endAt: '2025-01-17T23:30:00.000Z',
+  timezone: 'America/New_York',
+  status: 'scheduled',
+  description: 'Writing practice and reading circles.',
+  location: 'Zoom',
+  visibility: 'class-members',
+  color: 'pink',
+  participants: [
+    {
+      userId: MOCK_EDUCATOR_1.id,
+      role: 'educator',
+      status: 'accepted',
+      displayName: MOCK_EDUCATOR_1.displayName,
+      avatarUrl: MOCK_EDUCATOR_1.avatar.url ?? null,
+    },
+    {
+      userId: MOCK_CHILDREN[2].id,
+      role: 'child',
+      status: 'accepted',
+      displayName: MOCK_CHILDREN[2].displayName,
+      avatarUrl: MOCK_CHILDREN[2].avatar.url ?? null,
+    },
+    {
+      userId: MOCK_GUARDIAN.id,
+      role: 'guardian',
+      status: 'accepted',
+      displayName: MOCK_GUARDIAN.displayName,
+      avatarUrl: MOCK_GUARDIAN.avatar.url ?? null,
+    },
+  ],
+  source: {
+    kind: 'class_session',
+    learningSpaceId: LEARNING_SPACE_IDS.ela,
+    sessionId: '9a0d0b58-9d9b-4212-8f45-8a2e8c0b7003',
+  },
+  recurrence: {
+    seriesId: 'a1b2c3d4-3333-4333-8333-333333333333',
+    rule: {
+      frequency: 'weekly',
+      interval: 1,
+      byWeekday: ['FR'],
+      timezone: 'America/New_York',
+    },
+    exceptions: [
+      { occurrenceKey: '2025-02-14T22:30:00.000Z', reason: 'Holiday' },
+    ],
+    overrides: [
+      {
+        occurrenceKey: '2025-02-07T22:30:00.000Z',
+        patch: {
+          startAt: '2025-02-07T21:30:00.000Z',
+          endAt: '2025-02-07T22:30:00.000Z',
+          status: 'rescheduled',
+        },
+      },
+    ],
+  },
+  audit: {
+    createdAt: '2025-01-02T15:10:00.000Z',
+    createdBy: MOCK_EDUCATOR_1.id,
+  },
+};
 
-const guardian = makeParticipant(MOCK_GUARDIAN, 'guardian');
-const childOne = makeParticipant(MOCK_CHILDREN[0], 'child');
-const childTwo = makeParticipant(MOCK_CHILDREN[1], 'child');
-const childThree = makeParticipant(MOCK_CHILDREN[2], 'child');
-const educatorOne = makeParticipant(MOCK_EDUCATOR, 'educator');
-const educatorTwo = makeParticipant(MOCK_EDUCATOR_2, 'educator');
-const educatorThree = makeParticipant(MOCK_EDUCATOR_3, 'educator');
-
-const createdAt = now.toISOString();
+export const CHESS_SCHEDULE: ClassScheduleVM = {
+  id: 'c4444444-4444-4444-8444-444444444444',
+  orgId: MOCK_ORG_ID,
+  title: 'Chess Tactics',
+  startAt: '2025-01-18T19:00:00.000Z',
+  endAt: '2025-01-18T20:00:00.000Z',
+  timezone: 'America/New_York',
+  status: 'scheduled',
+  description: 'Tactics training and game review.',
+  location: 'Zoom',
+  visibility: 'class-members',
+  color: 'purple',
+  participants: [
+    {
+      userId: MOCK_EDUCATOR_4.id,
+      role: 'educator',
+      status: 'accepted',
+      displayName: MOCK_EDUCATOR_4.displayName,
+      avatarUrl: MOCK_EDUCATOR_4.avatar.url ?? null,
+    },
+    {
+      userId: MOCK_CHILDREN[0].id,
+      role: 'child',
+      status: 'accepted',
+      displayName: MOCK_CHILDREN[0].displayName,
+      avatarUrl: MOCK_CHILDREN[0].avatar.url ?? null,
+    },
+    {
+      userId: MOCK_GUARDIAN.id,
+      role: 'guardian',
+      status: 'accepted',
+      displayName: MOCK_GUARDIAN.displayName,
+      avatarUrl: MOCK_GUARDIAN.avatar.url ?? null,
+    },
+  ],
+  source: {
+    kind: 'class_session',
+    learningSpaceId: LEARNING_SPACE_IDS.chess,
+    sessionId: '9a0d0b58-9d9b-4212-8f45-8a2e8c0b7004',
+  },
+  recurrence: {
+    seriesId: 'a1b2c3d4-4444-4444-8444-444444444444',
+    rule: {
+      frequency: 'weekly',
+      interval: 1,
+      byWeekday: ['SA'],
+      timezone: 'America/New_York',
+    },
+    exceptions: [
+      { occurrenceKey: '2025-02-15T19:00:00.000Z', reason: 'Tournament' },
+    ],
+    overrides: [
+      {
+        occurrenceKey: '2025-02-01T19:00:00.000Z',
+        patch: {
+          startAt: '2025-02-01T20:00:00.000Z',
+          endAt: '2025-02-01T21:00:00.000Z',
+          status: 'rescheduled',
+        },
+      },
+    ],
+  },
+  audit: {
+    createdAt: '2025-01-02T15:15:00.000Z',
+    createdBy: MOCK_EDUCATOR_4.id,
+  },
+};
 
 export const baseEvents: ClassScheduleVM[] = [
-  {
-    id: 'class-math-sarah',
-    title: `${MOCK_CHILDREN[0].displayName} • Math with ${MOCK_EDUCATOR.displayName}`,
-    startAt: makeIsoAt(0, 9, 0),
-    endAt: makeIsoAt(0, 10, 0),
-    timezone: 'America/New_York',
-    status: 'scheduled',
-    description: 'Weekly math session with practice problems and review.',
-    location: 'Zoom',
-    visibility: 'class-members',
-    color: 'blue',
-    participants: [guardian, childOne, educatorOne],
-    source: {
-      kind: 'class_session',
-      learningSpaceId: LEARNING_SPACE_IDS.childOneMath,
-      sessionId: 'session-math-001',
-    },
-    recurrence: {
-      seriesId: 'series-math-sarah',
-      rule: {
-        frequency: 'weekly',
-        interval: 1,
-        byWeekday: ['MO'],
-        timezone: 'America/New_York',
-      },
-      exceptions: [
-        { occurrenceKey: makeIsoAt(7, 9, 0), reason: 'Holiday closure' },
-        { occurrenceKey: makeIsoAt(14, 9, 0), reason: 'Family travel' },
-      ],
-      overrides: [
-        {
-          occurrenceKey: makeIsoAt(1, 9, 0),
-          patch: {
-            title: `${MOCK_CHILDREN[0].displayName} • Math (short session)`,
-            startAt: makeIsoAt(1, 9, 30),
-            endAt: makeIsoAt(1, 10, 0),
-            status: 'rescheduled',
-          },
-        },
-        {
-          occurrenceKey: makeIsoAt(21, 9, 0),
-          patch: {
-            location: 'Google Meet',
-            description: 'Guest instructor covering fractions and ratios.',
-          },
-        },
-      ],
-    },
-    audit: {
-      createdAt,
-      createdBy: MOCK_EDUCATOR.accountId,
-    },
-  },
-  {
-    id: 'class-science-zayne',
-    title: `${MOCK_CHILDREN[1].displayName} • Science lab with ${MOCK_EDUCATOR_2.displayName}`,
-    startAt: makeIsoAt(1, 14, 0),
-    endAt: makeIsoAt(1, 15, 0),
-    timezone: 'America/New_York',
-    status: 'scheduled',
-    description: 'Hands-on lab with microscope observations.',
-    location: 'Zoom',
-    visibility: 'class-members',
-    color: 'green',
-    participants: [guardian, childTwo, educatorTwo],
-    source: {
-      kind: 'class_session',
-      learningSpaceId: LEARNING_SPACE_IDS.childTwoScience,
-      sessionId: 'session-science-002',
-    },
-    recurrence: {
-      seriesId: 'series-science-zayne',
-      rule: {
-        frequency: 'weekly',
-        interval: 1,
-        byWeekday: ['WE'],
-        timezone: 'America/New_York',
-      },
-      exceptions: [{ occurrenceKey: makeIsoAt(8, 14, 0), reason: 'Field trip' }],
-      overrides: [
-        {
-          occurrenceKey: makeIsoAt(15, 14, 0),
-          patch: {
-            title: `${MOCK_CHILDREN[1].displayName} • Science lab (extended)`,
-            startAt: makeIsoAt(15, 13, 30),
-            endAt: makeIsoAt(15, 15, 30),
-          },
-        },
-      ],
-    },
-    audit: {
-      createdAt,
-      createdBy: MOCK_EDUCATOR_2.accountId,
-    },
-  },
-  {
-    id: 'class-ela-sophia',
-    title: `${MOCK_CHILDREN[2].displayName} • ELA with ${MOCK_EDUCATOR_3.displayName}`,
-    startAt: makeIsoAt(2, 11, 0),
-    endAt: makeIsoAt(2, 12, 0),
-    timezone: 'America/Chicago',
-    status: 'scheduled',
-    description: 'Reading comprehension and writing workshop.',
-    location: 'Zoom',
-    visibility: 'class-members',
-    color: 'pink',
-    participants: [guardian, childThree, educatorThree],
-    source: {
-      kind: 'class_session',
-      learningSpaceId: LEARNING_SPACE_IDS.childThreeEla,
-      sessionId: 'session-ela-003',
-    },
-    recurrence: {
-      seriesId: 'series-ela-sophia',
-      rule: {
-        frequency: 'weekly',
-        interval: 1,
-        byWeekday: ['FR'],
-        timezone: 'America/Chicago',
-      },
-      exceptions: [],
-      overrides: [],
-    },
-    audit: {
-      createdAt,
-      createdBy: MOCK_EDUCATOR_3.accountId,
-    },
-  },
-  {
-    id: 'makeup-math-sarah',
-    title: `${MOCK_CHILDREN[0].displayName} • Math makeup session`,
-    startAt: makeIsoAt(3, 16, 0),
-    endAt: makeIsoAt(3, 17, 0),
-    timezone: 'America/New_York',
-    status: 'rescheduled',
-    description: 'Rescheduled session due to holiday.',
-    location: 'Zoom',
-    visibility: 'internal',
-    color: 'orange',
-    participants: [guardian, childOne, educatorOne],
-    source: {
-      kind: 'manual',
-      createdByUserId: MOCK_EDUCATOR.accountId,
-    },
-    audit: {
-      createdAt,
-      createdBy: MOCK_EDUCATOR.accountId,
-      updatedAt: createdAt,
-      updatedBy: MOCK_EDUCATOR.accountId,
-    },
-  },
-  {
-    id: 'family-review',
-    title: 'Learning plan review',
-    startAt: makeIsoAt(5, 18, 0),
-    endAt: makeIsoAt(5, 18, 30),
-    timezone: 'America/New_York',
-    status: 'scheduled',
-    description: 'Review progress and plan next steps.',
-    location: 'Google Meet',
-    visibility: 'private',
-    color: 'yellow',
-    participants: [guardian, educatorOne],
-    source: {
-      kind: 'manual',
-      createdByUserId: MOCK_GUARDIAN.accountId,
-    },
-    audit: {
-      createdAt,
-      createdBy: MOCK_GUARDIAN.accountId,
-    },
-  },
-  {
-    id: 'holiday-no-class',
-    title: 'No class • School holiday',
-    startAt: makeIsoAt(7, 9, 0),
-    endAt: makeIsoAt(7, 10, 0),
-    timezone: 'America/New_York',
-    status: 'cancelled',
-    description: 'Holiday closure. Classes resume next week.',
-    location: 'Online',
-    visibility: 'public',
-    color: 'gray',
-    participants: [guardian, educatorOne, childOne],
-    source: {
-      kind: 'class_session',
-      learningSpaceId: LEARNING_SPACE_IDS.childOneMath,
-      sessionId: 'session-math-001-cancelled',
-    },
-    audit: {
-      createdAt,
-      createdBy: MOCK_EDUCATOR.accountId,
-      cancelledAt: createdAt,
-      cancelledBy: MOCK_EDUCATOR.accountId,
-      cancelReason: 'holiday',
-      cancelNote: 'School closed for the holiday.',
-    },
-  },
+  MATH_SCHEDULE,
+  SCIENCE_SCHEDULE,
+  ELA_SCHEDULE,
+  CHESS_SCHEDULE,
 ];

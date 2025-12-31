@@ -83,9 +83,11 @@ export type MessageTypeVM =
   | 'design-file-update'
   | 'payment-reminder'
   | 'event-reminder'
+  | 'feedback-request'
   | 'lesson-assignment'
   | 'progress-update'
   | 'session-booking'
+  | 'session-complete'
   | 'session-summary'
   | 'homework-submission'
   | 'link-preview'
@@ -157,6 +159,18 @@ export interface EventReminderMessageVM extends BaseMessageVM {
   };
 }
 
+export interface FeedbackRequestMessageVM extends BaseMessageVM {
+  type: 'feedback-request';
+  content?: string;
+  feedback: {
+    prompt: string;
+    sessionTitle?: string | null;
+    submittedAt?: ISODateTime | null;
+    rating?: number | null;
+    comment?: string | null;
+  };
+}
+
 export interface LessonAssignmentMessageVM extends BaseMessageVM {
   type: 'lesson-assignment';
   content: string;
@@ -198,6 +212,17 @@ export interface SessionBookingMessageVM extends BaseMessageVM {
     location?: string;
     status: 'scheduled' | 'confirmed' | 'cancelled' | 'completed';
     topics?: string[];
+  };
+}
+
+export interface SessionCompleteMessageVM extends BaseMessageVM {
+  type: 'session-complete';
+  content?: string;
+  session: {
+    title: string;
+    startAt: ISODateTime;
+    endAt?: ISODateTime;
+    completedAt?: ISODateTime | null;
   };
 }
 
@@ -259,9 +284,11 @@ export type MessageVM =
   | DesignFileUpdateMessageVM
   | PaymentReminderMessageVM
   | EventReminderMessageVM
+  | FeedbackRequestMessageVM
   | LessonAssignmentMessageVM
   | ProgressUpdateMessageVM
   | SessionBookingMessageVM
+  | SessionCompleteMessageVM
   | SessionSummaryMessageVM
   | HomeworkSubmissionMessageVM
   | LinkPreviewMessageVM

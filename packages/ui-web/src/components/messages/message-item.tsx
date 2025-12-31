@@ -9,9 +9,11 @@ import {
   isDesignFileUpdateMessage,
   isPaymentReminderMessage,
   isEventReminderMessage,
+  isFeedbackRequestMessage,
   isLessonAssignmentMessage,
   isProgressUpdateMessage,
   isSessionBookingMessage,
+  isSessionCompleteMessage,
   isSessionSummaryMessage,
   isHomeworkSubmissionMessage,
   isLinkPreviewMessage,
@@ -25,9 +27,11 @@ import {
   DesignFileMessage,
   PaymentReminderMessage,
   EventReminderMessage,
+  FeedbackRequestMessage,
   LessonAssignmentMessage,
   ProgressUpdateMessage,
   SessionBookingMessage,
+  SessionCompleteMessage,
   SessionSummaryMessage,
   HomeworkSubmissionMessage,
   AudioMessage,
@@ -111,6 +115,10 @@ export const MessageItem = memo(function MessageItem({
     return <EventReminderMessage message={message} {...commonProps} />;
   }
 
+  if (isFeedbackRequestMessage(message)) {
+    return <FeedbackRequestMessage message={message} {...commonProps} />;
+  }
+
   if (isLessonAssignmentMessage(message)) {
     return <LessonAssignmentMessage message={message} {...commonProps} />;
   }
@@ -121,6 +129,10 @@ export const MessageItem = memo(function MessageItem({
 
   if (isSessionBookingMessage(message)) {
     return <SessionBookingMessage message={message} {...commonProps} />;
+  }
+
+  if (isSessionCompleteMessage(message)) {
+    return <SessionCompleteMessage message={message} {...commonProps} />;
   }
 
   if (isSessionSummaryMessage(message)) {

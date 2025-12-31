@@ -1,0 +1,145 @@
+import { memo, useMemo, useState } from 'react';
+import { Star } from 'lucide-react';
+import { Button } from '../../../ui/button';
+import { Textarea } from '../../../ui/textarea';
+import type { FeedbackRequestMessageVM as FeedbackRequestMessageType } from '@iconicedu/shared-types';
+import { MessageBase, type MessageBaseProps } from '../message-base';
+import { cn } from '../../../lib/utils';
+
+interface FeedbackRequestMessageProps
+  extends Omit<MessageBaseProps, 'message' | 'children'> {
+  message: FeedbackRequestMessageType;
+}
+
+export const FeedbackRequestMessage = memo(function FeedbackRequestMessage(
+  props: FeedbackRequestMessageProps,
+) {
+  const { message, ...baseProps } = props;
+  const { feedback } = message;
+
+  const initialRating = feedback.rating ?? 0;
+  const initialComment = feedback.comment ?? '';
+  const hasInitialSubmit = Boolean(feedback.submittedAt || feedback.rating);
+
+  const [rating, setRating] = useState(initialRating);
+  const [comment, setComment] = useState(initialComment);
+  const [isSubmitted, setIsSubmitted] = useState(hasInitialSubmit);
+  const [showComment, setShowComment] = useState(
+    !hasInitialSubmit && initialRating > 0 && initialRating < 5,
+  );
+
+  const isFiveStar = rating === 5;
+
+  const headerLabel = useMemo(() => {
+    if (feedback.sessionTitle) {
+      return `Feedback for ${feedback.sessionTitle}`;
+    }
+    return 'Quick feedback';
+  }, [feedback.sessionTitle]);
+
+  const handleSelectRating = (value: number) => {
+    if (isSubmitted) return;
+    setRating(value);
+
+    if (value === 5) {
+      setIsSubmitted(true);
+      setShowComment(false);
+      return;
+    }
+
+    setShowComment(true);
+  };
+
+  const handleSubmit = () => {
+    if (isSubmitted || rating === 0) return;
+    setIsSubmitted(true);
+    setShowComment(false);
+  };
+
+  return (
+    <MessageBase message={message} {...baseProps} className="bg-primary/5">
+      <div className="mt-2 rounded-xl border border-border bg-card p-4 max-w-sm">
+        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+          {headerLabel}
+        </p>
+        <p className="mt-2 text-sm font-semibold text-foreground">
+          {feedback.prompt}
+        </p>
+
+        <div className="mt-3 flex items-center gap-2">
+          {Array.from({ length: 5 }).map((_, index) => {
+            const value = index + 1;
+            const isActive = value <= rating;
+            return (
+              <button
+                key={value}
+                type="button"
+                onClick={() => handleSelectRating(value)}
+                className={cn(
+                  'flex h-9 w-9 items-center justify-center rounded-full border border-border transition',
+                  isSubmitted
+                    ? 'cursor-default'
+                    : 'hover:border-primary/40 hover:bg-primary/10',
+                )}
+                aria-label={`Rate ${value} star${value === 1 ? '' : 's'}`}
+                disabled={isSubmitted}
+              >
+                <Star
+                  className={cn(
+                    'h-4 w-4 transition-colors',
+                    isActive ? 'fill-primary text-primary' : 'text-muted-foreground',
+                  )}
+                />
+              </button>
+            );
+          })}
+        </div>
+
+        {isSubmitted ? (
+          <div className="mt-3 rounded-lg bg-muted/50 px-3 py-2 text-xs text-muted-foreground">
+            <p className="font-semibold text-foreground">Thanks for the feedback!</p>
+            <p className="mt-1">
+              {rating > 0
+                ? `You rated this ${rating} star${rating === 1 ? '' : 's'}.`
+                : 'Feedback submitted.'}
+            </p>
+            {comment ? <p className="mt-1">“{comment}”</p> : null}
+          </div>
+        ) : null}
+
+        {!isSubmitted && showComment ? (
+          <div className="mt-3 space-y-2">
+            <Textarea
+              value={comment}
+              onChange={(event) => setComment(event.target.value)}
+              placeholder="Tell us what could be better..."
+              className="min-h-[96px]"
+            />
+            <Button
+              type="button"
+              size="sm"
+              onClick={handleSubmit}
+              disabled={rating === 0}
+            >
+              Submit feedback
+            </Button>
+          </div>
+        ) : null}
+
+        {!isSubmitted && !showComment && rating > 0 && !isFiveStar ? (
+          <div className="mt-3">
+            <Button type="button" size="sm" onClick={() => setShowComment(true)}>
+              Add comment
+            </Button>
+          </div>
+        ) : null}
+
+        {!isSubmitted && rating === 0 ? (
+          <p className="mt-3 text-xs text-muted-foreground">
+            Select a rating to continue.
+          </p>
+        ) : null}
+      </div>
+    </MessageBase>
+  );
+});

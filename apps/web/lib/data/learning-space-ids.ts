@@ -1,11 +1,13 @@
 export const LEARNING_SPACE_IDS = {
-  childOneEla: 'aaaaaaaa-1111-4aaa-8aaa-aaaaaaaaaaa1',
-  childOneMath: 'bbbbbbbb-2222-4bbb-8bbb-bbbbbbbbbbb2',
-  childOneScience: 'cccccccc-3333-4ccc-8ccc-ccccccccccc3',
-  childTwoEla: 'dddddddd-4444-4ddd-8ddd-dddddddddd4',
-  childTwoMath: 'eeeeeeee-5555-4eee-8eee-eeeeeeeeeee5',
-  childTwoScience: 'ffffffff-6666-4fff-8fff-fffffffffff6',
-  childThreeEla: '11111111-7777-4111-8aaa-111111111117',
-  childThreeMath: '22222222-8888-4222-8bbb-222222222228',
-  childThreeScience: '33333333-9999-4333-8ccc-333333333339',
+  math: '8a1c2d3e-4f50-4a61-9b72-3c4d5e6f7001',
+  science: '8a1c2d3e-4f50-4a61-9b72-3c4d5e6f7002',
+  ela: '8a1c2d3e-4f50-4a61-9b72-3c4d5e6f7003',
+  chess: '8a1c2d3e-4f50-4a61-9b72-3c4d5e6f7004',
+} as const;
+
+export const LEARNING_SPACE_CHANNEL_IDS = {
+  math: '10111111-1111-4111-8111-111111111111',
+  science: '20222222-2222-4222-8222-222222222222',
+  ela: '30333333-3333-4333-8333-333333333333',
+  chess: '40444444-4444-4444-8444-444444444444',
 } as const;

@@ -1,587 +1,1276 @@
 import type {
-  AttachmentVM,
-  AudioRecordingMessageVM,
   ChannelFileItemVM,
   ChannelMediaItemVM,
   ChannelVM,
   DesignFileUpdateMessageVM,
+  EventReminderMessageVM,
+  FeedbackRequestMessageVM,
   FileMessageVM,
-  GuardianProfileVM,
+  HomeworkSubmissionMessageVM,
   ImageMessageVM,
   LessonAssignmentMessageVM,
   LinkPreviewMessageVM,
+  MessageReadStateVM,
   MessageVM,
+  PaymentReminderMessageVM,
   ProgressUpdateMessageVM,
   SessionBookingMessageVM,
+  SessionCompleteMessageVM,
   SessionSummaryMessageVM,
   TextMessageVM,
   ThreadVM,
-  HomeworkSubmissionMessageVM,
-  UserProfileVM,
-  EducatorProfileVM,
-  ChildProfileVM,
+  AudioRecordingMessageVM,
 } from '@iconicedu/shared-types';
-import { DIRECT_MESSAGE_CHANNELS } from './direct-message-channels';
-import { LEARNING_SPACE_CHANNELS } from './learning-spaces';
+import {
+  MOCK_CHILDREN,
+  MOCK_EDUCATOR_1,
+  MOCK_EDUCATOR_2,
+  MOCK_EDUCATOR_3,
+  MOCK_EDUCATOR_4,
+  MOCK_EDUCATOR_5,
+  MOCK_GUARDIAN,
+  MOCK_ORG_ID,
+} from './people';
+import { LEARNING_SPACE_CHANNEL_IDS, LEARNING_SPACE_IDS } from './learning-space-ids';
 
-const minutesAgo = (minutes: number) =>
-  new Date(Date.now() - 1000 * 60 * minutes).toISOString();
-const hoursAgo = (hours: number) =>
-  new Date(Date.now() - 1000 * 60 * 60 * hours).toISOString();
-const hoursFromNow = (hours: number) =>
-  new Date(Date.now() + 1000 * 60 * 60 * hours).toISOString();
-
-const isGuardianProfile = (profile: UserProfileVM): profile is GuardianProfileVM =>
-  'children' in profile;
-const isEducatorProfile = (profile: UserProfileVM): profile is EducatorProfileVM =>
-  'subjects' in profile || 'gradesSupported' in profile || 'experienceYears' in profile;
-const isChildProfile = (profile: UserProfileVM): profile is ChildProfileVM =>
-  'color' in profile;
-
-const withSuffix = (uuid: string, suffix: string) => `${uuid.slice(0, -4)}${suffix}`;
-const withIndexedSuffix = (uuid: string, start: number, index: number) =>
-  withSuffix(uuid, (start + index).toString(16).padStart(4, '0'));
-
-const withMessages = (channel: ChannelVM, messages: MessageVM[]): ChannelVM => {
-  const savedCount = messages.filter((message) => message.isSaved).length;
-  const lastReadIndex = Math.max(0, messages.length - 3);
-  const lastReadMessageId = messages[lastReadIndex]?.id;
-  const unreadCount = Math.max(0, messages.length - (lastReadIndex + 1));
-  const attachments = messages.flatMap((message) => extractAttachments(message));
-  const mediaItems: ChannelMediaItemVM[] = attachments
-    .filter((attachment) => attachment.type === 'image')
-    .map((attachment, index) => ({
-      id: withIndexedSuffix(channel.id, 0x3000, index),
-      channelId: channel.id,
-      messageId: attachment.messageId,
-      senderId: attachment.senderId,
-      type: 'image',
-      url: attachment.url,
-      name: attachment.name,
-      width: attachment.width ?? null,
-      height: attachment.height ?? null,
-      createdAt: attachment.createdAt,
-    }));
-  const fileItems: ChannelFileItemVM[] = attachments
-    .filter((attachment) => attachment.type !== 'image')
-    .map((attachment, index) => ({
-      id: withIndexedSuffix(channel.id, 0x4000, index),
-      channelId: channel.id,
-      messageId: attachment.messageId,
-      senderId: attachment.senderId,
-      kind: attachment.type === 'design-file' ? 'design-file' : 'file',
-      url: attachment.url,
-      name: attachment.name,
-      mimeType: attachment.mimeType ?? null,
-      size: attachment.size ?? null,
-      tool: attachment.tool ?? null,
-      createdAt: attachment.createdAt,
-    }));
-
-  return {
-    ...channel,
-    headerItems: channel.headerItems.map((item) =>
-      item.key === 'saved' ? { ...item, label: String(savedCount) } : item,
-    ),
-    messages: {
-      items: messages,
-      total: messages.length,
-    },
-    media: {
-      items: mediaItems,
-      total: mediaItems.length,
-    },
-    files: {
-      items: fileItems,
-      total: fileItems.length,
-    },
-    readState: {
-      channelId: channel.id,
-      lastReadAt: channel.readState?.lastReadAt ?? minutesAgo(30),
-      lastReadMessageId,
-      unreadCount,
-    },
-  };
-};
-
-const extractAttachments = (
-  message: MessageVM,
-): Array<
-  (AttachmentVM & { messageId: string; createdAt: string; mimeType?: string; size?: number }) & {
-    width?: number;
-    height?: number;
-    tool?: string;
-  }
-> => {
-  const base = {
-    messageId: message.id,
-    createdAt: message.createdAt,
-    senderId: message.sender.id,
-  };
-  if (message.type === 'image') {
-    return [{ ...message.attachment, ...base }];
-  }
-  if (message.type === 'file') {
-    return [{ ...message.attachment, ...base }];
-  }
-  if (message.type === 'design-file-update') {
-    return [{ ...message.attachment, ...base }];
-  }
-  if (message.type === 'lesson-assignment' && message.assignment.attachments?.length) {
-    return message.assignment.attachments.map((attachment) => ({ ...attachment, ...base }));
-  }
-  if (message.type === 'homework-submission' && message.homework.attachments?.length) {
-    return message.homework.attachments.map((attachment) => ({ ...attachment, ...base }));
-  }
-  return [];
-};
-
-const buildDirectMessages = (
-  channel: ChannelVM,
-  guardian: GuardianProfileVM,
-  educator: EducatorProfileVM,
-  index: number,
-): MessageVM[] => {
-  const messageId = (suffix: string) => withSuffix(channel.id, suffix);
-  const threadId = withSuffix(channel.id, '1001');
-  const threadParentId = messageId('0002');
-  const thread: ThreadVM = {
-    id: threadId,
-    parentMessageId: threadParentId,
-    parentMessageSnippet: `${guardian.displayName} asked about today's lesson plan.`,
-    parentMessageAuthorId: guardian.id,
-    parentMessageAuthorName: guardian.displayName,
-    messageCount: 3,
-    lastReplyAt: hoursAgo(2 + index),
-    participants: [educator, guardian],
-    readState: {
-      lastReadMessageId: messageId('0003'),
-      unreadCount: 1,
-    },
-  };
-
-  return [
-    {
-      id: messageId('0001'),
-      type: 'text',
-      content: `Hi ${guardian.firstName ?? guardian.displayName}, here's a quick recap from today.`,
-      sender: educator,
-      createdAt: hoursAgo(6 + index),
-      reactions: [{ emoji: '✅', count: 1, sampleUserIds: [guardian.id] }],
-      visibility: { type: 'all' },
-      isSaved: true,
-    } as TextMessageVM,
-    {
-      id: threadParentId,
-      type: 'text',
-      content: "Can you share the worksheet and the next practice set?",
-      sender: guardian,
-      createdAt: hoursAgo(5.5 + index),
-      reactions: [],
-      visibility: { type: 'all' },
-      thread,
-    } as TextMessageVM,
-    {
-      id: messageId('0003'),
-      type: 'text',
-      content: "Absolutely—I'll send the PDF and a short checklist.",
-      sender: educator,
-      createdAt: hoursAgo(5 + index),
-      reactions: [{ emoji: '👍', count: 1, sampleUserIds: [guardian.id] }],
-      visibility: { type: 'all' },
-      thread,
-    } as TextMessageVM,
-    {
-      id: messageId('0004'),
-      type: 'image',
-      content: 'Snapshot of today’s notes.',
-      sender: guardian,
-      createdAt: hoursAgo(3 + index),
-      reactions: [],
-      visibility: { type: 'all' },
-      attachment: {
-        type: 'image',
-        url: 'https://images.unsplash.com/photo-1509228627152-72ae9ae6848d?auto=format&fit=crop&w=800&q=80',
-        name: 'notes.jpg',
-        width: 800,
-        height: 600,
-      },
-    } as ImageMessageVM,
-    {
-      id: messageId('0005'),
-      type: 'image',
-      content: 'Reference photo from today’s session.',
-      sender: educator,
-      createdAt: hoursAgo(2.8 + index),
-      reactions: [],
-      visibility: { type: 'all' },
-      attachment: {
-        type: 'image',
-        url: 'https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?auto=format&fit=crop&w=800&q=80',
-        name: 'reference.jpg',
-        width: 800,
-        height: 533,
-      },
-    } as ImageMessageVM,
-    {
-      id: messageId('0006'),
-      type: 'image',
-      content: 'Student work snapshot.',
-      sender: guardian,
-      createdAt: hoursAgo(2.4 + index),
-      reactions: [],
-      visibility: { type: 'all' },
-      attachment: {
-        type: 'image',
-        url: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=800&q=80',
-        name: 'student-work.jpg',
-        width: 800,
-        height: 534,
-      },
-    } as ImageMessageVM,
-    {
-      id: messageId('0007'),
-      type: 'image',
-      content: 'Workbook close-up.',
-      sender: guardian,
-      createdAt: hoursAgo(2.1 + index),
-      reactions: [],
-      visibility: { type: 'all' },
-      attachment: {
-        type: 'image',
-        url: 'https://images.unsplash.com/photo-1457694587812-e8bf29a43845?auto=format&fit=crop&w=800&q=80',
-        name: 'workbook.jpg',
-        width: 800,
-        height: 534,
-      },
-    } as ImageMessageVM,
-    {
-      id: messageId('0008'),
-      type: 'image',
-      content: 'Classroom setup preview.',
-      sender: educator,
-      createdAt: hoursAgo(1.9 + index),
-      reactions: [],
-      visibility: { type: 'all' },
-      attachment: {
-        type: 'image',
-        url: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=800&q=80',
-        name: 'classroom.jpg',
-        width: 800,
-        height: 533,
-      },
-    } as ImageMessageVM,
-    {
-      id: messageId('0009'),
-      type: 'file',
-      content: 'Weekly practice plan.',
-      sender: educator,
-      createdAt: hoursAgo(2 + index),
-      reactions: [],
-      visibility: { type: 'all' },
-      attachment: {
-        type: 'file',
-        url: '/documents/lesson-plan.pdf',
-        name: 'lesson-plan.pdf',
-        size: 320000,
-        mimeType: 'application/pdf',
-      },
-    } as FileMessageVM,
-    {
-      id: messageId('000a'),
-      type: 'file',
-      content: 'Reading checklist and rubric.',
-      sender: educator,
-      createdAt: hoursAgo(1.7 + index),
-      reactions: [],
-      visibility: { type: 'all' },
-      attachment: {
-        type: 'file',
-        url: '/documents/reading-rubric.pdf',
-        name: 'reading-rubric.pdf',
-        size: 210000,
-        mimeType: 'application/pdf',
-      },
-    } as FileMessageVM,
-    {
-      id: messageId('000b'),
-      type: 'design-file-update',
-      content: 'Updated visual worksheet layout.',
-      sender: educator,
-      createdAt: hoursAgo(1.8 + index),
-      reactions: [],
-      visibility: { type: 'all' },
-      attachment: {
-        type: 'design-file',
-        url: '/designs/worksheet.fig',
-        name: 'worksheet.fig',
-        tool: 'figma',
-        version: 'v2',
-      },
-    } as DesignFileUpdateMessageVM,
-    {
-      id: messageId('000c'),
-      type: 'design-file-update',
-      content: 'Slide deck refresh for next session.',
-      sender: educator,
-      createdAt: hoursAgo(1.5 + index),
-      reactions: [],
-      visibility: { type: 'all' },
-      attachment: {
-        type: 'design-file',
-        url: '/designs/session-slides.fig',
-        name: 'session-slides.fig',
-        tool: 'figma',
-        version: 'v3',
-      },
-    } as DesignFileUpdateMessageVM,
-    {
-      id: messageId('000d'),
-      type: 'audio-recording',
-      content: 'Quick voice note with tips for home practice.',
-      sender: educator,
-      createdAt: minutesAgo(40 + index * 3),
-      reactions: [],
-      visibility: { type: 'all' },
-      audio: {
-        url: 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=',
-        durationSeconds: 38,
-        waveform: [18, 30, 42, 50, 45, 40, 55, 60, 48, 38, 30],
-        fileSize: 118000,
-        mimeType: 'audio/wav',
-      },
-    } as AudioRecordingMessageVM,
-  ];
-};
-
-const buildLearningSpaceMessages = (
-  channel: ChannelVM,
-  guardian: GuardianProfileVM,
-  educator: EducatorProfileVM,
-  child: ChildProfileVM,
-  index: number,
-): MessageVM[] => {
-  const messageId = (suffix: string) => withSuffix(channel.id, suffix);
-  const threadParentId = messageId('0002');
-  const thread: ThreadVM = {
-    id: withSuffix(channel.id, '2001'),
-    parentMessageId: threadParentId,
-    parentMessageSnippet: `Quick question about ${child.firstName ?? child.displayName}'s homework.`,
-    parentMessageAuthorId: guardian.id,
-    parentMessageAuthorName: guardian.displayName,
-    messageCount: 2,
-    lastReplyAt: hoursAgo(4 + index),
-    participants: [educator, guardian],
-  };
-
-  return [
-    {
-      id: messageId('0001'),
-      type: 'text',
-      content: `Welcome to this week's learning space! ${child.firstName ?? child.displayName} made great progress.`,
-      sender: educator,
-      createdAt: hoursAgo(10 + index),
-      reactions: [{ emoji: '✨', count: 1, sampleUserIds: [guardian.id] }],
-      visibility: { type: 'all' },
-      isSaved: true,
-    } as TextMessageVM,
-    {
-      id: threadParentId,
-      type: 'text',
-      content: `Quick question about tonight's homework—any tips?`,
-      sender: guardian,
-      createdAt: hoursAgo(9 + index),
-      reactions: [],
-      visibility: { type: 'all' },
-      thread,
-    } as TextMessageVM,
-    {
-      id: messageId('0003'),
-      type: 'text',
-      content: `Keep it short and focus on accuracy over speed.`,
-      sender: educator,
-      createdAt: hoursAgo(8.5 + index),
-      reactions: [{ emoji: '👍', count: 1, sampleUserIds: [guardian.id] }],
-      visibility: { type: 'all' },
-      thread,
-    } as TextMessageVM,
-    {
-      id: messageId('0004'),
-      type: 'lesson-assignment',
-      content: 'New practice set for this week.',
-      sender: educator,
-      createdAt: hoursAgo(6 + index),
-      reactions: [{ emoji: '📚', count: 1, sampleUserIds: [guardian.id] }],
-      visibility: { type: 'all' },
-      isSaved: true,
-      assignment: {
-        title: 'Weekly Skills Practice',
-        description: 'Complete the attached worksheet and submit a photo.',
-        dueAt: hoursFromNow(72),
-        subject: channel.topic.split('•')[0]?.trim() || 'Study',
-        estimatedDuration: 20,
-        difficulty: 'intermediate',
-      },
-    } as LessonAssignmentMessageVM,
-    {
-      id: messageId('0005'),
-      type: 'progress-update',
-      content: `${child.firstName ?? child.displayName} reached this week's goal.`,
-      sender: educator,
-      createdAt: hoursAgo(4 + index),
-      reactions: [{ emoji: '👏', count: 1, sampleUserIds: [guardian.id] }],
-      visibility: { type: 'all' },
-      progress: {
-        subject: channel.topic.split('•')[0]?.trim() || 'Learning',
-        metric: 'Weekly Goal',
-        previousValue: 2,
-        currentValue: 4,
-        targetValue: 4,
-        improvement: 100,
-        summary: 'Completed all assigned practice items for the week.',
-      },
-    } as ProgressUpdateMessageVM,
-    {
-      id: messageId('0006'),
-      type: 'session-booking',
-      content: 'Next session is confirmed.',
-      sender: educator,
-      createdAt: hoursAgo(3 + index),
-      reactions: [],
-      visibility: { type: 'all' },
-      session: {
-        title: `Next ${channel.topic.split('•')[0]?.trim()} Session`,
-        subject: channel.topic.split('•')[0]?.trim() || 'Learning',
-        startAt: hoursFromNow(48),
-        durationMinutes: 30,
-        meetingLink: 'https://meet.google.com/abc-defg-hij',
-        status: 'confirmed',
-        topics: ['Weekly review', 'Practice goals'],
-      },
-    } as SessionBookingMessageVM,
-    {
-      id: messageId('0007'),
-      type: 'session-summary',
-      content: 'Today we focused on core skills and practice routines.',
-      sender: educator,
-      createdAt: hoursAgo(2.5 + index),
-      reactions: [],
-      visibility: { type: 'all' },
-      session: {
-        title: `${child.firstName ?? child.displayName}'s session recap`,
-        startAt: hoursAgo(3 + index),
-        durationMinutes: 30,
-        summary:
-          'Reviewed foundational concepts, completed guided practice, and set goals for the next session.',
-        highlights: ['Strong participation', 'Improved accuracy on drills'],
-        nextSteps: ['Practice 10 minutes daily', 'Review flashcards'],
-      },
-    } as SessionSummaryMessageVM,
-    {
-      id: messageId('0008'),
-      type: 'homework-submission',
-      content: 'Submitted today’s worksheet.',
-      sender: guardian,
-      createdAt: hoursAgo(2 + index),
-      reactions: [],
-      visibility: { type: 'all' },
-      homework: {
-        assignmentTitle: 'Weekly Skills Practice',
-        submittedAt: hoursAgo(2 + index),
-        attachments: [
-          {
-            type: 'file',
-            url: '/homework.pdf',
-            name: `${child.firstName ?? child.displayName}_worksheet.pdf`,
-            size: 245000,
-          },
-        ],
-        status: 'submitted',
-      },
-    } as HomeworkSubmissionMessageVM,
-    {
-      id: messageId('0009'),
-      type: 'homework-submission',
-      content: 'Second worksheet submission.',
-      sender: guardian,
-      createdAt: hoursAgo(1.6 + index),
-      reactions: [],
-      visibility: { type: 'all' },
-      homework: {
-        assignmentTitle: 'Weekly Skills Practice',
-        submittedAt: hoursAgo(1.6 + index),
-        attachments: [
-          {
-            type: 'file',
-            url: '/homework-2.pdf',
-            name: `${child.firstName ?? child.displayName}_worksheet_2.pdf`,
-            size: 198000,
-          },
-        ],
-        status: 'submitted',
-      },
-    } as HomeworkSubmissionMessageVM,
-    {
-      id: messageId('000a'),
-      type: 'link-preview',
-      content: 'Optional enrichment resource.',
-      sender: educator,
-      createdAt: minutesAgo(40 + index * 2),
-      reactions: [],
-      visibility: { type: 'all' },
-      link: {
-        url: 'https://www.khanacademy.org/',
-        title: 'Khan Academy',
-        description: 'Practice activities and guided lessons.',
-        imageUrl: 'https://picsum.photos/seed/picsum/400/200',
-        siteName: 'Khan Academy',
-        favicon: 'https://picsum.photos/seed/picsum/16/16',
-      },
-    } as LinkPreviewMessageVM,
-  ];
-};
-
-export const DIRECT_MESSAGE_CHANNELS_WITH_MESSAGES = DIRECT_MESSAGE_CHANNELS.map(
-  (channel, index) => {
-    const participants = channel.participants;
-    const guardian =
-      participants.find(isGuardianProfile) ??
-      (participants[0] as GuardianProfileVM);
-    const educator =
-      participants.find(isEducatorProfile) ??
-      (participants.find((participant) => participant.id !== guardian.id) as EducatorProfileVM);
-    const messages = buildDirectMessages(channel, guardian, educator, index);
-    return withMessages(channel, messages);
+const mathThread: ThreadVM = {
+  id: '8f2e2e2e-1111-4111-8111-111111111111',
+  parentMessageId: 'a1111111-1111-4111-8111-111111111112',
+  parentMessageSnippet: 'Tonight’s practice is attached with a checklist.',
+  parentMessageAuthorId: MOCK_EDUCATOR_2.id,
+  parentMessageAuthorName: MOCK_EDUCATOR_2.displayName,
+  messageCount: 2,
+  lastReplyAt: '2025-01-10T18:20:00.000Z',
+  participants: [MOCK_EDUCATOR_2, MOCK_GUARDIAN],
+  readState: {
+    channelId: LEARNING_SPACE_CHANNEL_IDS.math,
+    lastReadMessageId: 'a1111111-1111-4111-8111-111111111113',
+    lastReadAt: '2025-01-10T18:30:00.000Z',
+    unreadCount: 0,
   },
-);
+};
 
-export const DIRECT_MESSAGE_CHANNELS_BY_ID = Object.fromEntries(
-  DIRECT_MESSAGE_CHANNELS_WITH_MESSAGES.map((channel) => [channel.id, channel]),
-);
+const mathMessages: MessageVM[] = [
+  {
+    id: 'a1111111-1111-4111-8111-111111111111',
+    type: 'text',
+    content: 'Great focus today! I added a short practice set for Ava.',
+    sender: MOCK_EDUCATOR_2,
+    createdAt: '2025-01-10T17:30:00.000Z',
+    reactions: [{ emoji: '✅', count: 1, sampleUserIds: [MOCK_GUARDIAN.id] }],
+    visibility: { type: 'all' },
+    isSaved: true,
+  } as TextMessageVM,
+  {
+    id: 'a1111111-1111-4111-8111-111111111112',
+    type: 'lesson-assignment',
+    content: 'Practice set for number lines and fractions.',
+    sender: MOCK_EDUCATOR_2,
+    createdAt: '2025-01-10T17:45:00.000Z',
+    reactions: [],
+    visibility: { type: 'all' },
+    thread: mathThread,
+    assignment: {
+      title: 'Number Line Sprint',
+      description: 'Complete pages 2-3 and bring one question.',
+      dueAt: '2025-01-13T21:00:00.000Z',
+      subject: 'Math',
+      attachments: [
+        {
+          type: 'image',
+          url: 'https://images.unsplash.com/photo-1503676382389-4809596d5290?auto=format&fit=crop&w=800&q=80',
+          name: 'number-line.png',
+          width: 800,
+          height: 600,
+        },
+        {
+          type: 'file',
+          url: 'https://example.com/number-line-practice.pdf',
+          name: 'number-line-practice.pdf',
+          size: 245000,
+          mimeType: 'application/pdf',
+        },
+      ],
+      estimatedDuration: 20,
+      difficulty: 'beginner',
+    },
+  } as LessonAssignmentMessageVM,
+  {
+    id: 'a1111111-1111-4111-8111-111111111113',
+    type: 'homework-submission',
+    content: 'Ava finished the practice early.',
+    sender: MOCK_GUARDIAN,
+    createdAt: '2025-01-10T18:15:00.000Z',
+    reactions: [{ emoji: '🎉', count: 1, sampleUserIds: [MOCK_EDUCATOR_2.id] }],
+    visibility: { type: 'all' },
+    homework: {
+      assignmentTitle: 'Number Line Sprint',
+      submittedAt: '2025-01-10T18:15:00.000Z',
+      attachments: [
+        {
+          type: 'file',
+          url: 'https://example.com/number-line-ava.pdf',
+          name: 'ava-number-line.pdf',
+          size: 312000,
+          mimeType: 'application/pdf',
+        },
+      ],
+      status: 'submitted',
+    },
+  } as HomeworkSubmissionMessageVM,
+  {
+    id: 'a1111111-1111-4111-8111-111111111114',
+    type: 'progress-update',
+    content: 'Quick update on fluency this week.',
+    sender: MOCK_EDUCATOR_2,
+    createdAt: '2025-01-10T18:40:00.000Z',
+    reactions: [],
+    visibility: { type: 'all' },
+    progress: {
+      subject: 'Math',
+      metric: 'Fluency',
+      previousValue: 70,
+      currentValue: 82,
+      targetValue: 90,
+      improvement: 12,
+      summary: 'Ava improved accuracy on multi-step problems.',
+    },
+  } as ProgressUpdateMessageVM,
+  {
+    id: 'a1111111-1111-4111-8111-111111111115',
+    type: 'session-summary',
+    content: 'Session recap and next steps.',
+    sender: MOCK_EDUCATOR_2,
+    createdAt: '2025-01-10T18:55:00.000Z',
+    reactions: [],
+    visibility: { type: 'all' },
+    isSaved: true,
+    session: {
+      title: 'Math Foundations',
+      startAt: '2025-01-10T17:00:00.000Z',
+      durationMinutes: 60,
+      summary: 'Reviewed number lines, fractions, and estimation.',
+      highlights: ['Strong mental math today', 'Used visual models well'],
+      nextSteps: ['Practice fraction comparisons', 'Bring two questions next class'],
+    },
+  } as SessionSummaryMessageVM,
+];
 
-export const DIRECT_MESSAGE_CHANNEL_BY_USER_ID = Object.fromEntries(
-  DIRECT_MESSAGE_CHANNELS_WITH_MESSAGES.flatMap((channel) =>
-    channel.participants.map((participant) => [participant.id, channel.id]),
-  ),
-);
-
-export const LEARNING_SPACE_CHANNELS_WITH_MESSAGES = LEARNING_SPACE_CHANNELS.map(
-  (channel, index) => {
-    const participants = channel.participants;
-    const guardian =
-      participants.find(isGuardianProfile) ??
-      (participants[0] as GuardianProfileVM);
-    const educator =
-      participants.find(isEducatorProfile) ??
-      (participants.find((participant) => participant.id !== guardian.id) as EducatorProfileVM);
-    const child =
-      participants.find(isChildProfile) ??
-      (participants.find((participant) => participant.id !== guardian.id) as ChildProfileVM);
-    const messages = buildLearningSpaceMessages(channel, guardian, educator, child, index);
-    return withMessages(channel, messages);
+const mathMediaItems: ChannelMediaItemVM[] = [
+  {
+    id: 'f1111111-1111-4111-8111-111111111111',
+    channelId: LEARNING_SPACE_CHANNEL_IDS.math,
+    messageId: 'a1111111-1111-4111-8111-111111111112',
+    senderId: MOCK_EDUCATOR_2.id,
+    type: 'image',
+    url: 'https://images.unsplash.com/photo-1503676382389-4809596d5290?auto=format&fit=crop&w=800&q=80',
+    name: 'number-line.png',
+    width: 800,
+    height: 600,
+    createdAt: '2025-01-10T17:45:00.000Z',
   },
-);
+];
 
-export const LEARNING_SPACE_CHANNELS_BY_ID = Object.fromEntries(
-  LEARNING_SPACE_CHANNELS_WITH_MESSAGES.map((channel) => [channel.id, channel]),
-);
+const mathFileItems: ChannelFileItemVM[] = [
+  {
+    id: 'f2222222-1111-4111-8111-111111111111',
+    channelId: LEARNING_SPACE_CHANNEL_IDS.math,
+    messageId: 'a1111111-1111-4111-8111-111111111112',
+    senderId: MOCK_EDUCATOR_2.id,
+    kind: 'file',
+    url: 'https://example.com/number-line-practice.pdf',
+    name: 'number-line-practice.pdf',
+    mimeType: 'application/pdf',
+    size: 245000,
+    createdAt: '2025-01-10T17:45:00.000Z',
+  },
+  {
+    id: 'f2222222-1111-4111-8111-111111111112',
+    channelId: LEARNING_SPACE_CHANNEL_IDS.math,
+    messageId: 'a1111111-1111-4111-8111-111111111113',
+    senderId: MOCK_GUARDIAN.id,
+    kind: 'file',
+    url: 'https://example.com/number-line-ava.pdf',
+    name: 'ava-number-line.pdf',
+    mimeType: 'application/pdf',
+    size: 312000,
+    createdAt: '2025-01-10T18:15:00.000Z',
+  },
+];
+
+const mathReadState: MessageReadStateVM = {
+  channelId: LEARNING_SPACE_CHANNEL_IDS.math,
+  lastReadMessageId: 'a1111111-1111-4111-8111-111111111114',
+  lastReadAt: '2025-01-10T19:00:00.000Z',
+  unreadCount: 1,
+};
+
+const MATH_CHANNEL_WITH_MESSAGES: ChannelVM = {
+  id: LEARNING_SPACE_CHANNEL_IDS.math,
+  orgId: MOCK_ORG_ID,
+  kind: 'channel',
+  topic: `Math • ${MOCK_EDUCATOR_2.displayName} • Mon 4 PM`,
+  topicIconKey: 'square-pi',
+  description: 'Foundations, fluency, and confidence.',
+  visibility: 'private',
+  purpose: 'learning-space',
+  status: 'active',
+  createdBy: MOCK_EDUCATOR_2.id,
+  createdAt: '2025-01-02T16:00:00.000Z',
+  archivedAt: null,
+  postingPolicy: { kind: 'members-only', allowThreads: true, allowReactions: true },
+  headerItems: [
+    { key: 'saved', label: '2' },
+    { key: 'homework', label: '1' },
+    { key: 'session-summary', label: '1' },
+    { key: 'next-session', label: 'Mon 4 PM' },
+    { key: 'info', label: 'Info', isPrimary: true },
+  ],
+  dmKey: null,
+  context: {
+    primaryEntity: { kind: 'learning_space', id: LEARNING_SPACE_IDS.math },
+    capabilities: ['has_schedule', 'has_homework', 'has_summaries'],
+  },
+  participants: [MOCK_EDUCATOR_2, MOCK_GUARDIAN, MOCK_CHILDREN[0]],
+  messages: { items: mathMessages, total: mathMessages.length },
+  media: { items: mathMediaItems, total: mathMediaItems.length },
+  files: { items: mathFileItems, total: mathFileItems.length },
+  readState: mathReadState,
+  defaultRightPanelOpen: true,
+  defaultRightPanelKey: 'channel_info',
+};
+
+const scienceMessages: MessageVM[] = [
+  {
+    id: 'b2222222-2222-4222-8222-222222222221',
+    type: 'text',
+    content: 'Lab kits are ready for tomorrow’s experiment.',
+    sender: MOCK_EDUCATOR_3,
+    createdAt: '2025-01-10T15:10:00.000Z',
+    reactions: [],
+    visibility: { type: 'all' },
+  } as TextMessageVM,
+  {
+    id: 'b2222222-2222-4222-8222-222222222222',
+    type: 'image',
+    content: 'Milo’s observation notes from last week.',
+    sender: MOCK_CHILDREN[1],
+    createdAt: '2025-01-10T15:30:00.000Z',
+    reactions: [{ emoji: '👏', count: 1, sampleUserIds: [MOCK_EDUCATOR_3.id] }],
+    visibility: { type: 'all' },
+    attachment: {
+      type: 'image',
+      url: 'https://images.unsplash.com/photo-1518152006812-edab29b069ac?auto=format&fit=crop&w=800&q=80',
+      name: 'science-notes.jpg',
+      width: 800,
+      height: 600,
+    },
+  } as ImageMessageVM,
+  {
+    id: 'b2222222-2222-4222-8222-222222222223',
+    type: 'event-reminder',
+    content: 'Reminder: tomorrow’s lab session will cover density.',
+    sender: MOCK_EDUCATOR_3,
+    createdAt: '2025-01-10T16:00:00.000Z',
+    reactions: [],
+    visibility: { type: 'all' },
+    event: {
+      status: 'scheduled',
+      title: 'Science Lab: Density',
+      startAt: '2025-01-15T22:00:00.000Z',
+      endAt: '2025-01-15T23:00:00.000Z',
+      location: 'Zoom',
+      meetingLink: 'https://zoom.us/j/987654321?pwd=science-session',
+      attendees: [MOCK_EDUCATOR_3, MOCK_CHILDREN[1]],
+      isAllDay: false,
+    },
+  } as EventReminderMessageVM,
+  {
+    id: 'b2222222-2222-4222-8222-222222222224',
+    type: 'session-booking',
+    content: 'Booking confirmation for next week.',
+    sender: MOCK_GUARDIAN,
+    createdAt: '2025-01-10T16:20:00.000Z',
+    reactions: [],
+    visibility: { type: 'all' },
+    session: {
+      title: 'Science Lab',
+      subject: 'Science',
+      startAt: '2025-01-22T22:00:00.000Z',
+      endAt: '2025-01-22T23:00:00.000Z',
+      durationMinutes: 60,
+      meetingLink: 'https://zoom.us/j/987654321?pwd=science-session',
+      status: 'confirmed',
+      topics: ['Density', 'Measurement'],
+    },
+  } as SessionBookingMessageVM,
+  {
+    id: 'b2222222-2222-4222-8222-222222222227',
+    type: 'session-complete',
+    content: 'Mark the session complete when you’re ready.',
+    sender: MOCK_EDUCATOR_3,
+    createdAt: '2025-01-10T16:30:00.000Z',
+    reactions: [],
+    visibility: { type: 'all' },
+    session: {
+      title: 'Science Lab',
+      startAt: '2025-01-08T22:00:00.000Z',
+      endAt: '2025-01-08T23:00:00.000Z',
+      completedAt: null,
+    },
+  } as SessionCompleteMessageVM,
+  {
+    id: 'b2222222-2222-4222-8222-222222222225',
+    type: 'file',
+    content: 'Lab worksheet for tomorrow.',
+    sender: MOCK_EDUCATOR_3,
+    createdAt: '2025-01-10T16:45:00.000Z',
+    reactions: [],
+    visibility: { type: 'all' },
+    attachment: {
+      type: 'file',
+      url: 'https://example.com/science-density-worksheet.pdf',
+      name: 'science-density-worksheet.pdf',
+      size: 380000,
+      mimeType: 'application/pdf',
+    },
+  } as FileMessageVM,
+  {
+    id: 'b2222222-2222-4222-8222-222222222226',
+    type: 'audio-recording',
+    content: 'Quick explanation of the density lab setup.',
+    sender: MOCK_EDUCATOR_3,
+    createdAt: '2025-01-10T17:05:00.000Z',
+    reactions: [],
+    visibility: { type: 'all' },
+    audio: {
+      url: 'https://example.com/science-density-audio.mp3',
+      durationSeconds: 95,
+      waveform: [0, 0.1, 0.3, 0.2, 0.15, 0.5, 0.2],
+      fileSize: 1200000,
+      mimeType: 'audio/mpeg',
+    },
+  } as AudioRecordingMessageVM,
+];
+
+const scienceMediaItems: ChannelMediaItemVM[] = [
+  {
+    id: 'f3333333-2222-4222-8222-222222222221',
+    channelId: LEARNING_SPACE_CHANNEL_IDS.science,
+    messageId: 'b2222222-2222-4222-8222-222222222222',
+    senderId: MOCK_CHILDREN[1].id,
+    type: 'image',
+    url: 'https://images.unsplash.com/photo-1518152006812-edab29b069ac?auto=format&fit=crop&w=800&q=80',
+    name: 'science-notes.jpg',
+    width: 800,
+    height: 600,
+    createdAt: '2025-01-10T15:30:00.000Z',
+  },
+];
+
+const scienceFileItems: ChannelFileItemVM[] = [
+  {
+    id: 'f3333333-2222-4222-8222-222222222222',
+    channelId: LEARNING_SPACE_CHANNEL_IDS.science,
+    messageId: 'b2222222-2222-4222-8222-222222222225',
+    senderId: MOCK_EDUCATOR_3.id,
+    kind: 'file',
+    url: 'https://example.com/science-density-worksheet.pdf',
+    name: 'science-density-worksheet.pdf',
+    mimeType: 'application/pdf',
+    size: 380000,
+    createdAt: '2025-01-10T16:45:00.000Z',
+  },
+];
+
+const scienceReadState: MessageReadStateVM = {
+  channelId: LEARNING_SPACE_CHANNEL_IDS.science,
+  lastReadMessageId: 'b2222222-2222-4222-8222-222222222224',
+  lastReadAt: '2025-01-10T18:10:00.000Z',
+  unreadCount: 2,
+};
+
+const SCIENCE_CHANNEL_WITH_MESSAGES: ChannelVM = {
+  id: LEARNING_SPACE_CHANNEL_IDS.science,
+  orgId: MOCK_ORG_ID,
+  kind: 'channel',
+  topic: `Science • ${MOCK_EDUCATOR_3.displayName} • Wed 5 PM`,
+  topicIconKey: 'earth',
+  description: 'Weekly labs and observation logs.',
+  visibility: 'private',
+  purpose: 'learning-space',
+  status: 'active',
+  createdBy: MOCK_EDUCATOR_3.id,
+  createdAt: '2025-01-02T16:10:00.000Z',
+  archivedAt: null,
+  postingPolicy: { kind: 'members-only', allowThreads: true, allowReactions: true },
+  headerItems: [
+    { key: 'saved', label: '0' },
+    { key: 'homework', label: '1' },
+    { key: 'session-summary', label: '0' },
+    { key: 'next-session', label: 'Wed 5 PM' },
+    { key: 'info', label: 'Info', isPrimary: true },
+  ],
+  dmKey: null,
+  context: {
+    primaryEntity: { kind: 'learning_space', id: LEARNING_SPACE_IDS.science },
+    capabilities: ['has_schedule', 'has_homework', 'has_summaries'],
+  },
+  participants: [MOCK_EDUCATOR_3, MOCK_GUARDIAN, MOCK_CHILDREN[1]],
+  messages: { items: scienceMessages, total: scienceMessages.length },
+  media: { items: scienceMediaItems, total: scienceMediaItems.length },
+  files: { items: scienceFileItems, total: scienceFileItems.length },
+  readState: scienceReadState,
+  defaultRightPanelOpen: true,
+  defaultRightPanelKey: 'channel_info',
+};
+
+const elaMessages: MessageVM[] = [
+  {
+    id: 'c3333333-3333-4333-8333-333333333331',
+    type: 'text',
+    content: 'We reviewed story arcs today. Maya did great with structure.',
+    sender: MOCK_EDUCATOR_1,
+    createdAt: '2025-01-10T14:10:00.000Z',
+    reactions: [{ emoji: '❤️', count: 1, sampleUserIds: [MOCK_GUARDIAN.id] }],
+    visibility: { type: 'all' },
+    isSaved: true,
+  } as TextMessageVM,
+  {
+    id: 'c3333333-3333-4333-8333-333333333332',
+    type: 'link-preview',
+    content: 'Great short story to read this week.',
+    sender: MOCK_EDUCATOR_1,
+    createdAt: '2025-01-10T14:35:00.000Z',
+    reactions: [],
+    visibility: { type: 'all' },
+    link: {
+      url: 'https://www.commonlit.org/en/texts/the-last-lesson',
+      title: 'The Last Lesson',
+      description: 'A short story focused on theme and setting.',
+      imageUrl: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=800&q=80',
+      siteName: 'CommonLit',
+      favicon: 'https://www.commonlit.org/favicon.ico',
+    },
+  } as LinkPreviewMessageVM,
+  {
+    id: 'c3333333-3333-4333-8333-333333333333',
+    type: 'payment-reminder',
+    content: 'Reminder: January session invoice is due.',
+    sender: MOCK_EDUCATOR_1,
+    createdAt: '2025-01-10T15:00:00.000Z',
+    reactions: [],
+    visibility: { type: 'all' },
+    payment: {
+      amount: 180,
+      currency: 'USD',
+      dueAt: '2025-01-20T05:00:00.000Z',
+      status: 'pending',
+      invoiceId: 'INV-ELA-2025-01',
+      description: 'ELA weekly sessions',
+    },
+  } as PaymentReminderMessageVM,
+  {
+    id: 'c3333333-3333-4333-8333-333333333334',
+    type: 'session-summary',
+    content: 'Session highlights for writing practice.',
+    sender: MOCK_EDUCATOR_1,
+    createdAt: '2025-01-10T15:30:00.000Z',
+    reactions: [],
+    visibility: { type: 'all' },
+    session: {
+      title: 'ELA Writing Studio',
+      startAt: '2025-01-10T14:00:00.000Z',
+      durationMinutes: 60,
+      summary: 'Focused on narrative structure and character details.',
+      highlights: ['Great use of descriptive language', 'Clear story arc'],
+      nextSteps: ['Draft a new opening paragraph', 'Bring two story ideas'],
+    },
+  } as SessionSummaryMessageVM,
+  {
+    id: 'c3333333-3333-4333-8333-333333333336',
+    type: 'feedback-request',
+    content: 'We’d love your feedback on today’s session.',
+    sender: MOCK_EDUCATOR_1,
+    createdAt: '2025-01-10T15:40:00.000Z',
+    reactions: [],
+    visibility: { type: 'all' },
+    feedback: {
+      prompt: 'How was today’s ELA session?',
+      sessionTitle: 'ELA Writing Studio',
+      submittedAt: null,
+      rating: null,
+      comment: null,
+    },
+  } as FeedbackRequestMessageVM,
+  {
+    id: 'c3333333-3333-4333-8333-333333333335',
+    type: 'design-file-update',
+    content: 'Updated writing prompt template.',
+    sender: MOCK_EDUCATOR_1,
+    createdAt: '2025-01-10T16:10:00.000Z',
+    reactions: [],
+    visibility: { type: 'all' },
+    attachment: {
+      type: 'design-file',
+      url: 'https://example.com/writing-template.fig',
+      name: 'writing-template.fig',
+      tool: 'figma',
+      version: 'v3',
+      lastModified: '2025-01-10T16:00:00.000Z',
+      thumbnail: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=400&q=80',
+    },
+    changesSummary: ['Added prompt rubric', 'Updated headings'],
+    previousVersion: 'v2',
+  } as DesignFileUpdateMessageVM,
+];
+
+const elaMediaItems: ChannelMediaItemVM[] = [
+  {
+    id: 'f4444444-3333-4333-8333-333333333331',
+    channelId: LEARNING_SPACE_CHANNEL_IDS.ela,
+    messageId: 'c3333333-3333-4333-8333-333333333332',
+    senderId: MOCK_EDUCATOR_1.id,
+    type: 'image',
+    url: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=800&q=80',
+    name: 'reading-preview.jpg',
+    width: 800,
+    height: 600,
+    createdAt: '2025-01-10T14:35:00.000Z',
+  },
+  {
+    id: 'f4444444-3333-4333-8333-333333333332',
+    channelId: LEARNING_SPACE_CHANNEL_IDS.ela,
+    messageId: 'c3333333-3333-4333-8333-333333333335',
+    senderId: MOCK_EDUCATOR_1.id,
+    type: 'image',
+    url: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=400&q=80',
+    name: 'writing-template.png',
+    width: 400,
+    height: 300,
+    createdAt: '2025-01-10T16:10:00.000Z',
+  },
+];
+
+const elaFileItems: ChannelFileItemVM[] = [
+  {
+    id: 'f4444444-3333-4333-8333-333333333333',
+    channelId: LEARNING_SPACE_CHANNEL_IDS.ela,
+    messageId: 'c3333333-3333-4333-8333-333333333335',
+    senderId: MOCK_EDUCATOR_1.id,
+    kind: 'design-file',
+    url: 'https://example.com/writing-template.fig',
+    name: 'writing-template.fig',
+    mimeType: 'application/octet-stream',
+    size: 540000,
+    tool: 'figma',
+    createdAt: '2025-01-10T16:10:00.000Z',
+  },
+];
+
+const elaReadState: MessageReadStateVM = {
+  channelId: LEARNING_SPACE_CHANNEL_IDS.ela,
+  lastReadMessageId: 'c3333333-3333-4333-8333-333333333334',
+  lastReadAt: '2025-01-10T17:30:00.000Z',
+  unreadCount: 1,
+};
+
+const ELA_CHANNEL_WITH_MESSAGES: ChannelVM = {
+  id: LEARNING_SPACE_CHANNEL_IDS.ela,
+  orgId: MOCK_ORG_ID,
+  kind: 'channel',
+  topic: `ELA • ${MOCK_EDUCATOR_1.displayName} • Fri 5:30 PM`,
+  topicIconKey: 'languages',
+  description: 'Reading circles and writing practice.',
+  visibility: 'private',
+  purpose: 'learning-space',
+  status: 'active',
+  createdBy: MOCK_EDUCATOR_1.id,
+  createdAt: '2025-01-02T16:20:00.000Z',
+  archivedAt: null,
+  postingPolicy: { kind: 'members-only', allowThreads: true, allowReactions: true },
+  headerItems: [
+    { key: 'saved', label: '1' },
+    { key: 'homework', label: '0' },
+    { key: 'session-summary', label: '1' },
+    { key: 'next-session', label: 'Fri 5:30 PM' },
+    { key: 'info', label: 'Info', isPrimary: true },
+  ],
+  dmKey: null,
+  context: {
+    primaryEntity: { kind: 'learning_space', id: LEARNING_SPACE_IDS.ela },
+    capabilities: ['has_schedule', 'has_homework', 'has_summaries'],
+  },
+  participants: [MOCK_EDUCATOR_1, MOCK_GUARDIAN, MOCK_CHILDREN[2]],
+  messages: { items: elaMessages, total: elaMessages.length },
+  media: { items: elaMediaItems, total: elaMediaItems.length },
+  files: { items: elaFileItems, total: elaFileItems.length },
+  readState: elaReadState,
+  defaultRightPanelOpen: true,
+  defaultRightPanelKey: 'channel_info',
+};
+
+const chessMessages: MessageVM[] = [
+  {
+    id: 'd4444444-4444-4444-8444-444444444441',
+    type: 'text',
+    content: 'We focused on forks and pins today.',
+    sender: MOCK_EDUCATOR_4,
+    createdAt: '2025-01-10T13:00:00.000Z',
+    reactions: [],
+    visibility: { type: 'all' },
+  } as TextMessageVM,
+  {
+    id: 'd4444444-4444-4444-8444-444444444442',
+    type: 'image',
+    content: 'Annotated position for review.',
+    sender: MOCK_EDUCATOR_4,
+    createdAt: '2025-01-10T13:20:00.000Z',
+    reactions: [{ emoji: '♟️', count: 1, sampleUserIds: [MOCK_CHILDREN[0].id] }],
+    visibility: { type: 'all' },
+    attachment: {
+      type: 'image',
+      url: 'https://images.unsplash.com/photo-1518544889280-ec4f070b1c0d?auto=format&fit=crop&w=800&q=80',
+      name: 'chess-position.png',
+      width: 800,
+      height: 600,
+    },
+  } as ImageMessageVM,
+  {
+    id: 'd4444444-4444-4444-8444-444444444443',
+    type: 'file',
+    content: 'Puzzle pack for practice.',
+    sender: MOCK_EDUCATOR_4,
+    createdAt: '2025-01-10T13:30:00.000Z',
+    reactions: [],
+    visibility: { type: 'all' },
+    attachment: {
+      type: 'file',
+      url: 'https://example.com/chess-puzzles.pdf',
+      name: 'chess-puzzles.pdf',
+      size: 220000,
+      mimeType: 'application/pdf',
+    },
+  } as FileMessageVM,
+  {
+    id: 'd4444444-4444-4444-8444-444444444444',
+    type: 'audio-recording',
+    content: 'Coach voice memo on opening principles.',
+    sender: MOCK_EDUCATOR_4,
+    createdAt: '2025-01-10T13:45:00.000Z',
+    reactions: [],
+    visibility: { type: 'all' },
+    audio: {
+      url: 'https://example.com/chess-opening-audio.mp3',
+      durationSeconds: 120,
+      waveform: [0, 0.2, 0.4, 0.3, 0.1, 0.5, 0.2],
+      fileSize: 1350000,
+      mimeType: 'audio/mpeg',
+    },
+  } as AudioRecordingMessageVM,
+];
+
+const chessMediaItems: ChannelMediaItemVM[] = [
+  {
+    id: 'f5555555-4444-4444-8444-444444444441',
+    channelId: LEARNING_SPACE_CHANNEL_IDS.chess,
+    messageId: 'd4444444-4444-4444-8444-444444444442',
+    senderId: MOCK_EDUCATOR_4.id,
+    type: 'image',
+    url: 'https://images.unsplash.com/photo-1518544889280-ec4f070b1c0d?auto=format&fit=crop&w=800&q=80',
+    name: 'chess-position.png',
+    width: 800,
+    height: 600,
+    createdAt: '2025-01-10T13:20:00.000Z',
+  },
+];
+
+const chessFileItems: ChannelFileItemVM[] = [
+  {
+    id: 'f5555555-4444-4444-8444-444444444442',
+    channelId: LEARNING_SPACE_CHANNEL_IDS.chess,
+    messageId: 'd4444444-4444-4444-8444-444444444443',
+    senderId: MOCK_EDUCATOR_4.id,
+    kind: 'file',
+    url: 'https://example.com/chess-puzzles.pdf',
+    name: 'chess-puzzles.pdf',
+    mimeType: 'application/pdf',
+    size: 220000,
+    createdAt: '2025-01-10T13:30:00.000Z',
+  },
+];
+
+const chessReadState: MessageReadStateVM = {
+  channelId: LEARNING_SPACE_CHANNEL_IDS.chess,
+  lastReadMessageId: 'd4444444-4444-4444-8444-444444444442',
+  lastReadAt: '2025-01-10T14:00:00.000Z',
+  unreadCount: 2,
+};
+
+const CHESS_CHANNEL_WITH_MESSAGES: ChannelVM = {
+  id: LEARNING_SPACE_CHANNEL_IDS.chess,
+  orgId: MOCK_ORG_ID,
+  kind: 'channel',
+  topic: `Chess • ${MOCK_EDUCATOR_4.displayName} • Sat 2 PM`,
+  topicIconKey: 'sparkles',
+  description: 'Strategy, tactics, and game review.',
+  visibility: 'private',
+  purpose: 'learning-space',
+  status: 'active',
+  createdBy: MOCK_EDUCATOR_4.id,
+  createdAt: '2025-01-02T16:30:00.000Z',
+  archivedAt: null,
+  postingPolicy: { kind: 'members-only', allowThreads: true, allowReactions: true },
+  headerItems: [
+    { key: 'saved', label: '0' },
+    { key: 'homework', label: '1' },
+    { key: 'session-summary', label: '0' },
+    { key: 'next-session', label: 'Sat 2 PM' },
+    { key: 'info', label: 'Info', isPrimary: true },
+  ],
+  dmKey: null,
+  context: {
+    primaryEntity: { kind: 'learning_space', id: LEARNING_SPACE_IDS.chess },
+    capabilities: ['has_schedule', 'has_homework', 'has_summaries'],
+  },
+  participants: [MOCK_EDUCATOR_4, MOCK_GUARDIAN, MOCK_CHILDREN[0]],
+  messages: { items: chessMessages, total: chessMessages.length },
+  media: { items: chessMediaItems, total: chessMediaItems.length },
+  files: { items: chessFileItems, total: chessFileItems.length },
+  readState: chessReadState,
+  defaultRightPanelOpen: true,
+  defaultRightPanelKey: 'channel_info',
+};
+
+const dmElenaMessages: MessageVM[] = [
+  {
+    id: 'e1111111-1111-4111-8111-111111111111',
+    type: 'text',
+    content: 'Hi Elena, could you share the reading plan for next week?',
+    sender: MOCK_GUARDIAN,
+    createdAt: '2025-01-10T12:00:00.000Z',
+    reactions: [],
+    visibility: { type: 'all' },
+  } as TextMessageVM,
+  {
+    id: 'e1111111-1111-4111-8111-111111111112',
+    type: 'text',
+    content: 'Absolutely! I will upload the plan shortly.',
+    sender: MOCK_EDUCATOR_1,
+    createdAt: '2025-01-10T12:10:00.000Z',
+    reactions: [{ emoji: '👍', count: 1, sampleUserIds: [MOCK_GUARDIAN.id] }],
+    visibility: { type: 'all' },
+  } as TextMessageVM,
+  {
+    id: 'e1111111-1111-4111-8111-111111111113',
+    type: 'file',
+    content: 'Reading plan PDF attached.',
+    sender: MOCK_EDUCATOR_1,
+    createdAt: '2025-01-10T12:20:00.000Z',
+    reactions: [],
+    visibility: { type: 'all' },
+    attachment: {
+      type: 'file',
+      url: 'https://example.com/ela-reading-plan.pdf',
+      name: 'ela-reading-plan.pdf',
+      size: 290000,
+      mimeType: 'application/pdf',
+    },
+  } as FileMessageVM,
+];
+
+const dmElenaMedia: ChannelMediaItemVM[] = [];
+
+const dmElenaFiles: ChannelFileItemVM[] = [
+  {
+    id: 'f6666666-1111-4111-8111-111111111111',
+    channelId: '7a111111-1111-4111-8111-111111111111',
+    messageId: 'e1111111-1111-4111-8111-111111111113',
+    senderId: MOCK_EDUCATOR_1.id,
+    kind: 'file',
+    url: 'https://example.com/ela-reading-plan.pdf',
+    name: 'ela-reading-plan.pdf',
+    mimeType: 'application/pdf',
+    size: 290000,
+    createdAt: '2025-01-10T12:20:00.000Z',
+  },
+];
+
+const DM_ELENA_CHANNEL: ChannelVM = {
+  id: '7a111111-1111-4111-8111-111111111111',
+  orgId: MOCK_ORG_ID,
+  kind: 'dm',
+  topic: MOCK_EDUCATOR_1.displayName,
+  topicIconKey: null,
+  description: 'Direct message thread',
+  visibility: 'private',
+  purpose: 'general',
+  status: 'active',
+  createdBy: MOCK_GUARDIAN.id,
+  createdAt: '2025-01-05T12:00:00.000Z',
+  archivedAt: null,
+  postingPolicy: { kind: 'members-only', allowThreads: true, allowReactions: true },
+  headerItems: [
+    { key: 'last-seen', label: '5m' },
+    { key: 'saved', label: '0' },
+    { key: 'info', label: 'Info', isPrimary: true },
+  ],
+  dmKey: `dm:${MOCK_GUARDIAN.id}:${MOCK_EDUCATOR_1.id}`,
+  context: { primaryEntity: { kind: 'user', id: MOCK_EDUCATOR_1.id } },
+  participants: [MOCK_GUARDIAN, MOCK_EDUCATOR_1],
+  messages: { items: dmElenaMessages, total: dmElenaMessages.length },
+  media: { items: dmElenaMedia, total: dmElenaMedia.length },
+  files: { items: dmElenaFiles, total: dmElenaFiles.length },
+  readState: {
+    channelId: '7a111111-1111-4111-8111-111111111111',
+    lastReadMessageId: 'e1111111-1111-4111-8111-111111111112',
+    lastReadAt: '2025-01-10T12:15:00.000Z',
+    unreadCount: 1,
+  },
+};
+
+const dmKaiMessages: MessageVM[] = [
+  {
+    id: 'e2222222-2222-4222-8222-222222222221',
+    type: 'text',
+    content: 'Thanks for today’s session recap.',
+    sender: MOCK_GUARDIAN,
+    createdAt: '2025-01-10T11:10:00.000Z',
+    reactions: [],
+    visibility: { type: 'all' },
+  } as TextMessageVM,
+  {
+    id: 'e2222222-2222-4222-8222-222222222222',
+    type: 'image',
+    content: 'Ava’s notes from today.',
+    sender: MOCK_GUARDIAN,
+    createdAt: '2025-01-10T11:20:00.000Z',
+    reactions: [],
+    visibility: { type: 'all' },
+    attachment: {
+      type: 'image',
+      url: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=800&q=80',
+      name: 'ava-notes.jpg',
+      width: 800,
+      height: 600,
+    },
+  } as ImageMessageVM,
+  {
+    id: 'e2222222-2222-4222-8222-222222222223',
+    type: 'file',
+    content: 'Screenshot of the homework checklist.',
+    sender: MOCK_EDUCATOR_2,
+    createdAt: '2025-01-10T11:35:00.000Z',
+    reactions: [],
+    visibility: { type: 'all' },
+    attachment: {
+      type: 'file',
+      url: 'https://example.com/math-checklist.pdf',
+      name: 'math-checklist.pdf',
+      size: 210000,
+      mimeType: 'application/pdf',
+    },
+  } as FileMessageVM,
+];
+
+const dmKaiMedia: ChannelMediaItemVM[] = [
+  {
+    id: 'f6666666-2222-4222-8222-222222222221',
+    channelId: '7a222222-2222-4222-8222-222222222222',
+    messageId: 'e2222222-2222-4222-8222-222222222222',
+    senderId: MOCK_GUARDIAN.id,
+    type: 'image',
+    url: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=800&q=80',
+    name: 'ava-notes.jpg',
+    width: 800,
+    height: 600,
+    createdAt: '2025-01-10T11:20:00.000Z',
+  },
+];
+
+const dmKaiFiles: ChannelFileItemVM[] = [
+  {
+    id: 'f6666666-2222-4222-8222-222222222222',
+    channelId: '7a222222-2222-4222-8222-222222222222',
+    messageId: 'e2222222-2222-4222-8222-222222222223',
+    senderId: MOCK_EDUCATOR_2.id,
+    kind: 'file',
+    url: 'https://example.com/math-checklist.pdf',
+    name: 'math-checklist.pdf',
+    mimeType: 'application/pdf',
+    size: 210000,
+    createdAt: '2025-01-10T11:35:00.000Z',
+  },
+];
+
+const DM_KAI_CHANNEL: ChannelVM = {
+  id: '7a222222-2222-4222-8222-222222222222',
+  orgId: MOCK_ORG_ID,
+  kind: 'dm',
+  topic: MOCK_EDUCATOR_2.displayName,
+  topicIconKey: null,
+  description: 'Direct message thread',
+  visibility: 'private',
+  purpose: 'general',
+  status: 'active',
+  createdBy: MOCK_GUARDIAN.id,
+  createdAt: '2025-01-05T12:05:00.000Z',
+  archivedAt: null,
+  postingPolicy: { kind: 'members-only', allowThreads: true, allowReactions: true },
+  headerItems: [
+    { key: 'last-seen', label: '12m' },
+    { key: 'saved', label: '0' },
+    { key: 'info', label: 'Info', isPrimary: true },
+  ],
+  dmKey: `dm:${MOCK_GUARDIAN.id}:${MOCK_EDUCATOR_2.id}`,
+  context: { primaryEntity: { kind: 'user', id: MOCK_EDUCATOR_2.id } },
+  participants: [MOCK_GUARDIAN, MOCK_EDUCATOR_2],
+  messages: { items: dmKaiMessages, total: dmKaiMessages.length },
+  media: { items: dmKaiMedia, total: dmKaiMedia.length },
+  files: { items: dmKaiFiles, total: dmKaiFiles.length },
+  readState: {
+    channelId: '7a222222-2222-4222-8222-222222222222',
+    lastReadMessageId: 'e2222222-2222-4222-8222-222222222222',
+    lastReadAt: '2025-01-10T11:30:00.000Z',
+    unreadCount: 1,
+  },
+};
+
+const dmPriyaMessages: MessageVM[] = [
+  {
+    id: 'e3333333-3333-4333-8333-333333333331',
+    type: 'text',
+    content: 'Milo loved the density experiment. Thank you!',
+    sender: MOCK_GUARDIAN,
+    createdAt: '2025-01-10T10:15:00.000Z',
+    reactions: [],
+    visibility: { type: 'all' },
+  } as TextMessageVM,
+  {
+    id: 'e3333333-3333-4333-8333-333333333332',
+    type: 'image',
+    content: 'Photo of the lab kit setup.',
+    sender: MOCK_EDUCATOR_3,
+    createdAt: '2025-01-10T10:35:00.000Z',
+    reactions: [],
+    visibility: { type: 'all' },
+    attachment: {
+      type: 'image',
+      url: 'https://images.unsplash.com/photo-1507413245164-6160d8298b31?auto=format&fit=crop&w=800&q=80',
+      name: 'lab-kit.jpg',
+      width: 800,
+      height: 600,
+    },
+  } as ImageMessageVM,
+  {
+    id: 'e3333333-3333-4333-8333-333333333333',
+    type: 'file',
+    content: 'Lab notes template attached.',
+    sender: MOCK_EDUCATOR_3,
+    createdAt: '2025-01-10T10:50:00.000Z',
+    reactions: [],
+    visibility: { type: 'all' },
+    attachment: {
+      type: 'file',
+      url: 'https://example.com/science-lab-notes.pdf',
+      name: 'science-lab-notes.pdf',
+      size: 260000,
+      mimeType: 'application/pdf',
+    },
+  } as FileMessageVM,
+];
+
+const dmPriyaMedia: ChannelMediaItemVM[] = [
+  {
+    id: 'f6666666-3333-4333-8333-333333333331',
+    channelId: '7a333333-3333-4333-8333-333333333333',
+    messageId: 'e3333333-3333-4333-8333-333333333332',
+    senderId: MOCK_EDUCATOR_3.id,
+    type: 'image',
+    url: 'https://images.unsplash.com/photo-1507413245164-6160d8298b31?auto=format&fit=crop&w=800&q=80',
+    name: 'lab-kit.jpg',
+    width: 800,
+    height: 600,
+    createdAt: '2025-01-10T10:35:00.000Z',
+  },
+];
+
+const dmPriyaFiles: ChannelFileItemVM[] = [
+  {
+    id: 'f6666666-3333-4333-8333-333333333332',
+    channelId: '7a333333-3333-4333-8333-333333333333',
+    messageId: 'e3333333-3333-4333-8333-333333333333',
+    senderId: MOCK_EDUCATOR_3.id,
+    kind: 'file',
+    url: 'https://example.com/science-lab-notes.pdf',
+    name: 'science-lab-notes.pdf',
+    mimeType: 'application/pdf',
+    size: 260000,
+    createdAt: '2025-01-10T10:50:00.000Z',
+  },
+];
+
+const DM_PRIYA_CHANNEL: ChannelVM = {
+  id: '7a333333-3333-4333-8333-333333333333',
+  orgId: MOCK_ORG_ID,
+  kind: 'dm',
+  topic: MOCK_EDUCATOR_3.displayName,
+  topicIconKey: null,
+  description: 'Direct message thread',
+  visibility: 'private',
+  purpose: 'general',
+  status: 'active',
+  createdBy: MOCK_GUARDIAN.id,
+  createdAt: '2025-01-05T12:10:00.000Z',
+  archivedAt: null,
+  postingPolicy: { kind: 'members-only', allowThreads: true, allowReactions: true },
+  headerItems: [
+    { key: 'last-seen', label: '1h' },
+    { key: 'saved', label: '0' },
+    { key: 'info', label: 'Info', isPrimary: true },
+  ],
+  dmKey: `dm:${MOCK_GUARDIAN.id}:${MOCK_EDUCATOR_3.id}`,
+  context: { primaryEntity: { kind: 'user', id: MOCK_EDUCATOR_3.id } },
+  participants: [MOCK_GUARDIAN, MOCK_EDUCATOR_3],
+  messages: { items: dmPriyaMessages, total: dmPriyaMessages.length },
+  media: { items: dmPriyaMedia, total: dmPriyaMedia.length },
+  files: { items: dmPriyaFiles, total: dmPriyaFiles.length },
+  readState: {
+    channelId: '7a333333-3333-4333-8333-333333333333',
+    lastReadMessageId: 'e3333333-3333-4333-8333-333333333332',
+    lastReadAt: '2025-01-10T10:40:00.000Z',
+    unreadCount: 1,
+  },
+};
+
+const dmLeoMessages: MessageVM[] = [
+  {
+    id: 'e4444444-4444-4444-8444-444444444441',
+    type: 'text',
+    content: 'Leo, can we focus on endgames next week?',
+    sender: MOCK_GUARDIAN,
+    createdAt: '2025-01-10T09:20:00.000Z',
+    reactions: [],
+    visibility: { type: 'all' },
+  } as TextMessageVM,
+  {
+    id: 'e4444444-4444-4444-8444-444444444442',
+    type: 'text',
+    content: 'Yes! I will prepare endgame puzzles.',
+    sender: MOCK_EDUCATOR_4,
+    createdAt: '2025-01-10T09:30:00.000Z',
+    reactions: [],
+    visibility: { type: 'all' },
+  } as TextMessageVM,
+  {
+    id: 'e4444444-4444-4444-8444-444444444443',
+    type: 'file',
+    content: 'Sample endgame puzzles.',
+    sender: MOCK_EDUCATOR_4,
+    createdAt: '2025-01-10T09:45:00.000Z',
+    reactions: [],
+    visibility: { type: 'all' },
+    attachment: {
+      type: 'file',
+      url: 'https://example.com/chess-endgames.pdf',
+      name: 'chess-endgames.pdf',
+      size: 250000,
+      mimeType: 'application/pdf',
+    },
+  } as FileMessageVM,
+];
+
+const dmLeoMedia: ChannelMediaItemVM[] = [];
+
+const dmLeoFiles: ChannelFileItemVM[] = [
+  {
+    id: 'f6666666-4444-4444-8444-444444444441',
+    channelId: '7a444444-4444-4444-8444-444444444444',
+    messageId: 'e4444444-4444-4444-8444-444444444443',
+    senderId: MOCK_EDUCATOR_4.id,
+    kind: 'file',
+    url: 'https://example.com/chess-endgames.pdf',
+    name: 'chess-endgames.pdf',
+    mimeType: 'application/pdf',
+    size: 250000,
+    createdAt: '2025-01-10T09:45:00.000Z',
+  },
+];
+
+const DM_LEO_CHANNEL: ChannelVM = {
+  id: '7a444444-4444-4444-8444-444444444444',
+  orgId: MOCK_ORG_ID,
+  kind: 'dm',
+  topic: MOCK_EDUCATOR_4.displayName,
+  topicIconKey: null,
+  description: 'Direct message thread',
+  visibility: 'private',
+  purpose: 'general',
+  status: 'active',
+  createdBy: MOCK_GUARDIAN.id,
+  createdAt: '2025-01-05T12:15:00.000Z',
+  archivedAt: null,
+  postingPolicy: { kind: 'members-only', allowThreads: true, allowReactions: true },
+  headerItems: [
+    { key: 'last-seen', label: '2h' },
+    { key: 'saved', label: '0' },
+    { key: 'info', label: 'Info', isPrimary: true },
+  ],
+  dmKey: `dm:${MOCK_GUARDIAN.id}:${MOCK_EDUCATOR_4.id}`,
+  context: { primaryEntity: { kind: 'user', id: MOCK_EDUCATOR_4.id } },
+  participants: [MOCK_GUARDIAN, MOCK_EDUCATOR_4],
+  messages: { items: dmLeoMessages, total: dmLeoMessages.length },
+  media: { items: dmLeoMedia, total: dmLeoMedia.length },
+  files: { items: dmLeoFiles, total: dmLeoFiles.length },
+  readState: {
+    channelId: '7a444444-4444-4444-8444-444444444444',
+    lastReadMessageId: 'e4444444-4444-4444-8444-444444444442',
+    lastReadAt: '2025-01-10T09:40:00.000Z',
+    unreadCount: 1,
+  },
+};
+
+const dmSofiaMessages: MessageVM[] = [
+  {
+    id: 'e5555555-5555-4555-8555-555555555551',
+    type: 'text',
+    content: 'Sofia, do you have a study plan template?',
+    sender: MOCK_GUARDIAN,
+    createdAt: '2025-01-09T15:00:00.000Z',
+    reactions: [],
+    visibility: { type: 'all' },
+  } as TextMessageVM,
+  {
+    id: 'e5555555-5555-4555-8555-555555555552',
+    type: 'file',
+    content: 'Here is a weekly planner template.',
+    sender: MOCK_EDUCATOR_5,
+    createdAt: '2025-01-09T15:20:00.000Z',
+    reactions: [],
+    visibility: { type: 'all' },
+    attachment: {
+      type: 'file',
+      url: 'https://example.com/weekly-planner.pdf',
+      name: 'weekly-planner.pdf',
+      size: 200000,
+      mimeType: 'application/pdf',
+    },
+  } as FileMessageVM,
+  {
+    id: 'e5555555-5555-4555-8555-555555555553',
+    type: 'image',
+    content: 'Screenshot of the tracker layout.',
+    sender: MOCK_EDUCATOR_5,
+    createdAt: '2025-01-09T15:25:00.000Z',
+    reactions: [],
+    visibility: { type: 'all' },
+    attachment: {
+      type: 'image',
+      url: 'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=800&q=80',
+      name: 'tracker-layout.jpg',
+      width: 800,
+      height: 600,
+    },
+  } as ImageMessageVM,
+];
+
+const dmSofiaMedia: ChannelMediaItemVM[] = [
+  {
+    id: 'f6666666-5555-4555-8555-555555555551',
+    channelId: '7a555555-5555-4555-8555-555555555555',
+    messageId: 'e5555555-5555-4555-8555-555555555553',
+    senderId: MOCK_EDUCATOR_5.id,
+    type: 'image',
+    url: 'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=800&q=80',
+    name: 'tracker-layout.jpg',
+    width: 800,
+    height: 600,
+    createdAt: '2025-01-09T15:25:00.000Z',
+  },
+];
+
+const dmSofiaFiles: ChannelFileItemVM[] = [
+  {
+    id: 'f6666666-5555-4555-8555-555555555552',
+    channelId: '7a555555-5555-4555-8555-555555555555',
+    messageId: 'e5555555-5555-4555-8555-555555555552',
+    senderId: MOCK_EDUCATOR_5.id,
+    kind: 'file',
+    url: 'https://example.com/weekly-planner.pdf',
+    name: 'weekly-planner.pdf',
+    mimeType: 'application/pdf',
+    size: 200000,
+    createdAt: '2025-01-09T15:20:00.000Z',
+  },
+];
+
+const DM_SOFIA_CHANNEL: ChannelVM = {
+  id: '7a555555-5555-4555-8555-555555555555',
+  orgId: MOCK_ORG_ID,
+  kind: 'dm',
+  topic: MOCK_EDUCATOR_5.displayName,
+  topicIconKey: null,
+  description: 'Direct message thread',
+  visibility: 'private',
+  purpose: 'general',
+  status: 'active',
+  createdBy: MOCK_GUARDIAN.id,
+  createdAt: '2025-01-05T12:20:00.000Z',
+  archivedAt: null,
+  postingPolicy: { kind: 'members-only', allowThreads: true, allowReactions: true },
+  headerItems: [
+    { key: 'last-seen', label: '1d' },
+    { key: 'saved', label: '0' },
+    { key: 'info', label: 'Info', isPrimary: true },
+  ],
+  dmKey: `dm:${MOCK_GUARDIAN.id}:${MOCK_EDUCATOR_5.id}`,
+  context: { primaryEntity: { kind: 'user', id: MOCK_EDUCATOR_5.id } },
+  participants: [MOCK_GUARDIAN, MOCK_EDUCATOR_5],
+  messages: { items: dmSofiaMessages, total: dmSofiaMessages.length },
+  media: { items: dmSofiaMedia, total: dmSofiaMedia.length },
+  files: { items: dmSofiaFiles, total: dmSofiaFiles.length },
+  readState: {
+    channelId: '7a555555-5555-4555-8555-555555555555',
+    lastReadMessageId: 'e5555555-5555-4555-8555-555555555552',
+    lastReadAt: '2025-01-09T15:22:00.000Z',
+    unreadCount: 1,
+  },
+};
+
+export const LEARNING_SPACE_CHANNELS_WITH_MESSAGES: ChannelVM[] = [
+  MATH_CHANNEL_WITH_MESSAGES,
+  SCIENCE_CHANNEL_WITH_MESSAGES,
+  ELA_CHANNEL_WITH_MESSAGES,
+  CHESS_CHANNEL_WITH_MESSAGES,
+];
+
+export const DIRECT_MESSAGE_CHANNELS_WITH_MESSAGES: ChannelVM[] = [
+  DM_ELENA_CHANNEL,
+  DM_KAI_CHANNEL,
+  DM_PRIYA_CHANNEL,
+  DM_LEO_CHANNEL,
+  DM_SOFIA_CHANNEL,
+];
+
+export const LEARNING_SPACE_CHANNELS_BY_ID: Record<string, ChannelVM> = {
+  [LEARNING_SPACE_CHANNEL_IDS.math]: MATH_CHANNEL_WITH_MESSAGES,
+  [LEARNING_SPACE_CHANNEL_IDS.science]: SCIENCE_CHANNEL_WITH_MESSAGES,
+  [LEARNING_SPACE_CHANNEL_IDS.ela]: ELA_CHANNEL_WITH_MESSAGES,
+  [LEARNING_SPACE_CHANNEL_IDS.chess]: CHESS_CHANNEL_WITH_MESSAGES,
+};
+
+export const DIRECT_MESSAGE_CHANNELS_BY_ID: Record<string, ChannelVM> = {
+  ['7a111111-1111-4111-8111-111111111111']: DM_ELENA_CHANNEL,
+  ['7a222222-2222-4222-8222-222222222222']: DM_KAI_CHANNEL,
+  ['7a333333-3333-4333-8333-333333333333']: DM_PRIYA_CHANNEL,
+  ['7a444444-4444-4444-8444-444444444444']: DM_LEO_CHANNEL,
+  ['7a555555-5555-4555-8555-555555555555']: DM_SOFIA_CHANNEL,
+};
+
+export const DIRECT_MESSAGE_CHANNEL_BY_USER_ID: Record<string, string> = {
+  [MOCK_EDUCATOR_1.id]: '7a111111-1111-4111-8111-111111111111',
+  [MOCK_EDUCATOR_2.id]: '7a222222-2222-4222-8222-222222222222',
+  [MOCK_EDUCATOR_3.id]: '7a333333-3333-4333-8333-333333333333',
+  [MOCK_EDUCATOR_4.id]: '7a444444-4444-4444-8444-444444444444',
+  [MOCK_EDUCATOR_5.id]: '7a555555-5555-4555-8555-555555555555',
+};

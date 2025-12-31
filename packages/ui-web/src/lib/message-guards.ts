@@ -6,9 +6,11 @@ import type {
   DesignFileUpdateMessageVM,
   PaymentReminderMessageVM,
   EventReminderMessageVM,
+  FeedbackRequestMessageVM,
   LessonAssignmentMessageVM,
   ProgressUpdateMessageVM,
   SessionBookingMessageVM,
+  SessionCompleteMessageVM,
   SessionSummaryMessageVM,
   HomeworkSubmissionMessageVM,
   LinkPreviewMessageVM,
@@ -46,6 +48,12 @@ export function isEventReminderMessage(
   return message.type === 'event-reminder';
 }
 
+export function isFeedbackRequestMessage(
+  message: MessageVM,
+): message is FeedbackRequestMessageVM {
+  return message.type === 'feedback-request';
+}
+
 export function isLessonAssignmentMessage(
   message: MessageVM,
 ): message is LessonAssignmentMessageVM {
@@ -62,6 +70,12 @@ export function isSessionBookingMessage(
   message: MessageVM,
 ): message is SessionBookingMessageVM {
   return message.type === 'session-booking';
+}
+
+export function isSessionCompleteMessage(
+  message: MessageVM,
+): message is SessionCompleteMessageVM {
+  return message.type === 'session-complete';
 }
 
 export function isSessionSummaryMessage(

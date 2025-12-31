@@ -29,12 +29,16 @@ export function SavedMessagePreview({ message, onClick }: SavedMessagePreviewPro
         return `💰 Payment: ${msg.payment.currency}${msg.payment.amount}`;
       case 'event-reminder':
         return `📅 Event: ${msg.event.title}`;
+      case 'feedback-request':
+        return `⭐ Feedback: ${msg.feedback.prompt}`;
       case 'lesson-assignment':
         return `📚 Assignment: ${msg.assignment.title}`;
       case 'progress-update':
         return `📊 Progress: ${msg.progress.subject}`;
       case 'session-booking':
         return `🕒 Session: ${msg.session.title}`;
+      case 'session-complete':
+        return `✅ Session complete: ${msg.session.title}`;
       case 'session-summary':
         return `📝 Summary: ${msg.session.title}`;
       case 'homework-submission':
