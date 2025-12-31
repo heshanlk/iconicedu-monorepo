@@ -1,15 +1,21 @@
 'use client';
 
-import type { AvatarVM, PresenceVM } from '@iconicedu/shared-types';
+import type {
+  AvatarVM,
+  PresenceDisplayStatusVM,
+  PresenceVM,
+} from '@iconicedu/shared-types';
 import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
 import { cn } from '../../lib/utils';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../../ui/tooltip';
 
-const STATUS_COLORS = {
+const STATUS_COLORS: Record<PresenceDisplayStatusVM, string> = {
   online: 'bg-green-500',
   away: 'bg-yellow-500',
   idle: 'bg-gray-400',
+  busy: 'bg-red-600',
   offline: 'bg-gray-600',
-} as const;
+};
 
 interface AvatarWithStatusProps {
   name: string;
@@ -43,20 +49,23 @@ export function AvatarWithStatus({
   fallbackClassName,
 }: AvatarWithStatusProps) {
   const liveStatus = presence?.liveStatus ?? 'none';
-  const statusKey =
+  const statusKey: PresenceDisplayStatusVM =
     liveStatus === 'teaching' || liveStatus === 'in_class'
       ? 'online'
       : liveStatus === 'reviewing_work'
         ? 'idle'
         : liveStatus === 'busy'
-          ? 'away'
-          : 'offline';
+          ? 'busy'
+          : liveStatus === 'away'
+            ? 'away'
+            : 'offline';
   const displayStatus = showStatus !== undefined ? showStatus : !!presence;
-  const statusColor = STATUS_COLORS[statusKey];
-
   const avatarUrl = avatar?.url ?? '/placeholder.svg';
+  const tooltipText = presence?.state?.text?.trim();
+  const tooltipEmoji = presence?.state?.emoji?.trim();
+  const shouldShowTooltip = Boolean(tooltipText || tooltipEmoji);
 
-  return (
+  const avatarNode = (
     <div className="relative">
       <Avatar className={sizeClassName}>
         <AvatarImage src={avatarUrl} alt={name} />
@@ -68,12 +77,28 @@ export function AvatarWithStatus({
         <span
           className={cn(
             'absolute rounded-full border-2 border-card',
-            statusColor,
+            STATUS_COLORS[statusKey],
             statusClassName ?? 'bottom-0 right-0 h-2.5 w-2.5',
           )}
           aria-label={`Status: ${statusKey}`}
         />
       )}
     </div>
+  );
+
+  if (!shouldShowTooltip) {
+    return avatarNode;
+  }
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>{avatarNode}</TooltipTrigger>
+      <TooltipContent sideOffset={6}>
+        <span className="inline-flex items-center gap-1.5">
+          {tooltipEmoji ? <span>{tooltipEmoji}</span> : null}
+          {tooltipText ? <span>{tooltipText}</span> : null}
+        </span>
+      </TooltipContent>
+    </Tooltip>
   );
 }

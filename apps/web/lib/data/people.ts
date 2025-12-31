@@ -74,14 +74,14 @@ const grade6: GradeLevelOption = { id: 6, label: 'Grade 6' };
 
 const presenceIdle: PresenceVM = {
   state: { text: 'Offline', emoji: '🌙' },
-  liveStatus: 'none',
+  liveStatus: 'offline',
   lastSeenAt: '2025-01-10T18:20:00.000Z',
   presenceLoaded: true,
 };
 
 const presenceOnline: PresenceVM = {
   state: { text: 'Online', emoji: '✅' },
-  liveStatus: 'reviewing_work',
+  liveStatus: 'away',
   lastSeenAt: '2025-01-10T19:10:00.000Z',
   presenceLoaded: true,
 };
@@ -90,6 +90,13 @@ const presenceBusy: PresenceVM = {
   state: { text: 'In session', emoji: '🎧' },
   liveStatus: 'busy',
   lastSeenAt: '2025-01-10T19:45:00.000Z',
+  presenceLoaded: true,
+};
+
+const presenceAway: PresenceVM = {
+  state: { text: 'Away', emoji: '🌿' },
+  liveStatus: 'away',
+  lastSeenAt: '2025-01-10T17:10:00.000Z',
   presenceLoaded: true,
 };
 
@@ -440,12 +447,7 @@ export const MOCK_EDUCATOR_5: EducatorProfileVM = {
   timezone: 'America/New_York',
   locale: 'en-US',
   notificationDefaults: null,
-  presence: {
-    state: { text: 'Planning session', emoji: '📝' },
-    liveStatus: 'none',
-    lastSeenAt: '2025-01-10T17:10:00.000Z',
-    presenceLoaded: true,
-  },
+  presence: presenceAway,
   status: 'active',
   createdAt: '2017-06-05T00:00:00.000Z',
   updatedAt: '2025-01-02T00:00:00.000Z',

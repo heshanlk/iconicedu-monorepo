@@ -20,11 +20,11 @@ export type PresenceStateVM = {
   expiresAt?: ISODateTime | null;
 };
 
-export type LiveStatus = 'none' | 'in_class' | 'teaching' | 'busy' | 'reviewing_work';
+export type PresenceDisplayStatusVM = 'online' | 'idle' | 'busy' | 'away' | 'offline';
 
 export interface PresenceVM {
   state: PresenceStateVM;
-  liveStatus: LiveStatus;
+  liveStatus: PresenceDisplayStatusVM;
   lastSeenAt?: ISODateTime | null;
 
   // Helpful FE flags for hydration
