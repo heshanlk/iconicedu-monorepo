@@ -26,7 +26,7 @@ const ActionButton = memo(function ActionButton({
     <Button
       variant="ghost"
       className={cn(
-        'group h-auto w-16 shrink-0 flex-col items-center gap-2 px-1 py-2 text-[11px] font-medium text-muted-foreground hover:bg-transparent',
+        'group h-auto w-16 shrink-0 basis-16 flex-col items-center gap-2 px-1 py-2 text-[11px] font-medium text-muted-foreground hover:bg-transparent',
         onClick && 'text-foreground',
       )}
       onClick={onClick}
