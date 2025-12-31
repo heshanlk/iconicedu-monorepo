@@ -61,6 +61,26 @@ export interface ChannelFileItemVM {
   createdAt: ISODateTime;
 }
 
+/**
+ * ✅ CHANGE: lightweight entity reference to avoid importing other VMs.
+ * This prevents tight coupling between channels and class-space/schedule domains.
+ */
+export type EntityRefVM = { kind: 'class_space'; id: UUID } | { kind: 'user'; id: UUID };
+
+/**
+ * ✅ CHANGE: optional context that tells the UI what this channel "belongs to"
+ * without embedding or depending on other domain models.
+ */
+export interface ChannelContextVM {
+  primaryEntity?: EntityRefVM | null;
+
+  /**
+   * UI hints. Optional and safe to omit.
+   * Useful for quickly rendering Info tab sections, header icons, etc.
+   */
+  capabilities?: Array<'has_schedule' | 'has_homework' | 'has_summaries'>;
+}
+
 export interface ChannelVM {
   id: UUID;
   orgId: UUID;
@@ -81,6 +101,19 @@ export interface ChannelVM {
   postingPolicy: ChannelPostingPolicyVM;
 
   headerItems: ChannelHeaderItemVM[];
+
+  /**
+   * ✅ CHANGE: deterministic key used ONLY for dm/group_dm to prevent duplicates
+   * - dm: "dm:<minUserId>:<maxUserId>"
+   * - group_dm: "gdm:<hash(sortedUserIds)>"
+   */
+  dmKey?: string | null;
+
+  /**
+   * ✅ CHANGE: channel context for linking to ClassSpace (or others) by ID only
+   */
+  context?: ChannelContextVM | null;
+
   participants: UserProfileVM[];
   messages: ConnectionVM<MessageVM>;
   media: ConnectionVM<ChannelMediaItemVM>;
@@ -99,5 +132,12 @@ export interface ChannelMiniVM {
   topicIconKey?: ChannelTopicIconKey | null;
   status: ChannelStatus;
   visibility: ChannelVisibility;
+
+  /**
+   * ✅ CHANGE: include these in Mini too so lists + routing are easy
+   */
+  dmKey?: string | null;
+  context?: ChannelContextVM | null;
+
   participants: UserProfileVM[];
 }
