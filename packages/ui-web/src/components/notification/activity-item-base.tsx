@@ -61,7 +61,7 @@ const TONE_CLASSNAMES = {
 
 const getDefaultIconKey = (activity: ActivityFeedItemVM): InboxIconKeyVM => {
   if (activity.kind === 'group') {
-    switch (activity.groupType) {
+    switch (activity.grouping?.groupType) {
       case 'payment':
         return 'CreditCard';
       case 'survey':
@@ -156,15 +156,15 @@ export function ActivityItemBase({
   className,
 }: ActivityItemBaseProps) {
   const iconKey =
-    activity.leading?.kind === 'icon'
-      ? activity.leading.iconKey
+    activity.content.leading?.kind === 'icon'
+      ? activity.content.leading.iconKey
       : getDefaultIconKey(activity);
   const toneClassName =
-    activity.leading?.kind === 'icon' && activity.leading.tone
-      ? TONE_CLASSNAMES[activity.leading.tone]
+    activity.content.leading?.kind === 'icon' && activity.content.leading.tone
+      ? TONE_CLASSNAMES[activity.content.leading.tone]
       : undefined;
   const Icon = INBOX_ICON_MAP[iconKey];
-  const timestampLabel = formatRelativeTime(activity.occurredAt);
+  const timestampLabel = formatRelativeTime(activity.timestamps.occurredAt);
 
   return (
     <div
@@ -178,8 +178,8 @@ export function ActivityItemBase({
           <div
             className={cn(
               'z-10 flex size-6 items-center justify-center rounded-full',
-              activity.isRead ? READ_ICON_CLASS : toneClassName,
-              !toneClassName && !activity.isRead && READ_ICON_CLASS,
+              activity.state?.isRead ? READ_ICON_CLASS : toneClassName,
+              !toneClassName && !activity.state?.isRead && READ_ICON_CLASS,
             )}
           >
             {Icon ? <Icon className="size-3" /> : null}
@@ -207,21 +207,21 @@ export function ActivityItemBase({
           <div className="flex items-center gap-1.5">
             <p className="text-sm leading-tight text-pretty">
               <span className="font-semibold text-foreground">
-                {activity.headline.primary}
+                {activity.content.headline.primary}
               </span>{' '}
-              {activity.headline.secondary && (
+              {activity.content.headline.secondary && (
                 <span className="text-muted-foreground">
-                  {activity.headline.secondary}
+                  {activity.content.headline.secondary}
                 </span>
               )}{' '}
-              {activity.headline.emphasis && (
+              {activity.content.headline.emphasis && (
                 <span className="font-medium text-foreground">
-                  {activity.headline.emphasis}
+                  {activity.content.headline.emphasis}
                 </span>
               )}
             </p>
 
-            {!activity.isRead && (
+            {!activity.state?.isRead && (
               <Button
                 size="icon"
                 variant="ghost"
@@ -250,8 +250,8 @@ export function ActivityItemBase({
 
           {showActionButton && <ActivityWithButton activity={activity} />}
 
-          {activity.summary && !footer ? (
-            <p className="text-xs text-muted-foreground">{activity.summary}</p>
+          {activity.content.summary && !footer ? (
+            <p className="text-xs text-muted-foreground">{activity.content.summary}</p>
           ) : null}
 
           {footer}

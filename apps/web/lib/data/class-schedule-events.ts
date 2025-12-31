@@ -24,25 +24,25 @@ export const MATH_SCHEDULE: ClassScheduleVM = {
   color: 'blue',
   participants: [
     {
-      userId: MOCK_EDUCATOR_2.id,
+      userId: MOCK_EDUCATOR_2.ids.id,
       role: 'educator',
       status: 'accepted',
-      displayName: MOCK_EDUCATOR_2.displayName,
-      avatarUrl: MOCK_EDUCATOR_2.avatar.url ?? null,
+      displayName: MOCK_EDUCATOR_2.profile.displayName,
+      avatarUrl: MOCK_EDUCATOR_2.profile.avatar.url ?? null,
     },
     {
-      userId: MOCK_CHILDREN[0].id,
+      userId: MOCK_CHILDREN[0].ids.id,
       role: 'child',
       status: 'accepted',
-      displayName: MOCK_CHILDREN[0].displayName,
-      avatarUrl: MOCK_CHILDREN[0].avatar.url ?? null,
+      displayName: MOCK_CHILDREN[0].profile.displayName,
+      avatarUrl: MOCK_CHILDREN[0].profile.avatar.url ?? null,
     },
     {
-      userId: MOCK_GUARDIAN.id,
+      userId: MOCK_GUARDIAN.ids.id,
       role: 'guardian',
       status: 'accepted',
-      displayName: MOCK_GUARDIAN.displayName,
-      avatarUrl: MOCK_GUARDIAN.avatar.url ?? null,
+      displayName: MOCK_GUARDIAN.profile.displayName,
+      avatarUrl: MOCK_GUARDIAN.profile.avatar.url ?? null,
     },
   ],
   source: {
@@ -58,9 +58,7 @@ export const MATH_SCHEDULE: ClassScheduleVM = {
       byWeekday: ['MO'],
       timezone: 'America/New_York',
     },
-    exceptions: [
-      { occurrenceKey: '2026-02-16T21:00:00.000Z', reason: 'Winter break' },
-    ],
+    exceptions: [{ occurrenceKey: '2026-02-16T21:00:00.000Z', reason: 'Winter break' }],
     overrides: [
       {
         occurrenceKey: '2026-02-02T21:00:00.000Z',
@@ -75,7 +73,7 @@ export const MATH_SCHEDULE: ClassScheduleVM = {
   },
   audit: {
     createdAt: '2025-01-02T15:00:00.000Z',
-    createdBy: MOCK_EDUCATOR_2.id,
+    createdBy: MOCK_EDUCATOR_2.ids.id,
   },
 };
 
@@ -93,25 +91,25 @@ export const SCIENCE_SCHEDULE: ClassScheduleVM = {
   color: 'green',
   participants: [
     {
-      userId: MOCK_EDUCATOR_3.id,
+      userId: MOCK_EDUCATOR_3.ids.id,
       role: 'educator',
       status: 'accepted',
-      displayName: MOCK_EDUCATOR_3.displayName,
-      avatarUrl: MOCK_EDUCATOR_3.avatar.url ?? null,
+      displayName: MOCK_EDUCATOR_3.profile.displayName,
+      avatarUrl: MOCK_EDUCATOR_3.profile.avatar.url ?? null,
     },
     {
-      userId: MOCK_CHILDREN[1].id,
+      userId: MOCK_CHILDREN[1].ids.id,
       role: 'child',
       status: 'accepted',
-      displayName: MOCK_CHILDREN[1].displayName,
-      avatarUrl: MOCK_CHILDREN[1].avatar.url ?? null,
+      displayName: MOCK_CHILDREN[1].profile.displayName,
+      avatarUrl: MOCK_CHILDREN[1].profile.avatar.url ?? null,
     },
     {
-      userId: MOCK_GUARDIAN.id,
+      userId: MOCK_GUARDIAN.ids.id,
       role: 'guardian',
       status: 'accepted',
-      displayName: MOCK_GUARDIAN.displayName,
-      avatarUrl: MOCK_GUARDIAN.avatar.url ?? null,
+      displayName: MOCK_GUARDIAN.profile.displayName,
+      avatarUrl: MOCK_GUARDIAN.profile.avatar.url ?? null,
     },
   ],
   source: {
@@ -146,7 +144,7 @@ export const SCIENCE_SCHEDULE: ClassScheduleVM = {
   },
   audit: {
     createdAt: '2025-01-02T15:05:00.000Z',
-    createdBy: MOCK_EDUCATOR_3.id,
+    createdBy: MOCK_EDUCATOR_3.ids.id,
   },
 };
 
@@ -164,25 +162,25 @@ export const ELA_SCHEDULE: ClassScheduleVM = {
   color: 'pink',
   participants: [
     {
-      userId: MOCK_EDUCATOR_1.id,
+      userId: MOCK_EDUCATOR_1.ids.id,
       role: 'educator',
       status: 'accepted',
-      displayName: MOCK_EDUCATOR_1.displayName,
-      avatarUrl: MOCK_EDUCATOR_1.avatar.url ?? null,
+      displayName: MOCK_EDUCATOR_1.profile.displayName,
+      avatarUrl: MOCK_EDUCATOR_1.profile.avatar.url ?? null,
     },
     {
-      userId: MOCK_CHILDREN[2].id,
+      userId: MOCK_CHILDREN[2].ids.id,
       role: 'child',
       status: 'accepted',
-      displayName: MOCK_CHILDREN[2].displayName,
-      avatarUrl: MOCK_CHILDREN[2].avatar.url ?? null,
+      displayName: MOCK_CHILDREN[2].profile.displayName,
+      avatarUrl: MOCK_CHILDREN[2].profile.avatar.url ?? null,
     },
     {
-      userId: MOCK_GUARDIAN.id,
+      userId: MOCK_GUARDIAN.ids.id,
       role: 'guardian',
       status: 'accepted',
-      displayName: MOCK_GUARDIAN.displayName,
-      avatarUrl: MOCK_GUARDIAN.avatar.url ?? null,
+      displayName: MOCK_GUARDIAN.profile.displayName,
+      avatarUrl: MOCK_GUARDIAN.profile.avatar.url ?? null,
     },
   ],
   source: {
@@ -198,9 +196,7 @@ export const ELA_SCHEDULE: ClassScheduleVM = {
       byWeekday: ['FR'],
       timezone: 'America/New_York',
     },
-    exceptions: [
-      { occurrenceKey: '2026-02-13T22:30:00.000Z', reason: 'Holiday' },
-    ],
+    exceptions: [{ occurrenceKey: '2026-02-13T22:30:00.000Z', reason: 'Holiday' }],
     overrides: [
       {
         occurrenceKey: '2026-02-06T22:30:00.000Z',
@@ -214,7 +210,7 @@ export const ELA_SCHEDULE: ClassScheduleVM = {
   },
   audit: {
     createdAt: '2025-01-02T15:10:00.000Z',
-    createdBy: MOCK_EDUCATOR_1.id,
+    createdBy: MOCK_EDUCATOR_1.ids.id,
   },
 };
 
@@ -232,25 +228,25 @@ export const CHESS_SCHEDULE: ClassScheduleVM = {
   color: 'purple',
   participants: [
     {
-      userId: MOCK_EDUCATOR_4.id,
+      userId: MOCK_EDUCATOR_4.ids.id,
       role: 'educator',
       status: 'accepted',
-      displayName: MOCK_EDUCATOR_4.displayName,
-      avatarUrl: MOCK_EDUCATOR_4.avatar.url ?? null,
+      displayName: MOCK_EDUCATOR_4.profile.displayName,
+      avatarUrl: MOCK_EDUCATOR_4.profile.avatar.url ?? null,
     },
     {
-      userId: MOCK_CHILDREN[0].id,
+      userId: MOCK_CHILDREN[0].ids.id,
       role: 'child',
       status: 'accepted',
-      displayName: MOCK_CHILDREN[0].displayName,
-      avatarUrl: MOCK_CHILDREN[0].avatar.url ?? null,
+      displayName: MOCK_CHILDREN[0].profile.displayName,
+      avatarUrl: MOCK_CHILDREN[0].profile.avatar.url ?? null,
     },
     {
-      userId: MOCK_GUARDIAN.id,
+      userId: MOCK_GUARDIAN.ids.id,
       role: 'guardian',
       status: 'accepted',
-      displayName: MOCK_GUARDIAN.displayName,
-      avatarUrl: MOCK_GUARDIAN.avatar.url ?? null,
+      displayName: MOCK_GUARDIAN.profile.displayName,
+      avatarUrl: MOCK_GUARDIAN.profile.avatar.url ?? null,
     },
   ],
   source: {
@@ -266,9 +262,7 @@ export const CHESS_SCHEDULE: ClassScheduleVM = {
       byWeekday: ['SA'],
       timezone: 'America/New_York',
     },
-    exceptions: [
-      { occurrenceKey: '2026-02-14T19:00:00.000Z', reason: 'Tournament' },
-    ],
+    exceptions: [{ occurrenceKey: '2026-02-14T19:00:00.000Z', reason: 'Tournament' }],
     overrides: [
       {
         occurrenceKey: '2026-01-31T19:00:00.000Z',
@@ -282,7 +276,7 @@ export const CHESS_SCHEDULE: ClassScheduleVM = {
   },
   audit: {
     createdAt: '2025-01-02T15:15:00.000Z',
-    createdBy: MOCK_EDUCATOR_4.id,
+    createdBy: MOCK_EDUCATOR_4.ids.id,
   },
 };
 

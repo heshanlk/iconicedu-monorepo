@@ -63,11 +63,12 @@ export const MessageList = forwardRef<MessageListRef, MessageListProps>(
       let currentDate = '';
 
       const sortedMessages = [...messages].sort(
-        (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+        (a, b) =>
+          new Date(a.core.createdAt).getTime() - new Date(b.core.createdAt).getTime(),
       );
 
       sortedMessages.forEach((message) => {
-        const messageDate = formatDateHeader(message.createdAt);
+        const messageDate = formatDateHeader(message.core.createdAt);
         if (messageDate !== currentDate) {
           currentDate = messageDate;
           groups.push({ date: messageDate, messages: [message] });
@@ -94,15 +95,15 @@ export const MessageList = forwardRef<MessageListRef, MessageListProps>(
               const previousMessage = index > 0 ? group.messages[index - 1] : null;
               const showUnreadDivider =
                 !!lastReadMessageId &&
-                previousMessage?.id === lastReadMessageId &&
-                message.id !== lastReadMessageId;
+                previousMessage?.ids.id === lastReadMessageId &&
+                message.ids.id !== lastReadMessageId;
 
               return (
                 <div
-                  key={message.id}
+                  key={message.ids.id}
                   ref={(el) => {
-                    if (el) messageRefs.current.set(message.id, el);
-                    else messageRefs.current.delete(message.id);
+                    if (el) messageRefs.current.set(message.ids.id, el);
+                    else messageRefs.current.delete(message.ids.id);
                   }}
                   className="transition-all duration-300"
                 >

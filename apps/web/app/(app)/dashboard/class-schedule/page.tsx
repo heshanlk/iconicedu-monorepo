@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { ClassScheduleContainer, DashboardHeader } from '@iconicedu/ui-web';
 import type { ClassScheduleViewVM } from '@iconicedu/shared-types';
-import { baseEvents } from '../../../lib/data/class-schedule-events';
+import { baseEvents } from '../../../../lib/data/class-schedule-events';
 
 export default function ClassSchedulePage() {
   const searchParams = useSearchParams();

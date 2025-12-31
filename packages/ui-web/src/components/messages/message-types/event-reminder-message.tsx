@@ -107,9 +107,9 @@ export const EventReminderMessage = memo(function EventReminderMessage(
               <div className="flex -space-x-1.5">
                 {event.attendees.slice(0, 4).map((attendee) => (
                   <AvatarWithStatus
-                    key={attendee.id}
-                    name={attendee.displayName}
-                    avatar={attendee.avatar}
+                    key={attendee.ids.id}
+                    name={attendee.profile.displayName}
+                    avatar={attendee.profile.avatar}
                     showStatus={false}
                     sizeClassName="h-5 w-5 border-2 border-background"
                     fallbackClassName="text-[8px]"

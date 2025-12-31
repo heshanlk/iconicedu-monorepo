@@ -11,7 +11,7 @@ export function ActivityWithButton({
   activity: ActivityFeedItemVM;
   className?: string;
 }) {
-  const actionButton = activity.actionButton;
+  const actionButton = activity.content.actionButton;
 
   if (!actionButton) {
     return null;

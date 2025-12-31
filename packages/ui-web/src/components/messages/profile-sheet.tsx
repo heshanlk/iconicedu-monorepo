@@ -72,8 +72,8 @@ export function ProfileContent({
     <div className="flex-1 overflow-y-auto">
       <div className="flex flex-col items-center gap-3 p-6 min-w-0">
         <AvatarWithStatus
-          name={user.displayName}
-          avatar={user.avatar}
+          name={user.profile.displayName}
+          avatar={user.profile.avatar}
           presence={user.presence}
           showStatus
           sizeClassName="h-20 w-20"
@@ -83,7 +83,7 @@ export function ProfileContent({
         />
         <div className="text-center min-w-0">
           <h2 className="text-lg font-semibold text-foreground break-words">
-            {user.displayName}
+            {user.profile.displayName}
           </h2>
           {(user.presence?.state?.emoji || user.presence?.state?.text) && (
             <Badge variant="secondary" className="mt-1 max-w-full">
@@ -121,7 +121,7 @@ export function ProfileContent({
       <Separator />
 
       <div className="space-y-4 p-4 min-w-0">
-        <MediaFilesPanel media={media} files={files} filterUserId={user.id} />
+        <MediaFilesPanel media={media} files={files} filterUserId={user.ids.id} />
       </div>
 
       <div className="space-y-4 p-4 min-w-0">
@@ -136,12 +136,14 @@ export function ProfileContent({
               </div>
             </div>
           )}
-          {user.bio && (
+          {user.profile.bio && (
             <div className="flex items-start gap-3">
               <FileText className="mt-0.5 h-4 w-4 text-muted-foreground" />
               <div className="flex-1 min-w-0">
                 <p className="text-xs text-muted-foreground">Bio</p>
-                <p className="text-sm text-foreground break-words">{user.bio}</p>
+                <p className="text-sm text-foreground break-words">
+                  {user.profile.bio}
+                </p>
               </div>
             </div>
           )}

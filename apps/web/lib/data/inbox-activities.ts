@@ -9,6 +9,32 @@ import {
 } from './people';
 import { LEARNING_SPACE_IDS, LEARNING_SPACE_CHANNEL_IDS } from './learning-space-ids';
 
+const ACTOR_EDUCATOR_1 = {
+  id: MOCK_EDUCATOR_1.ids.id,
+  displayName: MOCK_EDUCATOR_1.profile.displayName,
+  avatar: MOCK_EDUCATOR_1.profile.avatar,
+} as const;
+const ACTOR_EDUCATOR_2 = {
+  id: MOCK_EDUCATOR_2.ids.id,
+  displayName: MOCK_EDUCATOR_2.profile.displayName,
+  avatar: MOCK_EDUCATOR_2.profile.avatar,
+} as const;
+const ACTOR_EDUCATOR_3 = {
+  id: MOCK_EDUCATOR_3.ids.id,
+  displayName: MOCK_EDUCATOR_3.profile.displayName,
+  avatar: MOCK_EDUCATOR_3.profile.avatar,
+} as const;
+const ACTOR_EDUCATOR_4 = {
+  id: MOCK_EDUCATOR_4.ids.id,
+  displayName: MOCK_EDUCATOR_4.profile.displayName,
+  avatar: MOCK_EDUCATOR_4.profile.avatar,
+} as const;
+const ACTOR_CHILD_1 = {
+  id: MOCK_CHILDREN[0].ids.id,
+  displayName: MOCK_CHILDREN[0].profile.displayName,
+  avatar: MOCK_CHILDREN[0].profile.avatar,
+} as const;
+
 const SYSTEM_PROFILE = {
   kind: 'system',
   id: 'c7c88924-6c2d-48d6-9f2f-2ac684e59f01',
@@ -42,7 +68,7 @@ export const INBOX_ACTIVITY_FEED: ActivityFeedVM = {
           scope: { kind: 'learning_space', learningSpaceId: LEARNING_SPACE_IDS.math },
           visibility: 'scope_only',
           verb: 'summary.posted',
-          actor: MOCK_EDUCATOR_2,
+          actor: ACTOR_EDUCATOR_2,
           object: { kind: 'summary', id: 'summary-math-2025-01-10' },
           target: { kind: 'learning_space', id: LEARNING_SPACE_IDS.math },
           leading: { kind: 'icon', iconKey: 'Sparkles', tone: 'info' },
@@ -64,7 +90,7 @@ export const INBOX_ACTIVITY_FEED: ActivityFeedVM = {
           scope: { kind: 'channel', channelId: LEARNING_SPACE_CHANNEL_IDS.science },
           visibility: 'scope_only',
           verb: 'file.uploaded',
-          actor: MOCK_EDUCATOR_3,
+          actor: ACTOR_EDUCATOR_3,
           object: { kind: 'file', id: 'science-density-worksheet' },
           target: { kind: 'learning_space', id: LEARNING_SPACE_IDS.science },
           leading: { kind: 'icon', iconKey: 'FileText', tone: 'neutral' },
@@ -85,9 +111,9 @@ export const INBOX_ACTIVITY_FEED: ActivityFeedVM = {
           tabKey: 'payment',
           scope: { kind: 'learning_space', learningSpaceId: LEARNING_SPACE_IDS.ela },
           visibility: 'direct',
-          audience: [{ kind: 'users_only', userIds: [MOCK_GUARDIAN.id] }],
+          audience: [{ kind: 'users_only', userIds: [MOCK_GUARDIAN.ids.id] }],
           verb: 'message.posted',
-          actor: MOCK_EDUCATOR_1,
+          actor: ACTOR_EDUCATOR_1,
           object: { kind: 'file', id: 'INV-ELA-2025-01' },
           target: { kind: 'learning_space', id: LEARNING_SPACE_IDS.ela },
           leading: { kind: 'icon', iconKey: 'CreditCard', tone: 'warning' },
@@ -114,7 +140,7 @@ export const INBOX_ACTIVITY_FEED: ActivityFeedVM = {
           scope: { kind: 'learning_space', learningSpaceId: LEARNING_SPACE_IDS.chess },
           visibility: 'scope_only',
           verb: 'homework.assigned',
-          actor: MOCK_EDUCATOR_4,
+          actor: ACTOR_EDUCATOR_4,
           object: { kind: 'homework', id: 'chess-puzzles-pack' },
           target: { kind: 'learning_space', id: LEARNING_SPACE_IDS.chess },
           groupKey: 'chess-homework-2025-01-09',
@@ -123,7 +149,7 @@ export const INBOX_ACTIVITY_FEED: ActivityFeedVM = {
           subActivityCount: 2,
           leading: {
             kind: 'avatars',
-            avatars: [MOCK_EDUCATOR_4.avatar, MOCK_CHILDREN[0].avatar],
+            avatars: [MOCK_EDUCATOR_4.profile.avatar, MOCK_CHILDREN[0].profile.avatar],
             overflowCount: 0,
           },
           headline: {
@@ -145,7 +171,7 @@ export const INBOX_ACTIVITY_FEED: ActivityFeedVM = {
                 },
                 visibility: 'scope_only',
                 verb: 'homework.assigned',
-                actor: MOCK_EDUCATOR_4,
+                actor: ACTOR_EDUCATOR_4,
                 headline: {
                   primary: 'Puzzle pack assigned',
                   secondary: 'Chess Tactics',
@@ -163,7 +189,7 @@ export const INBOX_ACTIVITY_FEED: ActivityFeedVM = {
                 },
                 visibility: 'scope_only',
                 verb: 'homework.submitted',
-                actor: MOCK_CHILDREN[0],
+                actor: ACTOR_CHILD_1,
                 headline: {
                   primary: 'Puzzle pack submitted',
                   secondary: 'Awaiting review',

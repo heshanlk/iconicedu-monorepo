@@ -57,11 +57,11 @@ export const ThreadMessageList = memo(function ThreadMessageList({
         const previousMessage = index > 0 ? messages[index - 1] : null;
         const showUnreadDivider =
           lastReadMessageId &&
-          previousMessage?.id === lastReadMessageId &&
-          message.id !== lastReadMessageId;
+          previousMessage?.ids.id === lastReadMessageId &&
+          message.ids.id !== lastReadMessageId;
 
         return (
-          <div key={message.id}>
+          <div key={message.ids.id}>
             {showUnreadDivider && <UnreadDivider />}
             <MessageItem
               message={message}

@@ -149,7 +149,8 @@ const HEADER_ICON_MAP: Record<string, LucideIcon> = {
 };
 
 const getOtherParticipant = (participants: UserProfileVM[], currentUserId: string) =>
-  participants.find((participant) => participant.id !== currentUserId) ?? participants[0];
+  participants.find((participant) => participant.ids.id !== currentUserId) ??
+  participants[0];
 
 export const MessagesContainerHeader = memo(function MessagesContainerHeader({
   channel,
@@ -166,29 +167,29 @@ export const MessagesContainerHeader = memo(function MessagesContainerHeader({
 
   const otherParticipant = useMemo(
     () =>
-      channel.kind === 'dm'
-        ? getOtherParticipant(channel.participants, currentUserId)
+      channel.basics.kind === 'dm'
+        ? getOtherParticipant(channel.collections.participants, currentUserId)
         : null,
-    [channel.kind, channel.participants, currentUserId],
+    [channel.basics.kind, channel.collections.participants, currentUserId],
   );
 
   const title =
-    channel.kind === 'dm'
-      ? (otherParticipant?.displayName ?? channel.topic)
-      : channel.topic;
+    channel.basics.kind === 'dm'
+      ? (otherParticipant?.profile.displayName ?? channel.basics.topic)
+      : channel.basics.topic;
   const leading = useMemo(() => {
-    if (channel.kind === 'dm') {
+    if (channel.basics.kind === 'dm') {
       if (!otherParticipant) return null;
       return (
         <button
           type="button"
-          onClick={() => toggle({ key: 'profile', userId: otherParticipant.id })}
+          onClick={() => toggle({ key: 'profile', userId: otherParticipant.ids.id })}
           className="rounded-full"
-          aria-label={`View ${otherParticipant.displayName} profile`}
+          aria-label={`View ${otherParticipant.profile.displayName} profile`}
         >
           <AvatarWithStatus
-            name={otherParticipant.displayName}
-            avatar={otherParticipant.avatar}
+            name={otherParticipant.profile.displayName}
+            avatar={otherParticipant.profile.avatar}
             presence={otherParticipant.presence}
             sizeClassName="h-7 w-7"
             initialsLength={1}
@@ -196,13 +197,13 @@ export const MessagesContainerHeader = memo(function MessagesContainerHeader({
         </button>
       );
     }
-    const Icon = CHANNEL_ICON_MAP[channel.topicIconKey ?? ''] ?? Sparkles;
+    const Icon = CHANNEL_ICON_MAP[channel.basics.topicIconKey ?? ''] ?? Sparkles;
     return (
       <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-muted text-muted-foreground">
         <Icon className="h-3.5 w-3.5" />
       </span>
     );
-  }, [channel.kind, channel.topicIconKey, otherParticipant, toggle]);
+  }, [channel.basics.kind, channel.basics.topicIconKey, otherParticipant, toggle]);
 
   const subtitleItems: HeaderSubtitleItem[] = useMemo(
     () =>
@@ -249,13 +250,13 @@ export const MessagesContainerHeader = memo(function MessagesContainerHeader({
         title={title}
         leading={leading}
         onClick={
-          channel.kind === 'dm' && otherParticipant
-            ? () => toggle({ key: 'profile', userId: otherParticipant.id })
+          channel.basics.kind === 'dm' && otherParticipant
+            ? () => toggle({ key: 'profile', userId: otherParticipant.ids.id })
             : undefined
         }
         ariaLabel={
-          channel.kind === 'dm' && otherParticipant
-            ? `View ${otherParticipant.displayName} profile`
+          channel.basics.kind === 'dm' && otherParticipant
+            ? `View ${otherParticipant.profile.displayName} profile`
             : undefined
         }
       />

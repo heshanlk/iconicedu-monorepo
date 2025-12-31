@@ -45,8 +45,8 @@ export const MessageBase = memo(function MessageBase({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handleProfileClick = useCallback(() => {
-    onProfileClick(message.sender.id);
-  }, [onProfileClick, message.sender.id]);
+    onProfileClick(message.core.sender.ids.id);
+  }, [onProfileClick, message.core.sender.ids.id]);
 
   const handleToggleReaction = useCallback(
     (emoji: string) => {
@@ -56,22 +56,22 @@ export const MessageBase = memo(function MessageBase({
   );
 
   const handleThreadClick = useCallback(() => {
-    if (message.thread) {
-      onOpenThread(message.thread, message);
+    if (message.social.thread) {
+      onOpenThread(message.social.thread, message);
     }
   }, [message, onOpenThread]);
 
-  if (message.isHidden) {
+  if (message.state?.isHidden) {
     return (
       <div className="group relative flex items-start gap-3 rounded-xl px-2 py-1.5">
         <button
           onClick={handleProfileClick}
           className="flex-shrink-0 transition-opacity hover:opacity-80"
-          aria-label={`View ${message.sender.displayName}'s profile`}
+          aria-label={`View ${message.core.sender.profile.displayName}'s profile`}
         >
           <AvatarWithStatus
-            name={message.sender.displayName}
-            avatar={message.sender.avatar}
+            name={message.core.sender.profile.displayName}
+            avatar={message.core.sender.profile.avatar}
             sizeClassName="h-9 w-9"
             initialsLength={1}
           />
@@ -82,17 +82,17 @@ export const MessageBase = memo(function MessageBase({
               onClick={handleProfileClick}
               className="text-sm font-semibold text-foreground hover:underline"
             >
-              {message.sender.displayName}
+              {message.core.sender.profile.displayName}
             </button>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <span className="text-xs text-muted-foreground cursor-default">
-                    {formatTime(message.createdAt)}
+                    {formatTime(message.core.createdAt)}
                   </span>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>{formatFullDate(message.createdAt)}</p>
+                  <p>{formatFullDate(message.core.createdAt)}</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -115,16 +115,16 @@ export const MessageBase = memo(function MessageBase({
           setIsHovered(false);
         }
       }}
-      data-message-id={message.id}
+      data-message-id={message.ids.id}
     >
       <button
         onClick={handleProfileClick}
         className="flex-shrink-0 transition-opacity hover:opacity-80"
-        aria-label={`View ${message.sender.displayName}'s profile`}
+        aria-label={`View ${message.core.sender.profile.displayName}'s profile`}
       >
         <AvatarWithStatus
-          name={message.sender.displayName}
-          avatar={message.sender.avatar}
+          name={message.core.sender.profile.displayName}
+          avatar={message.core.sender.profile.avatar}
           sizeClassName="h-9 w-9"
           initialsLength={1}
         />
@@ -136,35 +136,35 @@ export const MessageBase = memo(function MessageBase({
           onClick={handleProfileClick}
           className="text-sm font-semibold text-foreground hover:underline"
         >
-          {message.sender.displayName}
+          {message.core.sender.profile.displayName}
         </button>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
                 <span className="text-xs text-muted-foreground cursor-default">
-                  {formatTime(message.createdAt)}
+                  {formatTime(message.core.createdAt)}
                 </span>
               </TooltipTrigger>
               <TooltipContent>
-                <p>{formatFullDate(message.createdAt)}</p>
+                <p>{formatFullDate(message.core.createdAt)}</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
           <VisibilityBadge message={message} />
-          {message.isEdited && (
+          {message.state?.isEdited && (
             <span className="text-[10px] text-muted-foreground">(edited)</span>
           )}
         </div>
 
         {children}
 
-          <ReactionBar reactions={message.reactions} onToggleReaction={handleToggleReaction} />
+          <ReactionBar reactions={message.social.reactions} onToggleReaction={handleToggleReaction} />
 
-        {message.thread && !isThreadReply && (
+        {message.social.thread && !isThreadReply && (
           <ThreadIndicator
-            thread={message.thread}
+            thread={message.social.thread}
             onClick={handleThreadClick}
-            unreadCount={message.thread.readState?.unreadCount}
+            unreadCount={message.social.thread.readState?.unreadCount}
           />
         )}
       </div>

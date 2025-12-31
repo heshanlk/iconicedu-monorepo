@@ -13,9 +13,9 @@ export const ImageMessage = memo(function ImageMessage(props: ImageMessageProps)
 
   return (
     <MessageBase message={message} {...baseProps}>
-      {message.content && (
+      {message.content?.text && (
         <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap break-words mb-2">
-          {message.content}
+          {message.content.text}
         </p>
       )}
       <div className="overflow-hidden rounded-xl border border-border max-w-sm">

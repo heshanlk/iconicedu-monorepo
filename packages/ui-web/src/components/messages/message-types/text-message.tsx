@@ -12,7 +12,7 @@ export const TextMessage = memo(function TextMessage(props: TextMessageProps) {
   return (
     <MessageBase message={message} {...baseProps}>
       <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap break-words">
-        {message.content}
+        {message.content.text}
       </p>
     </MessageBase>
   );

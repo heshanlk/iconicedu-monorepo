@@ -1,39 +1,36 @@
+
 import type { FamilyLinkVM } from './family';
 import type { ISODateTime, UUID } from './shared';
 
-export type RoleKey =
-  | 'owner'
-  | 'admin'
-  | 'educator'
-  | 'guardian'
-  | 'child'
-  | 'staff';
+export type RoleKey = 'owner' | 'admin' | 'educator' | 'guardian' | 'child' | 'staff';
 
-export interface UserRoleVM {
+export interface RoleIdsVM {
   orgId: UUID;
   id: UUID;
-  roleKey: RoleKey;
+}
+
+export interface RoleAuditVM {
   assignedBy?: UUID | null;
   assignedAt: ISODateTime;
 }
+
+
+export interface UserRoleVM {
+  ids: RoleIdsVM;
+  roleKey: RoleKey;
+  audit: RoleAuditVM;
+}
+
+
+export interface FamilyScopedContextVM {
+  familyLink?: FamilyLinkVM | null;
+}
+
+
 export type AccountRoleContextVM =
-  | {
-      roleKey: 'guardian';
-      familyLink?: FamilyLinkVM | null;
-    }
-  | {
-      roleKey: 'child';
-      familyLink?: FamilyLinkVM | null;
-    }
-  | {
-      roleKey: 'educator';
-    }
-  | {
-      roleKey: 'admin';
-    }
-  | {
-      roleKey: 'owner';
-    }
-  | {
-      roleKey: 'staff';
-    };
+  | ({ roleKey: 'guardian' } & FamilyScopedContextVM)
+  | ({ roleKey: 'child' } & FamilyScopedContextVM)
+  | { roleKey: 'educator' }
+  | { roleKey: 'admin' }
+  | { roleKey: 'owner' }
+  | { roleKey: 'staff' };

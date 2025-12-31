@@ -19,101 +19,102 @@ import type {
 } from '@iconicedu/shared-types';
 
 export function isTextMessage(message: MessageVM): message is TextMessageVM {
-  return message.type === 'text';
+  return message.core.type === 'text';
 }
 
 export function isImageMessage(message: MessageVM): message is ImageMessageVM {
-  return message.type === 'image';
+  return message.core.type === 'image';
 }
 
 export function isFileMessage(message: MessageVM): message is FileMessageVM {
-  return message.type === 'file';
+  return message.core.type === 'file';
 }
 
 export function isDesignFileUpdateMessage(
   message: MessageVM,
 ): message is DesignFileUpdateMessageVM {
-  return message.type === 'design-file-update';
+  return message.core.type === 'design-file-update';
 }
 
 export function isPaymentReminderMessage(
   message: MessageVM,
 ): message is PaymentReminderMessageVM {
-  return message.type === 'payment-reminder';
+  return message.core.type === 'payment-reminder';
 }
 
 export function isEventReminderMessage(
   message: MessageVM,
 ): message is EventReminderMessageVM {
-  return message.type === 'event-reminder';
+  return message.core.type === 'event-reminder';
 }
 
 export function isFeedbackRequestMessage(
   message: MessageVM,
 ): message is FeedbackRequestMessageVM {
-  return message.type === 'feedback-request';
+  return message.core.type === 'feedback-request';
 }
 
 export function isLessonAssignmentMessage(
   message: MessageVM,
 ): message is LessonAssignmentMessageVM {
-  return message.type === 'lesson-assignment';
+  return message.core.type === 'lesson-assignment';
 }
 
 export function isProgressUpdateMessage(
   message: MessageVM,
 ): message is ProgressUpdateMessageVM {
-  return message.type === 'progress-update';
+  return message.core.type === 'progress-update';
 }
 
 export function isSessionBookingMessage(
   message: MessageVM,
 ): message is SessionBookingMessageVM {
-  return message.type === 'session-booking';
+  return message.core.type === 'session-booking';
 }
 
 export function isSessionCompleteMessage(
   message: MessageVM,
 ): message is SessionCompleteMessageVM {
-  return message.type === 'session-complete';
+  return message.core.type === 'session-complete';
 }
 
 export function isSessionSummaryMessage(
   message: MessageVM,
 ): message is SessionSummaryMessageVM {
-  return message.type === 'session-summary';
+  return message.core.type === 'session-summary';
 }
 
 export function isHomeworkSubmissionMessage(
   message: MessageVM,
 ): message is HomeworkSubmissionMessageVM {
-  return message.type === 'homework-submission';
+  return message.core.type === 'homework-submission';
 }
 
 export function isLinkPreviewMessage(
   message: MessageVM,
 ): message is LinkPreviewMessageVM {
-  return message.type === 'link-preview';
+  return message.core.type === 'link-preview';
 }
 
 export function isAudioRecordingMessage(
   message: MessageVM,
 ): message is AudioRecordingMessageVM {
-  return message.type === 'audio-recording';
+  return message.core.type === 'audio-recording';
 }
 
 export function isMessageVisibleToUser(message: MessageVM, userId: UUID): boolean {
-  const { visibility } = message;
+  const visibility = message.core.visibility;
+  const senderId = message.core.sender.ids.id;
 
   switch (visibility.type) {
     case 'all':
       return true;
     case 'sender-only':
-      return message.sender.id === userId;
+      return senderId === userId;
     case 'recipient-only':
-      return visibility.userId === userId || message.sender.id === userId;
+      return visibility.userId === userId || senderId === userId;
     case 'specific-users':
-      return visibility.userIds.includes(userId) || message.sender.id === userId;
+      return visibility.userIds.includes(userId) || senderId === userId;
     default:
       return true;
   }

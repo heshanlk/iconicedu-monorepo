@@ -42,24 +42,24 @@ export function NavDirectMessages({
       </SidebarGroupAction>
       <SidebarMenu>
         {dms.map((item) => {
-          const isActive = item.id === activeChannelId;
+          const isActive = item.ids.id === activeChannelId;
           const otherParticipant =
             item.participants.find(
-              (participant) => participant.accountId !== currentUserId,
+              (participant) => participant.ids.accountId !== currentUserId,
             ) ?? item.participants[0];
-          const name = otherParticipant?.displayName ?? item.topic;
+          const name = otherParticipant?.profile.displayName ?? item.basics.topic;
           const unreadCount = item.readState?.unreadCount ?? 0;
           return (
-            <SidebarMenuItem key={item.id} className="py-1">
+            <SidebarMenuItem key={item.ids.id} className="py-1">
               <SidebarMenuButton
                 asChild
                 isActive={isActive}
                 className="px-2.5 group-data-[collapsible=icon]:px-0"
               >
-                <a href={`/dashboard/dm/${item.id}`}>
+                <a href={`/dashboard/dm/${item.ids.id}`}>
                   <AvatarWithStatus
                     name={name}
-                    avatar={otherParticipant?.avatar}
+                    avatar={otherParticipant?.profile.avatar}
                     presence={otherParticipant?.presence}
                     sizeClassName="size-7"
                     statusClassName="bottom-0 right-0 h-2 w-2 border border-background"

@@ -4,6 +4,23 @@ import { AvatarWithStatus } from '../shared/avatar-with-status';
 import { formatDistanceToNow } from 'date-fns';
 import type { MessageVM } from '@iconicedu/shared-types';
 import { cn } from '../../lib/utils';
+import {
+  isTextMessage,
+  isImageMessage,
+  isFileMessage,
+  isAudioRecordingMessage,
+  isLinkPreviewMessage,
+  isDesignFileUpdateMessage,
+  isPaymentReminderMessage,
+  isEventReminderMessage,
+  isFeedbackRequestMessage,
+  isLessonAssignmentMessage,
+  isProgressUpdateMessage,
+  isSessionBookingMessage,
+  isSessionCompleteMessage,
+  isSessionSummaryMessage,
+  isHomeworkSubmissionMessage,
+} from '../../lib/message-guards';
 
 interface SavedMessagePreviewProps {
   message: MessageVM;
@@ -12,40 +29,30 @@ interface SavedMessagePreviewProps {
 
 export function SavedMessagePreview({ message, onClick }: SavedMessagePreviewProps) {
   const getMessagePreview = (msg: MessageVM): string => {
-    switch (msg.type) {
-      case 'text':
-        return msg.content;
-      case 'image':
-        return msg.content || '📷 Image';
-      case 'file':
-        return msg.content || `📎 ${msg.attachment.name}`;
-      case 'audio-recording':
-        return msg.content || '🎤 Audio message';
-      case 'link-preview':
-        return msg.content || msg.link.url;
-      case 'design-file-update':
-        return msg.content || `🎨 ${msg.attachment.name}`;
-      case 'payment-reminder':
-        return `💰 Payment: ${msg.payment.currency}${msg.payment.amount}`;
-      case 'event-reminder':
-        return `📅 Event: ${msg.event.title}`;
-      case 'feedback-request':
-        return `⭐ Feedback: ${msg.feedback.prompt}`;
-      case 'lesson-assignment':
-        return `📚 Assignment: ${msg.assignment.title}`;
-      case 'progress-update':
-        return `📊 Progress: ${msg.progress.subject}`;
-      case 'session-booking':
-        return `🕒 Session: ${msg.session.title}`;
-      case 'session-complete':
-        return `✅ Session complete: ${msg.session.title}`;
-      case 'session-summary':
-        return `📝 Summary: ${msg.session.title}`;
-      case 'homework-submission':
-        return `✏️ Homework: ${msg.homework.assignmentTitle}`;
-      default:
-        return 'Message';
+    if (isTextMessage(msg)) return msg.content.text;
+    if (isImageMessage(msg)) return msg.content?.text || '📷 Image';
+    if (isFileMessage(msg)) return msg.content?.text || `📎 ${msg.attachment.name}`;
+    if (isAudioRecordingMessage(msg)) return msg.content?.text || '🎤 Audio message';
+    if (isLinkPreviewMessage(msg)) return msg.content?.text || msg.link.url;
+    if (isDesignFileUpdateMessage(msg)) {
+      return msg.content?.text || `🎨 ${msg.attachment.name}`;
     }
+    if (isPaymentReminderMessage(msg)) {
+      return `💰 Payment: ${msg.payment.currency}${msg.payment.amount}`;
+    }
+    if (isEventReminderMessage(msg)) return `📅 Event: ${msg.event.title}`;
+    if (isFeedbackRequestMessage(msg)) return `⭐ Feedback: ${msg.feedback.prompt}`;
+    if (isLessonAssignmentMessage(msg)) return `📚 Assignment: ${msg.assignment.title}`;
+    if (isProgressUpdateMessage(msg)) return `📊 Progress: ${msg.progress.subject}`;
+    if (isSessionBookingMessage(msg)) return `🕒 Session: ${msg.session.title}`;
+    if (isSessionCompleteMessage(msg)) {
+      return `✅ Session complete: ${msg.session.title}`;
+    }
+    if (isSessionSummaryMessage(msg)) return `📝 Summary: ${msg.session.title}`;
+    if (isHomeworkSubmissionMessage(msg)) {
+      return `✏️ Homework: ${msg.homework.assignmentTitle}`;
+    }
+    return 'Message';
   };
 
   const preview = getMessagePreview(message);
@@ -61,8 +68,8 @@ export function SavedMessagePreview({ message, onClick }: SavedMessagePreviewPro
       )}
     >
       <AvatarWithStatus
-        name={message.sender.displayName}
-        avatar={message.sender.avatar}
+        name={message.core.sender.profile.displayName}
+        avatar={message.core.sender.profile.avatar}
         sizeClassName="h-10 w-10 flex-shrink-0"
         initialsLength={1}
       />
@@ -70,10 +77,10 @@ export function SavedMessagePreview({ message, onClick }: SavedMessagePreviewPro
       <div className="flex-1 min-w-0">
         <div className="flex items-baseline justify-between gap-2 mb-1">
           <span className="font-semibold text-sm text-foreground truncate">
-            {message.sender.displayName}
+            {message.core.sender.profile.displayName}
           </span>
           <span className="text-xs text-muted-foreground flex-shrink-0">
-            {formatDistanceToNow(new Date(message.createdAt), { addSuffix: true })}
+            {formatDistanceToNow(new Date(message.core.createdAt), { addSuffix: true })}
           </span>
         </div>
         <p className="text-sm text-muted-foreground line-clamp-2">{truncatedPreview}</p>

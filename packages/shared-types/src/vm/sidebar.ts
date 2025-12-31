@@ -1,6 +1,7 @@
 import type React from 'react';
 import type { ChildProfileVM, UserProfileVM } from './profile';
-import type { ChannelMiniVM } from './channel';
+import type { ChannelVM } from './channel';
+import type { UserAccountVM } from './account';
 import type { LearningSpaceVM } from './learning-space';
 
 export type SidebarIconKey =
@@ -17,11 +18,14 @@ export type SidebarIconKey =
 export type SidebarIconComponent = React.ComponentType<{ className?: string }>;
 
 export type SidebarNavItemData = {
-  count?: number;
   title: string;
   url: string;
   icon: SidebarIconKey;
+
+  count?: number;
+
   isActive?: boolean;
+
   badge?: string;
   color?: string;
 };
@@ -34,6 +38,7 @@ export type SidebarSecondaryItemData = {
   title: string;
   url: string;
   icon: SidebarIconKey;
+
   isActive?: boolean;
 };
 
@@ -41,12 +46,27 @@ export type SidebarSecondaryItem = Omit<SidebarSecondaryItemData, 'icon'> & {
   icon: SidebarIconComponent;
 };
 
-export type SidebarChild = Pick<ChildProfileVM, 'accountId' | 'displayName' | 'color'>;
+export type SidebarChildVM = ChildProfileVM;
 
-export type SidebarLeftData = {
-  user: UserProfileVM & { email?: string | null };
+export interface SidebarUserVM {
+  profile: UserProfileVM;
+  account?: UserAccountVM | null;
+}
+
+export interface SidebarPrimaryNavVM {
   navMain: SidebarNavItemData[];
-  LEARNING_SPACES: LearningSpaceVM[];
   navSecondary: SidebarSecondaryItemData[];
-  DIRECT_MESSAGES: ChannelMiniVM[];
-};
+}
+
+export interface SidebarCollectionsVM {
+  learningSpaces: LearningSpaceVM[];
+  directMessages: ChannelVM[];
+}
+
+export interface SidebarLeftDataVM {
+  user: SidebarUserVM;
+
+  navigation: SidebarPrimaryNavVM;
+
+  collections: SidebarCollectionsVM;
+}

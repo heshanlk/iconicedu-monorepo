@@ -42,7 +42,7 @@ const CHANNEL_ICON_MAP = {
 
 const ChannelInfoPanelContent = memo(function ChannelInfoPanelContent() {
   const { channel, toggle, messageFilter, toggleMessageFilter } = useMessagesState();
-  const topicIconKey = channel.topicIconKey ?? 'sparkles';
+  const topicIconKey = channel.basics.topicIconKey ?? 'sparkles';
   const TopicIcon =
     CHANNEL_ICON_MAP[topicIconKey as keyof typeof CHANNEL_ICON_MAP] ?? Sparkles;
   const nextSessionItem = channel.headerItems.find((item) => item.key === 'next-session');
@@ -55,17 +55,17 @@ const ChannelInfoPanelContent = memo(function ChannelInfoPanelContent() {
         </div>
         <div className="text-center min-w-0">
           <h2 className="text-lg font-semibold text-foreground break-words">
-            {channel.topic}
+            {channel.basics.topic}
           </h2>
-          {channel.description ? (
+          {channel.basics.description ? (
             <p className="mt-1 text-sm text-muted-foreground break-words">
-              {channel.description}
+              {channel.basics.description}
             </p>
           ) : null}
         </div>
-        {channel.purpose ? (
+        {channel.basics.purpose ? (
           <Badge variant="secondary" className="text-xs">
-            {channel.purpose.replace('-', ' ')}
+            {channel.basics.purpose.replace('-', ' ')}
           </Badge>
         ) : null}
       </div>
@@ -176,7 +176,10 @@ const ChannelInfoPanelContent = memo(function ChannelInfoPanelContent() {
       <Separator />
 
       <div className="space-y-4 p-4 min-w-0">
-        <MediaFilesPanel media={channel.media.items} files={channel.files.items} />
+        <MediaFilesPanel
+          media={channel.collections.media.items}
+          files={channel.collections.files.items}
+        />
       </div>
 
       <Separator />
@@ -184,23 +187,31 @@ const ChannelInfoPanelContent = memo(function ChannelInfoPanelContent() {
       <div className="space-y-4 p-4 min-w-0">
         <h3 className="text-sm font-semibold text-foreground">Members</h3>
         <div className="space-y-3 min-w-0">
-          {channel.participants.map((member) => (
-            <div key={member.id} className="flex items-center gap-3">
+          {channel.collections.participants.map((member) => (
+            <div key={member.ids.id} className="flex items-center gap-3">
               <AvatarWithStatus
-                name={member.displayName}
-                avatar={member.avatar}
+                name={member.profile.displayName}
+                avatar={member.profile.avatar}
+                presence={member.presence}
                 sizeClassName="h-9 w-9"
                 initialsLength={1}
               />
               <div className="min-w-0">
                 <div className="truncate text-sm font-medium text-foreground">
-                  {member.displayName}
+                  {member.profile.displayName}
                 </div>
-                {member.status ? (
+                {(member.presence?.state?.emoji || member.presence?.state?.text) && (
                   <div className="truncate text-xs text-muted-foreground">
-                    {member.status}
+                    <span className="inline-flex items-center gap-1.5">
+                      {member.presence?.state?.emoji ? (
+                        <span>{member.presence.state.emoji}</span>
+                      ) : null}
+                      {member.presence?.state?.text ? (
+                        <span className="truncate">{member.presence.state.text}</span>
+                      ) : null}
+                    </span>
                   </div>
-                ) : null}
+                )}
               </div>
             </div>
           ))}

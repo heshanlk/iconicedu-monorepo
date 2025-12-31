@@ -12,12 +12,13 @@ interface VisibilityBadgeProps {
 export const VisibilityBadge = memo(function VisibilityBadge({
   message,
 }: VisibilityBadgeProps) {
-  if (message.visibility.type === 'all') return null;
+  const visibility = message.core.visibility;
+  if (visibility.type === 'all') return null;
 
   const getVisibilityText = () => {
-    if (message.visibility.type === 'sender-only') return 'Only visible to you';
-    if (message.visibility.type === 'recipient-only') return 'Only visible to recipient';
-    if (message.visibility.type === 'specific-users') return 'Visible to specific users';
+    if (visibility.type === 'sender-only') return 'Only visible to you';
+    if (visibility.type === 'recipient-only') return 'Only visible to recipient';
+    if (visibility.type === 'specific-users') return 'Visible to specific users';
     return 'Private';
   };
 

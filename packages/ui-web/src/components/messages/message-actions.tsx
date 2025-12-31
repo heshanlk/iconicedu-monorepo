@@ -58,18 +58,24 @@ export const MessageActions = memo(function MessageActions({
   );
 
   const handleThreadClick = useCallback(() => {
-    if (message.thread) {
-      onOpenThread(message.thread, message);
+    if (message.social.thread) {
+      onOpenThread(message.social.thread, message);
     } else {
+      const snippet =
+        'content' in message && message.content?.text ? message.content.text : null;
       const newThread: ThreadVM = {
-        id: `thread-${message.id}`,
-        parentMessageId: message.id,
-        parentMessageSnippet: 'content' in message ? message.content : null,
-        parentMessageAuthorId: message.sender.id,
-        parentMessageAuthorName: message.sender.displayName,
-        messageCount: 1,
-        participants: [message.sender],
-        lastReplyAt: new Date().toISOString(),
+        id: message.ids.id,
+        parent: {
+          messageId: message.ids.id,
+          snippet,
+          authorId: message.core.sender.ids.id,
+          authorName: message.core.sender.profile.displayName,
+        },
+        stats: {
+          messageCount: 1,
+          lastReplyAt: new Date().toISOString(),
+        },
+        participants: [message.core.sender],
       };
       onOpenThread(newThread, message);
     }
@@ -97,18 +103,18 @@ export const MessageActions = memo(function MessageActions({
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-7 w-7"
-                onClick={handleThreadClick}
-                aria-label={message.thread ? 'Reply in thread' : 'Start a thread'}
-              >
-                <MessageCircle className="h-4 w-4" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>{message.thread ? 'Reply in thread' : 'Start a thread'}</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+              className="h-7 w-7"
+              onClick={handleThreadClick}
+              aria-label={message.social.thread ? 'Reply in thread' : 'Start a thread'}
+            >
+              <MessageCircle className="h-4 w-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{message.social.thread ? 'Reply in thread' : 'Start a thread'}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
       )}
 
       <TooltipProvider>
@@ -139,15 +145,18 @@ export const MessageActions = memo(function MessageActions({
               size="icon"
               className="h-7 w-7"
               onClick={onToggleSaved}
-              aria-label={message.isSaved ? 'Unsave message' : 'Save message'}
+              aria-label={message.state?.isSaved ? 'Unsave message' : 'Save message'}
             >
               <Bookmark
-                className={cn('h-4 w-4', message.isSaved && 'fill-primary text-primary')}
+                className={cn(
+                  'h-4 w-4',
+                  message.state?.isSaved && 'fill-primary text-primary',
+                )}
               />
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>{message.isSaved ? 'Unsave' : 'Save'}</p>
+            <p>{message.state?.isSaved ? 'Unsave' : 'Save'}</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>

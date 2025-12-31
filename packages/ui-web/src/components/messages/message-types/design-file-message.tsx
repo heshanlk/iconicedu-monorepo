@@ -35,9 +35,9 @@ export const DesignFileMessage = memo(function DesignFileMessage(
 
   return (
     <MessageBase message={message} {...baseProps}>
-      {message.content && (
+      {message.content?.text && (
         <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap break-words mb-2">
-          {message.content}
+          {message.content.text}
         </p>
       )}
       <div className="rounded-xl border border-border overflow-hidden max-w-md">
@@ -87,11 +87,11 @@ export const DesignFileMessage = memo(function DesignFileMessage(
               Open
             </Button>
           </div>
-          {message.changesSummary && message.changesSummary.length > 0 && (
+          {message.diff?.changesSummary && message.diff.changesSummary.length > 0 && (
             <div className="mt-3 pt-3 border-t border-border">
               <p className="text-xs font-medium text-muted-foreground mb-1.5">Changes:</p>
               <ul className="space-y-1">
-                {message.changesSummary.map((change, i) => (
+                {message.diff.changesSummary.map((change, i) => (
                   <li
                     key={i}
                     className="text-xs text-foreground flex items-start gap-1.5"

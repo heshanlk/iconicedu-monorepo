@@ -1,3 +1,4 @@
+
 import type { ISODateTime, UUID } from './shared';
 import type { ChannelVM } from './channel';
 import type { ClassScheduleVM } from './class-schedule';
@@ -6,41 +7,75 @@ import type { UserProfileVM } from './profile';
 
 
 export type LearningSpaceKindVM = 'one_on_one' | 'small_group' | 'large_class';
-
 export type LearningSpaceStatusVM = 'active' | 'archived' | 'completed' | 'paused';
-export interface LearningSpaceLink {
+
+
+
+export type LearningSpaceLinkStatusVM = 'active' | 'inactive';
+
+export interface LearningSpaceLinkVM {
   label: string;
   iconKey: string | null;
   url?: string | null;
-  status?: 'active' | 'inactive' | null;
+
+  status?: LearningSpaceLinkStatusVM | null;
   hidden?: boolean | null;
 }
 
-export interface LearningSpaceVM {
+
+
+export interface LearningSpaceIdsVM {
   id: UUID;
   orgId: UUID;
+}
 
+export interface LearningSpaceBasicsVM {
   kind: LearningSpaceKindVM;
   status: LearningSpaceStatusVM;
 
-  title: string; // e.g. "Senya • Math • Ms. Marina"
+  title: string; 
   iconKey: string | null;
+
   subject?: string | null;
   description?: string | null;
+}
 
-  
-  primaryChannel: ChannelVM; // main class chat channel
-  relatedChannels?: ChannelVM[]; // optional (parents-only, announcements, etc.)
+export interface LearningSpaceChannelsVM {
+  primaryChannel: ChannelVM; 
+  relatedChannels?: ChannelVM[]; 
+}
 
-  
+export interface LearningSpaceScheduleVM {
   scheduleSeries?: ClassScheduleVM | null;
+}
 
-  
-  links?: LearningSpaceLink[] | null;
+export interface LearningSpaceResourcesVM {
+  links?: LearningSpaceLinkVM[] | null;
+}
 
+export interface LearningSpaceLifecycleVM {
   createdAt: ISODateTime;
   createdBy: UUID;
   archivedAt?: ISODateTime | null;
+}
 
+export interface LearningSpacePeopleVM {
   participants: UserProfileVM[];
+}
+
+
+
+export interface LearningSpaceVM {
+  ids: LearningSpaceIdsVM;
+  basics: LearningSpaceBasicsVM;
+
+  channels: LearningSpaceChannelsVM;
+
+  schedule?: LearningSpaceScheduleVM;
+
+  resources?: LearningSpaceResourcesVM;
+
+  lifecycle: LearningSpaceLifecycleVM;
+
+  people: LearningSpacePeopleVM;
 }

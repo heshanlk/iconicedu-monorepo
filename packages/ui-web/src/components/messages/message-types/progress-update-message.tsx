@@ -26,9 +26,9 @@ export const ProgressUpdateMessage = memo(function ProgressUpdateMessage(
 
   return (
     <MessageBase message={message} {...baseProps} className="bg-green-500/5">
-      {message.content && (
+      {message.content?.text && (
         <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap break-words mb-2">
-          {message.content}
+          {message.content.text}
         </p>
       )}
       <div className="rounded-xl border border-green-500/20 bg-card overflow-hidden max-w-md">

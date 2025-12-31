@@ -17,15 +17,15 @@ export function ProfilePanel({ intent }: ProfilePanelProps) {
   const isMobile = useIsMobile();
   const { channel } = useMessagesState();
   if (intent.key !== 'profile') return null;
-  const user = channel.participants.find(
-    (participant) => participant.id === intent.userId,
+  const user = channel.collections.participants.find(
+    (participant) => participant.ids.id === intent.userId,
   );
   if (!user) return null;
   const handleDmClick =
-    channel.kind === 'dm'
+    channel.basics.kind === 'dm'
       ? () => {
           if (typeof window !== 'undefined') {
-            window.location.href = `/dashboard/dm/${channel.id}`;
+            window.location.href = `/dashboard/dm/${channel.ids.id}`;
           }
         }
       : undefined;
@@ -33,8 +33,8 @@ export function ProfilePanel({ intent }: ProfilePanelProps) {
     return (
       <ProfileSheet
         user={user}
-        media={channel.media.items}
-        files={channel.files.items}
+        media={channel.collections.media.items}
+        files={channel.collections.files.items}
         onDmClick={handleDmClick}
       />
     );
@@ -42,8 +42,8 @@ export function ProfilePanel({ intent }: ProfilePanelProps) {
   return (
     <ProfileContent
       user={user}
-      media={channel.media.items}
-      files={channel.files.items}
+      media={channel.collections.media.items}
+      files={channel.collections.files.items}
       onDmClick={handleDmClick}
     />
   );

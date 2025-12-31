@@ -108,11 +108,12 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
     useMessagesState();
   const isMobile = useIsMobile();
 
-  const iconKey = learningSpace.iconKey ?? channel.topicIconKey ?? 'sparkles';
+  const iconKey =
+    learningSpace.basics.iconKey ?? channel.basics.topicIconKey ?? 'sparkles';
   const Icon =
     LEARNING_SPACE_ICON_MAP[iconKey as keyof typeof LEARNING_SPACE_ICON_MAP] ?? Sparkles;
-  const schedule = learningSpace.scheduleSeries;
-  const quickLinks = learningSpace.links ?? [];
+  const schedule = learningSpace.schedule?.scheduleSeries ?? null;
+  const quickLinks = learningSpace.resources?.links ?? [];
   const visibleLinks = quickLinks.filter((link) => !link.hidden);
   const maxVisibleLinks = isMobile ? 1 : 2;
   const primaryLinks = visibleLinks.slice(0, maxVisibleLinks);
@@ -126,17 +127,17 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
         </div>
         <div className="text-center min-w-0">
           <h2 className="text-lg font-semibold text-foreground break-words">
-            {learningSpace.title}
+            {learningSpace.basics.title}
           </h2>
-          {learningSpace.description ? (
+          {learningSpace.basics.description ? (
             <p className="mt-1 text-sm text-muted-foreground break-words">
-              {learningSpace.description}
+              {learningSpace.basics.description}
             </p>
           ) : null}
         </div>
-        {learningSpace.kind ? (
+        {learningSpace.basics.kind ? (
           <Badge variant="secondary" className="text-xs">
-            {learningSpace.kind.replace(/_/g, ' ')}
+            {learningSpace.basics.kind.replace(/_/g, ' ')}
           </Badge>
         ) : null}
       </div>
@@ -351,7 +352,10 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
       <Separator />
 
       <div className="space-y-4 p-4 min-w-0">
-        <MediaFilesPanel media={channel.media.items} files={channel.files.items} />
+        <MediaFilesPanel
+          media={channel.collections.media.items}
+          files={channel.collections.files.items}
+        />
       </div>
 
       <Separator />
@@ -359,17 +363,17 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
       <div className="space-y-4 p-4 min-w-0">
         <h3 className="text-sm font-semibold text-foreground">Members</h3>
         <div className="space-y-3 min-w-0">
-          {learningSpace.participants.map((member) => {
+          {learningSpace.people.participants.map((member) => {
             const dmKey =
-              currentUserId && member.id !== currentUserId
-                ? `dm:${[currentUserId, member.id].sort().join('-')}`
+              currentUserId && member.ids.id !== currentUserId
+                ? `dm:${[currentUserId, member.ids.id].sort().join('-')}`
                 : null;
 
             return (
-              <div key={member.id} className="flex items-center gap-3">
+              <div key={member.ids.id} className="flex items-center gap-3">
                 <AvatarWithStatus
-                  name={member.displayName}
-                  avatar={member.avatar}
+                  name={member.profile.displayName}
+                  avatar={member.profile.avatar}
                   sizeClassName="h-9 w-9"
                   initialsLength={1}
                   presence={member.presence}
@@ -377,7 +381,7 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
                 />
                 <div className="min-w-0 flex-1">
                   <div className="truncate text-sm font-medium text-foreground">
-                    {member.displayName}
+                    {member.profile.displayName}
                   </div>
                   {member.presence?.state?.emoji || member.presence?.state?.text ? (
                     <div className="truncate text-xs text-muted-foreground">
@@ -398,7 +402,7 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
                     variant="ghost"
                     size="icon"
                     className="h-8 w-8 shrink-0 text-muted-foreground hover:bg-primary/15 hover:text-primary"
-                    aria-label={`Message ${member.displayName}`}
+                    aria-label={`Message ${member.profile.displayName}`}
                   >
                     <a href={`/dashboard/dm/${dmKey}`}>
                       <MessageCircle className="h-4 w-4" />
@@ -408,7 +412,7 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
               </div>
             );
           })}
-          {learningSpace.participants.length === 0 ? (
+          {learningSpace.people.participants.length === 0 ? (
             <div className="text-sm text-muted-foreground">No members added yet.</div>
           ) : null}
         </div>

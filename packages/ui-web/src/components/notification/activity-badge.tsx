@@ -20,7 +20,7 @@ const getInitials = (name: string) =>
     .toUpperCase();
 
 export function ActivityBadge({ activity, className }: ActivityBadgeProps) {
-  const leading = activity.leading;
+  const leading = activity.content.leading;
 
   if (leading?.kind === 'avatars' && leading.avatars.length > 0) {
     const avatars = leading.avatars.slice(0, 2);
@@ -48,7 +48,7 @@ export function ActivityBadge({ activity, className }: ActivityBadgeProps) {
     );
   }
 
-  const actor = activity.actor;
+  const actor = activity.refs.actor;
   const actorName = actor.displayName;
   const actorAvatar = actor.avatar;
   const initials = getInitials(actorName);

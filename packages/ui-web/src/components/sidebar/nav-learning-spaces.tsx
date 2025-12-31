@@ -12,7 +12,7 @@ import {
   StarOff,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import type { LearningSpaceVM, SidebarChild } from '@iconicedu/shared-types';
+import type { LearningSpaceVM, SidebarChildVM } from '@iconicedu/shared-types';
 
 import {
   Collapsible,
@@ -50,7 +50,7 @@ export function NavLearningSpaces({
 }: {
   learningSpaces: LearningSpaceVM[];
   title: string;
-  child: SidebarChild;
+  child: SidebarChildVM;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   activeChannelId?: string | null;
@@ -63,12 +63,12 @@ export function NavLearningSpaces({
         <CollapsibleTrigger asChild>
           <SidebarGroupLabel className="flex cursor-pointer items-center gap-2 rounded-md rounded-b-none px-2 py-1 uppercase">
             <AvatarWithStatus
-              name={child.displayName}
+              name={child.profile.displayName}
               showStatus={false}
               sizeClassName="size-5"
               fallbackClassName={cn(
                 'text-[10px] font-semibold leading-none uppercase',
-                child.color,
+                child.ui?.color ?? '',
               )}
               initialsLength={1}
             />
@@ -94,31 +94,31 @@ export function NavLearningSpaces({
           ) : (
             <SidebarMenu>
               {learningSpaces.map((space) => {
-                const channel = space.primaryChannel;
-                const iconKey = space.iconKey ?? channel.topicIconKey ?? null;
+                const channel = space.channels.primaryChannel;
+                const iconKey = space.basics.iconKey ?? channel.basics.topicIconKey ?? null;
                 const Icon: LucideIcon = iconKey
                   ? (LEARNING_SPACE_ICONS[iconKey] ?? Languages)
                   : Languages;
-                const isActive = activeChannelId === channel.id;
+                const isActive = activeChannelId === channel.ids.id;
 
                 return (
-                  <SidebarMenuItem key={space.id} className="py-0.5">
+                  <SidebarMenuItem key={space.ids.id} className="py-0.5">
                     <SidebarMenuButton
                       asChild
-                      tooltip={space.title}
+                      tooltip={space.basics.title}
                       isActive={isActive}
                       className="px-2.5"
                     >
-                      <a href={`/dashboard/ls/${channel.id}`}>
+                      <a href={`/dashboard/ls/${channel.ids.id}`}>
                         <span className="flex size-8 items-center justify-center rounded-full border border-border bg-muted text-muted-foreground overflow-hidden">
                           <Icon className="size-4.5" />
                         </span>
                         <div className="min-w-0 flex-1">
                           <div className="truncate text-sm font-medium">
-                            {space.title}
+                            {space.basics.title}
                           </div>
                           <div className="truncate text-xs text-muted-foreground">
-                            {space.subject ?? 'General'}
+                            {space.basics.subject ?? 'General'}
                           </div>
                         </div>
                       </a>

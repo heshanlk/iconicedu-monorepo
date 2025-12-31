@@ -9,13 +9,13 @@ import { ActivityBasic } from '../notification/activity-basic';
 import { ActivityBasicWithActionButton } from '../notification/activity-basic-with-action-button';
 import { ActivityBasicWithExpandedContent } from '../notification/activity-basic-with-expanded-content';
 import { ActivityWithSubitems } from '../notification/activity-with-subitems';
-import type { ActivityFeedItemVM, ActivityFeedVM, InboxTabKeyVM } from '@iconicedu/shared-types';
+import type {
+  ActivityFeedItemVM,
+  ActivityFeedVM,
+  InboxTabKeyVM,
+} from '@iconicedu/shared-types';
 
-export function InboxContainer({
-  feed,
-}: {
-  feed: ActivityFeedVM;
-}) {
+export function InboxContainer({ feed }: { feed: ActivityFeedVM }) {
   const [sections, setSections] = useState(feed.sections);
   const [activeTab, setActiveTab] = useState<InboxTabKeyVM>(feed.activeTab);
 
@@ -24,7 +24,7 @@ export function InboxContainer({
       const count = sections.reduce((total, section) => {
         const sectionCount = section.items.filter(
           (item) =>
-            (tab.key === 'all' || item.tabKey === tab.key) && !item.isRead,
+            (tab.key === 'all' || item.tabKey === tab.key) && !item.state?.isRead,
         ).length;
         return total + sectionCount;
       }, 0);
@@ -54,7 +54,13 @@ export function InboxContainer({
         ...section,
         items: section.items.map((item) => {
           if (item.id === id) {
-            return { ...item, isRead: true };
+            return {
+              ...item,
+              state: {
+                ...item.state,
+                isRead: true,
+              },
+            };
           }
           if (item.kind === 'group' && item.subActivities?.items) {
             return {
@@ -62,7 +68,15 @@ export function InboxContainer({
               subActivities: {
                 ...item.subActivities,
                 items: item.subActivities.items.map((sub) =>
-                  sub.id === id ? { ...sub, isRead: true } : sub,
+                  sub.id === id
+                    ? {
+                        ...sub,
+                        state: {
+                          ...sub.state,
+                          isRead: true,
+                        },
+                      }
+                    : sub,
                 ),
               },
             };
@@ -78,17 +92,17 @@ export function InboxContainer({
       return <ActivityWithSubitems activity={activity} onMarkRead={markAsRead} />;
     }
 
-    if (activity.expandedContent) {
+    if (activity.content.expandedContent) {
       return (
         <ActivityBasicWithExpandedContent
           activity={activity}
           onMarkRead={markAsRead}
-          showActionButton={Boolean(activity.actionButton)}
+          showActionButton={Boolean(activity.content.actionButton)}
         />
       );
     }
 
-    if (activity.actionButton) {
+    if (activity.content.actionButton) {
       return (
         <ActivityBasicWithActionButton activity={activity} onMarkRead={markAsRead} />
       );

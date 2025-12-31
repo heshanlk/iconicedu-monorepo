@@ -37,7 +37,7 @@ const SavedMessagesPanel = memo(function SavedMessagesPanel({
   onMessageClick,
 }: SavedMessagesPanelProps) {
   const savedMessages = useMemo(() => {
-    return messages.filter((msg) => msg.isSaved);
+    return messages.filter((msg) => msg.state?.isSaved);
   }, [messages]);
 
   if (savedMessages.length === 0) {
@@ -49,9 +49,9 @@ const SavedMessagesPanel = memo(function SavedMessagesPanel({
       <div className="flex flex-col gap-2 p-4">
         {savedMessages.map((message) => (
           <SavedMessagePreview
-            key={message.id}
+            key={message.ids.id}
             message={message}
-            onClick={() => onMessageClick(message.id)}
+            onClick={() => onMessageClick(message.ids.id)}
           />
         ))}
       </div>

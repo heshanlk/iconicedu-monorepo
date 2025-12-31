@@ -1,5 +1,8 @@
+
 import type { ConnectionVM, ISODateTime, UUID } from './shared';
 import type { UserProfileVM } from './profile';
+
+
 
 export interface ReactionVM {
   emoji: string;
@@ -7,6 +10,8 @@ export interface ReactionVM {
   reactedByMe?: boolean;
   sampleUserIds?: UUID[];
 }
+
+
 
 export interface ChannelReadStateVM {
   channelId: UUID;
@@ -22,6 +27,8 @@ export interface ThreadReadStateVM {
   lastReadAt?: ISODateTime;
   unreadCount?: number;
 }
+
+
 
 export type AttachmentTypeVM = 'image' | 'file' | 'design-file';
 
@@ -53,30 +60,29 @@ export interface DesignFileAttachmentVM extends BaseAttachmentVM {
 
 export type AttachmentVM = ImageAttachmentVM | FileAttachmentVM | DesignFileAttachmentVM;
 
+
+
 export interface ThreadVM {
   id: UUID;
-  parentMessageId: UUID;
-  parentMessageSnippet?: string | null;
-  parentMessageAuthorId?: UUID | null;
-  parentMessageAuthorName?: string | null;
-  messageCount: number;
-  lastReplyAt: ISODateTime;
+
+  parent: {
+    messageId: UUID;
+    snippet?: string | null;
+    authorId?: UUID | null;
+    authorName?: string | null;
+  };
+
+  stats: {
+    messageCount: number;
+    lastReplyAt: ISODateTime;
+  };
+
   participants: UserProfileVM[];
+
   readState?: ThreadReadStateVM;
 }
 
-export interface ThreadPanelPropsVM {
-  thread: ThreadVM;
-  replies: ConnectionVM<MessageVM>;
-  parentMessage?: MessageVM;
-  onSendReply: (content: string) => void;
-  onProfileClick: (userId: UUID) => void;
-  readState?: ThreadReadStateVM;
-  onToggleReaction?: (messageId: UUID, emoji: string) => void;
-  onToggleSaved?: (messageId: UUID) => void;
-  onToggleHidden?: (messageId: UUID) => void;
-  currentUserId?: UUID;
-}
+
 
 export type MessagesRightPanelIntent =
   | { key: 'channel_info' }
@@ -93,6 +99,25 @@ export interface MessagesRightSidebarState {
 }
 
 export type MessagesRightPanelRegistry<T> = Record<MessagesRightPanelIntentKey, T>;
+
+export interface ThreadPanelPropsVM {
+  thread: ThreadVM;
+  replies: ConnectionVM<MessageVM>;
+  parentMessage?: MessageVM;
+
+  actions: {
+    onSendReply: (content: string) => void;
+    onProfileClick: (userId: UUID) => void;
+    onToggleReaction?: (messageId: UUID, emoji: string) => void;
+    onToggleSaved?: (messageId: UUID) => void;
+    onToggleHidden?: (messageId: UUID) => void;
+  };
+
+  readState?: ThreadReadStateVM;
+  currentUserId?: UUID;
+}
+
+
 
 export type MessageVisibilityVM =
   | { type: 'all' }
@@ -117,47 +142,71 @@ export type MessageTypeVM =
   | 'link-preview'
   | 'audio-recording';
 
-interface BaseMessageVM {
+
+
+export interface MessageIdsVM {
   id: UUID;
+}
+
+export interface MessageCoreVM {
+  type: MessageTypeVM;
   sender: UserProfileVM;
   createdAt: ISODateTime;
-  reactions: ReactionVM[];
-  thread?: ThreadVM;
   visibility: MessageVisibilityVM;
+}
+
+export interface MessageStateVM {
   isEdited?: boolean;
   editedAt?: ISODateTime;
   isSaved?: boolean;
   isHidden?: boolean;
 }
 
+export interface MessageSocialVM {
+  reactions: ReactionVM[];
+  thread?: ThreadVM;
+}
+
+interface BaseMessageVM {
+  ids: MessageIdsVM;
+  core: MessageCoreVM;
+  social: MessageSocialVM;
+  state?: MessageStateVM;
+}
+
+
+
 export interface TextMessageVM extends BaseMessageVM {
-  type: 'text';
-  content: string;
+  core: MessageCoreVM & { type: 'text' };
+  content: { text: string };
 }
 
 export interface ImageMessageVM extends BaseMessageVM {
-  type: 'image';
-  content?: string;
+  core: MessageCoreVM & { type: 'image' };
+  content?: { text?: string };
   attachment: ImageAttachmentVM;
 }
 
 export interface FileMessageVM extends BaseMessageVM {
-  type: 'file';
-  content?: string;
+  core: MessageCoreVM & { type: 'file' };
+  content?: { text?: string };
   attachment: FileAttachmentVM;
 }
 
 export interface DesignFileUpdateMessageVM extends BaseMessageVM {
-  type: 'design-file-update';
-  content?: string;
+  core: MessageCoreVM & { type: 'design-file-update' };
+  content?: { text?: string };
   attachment: DesignFileAttachmentVM;
-  changesSummary?: string[];
-  previousVersion?: string;
+
+  diff?: {
+    changesSummary?: string[];
+    previousVersion?: string;
+  };
 }
 
 export interface PaymentReminderMessageVM extends BaseMessageVM {
-  type: 'payment-reminder';
-  content: string;
+  core: MessageCoreVM & { type: 'payment-reminder' };
+  content: { text: string };
   payment: {
     amount: number;
     currency: string;
@@ -169,8 +218,8 @@ export interface PaymentReminderMessageVM extends BaseMessageVM {
 }
 
 export interface EventReminderMessageVM extends BaseMessageVM {
-  type: 'event-reminder';
-  content: string;
+  core: MessageCoreVM & { type: 'event-reminder' };
+  content: { text: string };
   event: {
     status?: string | null;
     title: string;
@@ -184,8 +233,8 @@ export interface EventReminderMessageVM extends BaseMessageVM {
 }
 
 export interface FeedbackRequestMessageVM extends BaseMessageVM {
-  type: 'feedback-request';
-  content?: string;
+  core: MessageCoreVM & { type: 'feedback-request' };
+  content?: { text?: string };
   feedback: {
     prompt: string;
     sessionTitle?: string | null;
@@ -196,8 +245,8 @@ export interface FeedbackRequestMessageVM extends BaseMessageVM {
 }
 
 export interface LessonAssignmentMessageVM extends BaseMessageVM {
-  type: 'lesson-assignment';
-  content: string;
+  core: MessageCoreVM & { type: 'lesson-assignment' };
+  content: { text: string };
   assignment: {
     title: string;
     description: string;
@@ -210,8 +259,8 @@ export interface LessonAssignmentMessageVM extends BaseMessageVM {
 }
 
 export interface ProgressUpdateMessageVM extends BaseMessageVM {
-  type: 'progress-update';
-  content: string;
+  core: MessageCoreVM & { type: 'progress-update' };
+  content: { text: string };
   progress: {
     subject: string;
     metric: string;
@@ -224,8 +273,8 @@ export interface ProgressUpdateMessageVM extends BaseMessageVM {
 }
 
 export interface SessionBookingMessageVM extends BaseMessageVM {
-  type: 'session-booking';
-  content: string;
+  core: MessageCoreVM & { type: 'session-booking' };
+  content: { text: string };
   session: {
     title: string;
     subject: string;
@@ -240,8 +289,8 @@ export interface SessionBookingMessageVM extends BaseMessageVM {
 }
 
 export interface SessionCompleteMessageVM extends BaseMessageVM {
-  type: 'session-complete';
-  content?: string;
+  core: MessageCoreVM & { type: 'session-complete' };
+  content?: { text?: string };
   session: {
     title: string;
     startAt: ISODateTime;
@@ -251,8 +300,8 @@ export interface SessionCompleteMessageVM extends BaseMessageVM {
 }
 
 export interface SessionSummaryMessageVM extends BaseMessageVM {
-  type: 'session-summary';
-  content?: string;
+  core: MessageCoreVM & { type: 'session-summary' };
+  content?: { text?: string };
   session: {
     title: string;
     startAt: ISODateTime;
@@ -264,8 +313,8 @@ export interface SessionSummaryMessageVM extends BaseMessageVM {
 }
 
 export interface HomeworkSubmissionMessageVM extends BaseMessageVM {
-  type: 'homework-submission';
-  content: string;
+  core: MessageCoreVM & { type: 'homework-submission' };
+  content: { text: string };
   homework: {
     assignmentTitle: string;
     submittedAt: ISODateTime;
@@ -277,8 +326,8 @@ export interface HomeworkSubmissionMessageVM extends BaseMessageVM {
 }
 
 export interface LinkPreviewMessageVM extends BaseMessageVM {
-  type: 'link-preview';
-  content?: string;
+  core: MessageCoreVM & { type: 'link-preview' };
+  content?: { text?: string };
   link: {
     url: string;
     title: string;
@@ -290,8 +339,8 @@ export interface LinkPreviewMessageVM extends BaseMessageVM {
 }
 
 export interface AudioRecordingMessageVM extends BaseMessageVM {
-  type: 'audio-recording';
-  content?: string;
+  core: MessageCoreVM & { type: 'audio-recording' };
+  content?: { text?: string };
   audio: {
     url: string;
     durationSeconds: number;
@@ -300,6 +349,8 @@ export interface AudioRecordingMessageVM extends BaseMessageVM {
     mimeType?: string;
   };
 }
+
+
 
 export type MessageVM =
   | TextMessageVM

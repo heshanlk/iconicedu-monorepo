@@ -7,6 +7,8 @@ import type {
   UUID,
 } from './shared';
 
+
+
 export interface AvatarVM {
   source: AvatarSource;
   url?: string | null;
@@ -21,6 +23,7 @@ export type PresenceStateVM = {
 };
 
 export type PresenceDisplayStatusVM = 'online' | 'idle' | 'busy' | 'away' | 'offline';
+
 export type LiveStatusVM =
   | 'in_class'
   | 'teaching'
@@ -37,38 +40,77 @@ export interface PresenceVM {
   presenceLoaded?: boolean;
 }
 
-export interface BaseUserProfileVM {
+
+
+export interface UserIdsVM {
   orgId: UUID;
   id: UUID;
   accountId: UUID;
+}
 
+export interface UserProfileBlockVM {
   displayName: string;
   firstName?: string | null;
   lastName?: string | null;
   bio?: string | null;
-
   avatar: AvatarVM;
+}
 
+export interface UserPrefsVM {
   timezone: string;
   locale?: string | null;
   languagesSpoken?: string[] | null;
-
   notificationDefaults?: Record<string, unknown> | null;
-  presence?: PresenceVM | null;
+}
 
-  status?: AccountStatus;
-
+export interface UserLocationVM {
   countryCode?: string | null;
   countryName?: string | null;
   region?: string | null;
   city?: string | null;
   postalCode?: string | null;
+}
 
+export interface UserInternalVM {
+  notesInternal?: string | null;
+  leadSource?: string | null;
+}
+
+export interface UserMetaVM {
   createdAt: ISODateTime;
   updatedAt: ISODateTime;
 }
 
+export interface UserUiVM {
+  
+  color?: string | null;
+}
+
+
+
+export interface BaseUserProfileVM {
+  ids: UserIdsVM;
+  profile: UserProfileBlockVM;
+  prefs: UserPrefsVM;
+
+  presence?: PresenceVM | null;
+
+  status?: AccountStatus;
+
+  location?: UserLocationVM;
+
+  internal?: UserInternalVM;
+
+  meta: UserMetaVM;
+
+  ui?: UserUiVM;
+}
+
+
+
 export interface EducatorProfileVM extends BaseUserProfileVM {
+  kind: 'educator';
+
   headline?: string | null;
   subjects?: string[] | null;
   gradesSupported?: GradeLevelOption[] | null;
@@ -84,8 +126,6 @@ export interface EducatorProfileVM extends BaseUserProfileVM {
 
   joinedDate: ISODateTime;
 
-  notesInternal?: string | null;
-
   ageGroupsComfortableWith?: string[] | null;
 
   identityVerificationStatus?: 'unverified' | 'pending' | 'verified' | null;
@@ -97,19 +137,19 @@ export interface EducatorProfileVM extends BaseUserProfileVM {
   totalReviews?: number | null;
 
   featuredVideoIntroUrl?: string | null;
-  leadSource?: string | null;
 }
 
+
+
 export interface ChildProfileVM extends BaseUserProfileVM {
+  kind: 'child';
+
   gradeLevel?: GradeLevelOption | null;
   birthYear?: number | null;
 
   schoolName?: string | null;
   schoolYear?: string | null;
 
-  color: string;
-
-  notesInternal?: string | null;
   interests?: string[] | null;
   strengths?: string[] | null;
   learningPreferences?: string[] | null;
@@ -119,17 +159,23 @@ export interface ChildProfileVM extends BaseUserProfileVM {
   communicationStyle?: 'chatty' | 'shy' | null;
 }
 
+
+
 export interface GuardianProfileVM extends BaseUserProfileVM {
+  kind: 'guardian';
+
   children?: ConnectionVM<ChildProfileVM> | null;
 
   joinedDate: ISODateTime;
 
-  notesInternal?: string | null;
   sessionNotesVisibility?: 'private' | 'shared' | null;
-  leadSource?: string | null;
 }
 
+
+
 export interface StaffProfileVM extends BaseUserProfileVM {
+  kind: 'staff';
+
   department?: string | null;
   managerStaffId?: UUID | null;
   specialties?: string[] | null;
@@ -137,9 +183,9 @@ export interface StaffProfileVM extends BaseUserProfileVM {
 
   permissionsScope?: 'limited' | 'standard' | 'elevated' | null;
 
-  notesInternal?: string | null;
   workingHoursRules?: string[] | null;
 }
+
 export type UserProfileVM =
   | EducatorProfileVM
   | GuardianProfileVM

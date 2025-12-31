@@ -20,10 +20,10 @@ export interface MessagesContainerProps {
 }
 
 const isGuardianProfile = (profile: UserProfileVM): profile is GuardianProfileVM =>
-  'children' in profile;
+  profile.kind === 'guardian';
 
 const isEducatorProfile = (profile: UserProfileVM): profile is EducatorProfileVM =>
-  'subjects' in profile || 'gradesSupported' in profile || 'experienceYears' in profile;
+  profile.kind === 'educator';
 
 export function MessagesContainer({ channel }: MessagesContainerProps) {
   const messageListRef = useRef<MessageListRef>(null);
@@ -40,7 +40,7 @@ export function MessagesContainer({ channel }: MessagesContainerProps) {
     setScrollToMessage,
     messageFilter,
   } = useMessagesState();
-  const channelMessages = channel.messages?.items ?? [];
+  const channelMessages = channel.collections.messages?.items ?? [];
   const {
     messages,
     addMessage,
@@ -51,35 +51,36 @@ export function MessagesContainer({ channel }: MessagesContainerProps) {
     toggleHidden,
   } = useMessages(channelMessages);
 
-  const participants = channel.participants ?? [];
+  const participants = channel.collections.participants ?? [];
   const fallbackParticipant = participants[0];
   const guardian = participants.find(isGuardianProfile) ?? fallbackParticipant;
   const educator =
     participants.find(isEducatorProfile) ??
-    participants.find((participant) => participant.id !== guardian?.id) ??
+    participants.find((participant) => participant.ids.id !== guardian?.ids.id) ??
     fallbackParticipant;
   const senderProfile = guardian ?? educator ?? fallbackParticipant;
-  const currentUserId = guardian?.id ?? participants[0]?.id ?? '';
+  const currentUserId = guardian?.ids.id ?? participants[0]?.ids.id ?? '';
 
   const handleOpenThread = useCallback(
     (thread: ThreadVM, parentMessage: MessageVM) => {
       const threadMessages = messages
-        .filter((message) => message.thread?.id === thread.id)
+        .filter((message) => message.social.thread?.id === thread.id)
         .sort(
-          (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+          (a, b) =>
+            new Date(a.core.createdAt).getTime() - new Date(b.core.createdAt).getTime(),
         );
       const resolvedThreadMessages = threadMessages.length
         ? threadMessages
         : [parentMessage];
       const replyItems = resolvedThreadMessages.filter(
-        (message) => message.id !== parentMessage.id,
+        (message) => message.ids.id !== parentMessage.ids.id,
       );
       setThreadData(thread, {
         replies: {
           items: replyItems,
           total:
-            typeof thread.messageCount === 'number'
-              ? Math.max(0, thread.messageCount - 1)
+            typeof thread.stats?.messageCount === 'number'
+              ? Math.max(0, thread.stats.messageCount - 1)
               : undefined,
         },
         parentMessage,
@@ -93,14 +94,20 @@ export function MessagesContainer({ channel }: MessagesContainerProps) {
     (content: string) => {
       if (!senderProfile) return;
       const newMessage: TextMessageVM = {
-        id: `msg-${Date.now()}`,
-        type: 'text',
-        content,
-        sender: senderProfile,
-        createdAt: new Date().toISOString(),
-        reactions: [],
-        visibility: { type: 'all' },
-        isSaved: false,
+        ids: { id: `msg-${Date.now()}` },
+        core: {
+          type: 'text',
+          sender: senderProfile,
+          createdAt: new Date().toISOString(),
+          visibility: { type: 'all' },
+        },
+        social: {
+          reactions: [],
+        },
+        state: {
+          isSaved: false,
+        },
+        content: { text: content },
       };
       addMessage(newMessage);
     },
@@ -140,23 +147,29 @@ export function MessagesContainer({ channel }: MessagesContainerProps) {
     () =>
       messages.filter(
         (message) =>
-          !message.thread?.parentMessageId ||
-          message.thread.parentMessageId === message.id,
+          !message.social.thread?.parent?.messageId ||
+          message.social.thread.parent.messageId === message.ids.id,
       ),
     [messages],
   );
 
-  const savedCount = useMemo(() => messages.filter((m) => m.isSaved).length, [messages]);
+  const savedCount = useMemo(
+    () => messages.filter((m) => m.state?.isSaved).length,
+    [messages],
+  );
   const homeworkCount = useMemo(
     () =>
       visibleMessages.filter(
         (message) =>
-          message.type === 'lesson-assignment' || message.type === 'homework-submission',
+          message.core.type === 'lesson-assignment' ||
+          message.core.type === 'homework-submission',
       ).length,
     [visibleMessages],
   );
   const sessionSummaryCount = useMemo(
-    () => visibleMessages.filter((message) => message.type === 'session-summary').length,
+    () =>
+      visibleMessages.filter((message) => message.core.type === 'session-summary')
+        .length,
     [visibleMessages],
   );
 
@@ -165,11 +178,14 @@ export function MessagesContainer({ channel }: MessagesContainerProps) {
     if (messageFilter === 'homework') {
       return visibleMessages.filter(
         (message) =>
-          message.type === 'lesson-assignment' || message.type === 'homework-submission',
+          message.core.type === 'lesson-assignment' ||
+          message.core.type === 'homework-submission',
       );
     }
     if (messageFilter === 'session-summary') {
-      return visibleMessages.filter((message) => message.type === 'session-summary');
+      return visibleMessages.filter(
+        (message) => message.core.type === 'session-summary',
+      );
     }
     return visibleMessages;
   }, [messageFilter, visibleMessages]);
@@ -197,14 +213,20 @@ export function MessagesContainer({ channel }: MessagesContainerProps) {
     if (!senderProfile) return;
     setCreateTextMessage(
       (content: string): TextMessageVM => ({
-        id: `reply-${Date.now()}`,
-        type: 'text',
-        content,
-        sender: senderProfile,
-        createdAt: new Date().toISOString(),
-        reactions: [],
-        visibility: { type: 'all' },
-        isSaved: false,
+        ids: { id: `reply-${Date.now()}` },
+        core: {
+          type: 'text',
+          sender: senderProfile,
+          createdAt: new Date().toISOString(),
+          visibility: { type: 'all' },
+        },
+        social: {
+          reactions: [],
+        },
+        state: {
+          isSaved: false,
+        },
+        content: { text: content },
       }),
     );
   }, [senderProfile, setCreateTextMessage]);
@@ -243,7 +265,7 @@ export function MessagesContainer({ channel }: MessagesContainerProps) {
       onToggleSaved: handleToggleSaved,
       onToggleHidden: handleToggleHidden,
       currentUserId,
-      lastReadMessageId: channel.readState?.lastReadMessageId,
+      lastReadMessageId: channel.collections.readState?.lastReadMessageId,
     }),
     [
       filteredMessages,
@@ -253,7 +275,7 @@ export function MessagesContainer({ channel }: MessagesContainerProps) {
       handleToggleSaved,
       handleToggleHidden,
       currentUserId,
-      channel.readState?.lastReadMessageId,
+      channel.collections.readState?.lastReadMessageId,
     ],
   );
 
@@ -262,7 +284,7 @@ export function MessagesContainer({ channel }: MessagesContainerProps) {
       <MessageList ref={messageListRef} {...messageListProps} />
       <MessageInput
         onSend={handleSendMessage}
-        placeholder={`Message ${educator?.displayName ?? channel.topic}`}
+        placeholder={`Message ${educator?.profile.displayName ?? channel.basics.topic}`}
       />
     </div>
   );

@@ -66,19 +66,19 @@ export const MessageItem = memo(function MessageItem({
   }
 
   const handleToggleReaction = (emoji: string) => {
-    onToggleReaction?.(message.id, emoji);
+    onToggleReaction?.(message.ids.id, emoji);
   };
 
   const handleToggleSaved = () => {
-    onToggleSaved?.(message.id);
+    onToggleSaved?.(message.ids.id);
   };
 
   const handleToggleHidden = () => {
-    onToggleHidden?.(message.id);
+    onToggleHidden?.(message.ids.id);
   };
 
   const handleToggleImportant = () => {
-    onToggleImportant?.(message.id);
+    onToggleImportant?.(message.ids.id);
   };
 
   const commonProps = {

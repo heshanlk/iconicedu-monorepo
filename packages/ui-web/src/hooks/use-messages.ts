@@ -10,21 +10,23 @@ export function useMessages(initialMessages: MessageVM[]) {
 
   const updateMessage = useCallback((id: string, updates: Partial<MessageVM>) => {
     setMessages((prev) =>
-      prev.map((msg) => (msg.id === id ? ({ ...msg, ...updates } as MessageVM) : msg)),
+      prev.map((msg) =>
+        msg.ids.id === id ? ({ ...msg, ...updates } as MessageVM) : msg,
+      ),
     );
   }, []);
 
   const deleteMessage = useCallback((id: string) => {
-    setMessages((prev) => prev.filter((msg) => msg.id !== id));
+    setMessages((prev) => prev.filter((msg) => msg.ids.id !== id));
   }, []);
 
   const toggleReaction = useCallback(
     (messageId: string, emoji: string, userId: string) => {
       setMessages((prev) =>
         prev.map((msg) => {
-          if (msg.id !== messageId) return msg;
+          if (msg.ids.id !== messageId) return msg;
 
-          const reactions = [...msg.reactions];
+          const reactions = [...msg.social.reactions];
           const existingReactionIndex = reactions.findIndex((r) => r.emoji === emoji);
 
           if (existingReactionIndex >= 0) {
@@ -66,7 +68,13 @@ export function useMessages(initialMessages: MessageVM[]) {
             });
           }
 
-          return { ...msg, reactions };
+          return {
+            ...msg,
+            social: {
+              ...msg.social,
+              reactions,
+            },
+          };
         }),
       );
     },
@@ -75,14 +83,32 @@ export function useMessages(initialMessages: MessageVM[]) {
 
   const toggleSaved = useCallback((messageId: string) => {
     setMessages((prev) =>
-      prev.map((msg) => (msg.id === messageId ? { ...msg, isSaved: !msg.isSaved } : msg)),
+      prev.map((msg) =>
+        msg.ids.id === messageId
+          ? {
+              ...msg,
+              state: {
+                ...msg.state,
+                isSaved: !msg.state?.isSaved,
+              },
+            }
+          : msg,
+      ),
     );
   }, []);
 
   const toggleHidden = useCallback((messageId: string) => {
     setMessages((prev) =>
       prev.map((msg) =>
-        msg.id === messageId ? { ...msg, isHidden: !msg.isHidden } : msg,
+        msg.ids.id === messageId
+          ? {
+              ...msg,
+              state: {
+                ...msg.state,
+                isHidden: !msg.state?.isHidden,
+              },
+            }
+          : msg,
       ),
     );
   }, []);

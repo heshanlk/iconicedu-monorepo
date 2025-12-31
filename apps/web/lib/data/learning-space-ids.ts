@@ -1,13 +1,13 @@
 export const LEARNING_SPACE_IDS = {
-  math: '8a1c2d3e-4f50-4a61-9b72-3c4d5e6f7001',
-  science: '8a1c2d3e-4f50-4a61-9b72-3c4d5e6f7002',
-  ela: '8a1c2d3e-4f50-4a61-9b72-3c4d5e6f7003',
-  chess: '8a1c2d3e-4f50-4a61-9b72-3c4d5e6f7004',
+  math: 'e34b280a-4319-4b45-beb1-8376d3242aaf',
+  science: '39a5f531-d088-4b1d-be70-3474ea5008da',
+  ela: '16132df0-4e16-4b73-a2bf-1c29af40a61d',
+  chess: 'f3dec4ae-b4cd-4c88-9ad3-ea26494275ce',
 } as const;
 
 export const LEARNING_SPACE_CHANNEL_IDS = {
-  math: '10111111-1111-4111-8111-111111111111',
-  science: '20222222-2222-4222-8222-222222222222',
-  ela: '30333333-3333-4333-8333-333333333333',
-  chess: '40444444-4444-4444-8444-444444444444',
+  math: '6c109112-34a0-4eed-8067-5ca271feee27',
+  science: 'a2070efd-c3dd-474e-9196-90778302efea',
+  ela: '1509dbde-4983-45b6-84ab-dde34b9cf917',
+  chess: 'edf2e1c5-7bfa-467a-b9c9-25e09c07079f',
 } as const;

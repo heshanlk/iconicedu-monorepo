@@ -25,7 +25,7 @@ export function ActivityBasicWithExpandedContent({
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleToggle = (_event: React.MouseEvent) => {
-    if (activity.expandedContent) {
+    if (activity.content.expandedContent) {
       setIsExpanded((prev) => !prev);
     }
   };
@@ -40,9 +40,9 @@ export function ActivityBasicWithExpandedContent({
       showActionButton={showActionButton}
       className={className}
       footer={
-        isExpanded && activity.expandedContent ? (
+        isExpanded && activity.content.expandedContent ? (
           <div className="animate-in slide-in-from-top-2 fade-in duration-300 rounded-md bg-muted/50 p-3 text-[12px] text-muted-foreground">
-            {activity.expandedContent}
+            {activity.content.expandedContent}
           </div>
         ) : null
       }

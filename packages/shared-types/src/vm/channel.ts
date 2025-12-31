@@ -3,18 +3,13 @@ import type { UserProfileVM } from './profile';
 import type { ChannelReadStateVM, MessageVM } from './message';
 import type { MessagesRightPanelIntentKey } from './message';
 
+export type ChannelKind = 'channel' | 'dm' | 'group_dm';
+export type ChannelPurpose = 'learning-space' | 'general' | 'support' | 'announcements';
 export type ChannelVisibility = 'private' | 'public';
 export type ChannelStatus = 'active' | 'archived';
-export type ChannelPurpose = 'learning-space' | 'general' | 'support' | 'announcements';
-export type ChannelKind = 'channel' | 'dm' | 'group_dm';
-
-export interface ChannelPostingPolicyVM {
-  kind: 'everyone' | 'members-only' | 'staff-only' | 'read-only' | 'owners_only';
-  allowThreads?: boolean;
-  allowReactions?: boolean;
-}
 
 export type ChannelTopicIconKey = string;
+
 export type ChannelHeaderIconKey =
   | 'saved'
   | 'next-session'
@@ -22,6 +17,12 @@ export type ChannelHeaderIconKey =
   | 'info'
   | 'homework'
   | 'session-summary';
+
+export interface ChannelPostingPolicyVM {
+  kind: 'everyone' | 'members-only' | 'staff-only' | 'read-only' | 'owners_only';
+  allowThreads?: boolean;
+  allowReactions?: boolean;
+}
 
 export interface ChannelHeaderItemVM {
   key: ChannelHeaderIconKey;
@@ -35,13 +36,18 @@ export type ChannelMediaType = 'image';
 export interface ChannelMediaItemVM {
   id: UUID;
   channelId: UUID;
+
   messageId?: UUID | null;
   senderId?: UUID | null;
+
   type: ChannelMediaType;
+
   url: string;
   name?: string | null;
+
   width?: number | null;
   height?: number | null;
+
   createdAt: ISODateTime;
 }
 
@@ -50,28 +56,36 @@ export type ChannelFileKind = 'file' | 'design-file';
 export interface ChannelFileItemVM {
   id: UUID;
   channelId: UUID;
+
   messageId?: UUID | null;
   senderId?: UUID | null;
+
   kind: ChannelFileKind;
+
   url: string;
   name: string;
+
   mimeType?: string | null;
   size?: number | null;
+
   tool?: string | null;
+
   createdAt: ISODateTime;
 }
 
+export type ChannelCapabilityVM = 'has_schedule' | 'has_homework' | 'has_summaries';
 
 export interface ChannelContextVM {
   primaryEntity?: EntityRefVM | null;
-
-  
-  capabilities?: Array<'has_schedule' | 'has_homework' | 'has_summaries'>;
+  capabilities?: ChannelCapabilityVM[] | null;
 }
 
-export interface ChannelVM {
+export interface ChannelIdsVM {
   id: UUID;
   orgId: UUID;
+}
+
+export interface ChannelBasicsVM {
   kind: ChannelKind;
 
   topic: string;
@@ -80,43 +94,66 @@ export interface ChannelVM {
 
   visibility: ChannelVisibility;
   purpose: ChannelPurpose;
+}
 
+export interface ChannelLifecycleVM {
   status: ChannelStatus;
   createdBy: UUID;
   createdAt: ISODateTime;
   archivedAt?: ISODateTime | null;
+}
+
+export interface ChannelDmVM {
+  dmKey?: string | null;
+}
+
+export interface ChannelUiDefaultsVM {
+  defaultRightPanelOpen?: boolean;
+  defaultRightPanelKey?: MessagesRightPanelIntentKey;
+}
+
+export interface ChannelCollectionsVM {
+  participants: UserProfileVM[];
+
+  messages: ConnectionVM<MessageVM>;
+  media: ConnectionVM<ChannelMediaItemVM>;
+  files: ConnectionVM<ChannelFileItemVM>;
+
+  readState?: ChannelReadStateVM;
+}
+
+export interface ChannelVM {
+  ids: ChannelIdsVM;
+
+  basics: ChannelBasicsVM;
+
+  lifecycle: ChannelLifecycleVM;
 
   postingPolicy: ChannelPostingPolicyVM;
 
   headerItems: ChannelHeaderItemVM[];
 
-  
-  dmKey?: string | null;
+  dm?: ChannelDmVM;
 
-  
   context?: ChannelContextVM | null;
 
-  participants: UserProfileVM[];
-  messages: ConnectionVM<MessageVM>;
-  media: ConnectionVM<ChannelMediaItemVM>;
-  files: ConnectionVM<ChannelFileItemVM>;
-  readState?: ChannelReadStateVM;
-  defaultRightPanelOpen?: boolean;
-  defaultRightPanelKey?: MessagesRightPanelIntentKey;
+  collections: ChannelCollectionsVM;
+
+  ui?: ChannelUiDefaultsVM;
 }
 
 export interface ChannelMiniVM {
-  id: UUID;
-  orgId: UUID;
-  kind: ChannelKind;
-  purpose: ChannelPurpose;
-  topic: string;
-  topicIconKey?: ChannelTopicIconKey | null;
-  status: ChannelStatus;
-  visibility: ChannelVisibility;
+  ids: ChannelIdsVM;
 
-  
-  dmKey?: string | null;
+  basics: Pick<
+    ChannelBasicsVM,
+    'kind' | 'purpose' | 'topic' | 'topicIconKey' | 'visibility'
+  >;
+
+  lifecycle: Pick<ChannelLifecycleVM, 'status'>;
+
+  dm?: ChannelDmVM;
+
   context?: ChannelContextVM | null;
 
   participants: UserProfileVM[];

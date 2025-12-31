@@ -1,5 +1,8 @@
+
 import type { AccountRoleContextVM, UserRoleVM } from './roles';
 import type { AccountStatus, ISODateTime, UUID } from './shared';
+
+export type ContactChannelVM = 'email' | 'sms' | 'whatsapp';
 
 export interface UserContactVM {
   email?: string | null;
@@ -11,20 +14,32 @@ export interface UserContactVM {
   whatsappVerified?: boolean;
   verifiedAt?: ISODateTime | null;
 
-  preferredContactChannels?: string[] | null;
+  preferredContactChannels?: ContactChannelVM[] | null;
 }
 
-export interface UserAccountVM {
+export interface AccountIdsVM {
   orgId: UUID;
   id: UUID;
+}
 
-  contacts: UserContactVM;
+export interface AccountAccessVM {
+  userRoles?: UserRoleVM[] | null;
+  activeContext?: AccountRoleContextVM | null;
+}
 
+export interface AccountLifecycleVM {
   status: AccountStatus;
-
   createdAt: ISODateTime;
   updatedAt: ISODateTime;
   archivedAt?: ISODateTime | null;
-  userRoles?: UserRoleVM[] | null;
-  activeContext?: AccountRoleContextVM | null;
+}
+
+export interface UserAccountVM {
+  ids: AccountIdsVM;
+
+  contacts: UserContactVM;
+
+  access?: AccountAccessVM;
+
+  lifecycle: AccountLifecycleVM;
 }

@@ -10,10 +10,7 @@ export function SidebarShell({ children }: { children: ReactNode }) {
 
   return (
     <>
-      <SidebarLeft
-        data={SIDEBAR_LEFT_DATA}
-        activePath={pathname}
-      />
+      <SidebarLeft data={SIDEBAR_LEFT_DATA} activePath={pathname} />
       <SidebarInset>{children}</SidebarInset>
     </>
   );

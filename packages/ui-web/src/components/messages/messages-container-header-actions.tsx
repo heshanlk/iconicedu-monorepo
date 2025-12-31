@@ -41,8 +41,10 @@ export const MessagesContainerHeaderActions = memo(
   function MessagesContainerHeaderActions() {
     const { toggle, isActive, channel, currentUserId } = useMessagesState();
     const otherParticipant =
-      channel.kind === 'dm'
-        ? channel.participants.find((participant) => participant.id !== currentUserId)
+      channel.basics.kind === 'dm'
+        ? channel.collections.participants.find(
+            (participant) => participant.ids.id !== currentUserId,
+          )
         : null;
 
     return (
@@ -51,16 +53,16 @@ export const MessagesContainerHeaderActions = memo(
           icon={Info}
           label="Info"
           active={
-            channel.kind === 'dm'
+            channel.basics.kind === 'dm'
               ? isActive('profile', {
                   key: 'profile',
-                  userId: otherParticipant?.id ?? '',
+                  userId: otherParticipant?.ids.id ?? '',
                 })
               : isActive('channel_info')
           }
           onClick={() =>
-            channel.kind === 'dm' && otherParticipant
-              ? toggle({ key: 'profile', userId: otherParticipant.id })
+            channel.basics.kind === 'dm' && otherParticipant
+              ? toggle({ key: 'profile', userId: otherParticipant.ids.id })
               : toggle({ key: 'channel_info' })
           }
         />

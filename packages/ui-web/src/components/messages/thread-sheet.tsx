@@ -7,14 +7,17 @@ import { ThreadMessageList } from './shared/thread-message-list';
 export function ThreadSheet({
   replies,
   parentMessage,
-  onSendReply,
-  onProfileClick,
-  onToggleReaction,
-  onToggleSaved,
-  onToggleHidden,
+  actions,
   currentUserId,
   readState,
 }: ThreadPanelPropsVM) {
+  const {
+    onSendReply,
+    onProfileClick,
+    onToggleReaction,
+    onToggleSaved,
+    onToggleHidden,
+  } = actions;
   const messages = parentMessage ? [parentMessage, ...replies.items] : replies.items;
   const bottomRef = useRef<HTMLDivElement>(null);
   const messageCountRef = useRef(messages.length);

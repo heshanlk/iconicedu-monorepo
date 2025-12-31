@@ -51,7 +51,7 @@ export function ActivityWithSubitems({
         parentExpanded={parentExpanded}
         isCollapsed={isCollapsed}
         showSubActivityToggle={hasSubActivities}
-        showActionButton={Boolean(activity.actionButton)}
+        showActionButton={Boolean(activity.content.actionButton)}
         subActivityCount={subActivityCount}
       />
 
@@ -59,15 +59,15 @@ export function ActivityWithSubitems({
         <div className="relative ml-6 md:ml-[42px] animate-in slide-in-from-top-2 fade-in duration-300">
           {subActivities.map((sub: ActivityFeedLeafItemVM) => (
             <div key={sub.id} className="relative">
-              {sub.expandedContent ? (
+              {sub.content.expandedContent ? (
                 <ActivityBasicWithExpandedContent
                   activity={sub}
                   onMarkRead={onMarkRead}
-                  showActionButton={Boolean(sub.actionButton)}
+                  showActionButton={Boolean(sub.content.actionButton)}
                   isSubActivity
                   parentExpanded={!isCollapsed}
                 />
-              ) : sub.actionButton ? (
+              ) : sub.content.actionButton ? (
                 <ActivityBasicWithActionButton
                   activity={sub}
                   onMarkRead={onMarkRead}

@@ -1,4 +1,7 @@
+
 import type { IANATimezone, ISODateTime, UUID } from './shared';
+
+
 
 export type WeekdayVM = 'MO' | 'TU' | 'WE' | 'TH' | 'FR' | 'SA' | 'SU';
 export type ClassScheduleViewVM = 'week' | 'day' | 'month' | 'agenda';
@@ -18,17 +21,21 @@ export type ClassScheduleColorTokenVM =
   | 'purple'
   | 'gray';
 
-export type ParticipantRoleVM = 'educator' | 'child' | 'guardian' | 'staff' | 'observer';
 
+
+export type ParticipantRoleVM = 'educator' | 'child' | 'guardian' | 'staff' | 'observer';
 export type ParticipationStatusVM = 'invited' | 'accepted' | 'declined' | 'tentative';
 
 export interface ClassScheduleParticipantVM {
   userId: UUID;
   role: ParticipantRoleVM;
   status?: ParticipationStatusVM;
+
+  
   displayName?: string;
   avatarUrl?: string | null;
 }
+
 
 
 export type EventSourceVM =
@@ -42,22 +49,35 @@ export type EventSourceVM =
 
 export type EventStatusVM = 'scheduled' | 'cancelled' | 'completed' | 'rescheduled';
 
+
+
+export type CancelReasonVM =
+  | 'guardian'
+  | 'educator'
+  | 'staff'
+  | 'no_show'
+  | 'holiday'
+  | 'other';
+
 export interface EventAuditInfoVM {
   createdAt: ISODateTime;
   createdBy: UUID;
+
   updatedAt?: ISODateTime;
   updatedBy?: UUID;
 
   cancelledAt?: ISODateTime;
   cancelledBy?: UUID;
-  cancelReason?: 'guardian' | 'educator' | 'staff' | 'no_show' | 'holiday' | 'other';
+  cancelReason?: CancelReasonVM;
   cancelNote?: string | null;
+
   deletedAt?: ISODateTime;
   deletedBy?: UUID;
 }
 
-export type RecurrenceFrequencyVM = 'daily' | 'weekly' | 'monthly' | 'yearly';
 
+
+export type RecurrenceFrequencyVM = 'daily' | 'weekly' | 'monthly' | 'yearly';
 
 export interface RecurrenceRuleVM {
   frequency: RecurrenceFrequencyVM;
@@ -67,6 +87,57 @@ export interface RecurrenceRuleVM {
   until?: ISODateTime;
   timezone?: IANATimezone;
 }
+
+export interface RecurrenceExceptionVM {
+  occurrenceKey: ISODateTime; 
+  reason?: string;
+}
+
+export interface RecurrenceOverrideVM {
+  occurrenceKey: ISODateTime; 
+  patch: ClassSchedulePatchVM;
+}
+
+export interface RecurrenceVM {
+  seriesId: UUID; 
+  rule: RecurrenceRuleVM;
+  exceptions?: RecurrenceExceptionVM[];
+  overrides?: RecurrenceOverrideVM[];
+}
+
+
+
+export interface ClassScheduleVM {
+  
+  id: UUID;
+  orgId: UUID;
+
+  
+  title: string;
+  description?: string | null;
+  location?: string | null;
+
+  
+  startAt: ISODateTime;
+  endAt: ISODateTime;
+  timezone?: IANATimezone;
+
+  
+  status: EventStatusVM;
+  visibility: ClassScheduleVisibilityVM;
+  color?: ClassScheduleColorTokenVM;
+
+  
+  participants: ClassScheduleParticipantVM[];
+  source: EventSourceVM;
+
+  
+  recurrence?: RecurrenceVM;
+
+  
+  audit: EventAuditInfoVM;
+}
+
 
 
 export type ClassSchedulePatchVM = Partial<
@@ -87,86 +158,38 @@ export type ClassSchedulePatchVM = Partial<
 >;
 
 
-export interface RecurrenceOverrideVM {
-  occurrenceKey: ISODateTime; // original instance start (UTC)
-  patch: ClassSchedulePatchVM;
-}
-
-export interface RecurrenceExceptionVM {
-  occurrenceKey: ISODateTime; // original instance start (UTC)
-  reason?: string;
-}
-
-export interface RecurrenceVM {
-  seriesId: UUID; // stable id for the series (like Google Calendar recurring series)
-  rule: RecurrenceRuleVM;
-  exceptions?: RecurrenceExceptionVM[];
-  overrides?: RecurrenceOverrideVM[];
-}
-
-
-export interface ClassScheduleVM {
-  id: UUID;
-  orgId: UUID;
-
-  title: string;
-
-  
-  startAt: ISODateTime;
-  endAt: ISODateTime;
-
-  
-  timezone?: IANATimezone;
-
-  status: EventStatusVM;
-  description?: string | null;
-  location?: string | null;
-
-  visibility: ClassScheduleVisibilityVM;
-  color?: ClassScheduleColorTokenVM;
-
-  participants: ClassScheduleParticipantVM[];
-
-  source: EventSourceVM;
-
-  
-  recurrence?: RecurrenceVM;
-
-  audit: EventAuditInfoVM;
-}
-
 
 export interface EventInstanceKeyVM {
-  eventId: UUID; // schedule master id
-  occurrenceKey: ISODateTime; // original startAt for that occurrence (UTC)
+  eventId: UUID; 
+  occurrenceKey: ISODateTime; 
 }
-
 
 export interface ClassScheduleInstanceVM {
   
   id?: UUID;
 
+  
   key: EventInstanceKeyVM;
 
   
   startAt: ISODateTime;
   endAt: ISODateTime;
-
-  
   timezone?: IANATimezone;
 
   
   status: EventStatusVM;
-
-  
   isCancelled?: boolean;
 
   
   title: string;
   description?: string | null;
   location?: string | null;
+
+  
   visibility: ClassScheduleVisibilityVM;
   color?: ClassScheduleColorTokenVM;
+
+  
   participants: ClassScheduleParticipantVM[];
   source: EventSourceVM;
 }

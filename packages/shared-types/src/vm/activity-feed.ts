@@ -1,5 +1,8 @@
+
 import type { AvatarVM } from './profile';
-import { ConnectionVM, EntityRefVM, ISODateTime, UUID } from './shared';
+import type { ConnectionVM, EntityRefVM, ISODateTime, UUID } from './shared';
+
+
 
 export type ActivityGroupKeyVM =
   | 'homework'
@@ -12,37 +15,6 @@ export type ActivityGroupKeyVM =
   | 'payment'
   | 'survey'
   | 'complete-class';
-
-export type FeedScopeVM =
-  | { kind: 'global' }
-  | { kind: 'learning_space'; learningSpaceId: UUID }
-  | { kind: 'channel'; channelId: UUID }
-  | { kind: 'dm'; threadId: UUID }
-  | { kind: 'user'; userId: UUID };
-
-export type SystemProfileVM = {
-  kind: 'system';
-  id: UUID;
-  displayName: string;
-  avatar: AvatarVM;
-};
-
-export interface ActivityActorProfileVM {
-  id: UUID;
-  displayName: string;
-  avatar: AvatarVM;
-}
-
-export type ActivityActorVM = ActivityActorProfileVM | SystemProfileVM;
-
-export type ActivityVisibilityVM = 'public' | 'scope_only' | 'direct';
-export type AudienceRuleVM =
-  | { kind: 'all_in_scope' }
-  | { kind: 'roles_only'; roleKeys: string[] }
-  | { kind: 'users_only'; userIds: UUID[] }
-  | { kind: 'exclude_users'; userIds: UUID[] };
-
-export type ActivityImportanceVM = 'normal' | 'important' | 'urgent';
 
 export type ActivityVerbVM =
   | 'class.created'
@@ -67,6 +39,43 @@ export type ActivityVerbVM =
   | 'member.joined'
   | 'member.removed'
   | 'role.changed';
+
+export type ActivityVisibilityVM = 'public' | 'scope_only' | 'direct';
+export type ActivityImportanceVM = 'normal' | 'important' | 'urgent';
+
+
+
+export type FeedScopeVM =
+  | { kind: 'global' }
+  | { kind: 'learning_space'; learningSpaceId: UUID }
+  | { kind: 'channel'; channelId: UUID }
+  | { kind: 'dm'; threadId: UUID }
+  | { kind: 'user'; userId: UUID };
+
+export type AudienceRuleVM =
+  | { kind: 'all_in_scope' }
+  | { kind: 'roles_only'; roleKeys: string[] }
+  | { kind: 'users_only'; userIds: UUID[] }
+  | { kind: 'exclude_users'; userIds: UUID[] };
+
+
+
+export type SystemProfileVM = {
+  kind: 'system';
+  id: UUID;
+  displayName: string;
+  avatar: AvatarVM;
+};
+
+export interface ActivityActorProfileVM {
+  id: UUID;
+  displayName: string;
+  avatar: AvatarVM;
+}
+
+export type ActivityActorVM = ActivityActorProfileVM | SystemProfileVM;
+
+
 
 export type InboxTabKeyVM = 'all' | 'classes' | 'payment' | 'system';
 
@@ -108,59 +117,95 @@ export type InboxActionButtonVM = {
   payload?: Record<string, unknown> | null;
 };
 
-export interface ActivityFeedItemBaseVM {
-  id: UUID;
 
+
+export interface ActivityItemTimestampsVM {
   occurredAt: ISODateTime;
   createdAt: ISODateTime;
+}
 
-  tabKey: InboxTabKeyVM;
-
+export interface ActivityItemAudienceVM {
   scope: FeedScopeVM;
   visibility: ActivityVisibilityVM;
   audience?: AudienceRuleVM[];
+}
 
-  verb: ActivityVerbVM;
-
+export interface ActivityItemRefsVM {
   actor: ActivityActorVM;
-
   object?: EntityRefVM;
   target?: EntityRefVM;
+}
 
+export interface ActivityItemGroupingVM {
   groupKey?: string;
   groupType?: ActivityGroupKeyVM;
+}
 
+export interface ActivityItemContentVM {
   leading?: InboxLeadingVM;
   headline: InboxHeadlineVM;
   summary?: string;
+
   preview?: {
     text?: string;
     attachmentsCount?: number;
   };
+
   actionButton?: InboxActionButtonVM;
   expandedContent?: string;
+}
+
+export interface ActivityItemStateVM {
   importance?: ActivityImportanceVM;
   isRead?: boolean;
+}
+
+
+
+export interface ActivityFeedItemBaseVM {
+  id: UUID;
+
+  timestamps: ActivityItemTimestampsVM;
+
+  tabKey: InboxTabKeyVM;
+
+  audience: ActivityItemAudienceVM;
+
+  verb: ActivityVerbVM;
+
+  refs: ActivityItemRefsVM;
+
+  grouping?: ActivityItemGroupingVM;
+
+  content: ActivityItemContentVM;
+
+  state?: ActivityItemStateVM;
 
   metadata?: Record<string, unknown>;
 }
 
+
+
 export type ActivityFeedLeafItemVM = ActivityFeedItemBaseVM & {
   kind: 'leaf';
 
-  groupKey?: never;
-  groupType?: never;
+  grouping?: {
+    groupKey?: never;
+    groupType?: never;
+  };
+
   subActivities?: never;
 };
 
 export type ActivityFeedGroupItemVM = ActivityFeedItemBaseVM & {
   kind: 'group';
 
-  groupType: ActivityGroupKeyVM;
-  groupKey: string;
+  grouping: {
+    groupType: ActivityGroupKeyVM;
+    groupKey: string;
+  };
 
   isCollapsed?: boolean;
-
   subActivityCount?: number;
 
   subActivities?: ConnectionVM<ActivityFeedLeafItemVM>;
@@ -168,23 +213,25 @@ export type ActivityFeedGroupItemVM = ActivityFeedItemBaseVM & {
 
 export type ActivityFeedItemVM = ActivityFeedLeafItemVM | ActivityFeedGroupItemVM;
 
+
+
 export type ActivityFeedSectionVM = {
   label: string;
   items: ActivityFeedItemVM[];
 };
 
+export type ActivityFeedTabVM = {
+  key: InboxTabKeyVM;
+  label: string;
+  badgeCount?: number;
+};
+
 export type ActivityFeedVM = {
   activeTab: InboxTabKeyVM;
-
-  tabs: Array<{
-    key: InboxTabKeyVM;
-    label: string;
-    badgeCount?: number;
-  }>;
+  tabs: ActivityFeedTabVM[];
 
   sections: ActivityFeedSectionVM[];
 
   nextCursor?: string | null;
-
   unreadCount?: number;
 };

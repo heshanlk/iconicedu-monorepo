@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 
 import { AvatarWithStatus } from '../shared/avatar-with-status';
-import type { UserProfileVM } from '@iconicedu/shared-types';
+import type { UserAccountVM, UserProfileVM } from '@iconicedu/shared-types';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,9 +25,16 @@ import {
   useSidebar,
 } from '../../ui/sidebar';
 
-export function NavUser({ user }: { user: UserProfileVM & { email?: string | null } }) {
+export function NavUser({
+  profile,
+  account,
+}: {
+  profile: UserProfileVM;
+  account?: UserAccountVM | null;
+}) {
   const { isMobile } = useSidebar();
-  const secondaryLabel = user.email ?? user.locale ?? user.timezone ?? '';
+  const secondaryLabel =
+    account?.contacts.email ?? profile.prefs.locale ?? profile.prefs.timezone ?? '';
 
   return (
     <SidebarMenu>
@@ -36,15 +43,15 @@ export function NavUser({ user }: { user: UserProfileVM & { email?: string | nul
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton size="lg">
               <AvatarWithStatus
-                name={user.displayName}
-                avatar={user.avatar}
-                presence={user.presence}
+                name={profile.profile.displayName}
+                avatar={profile.profile.avatar}
+                presence={profile.presence}
                 sizeClassName="h-8 w-8 rounded-xl"
                 fallbackClassName="rounded-xl"
                 initialsLength={2}
               />
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.displayName}</span>
+                <span className="truncate font-medium">{profile.profile.displayName}</span>
                 {secondaryLabel ? (
                   <span className="truncate text-xs">{secondaryLabel}</span>
                 ) : null}
@@ -61,15 +68,17 @@ export function NavUser({ user }: { user: UserProfileVM & { email?: string | nul
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <AvatarWithStatus
-                  name={user.displayName}
-                  avatar={user.avatar}
-                  presence={user.presence}
+                  name={profile.profile.displayName}
+                  avatar={profile.profile.avatar}
+                  presence={profile.presence}
                   sizeClassName="h-8 w-8 rounded-xl"
                   fallbackClassName="rounded-xl"
                   initialsLength={2}
                 />
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.displayName}</span>
+                  <span className="truncate font-medium">
+                    {profile.profile.displayName}
+                  </span>
                   {secondaryLabel ? (
                     <span className="truncate text-xs">{secondaryLabel}</span>
                   ) : null}

@@ -69,8 +69,8 @@ const MessagesShellLayout = memo(function MessagesShellLayout({
 
   useEffect(() => {
     if (!hasHydrated || isMobile || hasAutoOpened.current || state.isOpen) return;
-    if (!props.channel.defaultRightPanelOpen) return;
-    const defaultKey = props.channel.defaultRightPanelKey ?? 'channel_info';
+    if (!props.channel.ui?.defaultRightPanelOpen) return;
+    const defaultKey = props.channel.ui?.defaultRightPanelKey ?? 'channel_info';
     if (defaultKey === 'profile' || defaultKey === 'thread') return;
     open({ key: defaultKey });
     hasAutoOpened.current = true;
@@ -78,8 +78,8 @@ const MessagesShellLayout = memo(function MessagesShellLayout({
     hasHydrated,
     isMobile,
     open,
-    props.channel.defaultRightPanelKey,
-    props.channel.defaultRightPanelOpen,
+    props.channel.ui?.defaultRightPanelKey,
+    props.channel.ui?.defaultRightPanelOpen,
     state.isOpen,
   ]);
 

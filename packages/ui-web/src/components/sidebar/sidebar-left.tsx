@@ -46,7 +46,7 @@ import { SiteLogoWithName } from '../site-logo-wt-name';
 import { Empty } from '../../ui/empty';
 import { EmptyContent } from '../../ui/empty';
 import type {
-  SidebarLeftData,
+  SidebarLeftDataVM,
   SidebarNavItem,
   SidebarSecondaryItem,
 } from '@iconicedu/shared-types';
@@ -68,29 +68,33 @@ export function SidebarLeft({
   activePath,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
-  data: SidebarLeftData;
+  data: SidebarLeftDataVM;
   activePath?: string | null;
 }) {
-  const navMain: SidebarNavItem[] = data.navMain.map((item) => ({
+  const navMain: SidebarNavItem[] = data.navigation.navMain.map((item) => ({
     ...item,
     icon: ICONS[item.icon],
     isActive:
       item.url === '/dashboard'
         ? activePath === item.url
-        : activePath?.startsWith(item.url) ?? false,
+        : (activePath?.startsWith(item.url) ?? false),
   }));
-  const navSecondary: SidebarSecondaryItem[] = data.navSecondary.map((item) => ({
-    ...item,
-    icon: ICONS[item.icon],
-    isActive: activePath ? activePath.startsWith(item.url) : false,
-  }));
+  const navSecondary: SidebarSecondaryItem[] = data.navigation.navSecondary.map(
+    (item) => ({
+      ...item,
+      icon: ICONS[item.icon],
+      isActive: activePath ? activePath.startsWith(item.url) : false,
+    }),
+  );
 
-  const children = 'children' in data.user ? (data.user.children?.items ?? []) : [];
+  const userProfile = data.user.profile;
+  const children =
+    userProfile.kind === 'guardian' ? (userProfile.children?.items ?? []) : [];
   const learningSpacesByChild = children.map((child) => ({
     child,
-    learningSpaces: data.LEARNING_SPACES.filter((space) =>
-      space.primaryChannel.participants.some(
-        (participant) => participant.accountId === child.accountId,
+    learningSpaces: data.collections.learningSpaces.filter((space) =>
+      space.channels.primaryChannel.collections.participants.some(
+        (participant) => participant.ids.accountId === child.ids.accountId,
       ),
     ),
   }));
@@ -115,9 +119,11 @@ export function SidebarLeft({
   const activeChildId = React.useMemo(() => {
     if (!activeLearningSpaceId) return null;
     const match = learningSpacesByChild.find(({ learningSpaces }) =>
-      learningSpaces.some((space) => space.primaryChannel.id === activeLearningSpaceId),
+      learningSpaces.some(
+        (space) => space.channels.primaryChannel.ids.id === activeLearningSpaceId,
+      ),
     );
-    return match?.child.accountId ?? null;
+    return match?.child.ids.accountId ?? null;
   }, [activeLearningSpaceId, learningSpacesByChild]);
   const [openChildId, setOpenChildId] = React.useState<string | null>(null);
 
@@ -142,7 +148,7 @@ export function SidebarLeft({
       <SidebarContent>
         <NavMain items={navMain} />
         <SidebarSeparator className="mx-2 group-data-[collapsible=icon]:hidden" />
-        {'children' in data.user ? (
+        {userProfile.kind === 'guardian' ? (
           <>
             <SidebarGroup className="pb-0">
               <SidebarGroupLabel asChild className="uppercase">
@@ -194,13 +200,13 @@ export function SidebarLeft({
             ) : (
               learningSpacesByChild.map(({ child, learningSpaces }) => (
                 <NavLearningSpaces
-                  key={child.accountId}
-                  title={child.displayName}
+                  key={child.ids.accountId}
+                  title={child.profile.displayName}
                   child={child}
                   learningSpaces={learningSpaces}
-                  isOpen={openChildId === child.accountId}
+                  isOpen={openChildId === child.ids.accountId}
                   onOpenChange={(nextOpen) =>
-                    setOpenChildId(nextOpen ? child.accountId : null)
+                    setOpenChildId(nextOpen ? child.ids.accountId : null)
                   }
                   activeChannelId={activeLearningSpaceId}
                 />
@@ -210,14 +216,14 @@ export function SidebarLeft({
         ) : null}
         <SidebarSeparator className="mx-2" />
         <NavDirectMessages
-          dms={data.DIRECT_MESSAGES}
-          currentUserId={data.user.accountId}
+          dms={data.collections.directMessages}
+          currentUserId={data.user.profile.ids.accountId}
           activeChannelId={activeDirectMessageId ?? null}
         />
         <NavSecondary items={navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser profile={data.user.profile} account={data.user.account} />
       </SidebarFooter>
     </Sidebar>
   );

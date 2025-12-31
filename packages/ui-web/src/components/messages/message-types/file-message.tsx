@@ -25,9 +25,9 @@ export const FileMessage = memo(function FileMessage(props: FileMessageProps) {
 
   return (
     <MessageBase message={message} {...baseProps}>
-      {message.content && (
+      {message.content?.text && (
         <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap break-words mb-2">
-          {message.content}
+          {message.content.text}
         </p>
       )}
       <div className="flex items-center gap-3 rounded-xl border border-border bg-muted/30 p-3 max-w-sm">

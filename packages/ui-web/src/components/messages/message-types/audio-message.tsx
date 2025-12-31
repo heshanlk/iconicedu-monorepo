@@ -76,9 +76,9 @@ export const AudioMessage = memo(function AudioMessage(props: AudioMessageProps)
 
   return (
     <MessageBase message={message} {...baseProps}>
-      {message.content && (
+      {message.content?.text && (
         <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap break-words mb-3">
-          {message.content}
+          {message.content.text}
         </p>
       )}
       <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent p-4 max-w-sm border border-primary/20">

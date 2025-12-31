@@ -26,7 +26,8 @@ export const ThreadIndicator = memo(function ThreadIndicator({
     >
       <MessageCircle className="h-3.5 w-3.5" />
       <span className="font-medium">
-        {thread.messageCount} {thread.messageCount === 1 ? 'reply' : 'replies'}
+        {thread.stats.messageCount}{' '}
+        {thread.stats.messageCount === 1 ? 'reply' : 'replies'}
       </span>
       {unreadCount > 0 && (
         <Badge variant="destructive" className="h-5 min-w-[1.25rem] px-1.5 text-xs">
@@ -36,9 +37,9 @@ export const ThreadIndicator = memo(function ThreadIndicator({
       <div className="flex -space-x-2">
         {thread.participants.slice(0, 3).map((participant) => (
           <AvatarWithStatus
-            key={participant.id}
-            name={participant.displayName}
-            avatar={participant.avatar}
+            key={participant.ids.id}
+            name={participant.profile.displayName}
+            avatar={participant.profile.avatar}
             showStatus={false}
             sizeClassName="h-5 w-5 border-2 border-background"
             fallbackClassName="text-[10px]"
@@ -47,7 +48,7 @@ export const ThreadIndicator = memo(function ThreadIndicator({
         ))}
       </div>
       <span className="text-xs text-muted-foreground">
-        {formatThreadTime(thread.lastReplyAt)}
+        {formatThreadTime(thread.stats.lastReplyAt)}
       </span>
     </Button>
   );
