@@ -98,7 +98,7 @@ export interface ChannelVM {
 
   /**
    * ✅ CHANGE: deterministic key used ONLY for dm/group_dm to prevent duplicates
-   * - dm: "dm:<minUserId>:<maxUserId>"
+   * - dm: "dm:<minUserId>-<maxUserId>"
    * - group_dm: "gdm:<hash(sortedUserIds)>"
    */
   dmKey?: string | null;

@@ -33,7 +33,7 @@ export const DIRECT_MESSAGE_CHANNELS: ChannelVM[] = [
       { key: 'saved', label: 'Saved' },
       { key: 'info', label: 'Info', isPrimary: true },
     ],
-    dmKey: `dm:${MOCK_GUARDIAN.id}:${MOCK_EDUCATOR_1.id}`,
+    dmKey: `dm:${MOCK_EDUCATOR_1.id}-${MOCK_GUARDIAN.id}`,
     context: {
       primaryEntity: { kind: 'user', id: MOCK_EDUCATOR_1.id },
     },
@@ -71,7 +71,7 @@ export const DIRECT_MESSAGE_CHANNELS: ChannelVM[] = [
       { key: 'saved', label: 'Saved' },
       { key: 'info', label: 'Info', isPrimary: true },
     ],
-    dmKey: `dm:${MOCK_GUARDIAN.id}:${MOCK_EDUCATOR_2.id}`,
+    dmKey: `dm:${MOCK_EDUCATOR_2.id}-${MOCK_GUARDIAN.id}`,
     context: {
       primaryEntity: { kind: 'user', id: MOCK_EDUCATOR_2.id },
     },
@@ -109,7 +109,7 @@ export const DIRECT_MESSAGE_CHANNELS: ChannelVM[] = [
       { key: 'saved', label: 'Saved' },
       { key: 'info', label: 'Info', isPrimary: true },
     ],
-    dmKey: `dm:${MOCK_GUARDIAN.id}:${MOCK_EDUCATOR_3.id}`,
+    dmKey: `dm:${MOCK_EDUCATOR_3.id}-${MOCK_GUARDIAN.id}`,
     context: {
       primaryEntity: { kind: 'user', id: MOCK_EDUCATOR_3.id },
     },
@@ -147,7 +147,7 @@ export const DIRECT_MESSAGE_CHANNELS: ChannelVM[] = [
       { key: 'saved', label: 'Saved' },
       { key: 'info', label: 'Info', isPrimary: true },
     ],
-    dmKey: `dm:${MOCK_GUARDIAN.id}:${MOCK_EDUCATOR_4.id}`,
+    dmKey: `dm:${MOCK_EDUCATOR_4.id}-${MOCK_GUARDIAN.id}`,
     context: {
       primaryEntity: { kind: 'user', id: MOCK_EDUCATOR_4.id },
     },
@@ -185,7 +185,7 @@ export const DIRECT_MESSAGE_CHANNELS: ChannelVM[] = [
       { key: 'saved', label: 'Saved' },
       { key: 'info', label: 'Info', isPrimary: true },
     ],
-    dmKey: `dm:${MOCK_GUARDIAN.id}:${MOCK_EDUCATOR_5.id}`,
+    dmKey: `dm:${MOCK_EDUCATOR_5.id}-${MOCK_GUARDIAN.id}`,
     context: {
       primaryEntity: { kind: 'user', id: MOCK_EDUCATOR_5.id },
     },

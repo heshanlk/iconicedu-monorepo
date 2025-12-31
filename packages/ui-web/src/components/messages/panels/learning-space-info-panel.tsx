@@ -39,7 +39,6 @@ import {
 interface LearningSpaceInfoPanelProps {
   intent: MessagesRightPanelIntent;
   learningSpace?: LearningSpaceVM | null;
-  dmChannelByUserId?: Record<string, string>;
 }
 
 const LEARNING_SPACE_ICON_MAP = {
@@ -101,12 +100,11 @@ const LEARNING_SPACE_LINK_ICONS: Record<string, typeof Link2> = {
 
 const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelContent({
   learningSpace,
-  dmChannelByUserId,
 }: {
   learningSpace: LearningSpaceVM;
-  dmChannelByUserId?: Record<string, string>;
 }) {
-  const { channel, toggle, messageFilter, toggleMessageFilter } = useMessagesState();
+  const { channel, toggle, messageFilter, toggleMessageFilter, currentUserId } =
+    useMessagesState();
 
   const iconKey = learningSpace.iconKey ?? channel.topicIconKey ?? 'sparkles';
   const Icon =
@@ -335,7 +333,10 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
         <h3 className="text-sm font-semibold text-foreground">Members</h3>
         <div className="space-y-3 min-w-0">
           {learningSpace.participants.map((member) => {
-            const dmChannelId = dmChannelByUserId?.[member.id];
+            const dmKey =
+              currentUserId && member.id !== currentUserId
+                ? `dm:${[currentUserId, member.id].sort().join('-')}`
+                : null;
 
             return (
               <div key={member.id} className="flex items-center gap-3">
@@ -356,7 +357,7 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
                     </div>
                   ) : null}
                 </div>
-                {dmChannelId ? (
+                {dmKey ? (
                   <Button
                     asChild
                     variant="ghost"
@@ -364,7 +365,7 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
                     className="h-8 w-8 shrink-0 text-muted-foreground hover:bg-primary/15 hover:text-primary"
                     aria-label={`Message ${member.displayName}`}
                   >
-                    <a href={`/dashboard/dm/${dmChannelId}`}>
+                    <a href={`/dashboard/dm/${dmKey}`}>
                       <MessageCircle className="h-4 w-4" />
                     </a>
                   </Button>
@@ -384,7 +385,6 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
 export function LearningSpaceInfoPanel({
   intent,
   learningSpace,
-  dmChannelByUserId,
 }: LearningSpaceInfoPanelProps) {
   if (!learningSpace) {
     return null;
@@ -392,10 +392,7 @@ export function LearningSpaceInfoPanel({
 
   return (
     <div className="flex h-full min-h-0 flex-col overflow-y-auto">
-      <LearningSpaceInfoPanelContent
-        learningSpace={learningSpace}
-        dmChannelByUserId={dmChannelByUserId}
-      />
+      <LearningSpaceInfoPanelContent learningSpace={learningSpace} />
     </div>
   );
 }
