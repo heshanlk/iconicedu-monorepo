@@ -188,12 +188,8 @@ export const MessagesContainerHeader = memo(function MessagesContainerHeader({
         >
           <AvatarWithStatus
             name={otherParticipant.displayName}
-            avatar={otherParticipant.avatar.url ?? ''}
-            isOnline={
-              otherParticipant.presence?.liveStatus !== undefined
-                ? otherParticipant.presence.liveStatus !== 'none'
-                : undefined
-            }
+            avatar={otherParticipant.avatar}
+            presence={otherParticipant.presence}
             sizeClassName="h-7 w-7"
             initialsLength={1}
           />

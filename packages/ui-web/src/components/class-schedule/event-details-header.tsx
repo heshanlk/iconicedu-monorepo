@@ -36,7 +36,7 @@ export function EventDetailsHeader({ event }: EventDetailsHeaderProps) {
             <AvatarWithStatus
               key={index}
               name={participant.displayName ?? `Guest ${index + 1}`}
-              avatar={participant.avatarUrl ?? ''}
+              avatar={{ source: 'external', url: participant.avatarUrl ?? '' }}
               showStatus={false}
               sizeClassName={cn('border-2 border-background')}
             />

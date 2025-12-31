@@ -33,7 +33,7 @@ export function ActivityBadge({ activity, className }: ActivityBadgeProps) {
           <AvatarWithStatus
             key={`${avatar.seed ?? 'avatar'}-${idx}`}
             name={avatar.seed ?? 'Avatar'}
-            avatar={avatar.url ?? ''}
+            avatar={avatar}
             showStatus={false}
             sizeClassName="size-6 border-2 border-background"
             initialsLength={2}
@@ -56,7 +56,7 @@ export function ActivityBadge({ activity, className }: ActivityBadgeProps) {
   return (
     <AvatarWithStatus
       name={actorName}
-      avatar={actorAvatar}
+      avatar={{ source: 'external', url: actorAvatar }}
       showStatus={false}
       sizeClassName={cn('size-6 shrink-0', className)}
       fallbackClassName="text-[10px]"

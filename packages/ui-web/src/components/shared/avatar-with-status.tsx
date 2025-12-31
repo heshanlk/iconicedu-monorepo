@@ -1,5 +1,6 @@
 'use client';
 
+import type { AvatarVM, PresenceVM } from '@iconicedu/shared-types';
 import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
 import { cn } from '../../lib/utils';
 
@@ -12,11 +13,10 @@ const STATUS_COLORS = {
 
 interface AvatarWithStatusProps {
   name: string;
-  avatar?: string;
+  avatar?: AvatarVM | null;
   alt?: string;
   fallbackText?: string;
-  status?: keyof typeof STATUS_COLORS | 'online' | 'away' | 'idle' | 'offline';
-  isOnline?: boolean;
+  presence?: PresenceVM | null;
   showStatus?: boolean;
   initialsLength?: number;
   sizeClassName?: string;
@@ -35,22 +35,31 @@ const getInitials = (name: string, maxLength = 2) =>
 export function AvatarWithStatus({
   name,
   avatar,
-  status,
-  isOnline,
+  presence,
   showStatus,
   initialsLength,
   sizeClassName,
   statusClassName,
   fallbackClassName,
 }: AvatarWithStatusProps) {
-  const displayStatus =
-    showStatus !== undefined ? showStatus : isOnline !== undefined ? isOnline : !!status;
-  const statusColor = status ? STATUS_COLORS[status] : STATUS_COLORS.online;
+  const liveStatus = presence?.liveStatus ?? 'none';
+  const statusKey =
+    liveStatus === 'teaching' || liveStatus === 'in_class'
+      ? 'online'
+      : liveStatus === 'reviewing_work'
+        ? 'idle'
+        : liveStatus === 'busy'
+          ? 'away'
+          : 'offline';
+  const displayStatus = showStatus !== undefined ? showStatus : !!presence;
+  const statusColor = STATUS_COLORS[statusKey];
+
+  const avatarUrl = avatar?.url ?? '/placeholder.svg';
 
   return (
     <div className="relative">
       <Avatar className={sizeClassName}>
-        <AvatarImage src={avatar || '/placeholder.svg'} alt={name} />
+        <AvatarImage src={avatarUrl} alt={name} />
         <AvatarFallback className={fallbackClassName}>
           {getInitials(name, initialsLength)}
         </AvatarFallback>
@@ -62,7 +71,7 @@ export function AvatarWithStatus({
             statusColor,
             statusClassName ?? 'bottom-0 right-0 h-2.5 w-2.5',
           )}
-          aria-label={`Status: ${status ?? (isOnline ? 'online' : 'offline')}`}
+          aria-label={`Status: ${statusKey}`}
         />
       )}
     </div>

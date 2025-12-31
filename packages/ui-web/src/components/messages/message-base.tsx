@@ -71,7 +71,7 @@ export const MessageBase = memo(function MessageBase({
         >
           <AvatarWithStatus
             name={message.sender.displayName}
-            avatar={message.sender.avatar.url ?? ''}
+            avatar={message.sender.avatar}
             sizeClassName="h-9 w-9"
             initialsLength={1}
           />
@@ -124,7 +124,7 @@ export const MessageBase = memo(function MessageBase({
       >
         <AvatarWithStatus
           name={message.sender.displayName}
-          avatar={message.sender.avatar.url ?? ''}
+          avatar={message.sender.avatar}
           sizeClassName="h-9 w-9"
           initialsLength={1}
         />

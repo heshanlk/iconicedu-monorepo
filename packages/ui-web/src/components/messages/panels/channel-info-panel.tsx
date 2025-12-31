@@ -188,7 +188,7 @@ const ChannelInfoPanelContent = memo(function ChannelInfoPanelContent() {
             <div key={member.id} className="flex items-center gap-3">
               <AvatarWithStatus
                 name={member.displayName}
-                avatar={member.avatar.url ?? ''}
+                avatar={member.avatar}
                 sizeClassName="h-9 w-9"
                 initialsLength={1}
               />

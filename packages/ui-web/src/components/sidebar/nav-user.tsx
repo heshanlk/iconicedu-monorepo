@@ -27,10 +27,6 @@ import {
 
 export function NavUser({ user }: { user: UserProfileVM & { email?: string | null } }) {
   const { isMobile } = useSidebar();
-  const isOnline =
-    user.presence?.liveStatus !== undefined
-      ? user.presence.liveStatus !== 'none'
-      : undefined;
   const secondaryLabel = user.email ?? user.locale ?? user.timezone ?? '';
 
   return (
@@ -41,8 +37,8 @@ export function NavUser({ user }: { user: UserProfileVM & { email?: string | nul
             <SidebarMenuButton size="lg">
               <AvatarWithStatus
                 name={user.displayName}
-                avatar={user.avatar.url ?? ''}
-                isOnline={isOnline}
+                avatar={user.avatar}
+                presence={user.presence}
                 sizeClassName="h-8 w-8 rounded-xl"
                 fallbackClassName="rounded-xl"
                 initialsLength={2}
@@ -66,8 +62,8 @@ export function NavUser({ user }: { user: UserProfileVM & { email?: string | nul
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <AvatarWithStatus
                   name={user.displayName}
-                  avatar={user.avatar.url ?? ''}
-                  isOnline={isOnline}
+                  avatar={user.avatar}
+                  presence={user.presence}
                   sizeClassName="h-8 w-8 rounded-xl"
                   fallbackClassName="rounded-xl"
                   initialsLength={2}

@@ -45,25 +45,15 @@ export function NavDirectMessages({
             item.participants.find(
               (participant) => participant.accountId !== currentUserId,
             ) ?? item.participants[0];
-          const liveStatus = otherParticipant?.presence?.liveStatus ?? 'none';
-          const status =
-            liveStatus === 'teaching' || liveStatus === 'in_class'
-              ? 'online'
-              : liveStatus === 'reviewing_work'
-                ? 'idle'
-                : liveStatus === 'busy'
-                  ? 'away'
-                  : 'offline';
           const name = otherParticipant?.displayName ?? item.topic;
-          const avatar = otherParticipant?.avatar.url ?? '';
           return (
             <SidebarMenuItem key={item.id}>
               <SidebarMenuButton asChild isActive={isActive}>
                 <a href={`/dashboard/dm/${item.id}`}>
                   <AvatarWithStatus
                     name={name}
-                    avatar={avatar}
-                    status={status}
+                    avatar={otherParticipant?.avatar}
+                    presence={otherParticipant?.presence}
                     sizeClassName="size-6"
                     statusClassName="bottom-0 right-0 h-2 w-2 border border-background"
                     fallbackClassName="text-xs font-medium"

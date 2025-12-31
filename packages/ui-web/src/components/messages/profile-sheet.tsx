@@ -73,7 +73,7 @@ export function ProfileContent({
       <div className="flex flex-col items-center gap-3 p-6 min-w-0">
         <AvatarWithStatus
           name={user.displayName}
-          avatar={user.avatar.url ?? ''}
+          avatar={user.avatar}
           sizeClassName="h-20 w-20"
           statusClassName="bottom-1 right-1 h-4 w-4"
           fallbackClassName="text-2xl"

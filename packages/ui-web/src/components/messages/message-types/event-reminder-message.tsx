@@ -109,7 +109,7 @@ export const EventReminderMessage = memo(function EventReminderMessage(
                   <AvatarWithStatus
                     key={attendee.id}
                     name={attendee.displayName}
-                    avatar={attendee.avatar.url ?? ''}
+                    avatar={attendee.avatar}
                     showStatus={false}
                     sizeClassName="h-5 w-5 border-2 border-background"
                     fallbackClassName="text-[8px]"

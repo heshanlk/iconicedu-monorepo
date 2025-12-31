@@ -62,7 +62,7 @@ export function SavedMessagePreview({ message, onClick }: SavedMessagePreviewPro
     >
       <AvatarWithStatus
         name={message.sender.displayName}
-        avatar={message.sender.avatar.url ?? ''}
+        avatar={message.sender.avatar}
         sizeClassName="h-10 w-10 flex-shrink-0"
         initialsLength={1}
       />
