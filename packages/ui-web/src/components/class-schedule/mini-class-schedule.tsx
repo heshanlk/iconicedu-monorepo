@@ -103,8 +103,6 @@ export function MiniClassSchedule({
             const isToday = isSameDay(day, today);
             const isSelected = isSameDay(day, selectedDate);
             const isCurrentMonth = day.getMonth() === displayMonth;
-            const isPast =
-              day < new Date(today.getFullYear(), today.getMonth(), today.getDate());
             const hasEvent = dayHasEvents(day) && isCurrentMonth;
 
             return (
@@ -113,11 +111,9 @@ export function MiniClassSchedule({
                 variant={isToday ? 'default' : isSelected ? 'secondary' : 'ghost'}
                 size="icon"
                 onClick={() => onDateSelect(day)}
-                disabled={isPast}
                 className={cn(
                   'relative h-8 w-8 p-0 font-normal',
                   !isCurrentMonth && 'text-muted-foreground/50 opacity-50',
-                  isPast && 'text-muted-foreground/40 opacity-50 pointer-events-none',
                   isToday && 'font-semibold',
                 )}
               >

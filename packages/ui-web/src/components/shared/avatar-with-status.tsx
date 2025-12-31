@@ -48,17 +48,7 @@ export function AvatarWithStatus({
   statusClassName,
   fallbackClassName,
 }: AvatarWithStatusProps) {
-  const liveStatus = presence?.liveStatus ?? 'none';
-  const statusKey: PresenceDisplayStatusVM =
-    liveStatus === 'teaching' || liveStatus === 'in_class'
-      ? 'online'
-      : liveStatus === 'reviewing_work'
-        ? 'idle'
-        : liveStatus === 'busy'
-          ? 'busy'
-          : liveStatus === 'away'
-            ? 'away'
-            : 'offline';
+  const liveStatus = presence?.liveStatus || 'offline';
   const displayStatus = showStatus !== undefined ? showStatus : !!presence;
   const avatarUrl = avatar?.url ?? '/placeholder.svg';
   const tooltipText = presence?.state?.text?.trim();
@@ -77,10 +67,10 @@ export function AvatarWithStatus({
         <span
           className={cn(
             'absolute rounded-full border-2 border-card',
-            STATUS_COLORS[statusKey],
+            STATUS_COLORS[liveStatus],
             statusClassName ?? 'bottom-0 right-0 h-2.5 w-2.5',
           )}
-          aria-label={`Status: ${statusKey}`}
+          aria-label={`Status: ${liveStatus}`}
         />
       )}
     </div>
