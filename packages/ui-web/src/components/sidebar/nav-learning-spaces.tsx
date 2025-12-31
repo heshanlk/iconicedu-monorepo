@@ -12,7 +12,7 @@ import {
   StarOff,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import type { ClassSpaceVM, SidebarChild } from '@iconicedu/shared-types';
+import type { LearningSpaceVM, SidebarChild } from '@iconicedu/shared-types';
 
 import {
   Collapsible,
@@ -48,7 +48,7 @@ export function NavLearningSpaces({
   onOpenChange,
   activeChannelId,
 }: {
-  learningSpaces: ClassSpaceVM[];
+  learningSpaces: LearningSpaceVM[];
   title: string;
   child: SidebarChild;
   isOpen: boolean;

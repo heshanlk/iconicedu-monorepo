@@ -1,20 +1,20 @@
-// class-space.ts
+// learning-space.ts
 import type { ISODateTime, UUID } from './shared';
 import type { ChannelVM } from './channel';
 import type { ClassScheduleVM } from './class-schedule';
 import type { UserProfileVM } from './profile';
 
 /**
- * A "Class Space" is the aggregate users think of as "the class".
+ * A "Learning Space" is the aggregate users think of as "the class".
  * It references channel(s) + schedule series by ID only (no heavy coupling).
  */
 
-export type ClassSpaceKindVM = 'one_on_one' | 'small_group' | 'large_class';
+export type LearningSpaceKindVM = 'one_on_one' | 'small_group' | 'large_class';
 
-export type ClassSpaceStatusVM = 'active' | 'archived' | 'completed' | 'paused';
+export type LearningSpaceStatusVM = 'active' | 'archived' | 'completed' | 'paused';
 
 // Zoom / Meet link,  Google Classroom link, Drive folder, etc.
-export interface ClassSpaceLink {
+export interface LearningSpaceLink {
   label: string;
   iconKey: string | null;
   url?: string | null;
@@ -22,12 +22,12 @@ export interface ClassSpaceLink {
   hidden?: boolean | null;
 }
 
-export interface ClassSpaceVM {
+export interface LearningSpaceVM {
   id: UUID;
   orgId: UUID;
 
-  kind: ClassSpaceKindVM;
-  status: ClassSpaceStatusVM;
+  kind: LearningSpaceKindVM;
+  status: LearningSpaceStatusVM;
 
   title: string; // e.g. "Senya • Math • Ms. Marina"
   iconKey: string | null;
@@ -49,7 +49,7 @@ export interface ClassSpaceVM {
   /**
    * Quick links shown in the Info panel.
    */
-  links?: ClassSpaceLink[] | null;
+  links?: LearningSpaceLink[] | null;
 
   createdAt: ISODateTime;
   createdBy: UUID;

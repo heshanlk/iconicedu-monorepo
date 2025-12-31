@@ -21,7 +21,7 @@ import {
   Bookmark,
   Flag,
 } from 'lucide-react';
-import type { ClassSpaceVM, MessagesRightPanelIntent } from '@iconicedu/shared-types';
+import type { LearningSpaceVM, MessagesRightPanelIntent } from '@iconicedu/shared-types';
 import { Badge } from '../../../ui/badge';
 import { Button } from '../../../ui/button';
 import { ButtonGroup } from '../../../ui/button-group';
@@ -39,11 +39,11 @@ import {
   DropdownMenuTrigger,
 } from '../../../ui/dropdown-menu';
 
-interface ClassSpaceInfoPanelProps {
+interface LearningSpaceInfoPanelProps {
   intent: MessagesRightPanelIntent;
 }
 
-const CLASS_SPACE_ICON_MAP = {
+const LEARNING_SPACE_ICON_MAP = {
   languages: Languages,
   'square-pi': SquarePi,
   'chef-hat': ChefHat,
@@ -94,24 +94,25 @@ const ActionButton = memo(function ActionButton({
   );
 });
 
-const CLASS_SPACE_LINK_ICONS: Record<string, typeof Link2> = {
+const LEARNING_SPACE_LINK_ICONS: Record<string, typeof Link2> = {
   video: Video,
   'graduation-cap': GraduationCap,
   folder: Folder,
 };
 
-const ClassSpaceInfoPanelContent = memo(function ClassSpaceInfoPanelContent({
-  classSpace,
+const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelContent({
+  learningSpace,
 }: {
-  classSpace: ClassSpaceVM;
+  learningSpace: LearningSpaceVM;
 }) {
   const { channel, toggle, messageFilter, toggleMessageFilter } = useMessagesState();
 
-  const iconKey = classSpace.iconKey ?? channel.topicIconKey ?? 'sparkles';
+  const iconKey = learningSpace.iconKey ?? channel.topicIconKey ?? 'sparkles';
   const Icon =
-    CLASS_SPACE_ICON_MAP[iconKey as keyof typeof CLASS_SPACE_ICON_MAP] ?? Sparkles;
-  const schedule = classSpace.scheduleSeries;
-  const quickLinks = classSpace.links ?? [];
+    LEARNING_SPACE_ICON_MAP[iconKey as keyof typeof LEARNING_SPACE_ICON_MAP] ??
+    Sparkles;
+  const schedule = learningSpace.scheduleSeries;
+  const quickLinks = learningSpace.links ?? [];
 
   return (
     <div className="flex-1 min-w-0">
@@ -121,17 +122,17 @@ const ClassSpaceInfoPanelContent = memo(function ClassSpaceInfoPanelContent({
         </div>
         <div className="text-center min-w-0">
           <h2 className="text-lg font-semibold text-foreground break-words">
-            {classSpace.title}
+            {learningSpace.title}
           </h2>
-          {classSpace.description ? (
+          {learningSpace.description ? (
             <p className="mt-1 text-sm text-muted-foreground break-words">
-              {classSpace.description}
+              {learningSpace.description}
             </p>
           ) : null}
         </div>
-        {classSpace.kind ? (
+        {learningSpace.kind ? (
           <Badge variant="secondary" className="text-xs">
-            {classSpace.kind.replace(/_/g, ' ')}
+            {learningSpace.kind.replace(/_/g, ' ')}
           </Badge>
         ) : null}
       </div>
@@ -147,7 +148,7 @@ const ClassSpaceInfoPanelContent = memo(function ClassSpaceInfoPanelContent({
             .filter((link) => !link.hidden)
             .map((link) => {
               const icon = link.iconKey
-                ? (CLASS_SPACE_LINK_ICONS[link.iconKey] ?? Link2)
+                ? (LEARNING_SPACE_LINK_ICONS[link.iconKey] ?? Link2)
                 : Link2;
               return (
                 <ActionButton
@@ -284,7 +285,7 @@ const ClassSpaceInfoPanelContent = memo(function ClassSpaceInfoPanelContent({
       <div className="space-y-4 p-4 min-w-0">
         <h3 className="text-sm font-semibold text-foreground">Members</h3>
         <div className="space-y-3 min-w-0">
-          {classSpace.participants.map((member) => (
+          {learningSpace.participants.map((member) => (
             <div key={member.id} className="flex items-center gap-3">
               <AvatarWithStatus
                 name={member.displayName}
@@ -305,7 +306,7 @@ const ClassSpaceInfoPanelContent = memo(function ClassSpaceInfoPanelContent({
               </div>
             </div>
           ))}
-          {classSpace.participants.length === 0 ? (
+          {learningSpace.participants.length === 0 ? (
             <div className="text-sm text-muted-foreground">No members added yet.</div>
           ) : null}
         </div>
@@ -314,16 +315,16 @@ const ClassSpaceInfoPanelContent = memo(function ClassSpaceInfoPanelContent({
   );
 });
 
-export function ClassSpaceInfoPanel({ intent }: ClassSpaceInfoPanelProps) {
-  const { classSpace } = useMessagesState();
+export function LearningSpaceInfoPanel({ intent }: LearningSpaceInfoPanelProps) {
+  const { learningSpace } = useMessagesState();
 
-  if (!classSpace) {
+  if (!learningSpace) {
     return <ChannelInfoPanel intent={intent} />;
   }
 
   return (
     <div className="flex h-full min-h-0 flex-col overflow-y-auto">
-      <ClassSpaceInfoPanelContent classSpace={classSpace} />
+      <LearningSpaceInfoPanelContent learningSpace={learningSpace} />
     </div>
   );
 }

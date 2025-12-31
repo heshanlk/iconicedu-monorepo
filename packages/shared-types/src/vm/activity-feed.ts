@@ -15,7 +15,7 @@ export type ActivityGroupKeyVM =
 
 export type FeedScopeVM =
   | { kind: 'global' }
-  | { kind: 'class_space'; classSpaceId: UUID }
+  | { kind: 'learning_space'; learningSpaceId: UUID }
   | { kind: 'channel'; channelId: UUID }
   | { kind: 'dm'; threadId: UUID }
   | { kind: 'user'; userId: UUID };

@@ -19,7 +19,7 @@ export interface ConnectionVM<T> {
 }
 
 export type EntityRefVM =
-  | { kind: 'class_space'; id: UUID }
+  | { kind: 'learning_space'; id: UUID }
   | { kind: 'session'; id: UUID }
   | { kind: 'homework'; id: UUID }
   | { kind: 'summary'; id: UUID }

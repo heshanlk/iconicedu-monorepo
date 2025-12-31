@@ -9,4 +9,4 @@ export * from './vm/roles';
 export * from './vm/family';
 export * from './vm/account';
 export * from './vm/profile';
-export * from './vm/class-space';
+export * from './vm/learning-space';

@@ -1,4 +1,4 @@
-export const CLASS_SPACE_IDS = {
+export const LEARNING_SPACE_IDS = {
   childOneEla: 'aaaaaaaa-1111-4aaa-8aaa-aaaaaaaaaaa1',
   childOneMath: 'bbbbbbbb-2222-4bbb-8bbb-bbbbbbbbbbb2',
   childOneScience: 'cccccccc-3333-4ccc-8ccc-ccccccccccc3',

@@ -34,12 +34,12 @@ export interface ClassScheduleParticipantVM {
  * ✅ Event source (kept schedule independent from messaging)
  */
 export type EventSourceVM =
-  | { kind: 'class_session'; classSpaceId: UUID; sessionId?: UUID }
+  | { kind: 'class_session'; learningSpaceId: UUID; sessionId?: UUID }
   | { kind: 'availability_block'; ownerUserId: UUID }
   | {
       kind: 'manual';
       createdByUserId: UUID;
-      relatedTo?: { kind: 'class_space'; id: UUID };
+      relatedTo?: { kind: 'learning_space'; id: UUID };
     };
 
 export type EventStatusVM = 'scheduled' | 'cancelled' | 'completed' | 'rescheduled';

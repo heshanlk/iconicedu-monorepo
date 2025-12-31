@@ -1,7 +1,7 @@
 import type {
   ChannelHeaderItemVM,
   ChannelVM,
-  ClassSpaceVM,
+  LearningSpaceVM,
 } from '@iconicedu/shared-types';
 import {
   MOCK_CHILDREN,
@@ -12,7 +12,7 @@ import {
   MOCK_ORG_ID,
 } from './people';
 import { baseEvents } from './class-schedule-events';
-import { CLASS_SPACE_IDS } from './class-space-ids';
+import { LEARNING_SPACE_IDS } from './learning-space-ids';
 
 const hoursAgo = (hours: number) =>
   new Date(Date.now() - 1000 * 60 * 60 * hours).toISOString();
@@ -32,7 +32,7 @@ const makeChannel = ({
   createdBy,
   createdAt,
   participants,
-  classSpaceId,
+  learningSpaceId,
   headerItems,
   purpose = 'learning-space',
 }: {
@@ -43,7 +43,7 @@ const makeChannel = ({
   createdBy: string;
   createdAt: string;
   participants: ChannelVM['participants'];
-  classSpaceId: string;
+  learningSpaceId: string;
   headerItems: ChannelHeaderItemVM[];
   purpose?: ChannelVM['purpose'];
 }): ChannelVM => ({
@@ -66,7 +66,7 @@ const makeChannel = ({
   },
   headerItems,
   context: {
-    primaryEntity: { kind: 'class_space', id: classSpaceId },
+    primaryEntity: { kind: 'learning_space', id: learningSpaceId },
     capabilities: ['has_schedule', 'has_homework', 'has_summaries'],
   },
   participants,
@@ -91,7 +91,7 @@ const makeChannel = ({
   defaultRightPanelKey: 'channel_info',
 });
 
-const buildClassSpace = ({
+const buildLearningSpace = ({
   id,
   title,
   subject,
@@ -115,7 +115,7 @@ const buildClassSpace = ({
   createdBy: string;
   createdAt: string;
   participants: ChannelVM['participants'];
-}): ClassSpaceVM => ({
+}): LearningSpaceVM => ({
   id,
   orgId: MOCK_ORG_ID,
   kind: 'one_on_one',
@@ -154,10 +154,10 @@ const buildClassSpace = ({
   archivedAt: null,
 });
 
-export const CLASS_SPACES: ClassSpaceVM[] = (() => {
-  const classSpaces: ClassSpaceVM[] = [];
+export const LEARNING_SPACES: LearningSpaceVM[] = (() => {
+  const learningSpaces: LearningSpaceVM[] = [];
 
-  const spaceOneId = CLASS_SPACE_IDS.childOneEla;
+  const spaceOneId = LEARNING_SPACE_IDS.childOneEla;
   const spaceOnePrimary = makeChannel({
     id: '11111111-2222-4333-8444-555555555555',
     topic: `ELA • ${MOCK_EDUCATOR.displayName} • Mon 4 pm`,
@@ -166,7 +166,7 @@ export const CLASS_SPACES: ClassSpaceVM[] = (() => {
     createdBy: MOCK_EDUCATOR.id,
     createdAt: hoursAgo(96),
     participants: [MOCK_EDUCATOR, MOCK_GUARDIAN, MOCK_CHILDREN[0]],
-    classSpaceId: spaceOneId,
+    learningSpaceId: spaceOneId,
     headerItems: buildHeaderItems('Mon 4:00 PM'),
   });
   const spaceOneAnnouncements = makeChannel({
@@ -177,13 +177,13 @@ export const CLASS_SPACES: ClassSpaceVM[] = (() => {
     createdBy: MOCK_EDUCATOR.id,
     createdAt: hoursAgo(90),
     participants: [MOCK_EDUCATOR, MOCK_GUARDIAN],
-    classSpaceId: spaceOneId,
+    learningSpaceId: spaceOneId,
     headerItems: [{ key: 'info', label: 'Info', tooltip: 'Channel details' }],
     purpose: 'announcements',
   });
 
-  classSpaces.push(
-    buildClassSpace({
+  learningSpaces.push(
+    buildLearningSpace({
       id: spaceOneId,
       title: `${MOCK_CHILDREN[0].displayName} • ELA • ${MOCK_EDUCATOR.displayName}`,
       subject: 'ELA',
@@ -198,7 +198,7 @@ export const CLASS_SPACES: ClassSpaceVM[] = (() => {
     }),
   );
 
-  const spaceTwoId = CLASS_SPACE_IDS.childOneMath;
+  const spaceTwoId = LEARNING_SPACE_IDS.childOneMath;
   const spaceTwoPrimary = makeChannel({
     id: '22222222-3333-4444-8555-666666666666',
     topic: `Math • ${MOCK_EDUCATOR_2.displayName} • Wed 5 pm`,
@@ -207,12 +207,12 @@ export const CLASS_SPACES: ClassSpaceVM[] = (() => {
     createdBy: MOCK_EDUCATOR_2.id,
     createdAt: hoursAgo(120),
     participants: [MOCK_EDUCATOR_2, MOCK_GUARDIAN, MOCK_CHILDREN[0]],
-    classSpaceId: spaceTwoId,
+    learningSpaceId: spaceTwoId,
     headerItems: buildHeaderItems('Wed 5:00 PM'),
   });
 
-  classSpaces.push(
-    buildClassSpace({
+  learningSpaces.push(
+    buildLearningSpace({
       id: spaceTwoId,
       title: `${MOCK_CHILDREN[0].displayName} • Math • ${MOCK_EDUCATOR_2.displayName}`,
       subject: 'Math',
@@ -226,7 +226,7 @@ export const CLASS_SPACES: ClassSpaceVM[] = (() => {
     }),
   );
 
-  const spaceThreeId = CLASS_SPACE_IDS.childOneScience;
+  const spaceThreeId = LEARNING_SPACE_IDS.childOneScience;
   const spaceThreePrimary = makeChannel({
     id: '33333333-4444-4555-8666-777777777777',
     topic: `Science • ${MOCK_EDUCATOR_3.displayName} • Fri 3 pm`,
@@ -235,12 +235,12 @@ export const CLASS_SPACES: ClassSpaceVM[] = (() => {
     createdBy: MOCK_EDUCATOR_3.id,
     createdAt: hoursAgo(180),
     participants: [MOCK_EDUCATOR_3, MOCK_GUARDIAN, MOCK_CHILDREN[0]],
-    classSpaceId: spaceThreeId,
+    learningSpaceId: spaceThreeId,
     headerItems: buildHeaderItems('Fri 3:00 PM'),
   });
 
-  classSpaces.push(
-    buildClassSpace({
+  learningSpaces.push(
+    buildLearningSpace({
       id: spaceThreeId,
       title: `${MOCK_CHILDREN[0].displayName} • Science • ${MOCK_EDUCATOR_3.displayName}`,
       subject: 'Science',
@@ -254,7 +254,7 @@ export const CLASS_SPACES: ClassSpaceVM[] = (() => {
     }),
   );
 
-  const spaceFourId = CLASS_SPACE_IDS.childTwoEla;
+  const spaceFourId = LEARNING_SPACE_IDS.childTwoEla;
   const spaceFourPrimary = makeChannel({
     id: '44444444-5555-4666-8777-888888888888',
     topic: `ELA • ${MOCK_EDUCATOR_2.displayName} • Tue 4 pm`,
@@ -263,12 +263,12 @@ export const CLASS_SPACES: ClassSpaceVM[] = (() => {
     createdBy: MOCK_EDUCATOR_2.id,
     createdAt: hoursAgo(110),
     participants: [MOCK_EDUCATOR_2, MOCK_GUARDIAN, MOCK_CHILDREN[1]],
-    classSpaceId: spaceFourId,
+    learningSpaceId: spaceFourId,
     headerItems: buildHeaderItems('Tue 4:00 PM'),
   });
 
-  classSpaces.push(
-    buildClassSpace({
+  learningSpaces.push(
+    buildLearningSpace({
       id: spaceFourId,
       title: `${MOCK_CHILDREN[1].displayName} • ELA • ${MOCK_EDUCATOR_2.displayName}`,
       subject: 'ELA',
@@ -282,7 +282,7 @@ export const CLASS_SPACES: ClassSpaceVM[] = (() => {
     }),
   );
 
-  const spaceFiveId = CLASS_SPACE_IDS.childTwoMath;
+  const spaceFiveId = LEARNING_SPACE_IDS.childTwoMath;
   const spaceFivePrimary = makeChannel({
     id: '55555555-6666-4777-8888-999999999999',
     topic: `Math • ${MOCK_EDUCATOR_3.displayName} • Thu 6 pm`,
@@ -291,12 +291,12 @@ export const CLASS_SPACES: ClassSpaceVM[] = (() => {
     createdBy: MOCK_EDUCATOR_3.id,
     createdAt: hoursAgo(150),
     participants: [MOCK_EDUCATOR_3, MOCK_GUARDIAN, MOCK_CHILDREN[1]],
-    classSpaceId: spaceFiveId,
+    learningSpaceId: spaceFiveId,
     headerItems: buildHeaderItems('Thu 6:00 PM'),
   });
 
-  classSpaces.push(
-    buildClassSpace({
+  learningSpaces.push(
+    buildLearningSpace({
       id: spaceFiveId,
       title: `${MOCK_CHILDREN[1].displayName} • Math • ${MOCK_EDUCATOR_3.displayName}`,
       subject: 'Math',
@@ -310,7 +310,7 @@ export const CLASS_SPACES: ClassSpaceVM[] = (() => {
     }),
   );
 
-  const spaceSixId = CLASS_SPACE_IDS.childTwoScience;
+  const spaceSixId = LEARNING_SPACE_IDS.childTwoScience;
   const spaceSixPrimary = makeChannel({
     id: '66666666-7777-4888-8999-aaaaaaaaaaaa',
     topic: `Science • ${MOCK_EDUCATOR.displayName} • Fri 2 pm`,
@@ -319,12 +319,12 @@ export const CLASS_SPACES: ClassSpaceVM[] = (() => {
     createdBy: MOCK_EDUCATOR.id,
     createdAt: hoursAgo(210),
     participants: [MOCK_EDUCATOR, MOCK_GUARDIAN, MOCK_CHILDREN[1]],
-    classSpaceId: spaceSixId,
+    learningSpaceId: spaceSixId,
     headerItems: buildHeaderItems('Fri 2:00 PM'),
   });
 
-  classSpaces.push(
-    buildClassSpace({
+  learningSpaces.push(
+    buildLearningSpace({
       id: spaceSixId,
       title: `${MOCK_CHILDREN[1].displayName} • Science • ${MOCK_EDUCATOR.displayName}`,
       subject: 'Science',
@@ -338,7 +338,7 @@ export const CLASS_SPACES: ClassSpaceVM[] = (() => {
     }),
   );
 
-  const spaceSevenId = CLASS_SPACE_IDS.childThreeEla;
+  const spaceSevenId = LEARNING_SPACE_IDS.childThreeEla;
   const spaceSevenPrimary = makeChannel({
     id: '77777777-8888-4999-8aaa-bbbbbbbbbbbb',
     topic: `ELA • ${MOCK_EDUCATOR_3.displayName} • Mon 3 pm`,
@@ -347,12 +347,12 @@ export const CLASS_SPACES: ClassSpaceVM[] = (() => {
     createdBy: MOCK_EDUCATOR_3.id,
     createdAt: hoursAgo(140),
     participants: [MOCK_EDUCATOR_3, MOCK_GUARDIAN, MOCK_CHILDREN[2]],
-    classSpaceId: spaceSevenId,
+    learningSpaceId: spaceSevenId,
     headerItems: buildHeaderItems('Mon 3:00 PM'),
   });
 
-  classSpaces.push(
-    buildClassSpace({
+  learningSpaces.push(
+    buildLearningSpace({
       id: spaceSevenId,
       title: `${MOCK_CHILDREN[2].displayName} • ELA • ${MOCK_EDUCATOR_3.displayName}`,
       subject: 'ELA',
@@ -366,7 +366,7 @@ export const CLASS_SPACES: ClassSpaceVM[] = (() => {
     }),
   );
 
-  const spaceEightId = CLASS_SPACE_IDS.childThreeMath;
+  const spaceEightId = LEARNING_SPACE_IDS.childThreeMath;
   const spaceEightPrimary = makeChannel({
     id: '88888888-9999-4aaa-8bbb-cccccccccccc',
     topic: `Math • ${MOCK_EDUCATOR.displayName} • Wed 4 pm`,
@@ -375,12 +375,12 @@ export const CLASS_SPACES: ClassSpaceVM[] = (() => {
     createdBy: MOCK_EDUCATOR.id,
     createdAt: hoursAgo(160),
     participants: [MOCK_EDUCATOR, MOCK_GUARDIAN, MOCK_CHILDREN[2]],
-    classSpaceId: spaceEightId,
+    learningSpaceId: spaceEightId,
     headerItems: buildHeaderItems('Wed 4:00 PM'),
   });
 
-  classSpaces.push(
-    buildClassSpace({
+  learningSpaces.push(
+    buildLearningSpace({
       id: spaceEightId,
       title: `${MOCK_CHILDREN[2].displayName} • Math • ${MOCK_EDUCATOR.displayName}`,
       subject: 'Math',
@@ -394,7 +394,7 @@ export const CLASS_SPACES: ClassSpaceVM[] = (() => {
     }),
   );
 
-  const spaceNineId = CLASS_SPACE_IDS.childThreeScience;
+  const spaceNineId = LEARNING_SPACE_IDS.childThreeScience;
   const spaceNinePrimary = makeChannel({
     id: '99999999-aaaa-4bbb-8ccc-dddddddddddd',
     topic: `Science • ${MOCK_EDUCATOR_2.displayName} • Thu 5 pm`,
@@ -403,12 +403,12 @@ export const CLASS_SPACES: ClassSpaceVM[] = (() => {
     createdBy: MOCK_EDUCATOR_2.id,
     createdAt: hoursAgo(220),
     participants: [MOCK_EDUCATOR_2, MOCK_GUARDIAN, MOCK_CHILDREN[2]],
-    classSpaceId: spaceNineId,
+    learningSpaceId: spaceNineId,
     headerItems: buildHeaderItems('Thu 5:00 PM'),
   });
 
-  classSpaces.push(
-    buildClassSpace({
+  learningSpaces.push(
+    buildLearningSpace({
       id: spaceNineId,
       title: `${MOCK_CHILDREN[2].displayName} • Science • ${MOCK_EDUCATOR_2.displayName}`,
       subject: 'Science',
@@ -422,13 +422,13 @@ export const CLASS_SPACES: ClassSpaceVM[] = (() => {
     }),
   );
 
-  return classSpaces;
+  return learningSpaces;
 })();
 
-export const CLASS_SPACE_CHANNELS: ChannelVM[] = CLASS_SPACES.map(
+export const LEARNING_SPACE_CHANNELS: ChannelVM[] = LEARNING_SPACES.map(
   (space) => space.primaryChannel,
 );
 
-export const CLASS_SPACE_BY_CHANNEL_ID = Object.fromEntries(
-  CLASS_SPACES.map((space) => [space.primaryChannel.id, space]),
+export const LEARNING_SPACE_BY_CHANNEL_ID = Object.fromEntries(
+  LEARNING_SPACES.map((space) => [space.primaryChannel.id, space]),
 );

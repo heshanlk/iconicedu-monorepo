@@ -3,7 +3,7 @@
 import { createContext, useCallback, useContext, useMemo, useState } from 'react';
 import type {
   ChannelVM,
-  ClassSpaceVM,
+  LearningSpaceVM,
   ConnectionVM,
   MessagesRightPanelIntent,
   MessagesRightPanelIntentKey,
@@ -21,7 +21,7 @@ type ThreadData = {
 
 interface MessagesStateContextValue {
   channel: ChannelVM;
-  classSpace?: ClassSpaceVM | null;
+  learningSpace?: LearningSpaceVM | null;
   currentUserId: string;
   savedCount: number;
   homeworkCount: number;
@@ -86,11 +86,11 @@ const isSameIntent = (
 
 export function MessagesStateProvider({
   channel,
-  classSpace,
+  learningSpace,
   children,
 }: {
   channel: ChannelVM;
-  classSpace?: ClassSpaceVM | null;
+  learningSpace?: LearningSpaceVM | null;
   children: React.ReactNode;
 }) {
   const [state, setState] = useState<MessagesRightSidebarState>({
@@ -195,7 +195,7 @@ export function MessagesStateProvider({
   const value = useMemo(
     () => ({
       channel,
-      classSpace,
+      learningSpace,
       currentUserId,
       savedCount,
       homeworkCount,
@@ -225,7 +225,7 @@ export function MessagesStateProvider({
     }),
     [
       channel,
-      classSpace,
+      learningSpace,
       currentUserId,
       savedCount,
       homeworkCount,

@@ -104,7 +104,7 @@ export interface ChannelVM {
   dmKey?: string | null;
 
   /**
-   * ✅ CHANGE: channel context for linking to ClassSpace (or others) by ID only
+   * ✅ CHANGE: channel context for linking to LearningSpace (or others) by ID only
    */
   context?: ChannelContextVM | null;
 
