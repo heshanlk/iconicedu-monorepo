@@ -21,6 +21,8 @@ interface DayViewProps {
   currentDate: Date;
   events: ClassScheduleVM[];
   classScheduleEvents?: ClassScheduleVM[];
+  hasClasses: boolean;
+  nextEvent?: ClassScheduleVM;
   childrenCount?: number;
   onDateSelect: (date: Date) => void;
   onMonthChange?: (date: Date) => void;
@@ -30,6 +32,8 @@ export function DayView({
   currentDate,
   events,
   classScheduleEvents,
+  hasClasses,
+  nextEvent,
   childrenCount,
   onDateSelect,
   onMonthChange,
@@ -40,14 +44,6 @@ export function DayView({
   );
   const miniScheduleEvents = classScheduleEvents ?? events;
   const hasChildren = childrenCount === undefined ? true : childrenCount > 0;
-  const hasClasses = miniScheduleEvents.length > 0;
-  const nextEvent = [...miniScheduleEvents]
-    .filter((event) => getEventDate(event) > currentDate)
-    .sort((a, b) => {
-      const dateDiff = getEventDate(a).getTime() - getEventDate(b).getTime();
-      if (dateDiff !== 0) return dateDiff;
-      return timeToMinutes(a.startAt) - timeToMinutes(b.startAt);
-    })[0];
   const dayLayout = getEventLayout(dayEvents);
   const maxVisibleColumns = 3;
   const clusterInfo = new Map<

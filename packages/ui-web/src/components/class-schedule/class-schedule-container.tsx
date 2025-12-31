@@ -11,6 +11,8 @@ import { DayView } from './day-view';
 import {
   getClassScheduleEventsForMonthRange,
   getClassScheduleEventsForView,
+  getEventDate,
+  timeToMinutes,
 } from '../../lib/class-schedule-utils';
 
 interface ClassScheduleContainerProps {
@@ -43,6 +45,17 @@ export function ClassScheduleContainer({
     () => getClassScheduleEventsForView(events, currentDate, view),
     [events, currentDate, view],
   );
+
+  const hasClasses = events.length > 0;
+  const nextEvent = useMemo(() => {
+    return [...events]
+      .filter((event) => getEventDate(event) > currentDate)
+      .sort((a, b) => {
+        const dateDiff = getEventDate(a).getTime() - getEventDate(b).getTime();
+        if (dateDiff !== 0) return dateDiff;
+        return timeToMinutes(a.startAt) - timeToMinutes(b.startAt);
+      })[0];
+  }, [events, currentDate]);
 
   const handleNavigate = (direction: 'prev' | 'next' | 'today') => {
     if (direction === 'today') {
@@ -78,6 +91,8 @@ export function ClassScheduleContainer({
           currentDate={currentDate}
           events={classScheduleEventsForView}
           classScheduleEvents={classScheduleEventsForDots}
+          hasClasses={hasClasses}
+          nextEvent={nextEvent}
           childrenCount={childrenCount}
           onDateSelect={onDateSelect}
           onMonthChange={setClassScheduleMonthAnchor}
