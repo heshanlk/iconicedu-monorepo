@@ -4,9 +4,14 @@ import { LEARNING_SPACE_CHANNELS_BY_ID } from '../../../../../lib/data/channel-m
 import { LEARNING_SPACE_BY_CHANNEL_ID } from '../../../../../lib/data/learning-spaces';
 import { LearningSpaceShell } from './learning-space-shell';
 
-export default function Page({ params }: { params: { channelId: string } }) {
-  const channel = LEARNING_SPACE_CHANNELS_BY_ID[params.channelId];
-  const learningSpace = LEARNING_SPACE_BY_CHANNEL_ID[params.channelId] ?? null;
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ channelId: string }>;
+}) {
+  const { channelId } = await params;
+  const channel = LEARNING_SPACE_CHANNELS_BY_ID[channelId];
+  const learningSpace = LEARNING_SPACE_BY_CHANNEL_ID[channelId] ?? null;
 
   if (!channel) {
     notFound();

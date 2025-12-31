@@ -5,11 +5,16 @@ import {
   DIRECT_MESSAGE_CHANNELS_WITH_MESSAGES,
 } from '../../../../../lib/data/channel-message-data';
 
-export default function Page({ params }: { params: { channelId: string } }) {
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ channelId: string }>;
+}) {
+  const { channelId } = await params;
   const channel =
-    DIRECT_MESSAGE_CHANNELS_BY_ID[params.channelId] ??
+    DIRECT_MESSAGE_CHANNELS_BY_ID[channelId] ??
     DIRECT_MESSAGE_CHANNELS_WITH_MESSAGES.find(
-      (item) => item.dm?.dmKey === params.channelId,
+      (item) => item.dm?.dmKey === channelId,
     );
 
   if (!channel) {
