@@ -1,3 +1,6 @@
+'use client';
+
+import * as React from 'react';
 import {
   BadgeCheck,
   Bell,
@@ -8,7 +11,12 @@ import {
 } from 'lucide-react';
 
 import { AvatarWithStatus } from '../shared/avatar-with-status';
-import type { UserAccountVM, UserProfileVM } from '@iconicedu/shared-types';
+import type {
+  FamilyLinkVM,
+  UserAccountVM,
+  FamilyVM,
+  UserProfileVM,
+} from '@iconicedu/shared-types';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,17 +32,33 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '../../ui/sidebar';
+import { UserSettingsDialog, type UserSettingsTab } from './user-settings-dialog';
 
 export function NavUser({
   profile,
   account,
+  families,
+  familyLinks,
+  linkedProfiles,
+  linkedAccounts,
 }: {
   profile: UserProfileVM;
   account?: UserAccountVM | null;
+  families?: FamilyVM[] | null;
+  familyLinks?: FamilyLinkVM[] | null;
+  linkedProfiles?: UserProfileVM[] | null;
+  linkedAccounts?: UserAccountVM[] | null;
 }) {
   const { isMobile } = useSidebar();
   const secondaryLabel =
     account?.contacts.email ?? profile.prefs.locale ?? profile.prefs.timezone ?? '';
+  const [settingsOpen, setSettingsOpen] = React.useState(false);
+  const [settingsTab, setSettingsTab] = React.useState<UserSettingsTab>('account');
+
+  const openSettings = React.useCallback((tab: UserSettingsTab) => {
+    setSettingsTab(tab);
+    setSettingsOpen(true);
+  }, []);
 
   return (
     <SidebarMenu>
@@ -51,7 +75,9 @@ export function NavUser({
                 initialsLength={2}
               />
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{profile.profile.displayName}</span>
+                <span className="truncate font-medium">
+                  {profile.profile.displayName}
+                </span>
                 {secondaryLabel ? (
                   <span className="truncate text-xs">{secondaryLabel}</span>
                 ) : null}
@@ -61,7 +87,7 @@ export function NavUser({
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-xl"
-            side={isMobile ? 'bottom' : 'right'}
+            side={'bottom'}
             align="end"
             sideOffset={4}
           >
@@ -94,15 +120,15 @@ export function NavUser({
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => openSettings('account')}>
                 <BadgeCheck />
                 Account
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => openSettings('billing')}>
                 <CreditCard />
                 Billing
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => openSettings('notifications')}>
                 <Bell />
                 Notifications
               </DropdownMenuItem>
@@ -114,6 +140,18 @@ export function NavUser({
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        <UserSettingsDialog
+          open={settingsOpen}
+          onOpenChange={setSettingsOpen}
+          activeTab={settingsTab}
+          onTabChange={setSettingsTab}
+          profile={profile}
+          account={account}
+          families={families}
+          familyLinks={familyLinks}
+          linkedProfiles={linkedProfiles}
+          linkedAccounts={linkedAccounts}
+        />
       </SidebarMenuItem>
     </SidebarMenu>
   );

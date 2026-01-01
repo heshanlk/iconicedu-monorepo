@@ -223,7 +223,14 @@ export function SidebarLeft({
         <NavSecondary items={navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser profile={data.user.profile} account={data.user.account} />
+        <NavUser
+          profile={data.user.profile}
+          account={data.user.account}
+          families={data.user.families}
+          familyLinks={data.user.familyLinks}
+          linkedProfiles={data.user.linkedProfiles}
+          linkedAccounts={data.user.linkedAccounts}
+        />
       </SidebarFooter>
     </Sidebar>
   );

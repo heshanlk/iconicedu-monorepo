@@ -3,6 +3,7 @@ import type { ChildProfileVM, UserProfileVM } from './profile';
 import type { ChannelVM } from './channel';
 import type { UserAccountVM } from './account';
 import type { LearningSpaceVM } from './learning-space';
+import type { FamilyLinkVM, FamilyVM } from './family';
 
 export type SidebarIconKey =
   | 'home'
@@ -51,6 +52,10 @@ export type SidebarChildVM = ChildProfileVM;
 export interface SidebarUserVM {
   profile: UserProfileVM;
   account?: UserAccountVM | null;
+  families?: FamilyVM[] | null;
+  familyLinks?: FamilyLinkVM[] | null;
+  linkedProfiles?: UserProfileVM[] | null;
+  linkedAccounts?: UserAccountVM[] | null;
 }
 
 export interface SidebarPrimaryNavVM {

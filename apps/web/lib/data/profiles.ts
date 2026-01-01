@@ -626,3 +626,16 @@ export const PROFILES_BY_ID: Record<string, UserProfileVM> = {
   [PROFILE_IDS.educator4]: EDUCATOR_LEO,
   [PROFILE_IDS.educator5]: EDUCATOR_SOFIA,
 };
+
+export const PROFILES_BY_ACCOUNT_ID: Record<string, UserProfileVM> = {
+  [ACCOUNT_IDS.guardian]: GUARDIAN_MORGAN,
+  [ACCOUNT_IDS.childA]: CHILD_AVA,
+  [ACCOUNT_IDS.childB]: CHILD_MILO,
+  [ACCOUNT_IDS.childC]: CHILD_MAYA,
+  [ACCOUNT_IDS.staff]: STAFF_SUPPORT,
+  [ACCOUNT_IDS.educator1]: EDUCATOR_ELENA,
+  [ACCOUNT_IDS.educator2]: EDUCATOR_KAI,
+  [ACCOUNT_IDS.educator3]: EDUCATOR_PRIYA,
+  [ACCOUNT_IDS.educator4]: EDUCATOR_LEO,
+  [ACCOUNT_IDS.educator5]: EDUCATOR_SOFIA,
+};
