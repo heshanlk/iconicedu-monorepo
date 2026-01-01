@@ -1,11 +1,11 @@
-import type { ChannelHeaderItemVM, ChannelVM } from '@iconicedu/shared-types';
+import type { ChannelVM, HeaderQuickMetaAction } from '@iconicedu/shared-types';
 import { CHANNEL_IDS, ORG_ID, PROFILE_IDS } from './ids';
 import { GUARDIAN_MORGAN, STAFF_SUPPORT } from './profiles';
 import { EMPTY_FILES } from './channel-files';
 import { EMPTY_MEDIA } from './channel-media';
 import { SUPPORT_MESSAGES_CONNECTION } from './channel-messages';
 
-const SUPPORT_HEADER_ITEMS: ChannelHeaderItemVM[] = [
+const SUPPORT_HEADER_QUICK_META: HeaderQuickMetaAction[] = [
   {
     key: 'saved',
     label: 'Saved',
@@ -59,7 +59,7 @@ export const SUPPORT_CHANNEL: ChannelVM = {
   },
   ui: {
     defaultRightPanelOpen: false,
-    headerItems: SUPPORT_HEADER_ITEMS,
+    headerQuickMetaActions: SUPPORT_HEADER_QUICK_META,
     headerActions: [
       { key: 'info', label: 'Support', iconKey: 'support' },
     ],

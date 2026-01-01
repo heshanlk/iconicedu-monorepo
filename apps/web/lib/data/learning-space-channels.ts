@@ -1,4 +1,4 @@
-import type { ChannelHeaderItemVM, ChannelVM } from '@iconicedu/shared-types';
+import type { ChannelVM, HeaderQuickMetaAction } from '@iconicedu/shared-types';
 import {
   CHANNEL_IDS,
   LEARNING_SPACE_IDS,
@@ -34,7 +34,7 @@ import {
   SCIENCE_MESSAGES_CONNECTION,
 } from './channel-messages';
 
-const makeHeaderItems = (nextSessionLabel: string): ChannelHeaderItemVM[] => [
+const makeHeaderQuickMeta = (nextSessionLabel: string): HeaderQuickMetaAction[] => [
   {
     key: 'saved',
     label: 'Saved',
@@ -100,7 +100,7 @@ export const MATH_CHANNEL: ChannelVM = {
   ui: {
     defaultRightPanelOpen: true,
     defaultRightPanelKey: 'channel_info',
-    headerItems: makeHeaderItems('Wed Mar 4 • 5:30 PM'),
+    headerQuickMetaActions: makeHeaderQuickMeta('Wed Mar 4 • 5:30 PM'),
     headerActions: [
       { key: 'info', label: 'Info', iconKey: 'info' },
       { key: 'saved', label: 'Saved', iconKey: 'saved', intentKey: 'saved' },
@@ -151,7 +151,7 @@ export const SCIENCE_CHANNEL: ChannelVM = {
   ui: {
     defaultRightPanelOpen: true,
     defaultRightPanelKey: 'channel_info',
-    headerItems: makeHeaderItems('Tue Mar 3 • 5:00 PM'),
+    headerQuickMetaActions: makeHeaderQuickMeta('Tue Mar 3 • 5:00 PM'),
     headerActions: [
       { key: 'info', label: 'Info', iconKey: 'info' },
       { key: 'saved', label: 'Saved', iconKey: 'saved', intentKey: 'saved' },
@@ -202,7 +202,7 @@ export const ELA_CHANNEL: ChannelVM = {
   ui: {
     defaultRightPanelOpen: true,
     defaultRightPanelKey: 'channel_info',
-    headerItems: makeHeaderItems('Fri Mar 6 • 4:00 PM'),
+    headerQuickMetaActions: makeHeaderQuickMeta('Fri Mar 6 • 4:00 PM'),
     headerActions: [
       { key: 'info', label: 'Info', iconKey: 'info' },
       { key: 'saved', label: 'Saved', iconKey: 'saved', intentKey: 'saved' },
@@ -253,7 +253,7 @@ export const CHESS_CHANNEL: ChannelVM = {
   ui: {
     defaultRightPanelOpen: true,
     defaultRightPanelKey: 'channel_info',
-    headerItems: makeHeaderItems('Sat Mar 7 • 3:00 PM'),
+    headerQuickMetaActions: makeHeaderQuickMeta('Sat Mar 7 • 3:00 PM'),
     headerActions: [
       { key: 'info', label: 'Info', iconKey: 'info' },
       { key: 'saved', label: 'Saved', iconKey: 'saved', intentKey: 'saved' },

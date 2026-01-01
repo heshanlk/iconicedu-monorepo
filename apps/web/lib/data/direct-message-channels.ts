@@ -1,4 +1,4 @@
-import type { ChannelHeaderItemVM, ChannelVM } from '@iconicedu/shared-types';
+import type { ChannelVM, HeaderQuickMetaAction } from '@iconicedu/shared-types';
 import { CHANNEL_IDS, ORG_ID, PROFILE_IDS } from './ids';
 import {
   EDUCATOR_ELENA,
@@ -25,7 +25,7 @@ import {
 
 const dmKeyFor = (a: string, b: string) => `dm:${[a, b].sort().join('-')}`;
 
-const DM_HEADER_ITEMS: ChannelHeaderItemVM[] = [
+const DM_HEADER_QUICK_META: HeaderQuickMetaAction[] = [
   {
     key: 'saved',
     label: 'Saved',
@@ -78,7 +78,7 @@ export const DM_CHANNEL_ELENA: ChannelVM = {
     },
   },
   ui: {
-    headerItems: DM_HEADER_ITEMS,
+    headerQuickMetaActions: DM_HEADER_QUICK_META,
     headerActions: [
       { key: 'info', label: 'Info', iconKey: 'info' },
       { key: 'saved', label: 'Saved', iconKey: 'saved', intentKey: 'saved' },
@@ -126,7 +126,7 @@ export const DM_CHANNEL_KAI: ChannelVM = {
     },
   },
   ui: {
-    headerItems: DM_HEADER_ITEMS,
+    headerQuickMetaActions: DM_HEADER_QUICK_META,
     headerActions: [
       { key: 'info', label: 'Info', iconKey: 'info' },
       { key: 'saved', label: 'Saved', iconKey: 'saved', intentKey: 'saved' },
@@ -174,7 +174,7 @@ export const DM_CHANNEL_PRIYA: ChannelVM = {
     },
   },
   ui: {
-    headerItems: DM_HEADER_ITEMS,
+    headerQuickMetaActions: DM_HEADER_QUICK_META,
     headerActions: [
       { key: 'info', label: 'Info', iconKey: 'info' },
       { key: 'saved', label: 'Saved', iconKey: 'saved', intentKey: 'saved' },
@@ -222,7 +222,7 @@ export const DM_CHANNEL_LEO: ChannelVM = {
     },
   },
   ui: {
-    headerItems: DM_HEADER_ITEMS,
+    headerQuickMetaActions: DM_HEADER_QUICK_META,
     headerActions: [
       { key: 'info', label: 'Info', iconKey: 'info' },
       { key: 'saved', label: 'Saved', iconKey: 'saved', intentKey: 'saved' },
@@ -270,7 +270,7 @@ export const DM_CHANNEL_SOFIA: ChannelVM = {
     },
   },
   ui: {
-    headerItems: DM_HEADER_ITEMS,
+    headerQuickMetaActions: DM_HEADER_QUICK_META,
     headerActions: [
       { key: 'info', label: 'Info', iconKey: 'info' },
       { key: 'saved', label: 'Saved', iconKey: 'saved', intentKey: 'saved' },

@@ -25,7 +25,7 @@ const ChannelInfoPanelContent = memo(function ChannelInfoPanelContent() {
   const iconKey = channel.basics.iconKey ?? 'sparkles';
   const TopicIcon =
     CHANNEL_ICON_MAP[iconKey as keyof typeof CHANNEL_ICON_MAP] ?? Sparkles;
-  const nextSessionItem = (channel.ui?.headerItems ?? []).find(
+  const nextSessionItem = (channel.ui?.headerQuickMetaActions ?? []).find(
     (item) => item.key === 'next-session',
   );
 

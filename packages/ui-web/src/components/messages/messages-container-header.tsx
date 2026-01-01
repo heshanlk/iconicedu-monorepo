@@ -207,7 +207,7 @@ export const MessagesContainerHeader = memo(function MessagesContainerHeader({
 
   const subtitleItems: HeaderSubtitleItem[] = useMemo(
     () =>
-      (channel.ui?.headerItems ?? []).map((item) => ({
+      (channel.ui?.headerQuickMetaActions ?? []).map((item) => ({
         icon: HEADER_ICON_MAP[item.key],
         label:
           item.key === 'saved'
@@ -234,7 +234,7 @@ export const MessagesContainerHeader = memo(function MessagesContainerHeader({
               : undefined,
       })),
     [
-      channel.ui?.headerItems,
+      channel.ui?.headerQuickMetaActions,
       savedCount,
       homeworkCount,
       sessionSummaryCount,

@@ -34,7 +34,7 @@ export interface ChannelPostingPolicyVM {
   allowReactions?: boolean;
 }
 
-export interface ChannelHeaderItemVM {
+export interface HeaderQuickMetaAction {
   key: ChannelHeaderIconKey;
   label: string;
   tooltip?: string | null;
@@ -146,7 +146,7 @@ export interface ChannelUiDefaultsVM {
     showQuickActions?: boolean;
     showHiddenQuickActions?: boolean;
   } | null;
-  headerItems?: ChannelHeaderItemVM[] | null;
+  headerQuickMetaActions?: HeaderQuickMetaAction[] | null;
   headerActions?: ChannelHeaderActionVM[] | null;
   quickActions?: ChannelQuickActionVM[] | null;
 }
