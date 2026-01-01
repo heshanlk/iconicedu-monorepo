@@ -10,6 +10,7 @@ import {
   ROLE_EDUCATOR_PRIYA,
   ROLE_EDUCATOR_SOFIA,
   ROLE_GUARDIAN,
+  ROLE_STAFF_SUPPORT,
 } from './roles';
 import {
   FAMILY_LINK_AVA,
@@ -236,6 +237,29 @@ export const ACCOUNT_EDUCATOR_SOFIA: UserAccountVM = {
   },
 };
 
+export const ACCOUNT_STAFF_SUPPORT: UserAccountVM = {
+  ids: {
+    orgId: ORG_ID,
+    id: ACCOUNT_IDS.staff,
+  },
+  contacts: {
+    email: 'support@iconicedu.com',
+    phoneE164: '+12125550099',
+    emailVerified: true,
+    phoneVerified: false,
+    preferredContactChannels: ['email'],
+  },
+  access: {
+    userRoles: [ROLE_STAFF_SUPPORT],
+    activeContext: { roleKey: 'staff' },
+  },
+  lifecycle: {
+    status: 'active',
+    createdAt: '2024-02-01T00:00:00.000Z',
+    updatedAt: '2026-01-21T00:00:00.000Z',
+  },
+};
+
 export const USER_ACCOUNTS: UserAccountVM[] = [
   ACCOUNT_GUARDIAN,
   ACCOUNT_CHILD_AVA,
@@ -246,6 +270,7 @@ export const USER_ACCOUNTS: UserAccountVM[] = [
   ACCOUNT_EDUCATOR_PRIYA,
   ACCOUNT_EDUCATOR_LEO,
   ACCOUNT_EDUCATOR_SOFIA,
+  ACCOUNT_STAFF_SUPPORT,
 ];
 
 export const ACCOUNTS_BY_ID: Record<string, UserAccountVM> = {
@@ -258,4 +283,5 @@ export const ACCOUNTS_BY_ID: Record<string, UserAccountVM> = {
   [ACCOUNT_IDS.educator3]: ACCOUNT_EDUCATOR_PRIYA,
   [ACCOUNT_IDS.educator4]: ACCOUNT_EDUCATOR_LEO,
   [ACCOUNT_IDS.educator5]: ACCOUNT_EDUCATOR_SOFIA,
+  [ACCOUNT_IDS.staff]: ACCOUNT_STAFF_SUPPORT,
 };

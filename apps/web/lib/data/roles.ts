@@ -109,11 +109,24 @@ export const ROLE_EDUCATOR_SOFIA: UserRoleVM = {
   },
 };
 
+export const ROLE_STAFF_SUPPORT: UserRoleVM = {
+  ids: {
+    orgId: ORG_ID,
+    id: ROLE_IDS.staff,
+  },
+  roleKey: 'staff',
+  audit: {
+    assignedBy: ACCOUNT_IDS.guardian,
+    assignedAt: '2024-02-01T00:00:00.000Z',
+  },
+};
+
 export const USER_ROLES: UserRoleVM[] = [
   ROLE_GUARDIAN,
   ROLE_CHILD_AVA,
   ROLE_CHILD_MILO,
   ROLE_CHILD_MAYA,
+  ROLE_STAFF_SUPPORT,
   ROLE_EDUCATOR_ELENA,
   ROLE_EDUCATOR_KAI,
   ROLE_EDUCATOR_PRIYA,
@@ -126,6 +139,7 @@ export const USER_ROLES_BY_ID: Record<string, UserRoleVM> = {
   [ROLE_IDS.childA]: ROLE_CHILD_AVA,
   [ROLE_IDS.childB]: ROLE_CHILD_MILO,
   [ROLE_IDS.childC]: ROLE_CHILD_MAYA,
+  [ROLE_IDS.staff]: ROLE_STAFF_SUPPORT,
   [ROLE_IDS.educator1]: ROLE_EDUCATOR_ELENA,
   [ROLE_IDS.educator2]: ROLE_EDUCATOR_KAI,
   [ROLE_IDS.educator3]: ROLE_EDUCATOR_PRIYA,

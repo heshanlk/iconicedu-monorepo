@@ -1,6 +1,7 @@
 import type { SidebarLeftDataVM } from '@iconicedu/shared-types';
 import { ACCOUNT_GUARDIAN } from './accounts';
 import { DIRECT_MESSAGE_CHANNELS } from './direct-message-channels';
+import { CHANNEL_IDS } from './ids';
 import { LEARNING_SPACES } from './learning-spaces';
 import { GUARDIAN_MORGAN } from './profiles';
 
@@ -30,7 +31,7 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftDataVM = {
     navSecondary: [
       {
         title: 'Support',
-        url: '/dashboard/support',
+        url: `/dashboard/c/${CHANNEL_IDS.dmSupport}`,
         icon: 'life-buoy',
       },
       {

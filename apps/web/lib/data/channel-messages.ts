@@ -15,6 +15,7 @@ import {
   EDUCATOR_PRIYA,
   EDUCATOR_SOFIA,
   GUARDIAN_MORGAN,
+  STAFF_SUPPORT,
 } from './profiles';
 
 const MATH_THREAD: ThreadVM = {
@@ -613,6 +614,31 @@ const DM_EDU5_MESSAGES: MessageVM[] = [
   },
 ];
 
+const DM_SUPPORT_MESSAGES: MessageVM[] = [
+  {
+    ids: { id: MESSAGE_IDS.dmSupport1 },
+    core: {
+      type: 'text',
+      sender: STAFF_SUPPORT,
+      createdAt: '2026-02-06T21:05:00.000Z',
+      visibility: { type: 'all' },
+    },
+    social: { reactions: [] },
+    content: { text: 'Hi Riley! How can we help with scheduling today?' },
+  },
+  {
+    ids: { id: MESSAGE_IDS.dmSupport2 },
+    core: {
+      type: 'text',
+      sender: GUARDIAN_MORGAN,
+      createdAt: '2026-02-06T21:10:00.000Z',
+      visibility: { type: 'all' },
+    },
+    social: { reactions: [] },
+    content: { text: 'Could you help me reschedule Ava’s math session?' },
+  },
+];
+
 export const MATH_MESSAGES_CONNECTION: ConnectionVM<MessageVM> = {
   items: MATH_MESSAGES,
   total: MATH_MESSAGES.length,
@@ -656,4 +682,9 @@ export const DM_EDU4_MESSAGES_CONNECTION: ConnectionVM<MessageVM> = {
 export const DM_EDU5_MESSAGES_CONNECTION: ConnectionVM<MessageVM> = {
   items: DM_EDU5_MESSAGES,
   total: DM_EDU5_MESSAGES.length,
+};
+
+export const SUPPORT_MESSAGES_CONNECTION: ConnectionVM<MessageVM> = {
+  items: DM_SUPPORT_MESSAGES,
+  total: DM_SUPPORT_MESSAGES.length,
 };

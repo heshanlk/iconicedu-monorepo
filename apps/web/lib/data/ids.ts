@@ -6,6 +6,7 @@ export const ACCOUNT_IDS = {
   childA: '14b47390-0841-42cf-a454-a0502ded2e28',
   childB: 'ab31999c-b278-4249-94ec-75fec05b613b',
   childC: 'd9f1a94e-3980-4a90-8218-33d8705f6d83',
+  staff: '0f9e9b7a-c1f2-4df9-9a23-5f6a6e6d4cc9',
   educator1: '98e11f7c-6f2f-4337-9432-62469ee0d132',
   educator2: '95d7ab9e-c90c-4056-8654-283efd756ffb',
   educator3: 'fe315616-5605-489b-958e-9e059d6b6711',
@@ -18,6 +19,7 @@ export const PROFILE_IDS = {
   childA: '212f7a31-3aaf-4323-9ba0-9ee3c3006f02',
   childB: '43cf9ead-3ca7-4acc-a6c9-442c5784099f',
   childC: 'bfd1d08c-a6bd-48b0-acd1-cedc8b36be64',
+  staff: 'c32bd35b-5a50-4d0e-b5a1-0a8f9d82c2c6',
   educator1: '227053bd-f530-46ac-8ba2-c950550aead6',
   educator2: '71b5672b-5643-4e51-9091-d1bc9d5542dd',
   educator3: '8b96c93b-b1e4-44e3-9eb5-862edf10fd12',
@@ -37,6 +39,7 @@ export const ROLE_IDS = {
   childA: '4c092d05-f3d6-4de6-8610-5b06705b210f',
   childB: '65ef74d0-cd27-49c8-b2c1-bc2143d5fc70',
   childC: 'e3652708-5ecf-4fd5-abb2-60ee2d5acef0',
+  staff: '7d9c0a85-2e1c-4aa6-9f0f-1e0e4d4f10e8',
   educator1: '3c45ac28-f16e-4015-b6ac-db62058928f0',
   educator2: '783cf325-926d-41c6-817d-a9ce0a38f769',
   educator3: '3388f9e1-8945-4a6f-98b8-25dd7164b106',
@@ -56,6 +59,7 @@ export const CHANNEL_IDS = {
   science: 'a3cc4bb4-71ff-492f-ba9e-acd71b53d654',
   ela: 'e35692be-7051-4d80-80eb-73b46fd45fe3',
   chess: 'bfff515f-8231-4a6e-92c1-970a17607460',
+  dmSupport: 'f86c401b-1c7b-40c9-83f6-5dffedc43df1',
   dmEducator1: '7248bada-8647-48bf-a740-f55fda40602a',
   dmEducator2: '5cd5861f-a961-4a33-a165-40cc5a0ad50f',
   dmEducator3: '427015b3-14c6-4263-885b-708507c696b9',
@@ -111,6 +115,8 @@ export const MESSAGE_IDS = {
   dmEdu4_1: 'b573cfd2-70c2-45be-8caf-e08fb3432c5d',
   dmEdu5_1: '2f16e843-8925-48b8-bb1d-062b6cd23618',
   dmEdu5_2: 'd3b0262f-16e7-4271-b245-5d5722f6fc3e',
+  dmSupport1: '9f8b2a0e-9372-44b0-93ea-9d99f1f2de90',
+  dmSupport2: 'a0f19a32-1f05-4a2c-9f7a-7d9bb5db1f2a',
 } as const;
 
 export const MEDIA_IDS = {

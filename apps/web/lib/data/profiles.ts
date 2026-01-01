@@ -3,6 +3,7 @@ import type {
   EducatorProfileVM,
   GuardianProfileVM,
   PresenceVM,
+  StaffProfileVM,
   UserProfileVM,
 } from '@iconicedu/shared-types';
 import { ACCOUNT_IDS, ORG_ID, PROFILE_IDS } from './ids';
@@ -549,6 +550,54 @@ export const EDUCATOR_SOFIA: EducatorProfileVM = {
   featuredVideoIntroUrl: 'https://example.com/videos/sofia-intro.mp4',
 };
 
+export const STAFF_SUPPORT: StaffProfileVM = {
+  kind: 'staff',
+  ids: {
+    orgId: ORG_ID,
+    id: PROFILE_IDS.staff,
+    accountId: ACCOUNT_IDS.staff,
+  },
+  profile: {
+    displayName: 'Jordan Lee',
+    firstName: 'Jordan',
+    lastName: 'Lee',
+    bio: 'Support specialist for families and learning spaces.',
+    avatar: {
+      source: 'seed',
+      seed: 'staff-jordan',
+      url: null,
+      updatedAt: null,
+    },
+  },
+  prefs: {
+    timezone: 'America/New_York',
+    locale: 'en-US',
+    languagesSpoken: ['English'],
+    notificationDefaults: { inbox: true },
+  },
+  presence: presenceOnline,
+  status: 'active',
+  location: {
+    countryCode: 'US',
+    countryName: 'United States',
+    region: 'NY',
+    city: 'New York',
+    postalCode: '10004',
+  },
+  internal: {
+    notesInternal: 'Handles support chat and onboarding.',
+  },
+  meta: {
+    createdAt: '2024-02-01T00:00:00.000Z',
+    updatedAt: '2026-01-21T00:00:00.000Z',
+  },
+  department: 'Customer Success',
+  jobTitle: 'Support Specialist',
+  specialties: ['Onboarding', 'Scheduling help'],
+  permissionsScope: 'standard',
+  workingHoursRules: ['Weekdays 9am-6pm ET'],
+};
+
 export const CHILD_PROFILES: ChildProfileVM[] = [CHILD_AVA, CHILD_MILO, CHILD_MAYA];
 export const EDUCATOR_PROFILES: EducatorProfileVM[] = [
   EDUCATOR_ELENA,
@@ -561,6 +610,7 @@ export const EDUCATOR_PROFILES: EducatorProfileVM[] = [
 export const USER_PROFILES: UserProfileVM[] = [
   GUARDIAN_MORGAN,
   ...CHILD_PROFILES,
+  STAFF_SUPPORT,
   ...EDUCATOR_PROFILES,
 ];
 
@@ -569,6 +619,7 @@ export const PROFILES_BY_ID: Record<string, UserProfileVM> = {
   [PROFILE_IDS.childA]: CHILD_AVA,
   [PROFILE_IDS.childB]: CHILD_MILO,
   [PROFILE_IDS.childC]: CHILD_MAYA,
+  [PROFILE_IDS.staff]: STAFF_SUPPORT,
   [PROFILE_IDS.educator1]: EDUCATOR_ELENA,
   [PROFILE_IDS.educator2]: EDUCATOR_KAI,
   [PROFILE_IDS.educator3]: EDUCATOR_PRIYA,
