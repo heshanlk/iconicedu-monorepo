@@ -39,9 +39,7 @@ export function DayView({
   onMonthChange,
 }: DayViewProps) {
   const timeSlots = getTimeSlots();
-  const dayEvents = events.filter((event) =>
-    isSameDay(getEventDate(event), currentDate),
-  );
+  const dayEvents = events.filter((event) => isSameDay(getEventDate(event), currentDate));
   const miniScheduleEvents = classScheduleEvents ?? events;
   const hasChildren = childrenCount === undefined ? true : childrenCount > 0;
   const dayLayout = getEventLayout(dayEvents);
@@ -257,11 +255,11 @@ export function DayView({
                       No classes enrolled yet
                     </div>
                     <div className="text-xs text-muted-foreground">
-                      Request a class to start scheduling.
+                      Request tutoring to start scheduling.
                     </div>
                     <Button size="sm">
                       <MessageSquarePlus className="mr-2 size-4" />
-                      Request a class
+                      Request tutoring
                     </Button>
                   </>
                 ) : (

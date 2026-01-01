@@ -168,11 +168,11 @@ export function SidebarLeft({
                 >
                   <DropdownMenuItem>
                     <UserPlus className="text-muted-foreground" />
-                    <span>Add a child</span>
+                    <span>Add my child</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <MessageSquarePlus className="text-muted-foreground" />
-                    <span>Request a learning space</span>
+                    <span>Request tutoring</span>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>
