@@ -46,7 +46,7 @@ export const DM_CHANNEL_ELENA: ChannelVM = {
   basics: {
     kind: 'dm',
     topic: EDUCATOR_ELENA.profile.displayName,
-    topicIconKey: null,
+    iconKey: null,
     description: 'Direct messages with Elena Brooks.',
     visibility: 'private',
     purpose: 'support',
@@ -62,7 +62,6 @@ export const DM_CHANNEL_ELENA: ChannelVM = {
     allowThreads: true,
     allowReactions: true,
   },
-  headerItems: DM_HEADER_ITEMS,
   dm: {
     dmKey: dmKeyFor(PROFILE_IDS.guardian, PROFILE_IDS.educator1),
   },
@@ -78,6 +77,13 @@ export const DM_CHANNEL_ELENA: ChannelVM = {
       unreadCount: 1,
     },
   },
+  ui: {
+    headerItems: DM_HEADER_ITEMS,
+    headerActions: [
+      { key: 'info', label: 'Info', iconKey: 'info' },
+      { key: 'saved', label: 'Saved', iconKey: 'saved', intentKey: 'saved' },
+    ],
+  },
 };
 
 export const DM_CHANNEL_KAI: ChannelVM = {
@@ -88,7 +94,7 @@ export const DM_CHANNEL_KAI: ChannelVM = {
   basics: {
     kind: 'dm',
     topic: EDUCATOR_KAI.profile.displayName,
-    topicIconKey: null,
+    iconKey: null,
     description: 'Direct messages with Kai Patel.',
     visibility: 'private',
     purpose: 'support',
@@ -104,7 +110,6 @@ export const DM_CHANNEL_KAI: ChannelVM = {
     allowThreads: true,
     allowReactions: true,
   },
-  headerItems: DM_HEADER_ITEMS,
   dm: {
     dmKey: dmKeyFor(PROFILE_IDS.guardian, PROFILE_IDS.educator2),
   },
@@ -120,6 +125,13 @@ export const DM_CHANNEL_KAI: ChannelVM = {
       unreadCount: 1,
     },
   },
+  ui: {
+    headerItems: DM_HEADER_ITEMS,
+    headerActions: [
+      { key: 'info', label: 'Info', iconKey: 'info' },
+      { key: 'saved', label: 'Saved', iconKey: 'saved', intentKey: 'saved' },
+    ],
+  },
 };
 
 export const DM_CHANNEL_PRIYA: ChannelVM = {
@@ -130,7 +142,7 @@ export const DM_CHANNEL_PRIYA: ChannelVM = {
   basics: {
     kind: 'dm',
     topic: EDUCATOR_PRIYA.profile.displayName,
-    topicIconKey: null,
+    iconKey: null,
     description: 'Direct messages with Priya Natarajan.',
     visibility: 'private',
     purpose: 'support',
@@ -146,7 +158,6 @@ export const DM_CHANNEL_PRIYA: ChannelVM = {
     allowThreads: true,
     allowReactions: true,
   },
-  headerItems: DM_HEADER_ITEMS,
   dm: {
     dmKey: dmKeyFor(PROFILE_IDS.guardian, PROFILE_IDS.educator3),
   },
@@ -162,6 +173,13 @@ export const DM_CHANNEL_PRIYA: ChannelVM = {
       unreadCount: 1,
     },
   },
+  ui: {
+    headerItems: DM_HEADER_ITEMS,
+    headerActions: [
+      { key: 'info', label: 'Info', iconKey: 'info' },
+      { key: 'saved', label: 'Saved', iconKey: 'saved', intentKey: 'saved' },
+    ],
+  },
 };
 
 export const DM_CHANNEL_LEO: ChannelVM = {
@@ -172,7 +190,7 @@ export const DM_CHANNEL_LEO: ChannelVM = {
   basics: {
     kind: 'dm',
     topic: EDUCATOR_LEO.profile.displayName,
-    topicIconKey: null,
+    iconKey: null,
     description: 'Direct messages with Leo Martinez.',
     visibility: 'private',
     purpose: 'support',
@@ -188,7 +206,6 @@ export const DM_CHANNEL_LEO: ChannelVM = {
     allowThreads: true,
     allowReactions: true,
   },
-  headerItems: DM_HEADER_ITEMS,
   dm: {
     dmKey: dmKeyFor(PROFILE_IDS.guardian, PROFILE_IDS.educator4),
   },
@@ -204,6 +221,13 @@ export const DM_CHANNEL_LEO: ChannelVM = {
       unreadCount: 0,
     },
   },
+  ui: {
+    headerItems: DM_HEADER_ITEMS,
+    headerActions: [
+      { key: 'info', label: 'Info', iconKey: 'info' },
+      { key: 'saved', label: 'Saved', iconKey: 'saved', intentKey: 'saved' },
+    ],
+  },
 };
 
 export const DM_CHANNEL_SOFIA: ChannelVM = {
@@ -214,7 +238,7 @@ export const DM_CHANNEL_SOFIA: ChannelVM = {
   basics: {
     kind: 'dm',
     topic: EDUCATOR_SOFIA.profile.displayName,
-    topicIconKey: null,
+    iconKey: null,
     description: 'Direct messages with Sofia Rossi.',
     visibility: 'private',
     purpose: 'support',
@@ -230,7 +254,6 @@ export const DM_CHANNEL_SOFIA: ChannelVM = {
     allowThreads: true,
     allowReactions: true,
   },
-  headerItems: DM_HEADER_ITEMS,
   dm: {
     dmKey: dmKeyFor(PROFILE_IDS.guardian, PROFILE_IDS.educator5),
   },
@@ -245,6 +268,13 @@ export const DM_CHANNEL_SOFIA: ChannelVM = {
       lastReadAt: '2026-02-06T20:10:00.000Z',
       unreadCount: 1,
     },
+  },
+  ui: {
+    headerItems: DM_HEADER_ITEMS,
+    headerActions: [
+      { key: 'info', label: 'Info', iconKey: 'info' },
+      { key: 'saved', label: 'Saved', iconKey: 'saved', intentKey: 'saved' },
+    ],
   },
 };
 

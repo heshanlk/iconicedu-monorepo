@@ -109,7 +109,7 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
   const isMobile = useIsMobile();
 
   const iconKey =
-    learningSpace.basics.iconKey ?? channel.basics.topicIconKey ?? 'sparkles';
+    learningSpace.basics.iconKey ?? channel.basics.iconKey ?? 'sparkles';
   const Icon =
     LEARNING_SPACE_ICON_MAP[iconKey as keyof typeof LEARNING_SPACE_ICON_MAP] ?? Sparkles;
   const schedule = learningSpace.schedule?.scheduleSeries ?? null;

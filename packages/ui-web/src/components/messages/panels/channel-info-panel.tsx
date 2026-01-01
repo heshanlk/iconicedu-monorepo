@@ -1,33 +1,13 @@
 'use client';
 
 import { memo } from 'react';
-import {
-  BookOpen,
-  Sparkles,
-  User,
-  Users,
-  Video,
-  ClipboardCheck,
-  FileText,
-  Bookmark,
-  MoreHorizontal,
-  LogOut,
-  Flag,
-} from 'lucide-react';
+import { BookOpen, Sparkles, User, Users } from 'lucide-react';
 import type { MessagesRightPanelIntent } from '@iconicedu/shared-types';
 import { Badge } from '../../../ui/badge';
 import { Separator } from '../../../ui/separator';
-import { Button } from '../../../ui/button';
 import { AvatarWithStatus } from '../../shared/avatar-with-status';
 import { MediaFilesPanel } from '../shared/media-files-panel';
 import { useMessagesState } from '../context/messages-state-provider';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '../../../ui/dropdown-menu';
 
 interface ChannelInfoPanelProps {
   intent: MessagesRightPanelIntent;
@@ -41,11 +21,13 @@ const CHANNEL_ICON_MAP = {
 } as const;
 
 const ChannelInfoPanelContent = memo(function ChannelInfoPanelContent() {
-  const { channel, toggle, messageFilter, toggleMessageFilter } = useMessagesState();
-  const topicIconKey = channel.basics.topicIconKey ?? 'sparkles';
+  const { channel } = useMessagesState();
+  const iconKey = channel.basics.iconKey ?? 'sparkles';
   const TopicIcon =
-    CHANNEL_ICON_MAP[topicIconKey as keyof typeof CHANNEL_ICON_MAP] ?? Sparkles;
-  const nextSessionItem = channel.headerItems.find((item) => item.key === 'next-session');
+    CHANNEL_ICON_MAP[iconKey as keyof typeof CHANNEL_ICON_MAP] ?? Sparkles;
+  const nextSessionItem = (channel.ui?.headerItems ?? []).find(
+    (item) => item.key === 'next-session',
+  );
 
   return (
     <div className="flex-1 min-w-0">
@@ -69,95 +51,6 @@ const ChannelInfoPanelContent = memo(function ChannelInfoPanelContent() {
           </Badge>
         ) : null}
       </div>
-
-      <Separator />
-
-      <div className="space-y-4 p-4 min-w-0">
-        <h3 className="text-sm font-semibold text-foreground">Quick Actions</h3>
-        <div className="flex flex-nowrap items-start gap-4 overflow-x-auto pb-1">
-          <Button
-            variant="ghost"
-            className="group h-auto w-16 shrink-0 flex-col items-center gap-2 px-1 py-2 text-[11px] font-medium text-foreground hover:bg-transparent"
-          >
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors group-hover:bg-primary/15 group-hover:text-primary">
-              <Video className="h-4 w-4" />
-            </span>
-            <span className="w-full truncate text-center">Join</span>
-          </Button>
-          <Button
-            variant="ghost"
-            className="group h-auto w-16 shrink-0 flex-col items-center gap-2 px-1 py-2 text-[11px] font-medium text-muted-foreground hover:bg-transparent"
-            onClick={() => toggleMessageFilter('homework')}
-          >
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors group-hover:bg-primary/15 group-hover:text-primary">
-              <ClipboardCheck
-                className={messageFilter === 'homework' ? 'text-primary' : undefined}
-              />
-            </span>
-            <span
-              className={messageFilter === 'homework' ? 'text-foreground' : undefined}
-            >
-              <span className="w-full truncate text-center">Homework</span>
-            </span>
-          </Button>
-          <Button
-            variant="ghost"
-            className="group h-auto w-16 shrink-0 flex-col items-center gap-2 px-1 py-2 text-[11px] font-medium text-muted-foreground hover:bg-transparent"
-            onClick={() => toggleMessageFilter('session-summary')}
-          >
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors group-hover:bg-primary/15 group-hover:text-primary">
-              <FileText
-                className={
-                  messageFilter === 'session-summary' ? 'text-primary' : undefined
-                }
-              />
-            </span>
-            <span
-              className={
-                messageFilter === 'session-summary' ? 'text-foreground' : undefined
-              }
-            >
-              <span className="w-full truncate text-center">Summary</span>
-            </span>
-          </Button>
-          <Button
-            variant="ghost"
-            className="group h-auto w-16 shrink-0 flex-col items-center gap-2 px-1 py-2 text-[11px] font-medium text-muted-foreground hover:bg-transparent"
-            onClick={() => toggle({ key: 'saved' })}
-          >
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors group-hover:bg-primary/15 group-hover:text-primary">
-              <Bookmark className="h-4 w-4" />
-            </span>
-            <span className="w-full truncate text-center">Saved</span>
-          </Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className="group h-auto w-16 shrink-0 flex-col items-center gap-2 px-1 py-2 text-[11px] font-medium text-muted-foreground hover:bg-transparent"
-              >
-                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors group-hover:bg-primary/15 group-hover:text-primary">
-                  <MoreHorizontal className="h-4 w-4" />
-                </span>
-                <span className="w-full truncate text-center">More</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-48">
-              <DropdownMenuItem>
-                <LogOut className="h-4 w-4 text-muted-foreground" />
-                <span>Leave</span>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <Flag className="h-4 w-4 text-muted-foreground" />
-                <span>Report</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </div>
-
-      <Separator />
 
       <div className="space-y-4 p-4 min-w-0">
         <h3 className="text-sm font-semibold text-foreground">Details</h3>

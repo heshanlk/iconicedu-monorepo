@@ -197,17 +197,17 @@ export const MessagesContainerHeader = memo(function MessagesContainerHeader({
         </button>
       );
     }
-    const Icon = CHANNEL_ICON_MAP[channel.basics.topicIconKey ?? ''] ?? Sparkles;
+    const Icon = CHANNEL_ICON_MAP[channel.basics.iconKey ?? ''] ?? Sparkles;
     return (
       <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-muted text-muted-foreground">
         <Icon className="h-3.5 w-3.5" />
       </span>
     );
-  }, [channel.basics.kind, channel.basics.topicIconKey, otherParticipant, toggle]);
+  }, [channel.basics.kind, channel.basics.iconKey, otherParticipant, toggle]);
 
   const subtitleItems: HeaderSubtitleItem[] = useMemo(
     () =>
-      channel.headerItems.map((item) => ({
+      (channel.ui?.headerItems ?? []).map((item) => ({
         icon: HEADER_ICON_MAP[item.key],
         label:
           item.key === 'saved'
@@ -234,7 +234,7 @@ export const MessagesContainerHeader = memo(function MessagesContainerHeader({
               : undefined,
       })),
     [
-      channel.headerItems,
+      channel.ui?.headerItems,
       savedCount,
       homeworkCount,
       sessionSummaryCount,

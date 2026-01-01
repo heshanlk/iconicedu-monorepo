@@ -18,6 +18,16 @@ export type ChannelHeaderIconKey =
   | 'homework'
   | 'session-summary';
 
+export type ChannelHeaderActionKey = 'info' | 'saved' | 'custom';
+
+export interface ChannelHeaderActionVM {
+  key: ChannelHeaderActionKey;
+  label: string;
+  iconKey?: string | null;
+  intentKey?: MessagesRightPanelIntentKey | null;
+  hidden?: boolean | null;
+}
+
 export interface ChannelPostingPolicyVM {
   kind: 'everyone' | 'members-only' | 'staff-only' | 'read-only' | 'owners_only';
   allowThreads?: boolean;
@@ -29,6 +39,23 @@ export interface ChannelHeaderItemVM {
   label: string;
   tooltip?: string | null;
   isPrimary?: boolean;
+}
+
+export type ChannelQuickActionKey =
+  | 'join'
+  | 'homework'
+  | 'session-summary'
+  | 'saved'
+  | 'more'
+  | 'custom';
+
+export interface ChannelQuickActionVM {
+  key: ChannelQuickActionKey;
+  label: string;
+  iconKey?: string | null;
+  url?: string | null;
+  hidden?: boolean | null;
+  isPrimary?: boolean | null;
 }
 
 export type ChannelMediaType = 'image';
@@ -89,7 +116,7 @@ export interface ChannelBasicsVM {
   kind: ChannelKind;
 
   topic: string;
-  topicIconKey?: ChannelTopicIconKey | null;
+  iconKey?: ChannelTopicIconKey | null;
   description?: string | null;
 
   visibility: ChannelVisibility;
@@ -110,6 +137,18 @@ export interface ChannelDmVM {
 export interface ChannelUiDefaultsVM {
   defaultRightPanelOpen?: boolean;
   defaultRightPanelKey?: MessagesRightPanelIntentKey;
+  themeColor?: string | null;
+  infoPanel?: {
+    showHeader?: boolean;
+    showDetails?: boolean;
+    showMedia?: boolean;
+    showMembers?: boolean;
+    showQuickActions?: boolean;
+    showHiddenQuickActions?: boolean;
+  } | null;
+  headerItems?: ChannelHeaderItemVM[] | null;
+  headerActions?: ChannelHeaderActionVM[] | null;
+  quickActions?: ChannelQuickActionVM[] | null;
 }
 
 export interface ChannelCollectionsVM {
@@ -131,8 +170,6 @@ export interface ChannelVM {
 
   postingPolicy: ChannelPostingPolicyVM;
 
-  headerItems: ChannelHeaderItemVM[];
-
   dm?: ChannelDmVM;
 
   context?: ChannelContextVM | null;
@@ -147,7 +184,7 @@ export interface ChannelMiniVM {
 
   basics: Pick<
     ChannelBasicsVM,
-    'kind' | 'purpose' | 'topic' | 'topicIconKey' | 'visibility'
+    'kind' | 'purpose' | 'topic' | 'iconKey' | 'visibility'
   >;
 
   lifecycle: Pick<ChannelLifecycleVM, 'status'>;

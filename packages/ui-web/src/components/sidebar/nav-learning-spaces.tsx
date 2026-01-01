@@ -95,7 +95,7 @@ export function NavLearningSpaces({
             <SidebarMenu>
               {learningSpaces.map((space) => {
                 const channel = space.channels.primaryChannel;
-                const iconKey = space.basics.iconKey ?? channel.basics.topicIconKey ?? null;
+                const iconKey = space.basics.iconKey ?? channel.basics.iconKey ?? null;
                 const Icon: LucideIcon = iconKey
                   ? (LEARNING_SPACE_ICONS[iconKey] ?? Languages)
                   : Languages;

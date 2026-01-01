@@ -65,7 +65,7 @@ export const MATH_CHANNEL: ChannelVM = {
   basics: {
     kind: 'channel',
     topic: `Math • ${EDUCATOR_KAI.profile.displayName} • Wed 5:30 PM`,
-    topicIconKey: 'square-pi',
+    iconKey: 'square-pi',
     description: 'Weekly math mastery sessions.',
     visibility: 'private',
     purpose: 'learning-space',
@@ -81,7 +81,6 @@ export const MATH_CHANNEL: ChannelVM = {
     allowThreads: true,
     allowReactions: true,
   },
-  headerItems: makeHeaderItems('Wed Mar 4 • 5:30 PM'),
   context: {
     primaryEntity: { kind: 'learning_space', id: LEARNING_SPACE_IDS.math },
     capabilities: ['has_schedule', 'has_homework', 'has_summaries'],
@@ -101,6 +100,11 @@ export const MATH_CHANNEL: ChannelVM = {
   ui: {
     defaultRightPanelOpen: true,
     defaultRightPanelKey: 'channel_info',
+    headerItems: makeHeaderItems('Wed Mar 4 • 5:30 PM'),
+    headerActions: [
+      { key: 'info', label: 'Info', iconKey: 'info' },
+      { key: 'saved', label: 'Saved', iconKey: 'saved', intentKey: 'saved' },
+    ],
   },
 };
 
@@ -112,7 +116,7 @@ export const SCIENCE_CHANNEL: ChannelVM = {
   basics: {
     kind: 'channel',
     topic: `Science • ${EDUCATOR_PRIYA.profile.displayName} • Tue 5:00 PM`,
-    topicIconKey: 'earth',
+    iconKey: 'earth',
     description: 'Lab-based science explorations.',
     visibility: 'private',
     purpose: 'learning-space',
@@ -128,7 +132,6 @@ export const SCIENCE_CHANNEL: ChannelVM = {
     allowThreads: true,
     allowReactions: true,
   },
-  headerItems: makeHeaderItems('Tue Mar 3 • 5:00 PM'),
   context: {
     primaryEntity: { kind: 'learning_space', id: LEARNING_SPACE_IDS.science },
     capabilities: ['has_schedule', 'has_homework', 'has_summaries'],
@@ -148,6 +151,11 @@ export const SCIENCE_CHANNEL: ChannelVM = {
   ui: {
     defaultRightPanelOpen: true,
     defaultRightPanelKey: 'channel_info',
+    headerItems: makeHeaderItems('Tue Mar 3 • 5:00 PM'),
+    headerActions: [
+      { key: 'info', label: 'Info', iconKey: 'info' },
+      { key: 'saved', label: 'Saved', iconKey: 'saved', intentKey: 'saved' },
+    ],
   },
 };
 
@@ -159,7 +167,7 @@ export const ELA_CHANNEL: ChannelVM = {
   basics: {
     kind: 'channel',
     topic: `ELA • ${EDUCATOR_ELENA.profile.displayName} • Fri 4 PM`,
-    topicIconKey: 'languages',
+    iconKey: 'languages',
     description: 'Reading circles and writing workshops.',
     visibility: 'private',
     purpose: 'learning-space',
@@ -175,7 +183,6 @@ export const ELA_CHANNEL: ChannelVM = {
     allowThreads: true,
     allowReactions: true,
   },
-  headerItems: makeHeaderItems('Fri Mar 6 • 4:00 PM'),
   context: {
     primaryEntity: { kind: 'learning_space', id: LEARNING_SPACE_IDS.ela },
     capabilities: ['has_schedule', 'has_homework', 'has_summaries'],
@@ -195,6 +202,11 @@ export const ELA_CHANNEL: ChannelVM = {
   ui: {
     defaultRightPanelOpen: true,
     defaultRightPanelKey: 'channel_info',
+    headerItems: makeHeaderItems('Fri Mar 6 • 4:00 PM'),
+    headerActions: [
+      { key: 'info', label: 'Info', iconKey: 'info' },
+      { key: 'saved', label: 'Saved', iconKey: 'saved', intentKey: 'saved' },
+    ],
   },
 };
 
@@ -206,7 +218,7 @@ export const CHESS_CHANNEL: ChannelVM = {
   basics: {
     kind: 'channel',
     topic: `Chess • ${EDUCATOR_LEO.profile.displayName} • Sat 3 PM`,
-    topicIconKey: 'chef-hat',
+    iconKey: 'chef-hat',
     description: 'Tactics, openings, and game review.',
     visibility: 'private',
     purpose: 'learning-space',
@@ -222,7 +234,6 @@ export const CHESS_CHANNEL: ChannelVM = {
     allowThreads: true,
     allowReactions: true,
   },
-  headerItems: makeHeaderItems('Sat Mar 7 • 3:00 PM'),
   context: {
     primaryEntity: { kind: 'learning_space', id: LEARNING_SPACE_IDS.chess },
     capabilities: ['has_schedule', 'has_homework', 'has_summaries'],
@@ -242,6 +253,11 @@ export const CHESS_CHANNEL: ChannelVM = {
   ui: {
     defaultRightPanelOpen: true,
     defaultRightPanelKey: 'channel_info',
+    headerItems: makeHeaderItems('Sat Mar 7 • 3:00 PM'),
+    headerActions: [
+      { key: 'info', label: 'Info', iconKey: 'info' },
+      { key: 'saved', label: 'Saved', iconKey: 'saved', intentKey: 'saved' },
+    ],
   },
 };
 

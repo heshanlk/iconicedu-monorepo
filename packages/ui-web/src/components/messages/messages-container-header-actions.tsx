@@ -1,21 +1,24 @@
 'use client';
 
 import { memo } from 'react';
-import { Info } from 'lucide-react';
+import { Bookmark, Info, LifeBuoy } from 'lucide-react';
 import { Button } from '../../ui/button';
 import { cn } from '../../lib/utils';
 import { useMessagesState } from './context/messages-state-provider';
+import type { ChannelHeaderActionVM } from '@iconicedu/shared-types';
 
 const ActionButton = memo(function ActionButton({
   icon: Icon,
   label,
   active,
   onClick,
+  disabled,
 }: {
   icon: typeof Info;
   label: string;
   active?: boolean;
   onClick: () => void;
+  disabled?: boolean;
 }) {
   return (
     <Button
@@ -24,6 +27,7 @@ const ActionButton = memo(function ActionButton({
       className={cn('h-9 w-9 text-muted-foreground', active && 'text-primary')}
       onClick={onClick}
       aria-label={label}
+      disabled={disabled}
     >
       <span
         className={cn(
@@ -46,26 +50,58 @@ export const MessagesContainerHeaderActions = memo(
             (participant) => participant.ids.id !== currentUserId,
           )
         : null;
+    const actions: ChannelHeaderActionVM[] =
+      channel.ui?.headerActions?.filter((action) => !action.hidden) ?? [
+        { key: 'info', label: 'Info' },
+      ];
+
+    const iconMap: Record<string, typeof Info> = {
+      info: Info,
+      saved: Bookmark,
+      support: LifeBuoy,
+      'life-buoy': LifeBuoy,
+    };
 
     return (
       <div className="flex items-center gap-2">
-        <ActionButton
-          icon={Info}
-          label="Info"
-          active={
-            channel.basics.kind === 'dm'
-              ? isActive('profile', {
-                  key: 'profile',
-                  userId: otherParticipant?.ids.id ?? '',
-                })
-              : isActive('channel_info')
-          }
-          onClick={() =>
-            channel.basics.kind === 'dm' && otherParticipant
-              ? toggle({ key: 'profile', userId: otherParticipant.ids.id })
-              : toggle({ key: 'channel_info' })
-          }
-        />
+        {actions.map((action, index) => {
+          const key = action.iconKey ?? action.key;
+          const Icon = iconMap[key ?? 'info'] ?? Info;
+          const resolvedIntentKey =
+            action.key === 'info'
+              ? channel.basics.kind === 'dm'
+                ? 'profile'
+                : 'channel_info'
+              : action.intentKey ?? (action.key === 'saved' ? 'saved' : 'channel_info');
+          const intent =
+            resolvedIntentKey === 'profile' && otherParticipant
+              ? ({ key: 'profile', userId: otherParticipant.ids.id } as const)
+              : resolvedIntentKey === 'saved'
+                ? ({ key: 'saved' } as const)
+                : ({ key: 'channel_info' } as const);
+          const isProfileIntent =
+            resolvedIntentKey === 'profile' || action.key === 'info';
+          const active = isProfileIntent
+            ? isActive('profile', {
+                key: 'profile',
+                userId: otherParticipant?.ids.id ?? '',
+              })
+            : resolvedIntentKey === 'saved'
+              ? isActive('saved')
+              : isActive('channel_info');
+          const disabled = resolvedIntentKey === 'profile' && !otherParticipant;
+
+          return (
+            <ActionButton
+              key={`${action.key}-${index}`}
+              icon={Icon}
+              label={action.label}
+              active={active}
+              onClick={() => toggle(intent)}
+              disabled={disabled}
+            />
+          );
+        })}
       </div>
     );
   },
