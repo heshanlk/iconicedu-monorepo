@@ -1,7 +1,17 @@
 'use client';
 
 import { memo } from 'react';
-import { BookOpen, Sparkles, User, Users } from 'lucide-react';
+import {
+  BookOpen,
+  ChefHat,
+  Earth,
+  Languages,
+  LifeBuoy,
+  Sparkles,
+  SquarePi,
+  User,
+  Users,
+} from 'lucide-react';
 import type { MessagesRightPanelIntent } from '@iconicedu/shared-types';
 import { Badge } from '../../../ui/badge';
 import { Separator } from '../../../ui/separator';
@@ -18,6 +28,12 @@ const CHANNEL_ICON_MAP = {
   book: BookOpen,
   user: User,
   users: Users,
+  languages: Languages,
+  'square-pi': SquarePi,
+  'chef-hat': ChefHat,
+  earth: Earth,
+  'life-buoy': LifeBuoy,
+  support: LifeBuoy,
 } as const;
 
 const ChannelInfoPanelContent = memo(function ChannelInfoPanelContent() {
@@ -32,7 +48,7 @@ const ChannelInfoPanelContent = memo(function ChannelInfoPanelContent() {
   return (
     <div className="flex-1 min-w-0">
       <div className="flex flex-col items-center gap-3 p-6 min-w-0">
-        <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-muted text-muted-foreground">
+        <div className="flex h-20 w-20 items-center justify-center rounded-full bg-muted text-muted-foreground">
           <TopicIcon className="h-8 w-8" />
         </div>
         <div className="text-center min-w-0">

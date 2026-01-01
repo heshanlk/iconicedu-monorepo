@@ -3,14 +3,19 @@
 import { memo, useMemo } from 'react';
 import type { ReactNode } from 'react';
 import {
-  Sparkles,
-  User,
-  Users,
   BookOpen,
   Bookmark,
+  ChefHat,
   Clock,
   ClipboardCheck,
+  Earth,
   FileText,
+  Languages,
+  LifeBuoy,
+  Sparkles,
+  SquarePi,
+  User,
+  Users,
   type LucideIcon,
 } from 'lucide-react';
 import {
@@ -138,6 +143,11 @@ const CHANNEL_ICON_MAP: Record<string, LucideIcon> = {
   book: BookOpen,
   user: User,
   users: Users,
+  languages: Languages,
+  'square-pi': SquarePi,
+  'chef-hat': ChefHat,
+  earth: Earth,
+  support: LifeBuoy,
 };
 
 const HEADER_ICON_MAP: Record<string, LucideIcon> = {

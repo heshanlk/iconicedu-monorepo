@@ -25,8 +25,8 @@ export const SUPPORT_CHANNEL: ChannelVM = {
   },
   basics: {
     kind: 'channel',
-    topic: 'Iconic Support',
-    iconKey: 'life-buoy',
+    topic: 'ICONIC Support',
+    iconKey: 'support',
     description: 'Support chat for scheduling and product questions.',
     visibility: 'private',
     purpose: 'support',
@@ -60,8 +60,9 @@ export const SUPPORT_CHANNEL: ChannelVM = {
   ui: {
     defaultRightPanelOpen: false,
     headerQuickMetaActions: SUPPORT_HEADER_QUICK_META,
-    headerActions: [
-      { key: 'info', label: 'Support', iconKey: 'support' },
-    ],
+    headerActions: [{ key: 'info', label: 'Support', iconKey: 'info' }],
+    infoPanel: {
+      showMembers: false,
+    },
   },
 };
