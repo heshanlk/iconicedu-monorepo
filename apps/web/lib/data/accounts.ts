@@ -12,11 +12,7 @@ import {
   ROLE_GUARDIAN,
   ROLE_STAFF_SUPPORT,
 } from './roles';
-import {
-  FAMILY_LINK_AVA,
-  FAMILY_LINK_MAYA,
-  FAMILY_LINK_MILO,
-} from './families';
+import { FAMILY_LINK_AVA, FAMILY_LINK_MAYA, FAMILY_LINK_MILO } from './families';
 
 export const ACCOUNT_GUARDIAN: UserAccountVM = {
   ids: {

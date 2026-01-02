@@ -1,8 +1,12 @@
-
 import type { AvatarVM } from './profile';
-import type { ConnectionVM, EntityRefVM, ISODateTime, ThemeKey, UUID } from './shared';
-
-
+import type {
+  ConnectionVM,
+  EntityRefVM,
+  IdsBaseVM,
+  ISODateTime,
+  ThemeKey,
+  UUID,
+} from './shared';
 
 export type ActivityGroupKeyVM =
   | 'homework'
@@ -43,8 +47,6 @@ export type ActivityVerbVM =
 export type ActivityVisibilityVM = 'public' | 'scope_only' | 'direct';
 export type ActivityImportanceVM = 'normal' | 'important' | 'urgent';
 
-
-
 export type FeedScopeVM =
   | { kind: 'global' }
   | { kind: 'learning_space'; learningSpaceId: UUID }
@@ -58,26 +60,22 @@ export type AudienceRuleVM =
   | { kind: 'users_only'; userIds: UUID[] }
   | { kind: 'exclude_users'; userIds: UUID[] };
 
-
-
 export type SystemProfileVM = {
   kind: 'system';
-  id: UUID;
+  ids: IdsBaseVM;
   displayName: string;
   avatar: AvatarVM;
   themeKey?: ThemeKey | null;
 };
 
 export interface ActivityActorProfileVM {
-  id: UUID;
+  ids: IdsBaseVM;
   displayName: string;
   avatar: AvatarVM;
   themeKey?: ThemeKey | null;
 }
 
 export type ActivityActorVM = ActivityActorProfileVM | SystemProfileVM;
-
-
 
 export type InboxTabKeyVM = 'all' | 'classes' | 'payment' | 'system';
 
@@ -118,8 +116,6 @@ export type InboxActionButtonVM = {
   actionKey?: string | null;
   payload?: Record<string, unknown> | null;
 };
-
-
 
 export interface ActivityItemTimestampsVM {
   occurredAt: ISODateTime;
@@ -162,10 +158,8 @@ export interface ActivityItemStateVM {
   isRead?: boolean;
 }
 
-
-
 export interface ActivityFeedItemBaseVM {
-  id: UUID;
+  ids: IdsBaseVM;
 
   timestamps: ActivityItemTimestampsVM;
 
@@ -185,8 +179,6 @@ export interface ActivityFeedItemBaseVM {
 
   metadata?: Record<string, unknown>;
 }
-
-
 
 export type ActivityFeedLeafItemVM = ActivityFeedItemBaseVM & {
   kind: 'leaf';
@@ -214,8 +206,6 @@ export type ActivityFeedGroupItemVM = ActivityFeedItemBaseVM & {
 };
 
 export type ActivityFeedItemVM = ActivityFeedLeafItemVM | ActivityFeedGroupItemVM;
-
-
 
 export type ActivityFeedSectionVM = {
   label: string;

@@ -2,6 +2,11 @@ export type UUID = string;
 export type ISODateTime = string;
 export type IANATimezone = string;
 
+export interface IdsBaseVM {
+  id: UUID;
+  orgId: UUID;
+}
+
 export type AvatarSource = 'seed' | 'upload' | 'external';
 export type AccountStatus = 'active' | 'invited' | 'suspended' | 'deleted';
 export type GradeLevelOption = {

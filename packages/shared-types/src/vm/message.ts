@@ -1,8 +1,5 @@
-
-import type { ConnectionVM, ISODateTime, UUID } from './shared';
+import type { ConnectionVM, IdsBaseVM, ISODateTime, UUID } from './shared';
 import type { UserProfileVM } from './profile';
-
-
 
 export interface ReactionVM {
   emoji: string;
@@ -10,8 +7,6 @@ export interface ReactionVM {
   reactedByMe?: boolean;
   sampleUserIds?: UUID[];
 }
-
-
 
 export interface ChannelReadStateVM {
   channelId: UUID;
@@ -27,8 +22,6 @@ export interface ThreadReadStateVM {
   lastReadAt?: ISODateTime;
   unreadCount?: number;
 }
-
-
 
 export type AttachmentTypeVM = 'image' | 'file' | 'design-file';
 
@@ -60,10 +53,8 @@ export interface DesignFileAttachmentVM extends BaseAttachmentVM {
 
 export type AttachmentVM = ImageAttachmentVM | FileAttachmentVM | DesignFileAttachmentVM;
 
-
-
 export interface ThreadVM {
-  id: UUID;
+  ids: IdsBaseVM;
 
   parent: {
     messageId: UUID;
@@ -81,8 +72,6 @@ export interface ThreadVM {
 
   readState?: ThreadReadStateVM;
 }
-
-
 
 export type MessagesRightPanelIntent =
   | { key: 'channel_info' }
@@ -117,8 +106,6 @@ export interface ThreadPanelPropsVM {
   currentUserId?: UUID;
 }
 
-
-
 export type MessageVisibilityVM =
   | { type: 'all' }
   | { type: 'sender-only' }
@@ -142,12 +129,6 @@ export type MessageTypeVM =
   | 'link-preview'
   | 'audio-recording';
 
-
-
-export interface MessageIdsVM {
-  id: UUID;
-}
-
 export interface MessageCoreVM {
   type: MessageTypeVM;
   sender: UserProfileVM;
@@ -168,13 +149,11 @@ export interface MessageSocialVM {
 }
 
 interface BaseMessageVM {
-  ids: MessageIdsVM;
+  ids: IdsBaseVM;
   core: MessageCoreVM;
   social: MessageSocialVM;
   state?: MessageStateVM;
 }
-
-
 
 export interface TextMessageVM extends BaseMessageVM {
   core: MessageCoreVM & { type: 'text' };
@@ -349,8 +328,6 @@ export interface AudioRecordingMessageVM extends BaseMessageVM {
     mimeType?: string;
   };
 }
-
-
 
 export type MessageVM =
   | TextMessageVM

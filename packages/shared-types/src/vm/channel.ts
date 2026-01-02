@@ -1,4 +1,11 @@
-import type { ConnectionVM, EntityRefVM, ISODateTime, ThemeKey, UUID } from './shared';
+import type {
+  ConnectionVM,
+  EntityRefVM,
+  ISODateTime,
+  ThemeKey,
+  UUID,
+  IdsBaseVM,
+} from './shared';
 import type { UserProfileVM } from './profile';
 import type { ChannelReadStateVM, MessageVM } from './message';
 import type { MessagesRightPanelIntentKey } from './message';
@@ -61,8 +68,9 @@ export interface ChannelQuickActionVM {
 export type ChannelMediaType = 'image';
 
 export interface ChannelMediaItemVM {
-  id: UUID;
-  channelId: UUID;
+  ids: Omit<IdsBaseVM, 'channelId'> & {
+    channelId: UUID;
+  };
 
   messageId?: UUID | null;
   senderId?: UUID | null;
@@ -81,8 +89,9 @@ export interface ChannelMediaItemVM {
 export type ChannelFileKind = 'file' | 'design-file';
 
 export interface ChannelFileItemVM {
-  id: UUID;
-  channelId: UUID;
+  ids: Omit<IdsBaseVM, 'channelId'> & {
+    channelId: UUID;
+  };
 
   messageId?: UUID | null;
   senderId?: UUID | null;
@@ -105,11 +114,6 @@ export type ChannelCapabilityVM = 'has_schedule' | 'has_homework' | 'has_summari
 export interface ChannelContextVM {
   primaryEntity?: EntityRefVM | null;
   capabilities?: ChannelCapabilityVM[] | null;
-}
-
-export interface ChannelIdsVM {
-  id: UUID;
-  orgId: UUID;
 }
 
 export interface ChannelBasicsVM {
@@ -162,7 +166,7 @@ export interface ChannelCollectionsVM {
 }
 
 export interface ChannelVM {
-  ids: ChannelIdsVM;
+  ids: IdsBaseVM;
 
   basics: ChannelBasicsVM;
 
@@ -180,12 +184,9 @@ export interface ChannelVM {
 }
 
 export interface ChannelMiniVM {
-  ids: ChannelIdsVM;
+  ids: IdsBaseVM;
 
-  basics: Pick<
-    ChannelBasicsVM,
-    'kind' | 'purpose' | 'topic' | 'iconKey' | 'visibility'
-  >;
+  basics: Pick<ChannelBasicsVM, 'kind' | 'purpose' | 'topic' | 'iconKey' | 'visibility'>;
 
   lifecycle: Pick<ChannelLifecycleVM, 'status'>;
 

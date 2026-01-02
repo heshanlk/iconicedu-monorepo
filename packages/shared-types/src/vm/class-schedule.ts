@@ -1,4 +1,4 @@
-import type { IANATimezone, ISODateTime, ThemeKey, UUID } from './shared';
+import type { IANATimezone, IdsBaseVM, ISODateTime, ThemeKey, UUID } from './shared';
 
 export type WeekdayVM = 'MO' | 'TU' | 'WE' | 'TH' | 'FR' | 'SA' | 'SU';
 export type ClassScheduleViewVM = 'week' | 'day' | 'month' | 'agenda';
@@ -13,7 +13,7 @@ export type ParticipantRoleVM = 'educator' | 'child' | 'guardian' | 'staff' | 'o
 export type ParticipationStatusVM = 'invited' | 'accepted' | 'declined' | 'tentative';
 
 export interface ClassScheduleParticipantVM {
-  userId: UUID;
+  ids: IdsBaseVM;
   role: ParticipantRoleVM;
   status?: ParticipationStatusVM;
 
@@ -84,15 +84,14 @@ export interface RecurrenceOverrideVM {
 }
 
 export interface RecurrenceVM {
-  seriesId: UUID;
+  ids: IdsBaseVM;
   rule: RecurrenceRuleVM;
   exceptions?: RecurrenceExceptionVM[];
   overrides?: RecurrenceOverrideVM[];
 }
 
 export interface ClassScheduleVM {
-  id: UUID;
-  orgId: UUID;
+  ids: IdsBaseVM;
 
   title: string;
   description?: string | null;
@@ -133,12 +132,12 @@ export type ClassSchedulePatchVM = Partial<
 >;
 
 export interface EventInstanceKeyVM {
-  eventId: UUID;
+  ids: IdsBaseVM;
   occurrenceKey: ISODateTime;
 }
 
 export interface ClassScheduleInstanceVM {
-  id?: UUID;
+  ids: IdsBaseVM;
 
   key: EventInstanceKeyVM;
 

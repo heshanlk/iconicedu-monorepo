@@ -3,6 +3,7 @@ import type {
   AvatarSource,
   ConnectionVM,
   GradeLevelOption,
+  IdsBaseVM,
   ISODateTime,
   ThemeKey,
   UUID,
@@ -37,12 +38,6 @@ export interface PresenceVM {
   displayStatus?: PresenceDisplayStatusVM;
   lastSeenAt?: ISODateTime | null;
   presenceLoaded?: boolean;
-}
-
-export interface UserIdsVM {
-  orgId: UUID;
-  id: UUID;
-  accountId: UUID;
 }
 
 export interface UserProfileBlockVM {
@@ -92,7 +87,7 @@ export interface UserUiVM {
 }
 
 export interface BaseUserProfileVM {
-  ids: UserIdsVM;
+  ids: Omit<IdsBaseVM, 'accountId'> & { accountId: UUID };
   profile: UserProfileBlockVM;
   prefs: UserPrefsVM;
 

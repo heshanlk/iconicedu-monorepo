@@ -1,7 +1,4 @@
-
-import type { UUID } from './shared';
-
-
+import type { IdsBaseVM, UUID } from './shared';
 
 export type FamilyRelationVM =
   | 'guardian'
@@ -10,28 +7,13 @@ export type FamilyRelationVM =
   | 'relative'
   | 'other';
 
-
-
-export interface FamilyIdsVM {
-  orgId: UUID;
-  id: UUID;
-}
-
-export interface FamilyLinkIdsVM extends FamilyIdsVM {
-  familyId: UUID;
-}
-
-
-
 export interface FamilyVM {
-  ids: FamilyIdsVM;
+  ids: IdsBaseVM;
   displayName: string;
 }
 
-
-
 export interface FamilyLinkVM {
-  ids: FamilyLinkIdsVM;
+  ids: Omit<IdsBaseVM, 'familyId'> & { familyId: UUID };
 
   accounts: {
     guardianAccountId: UUID;

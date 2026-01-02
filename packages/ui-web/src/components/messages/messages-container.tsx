@@ -39,6 +39,7 @@ export function MessagesContainer({ channel }: MessagesContainerProps) {
     setThreadHandlers,
     setScrollToMessage,
     messageFilter,
+    toggleMessageFilter,
   } = useMessagesState();
   const channelMessages = channel.collections.messages?.items ?? [];
   const {
@@ -93,6 +94,9 @@ export function MessagesContainer({ channel }: MessagesContainerProps) {
   const handleSendMessage = useCallback(
     (content: string) => {
       if (!senderProfile) return;
+      if (messageFilter) {
+        toggleMessageFilter(messageFilter);
+      }
       const newMessage: TextMessageVM = {
         ids: { id: `msg-${Date.now()}` },
         core: {
@@ -111,7 +115,7 @@ export function MessagesContainer({ channel }: MessagesContainerProps) {
       };
       addMessage(newMessage);
     },
-    [addMessage, senderProfile],
+    [addMessage, senderProfile, messageFilter, toggleMessageFilter],
   );
 
   const handleProfileClick = useCallback(
