@@ -68,9 +68,7 @@ export function NavLearningSpaces({
               showStatus={false}
               themeKey={child.ui?.themeKey}
               sizeClassName="size-5"
-              fallbackClassName={cn(
-                'text-[10px] font-semibold leading-none uppercase',
-              )}
+              fallbackClassName={cn('text-[10px] font-semibold leading-none uppercase')}
               initialsLength={1}
             />
             <span className="flex-1">{title.split(' ')[0]}</span>
@@ -110,7 +108,7 @@ export function NavLearningSpaces({
                       isActive={isActive}
                       className="px-2.5"
                     >
-                      <a href={`/spaces/${channel.ids.id}`}>
+                      <a href={`/d/spaces/${channel.ids.id}`}>
                         <ThemedIconBadge
                           icon={Icon}
                           themeKey={channel.ui?.themeKey ?? null}

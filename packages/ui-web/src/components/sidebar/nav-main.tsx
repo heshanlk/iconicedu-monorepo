@@ -11,11 +11,7 @@ import {
 } from '../../ui/sidebar';
 import { cn } from '../../lib/utils';
 
-export function NavMain({
-  items,
-}: {
-  items: SidebarNavItem[];
-}) {
+export function NavMain({ items }: { items: SidebarNavItem[] }) {
   return (
     <SidebarGroup>
       <SidebarMenu>
