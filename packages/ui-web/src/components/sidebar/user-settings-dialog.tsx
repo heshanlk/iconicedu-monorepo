@@ -211,6 +211,7 @@ function UserSettingsTabs({
     { key: 'push', label: 'Push' },
     { key: 'email', label: 'Email' },
     { key: 'sms', label: 'SMS' },
+    { key: 'whatsapp', label: 'WhatsApp' },
   ];
   const childProfile = profile.kind === 'child' ? profile : null;
   const educatorProfile = profile.kind === 'educator' ? profile : null;
@@ -224,10 +225,8 @@ function UserSettingsTabs({
       return prev.filter((item) => item !== channel);
     });
   };
-  const [notificationChannels, setNotificationChannels] = React.useState<
-    Record<string, string[]>
-  >({});
-
+  const formatGradeLevel = (gradeLevel?: { id: string | number; label: string } | null) =>
+    gradeLevel?.label ?? 'Not set';
   const toggleNotificationChannel = (
     itemKey: string,
     channel: string,
@@ -251,8 +250,7 @@ function UserSettingsTabs({
     }
     return selected
       .map(
-        (key) =>
-          NOTIFICATION_CHANNEL_OPTIONS.find((option) => option.key === key)?.label,
+        (key) => NOTIFICATION_CHANNEL_OPTIONS.find((option) => option.key === key)?.label,
       )
       .filter(Boolean)
       .join(', ');
@@ -264,9 +262,15 @@ function UserSettingsTabs({
       title: 'Defaults',
       icon: Bell,
       items: [
-        'Email updates about new messages and schedule changes',
-        'Weekly digest of learning space activity',
-        'SMS reminders for upcoming sessions',
+        {
+          key: 'defaults.message_updates',
+          label: 'Email updates about new messages and schedule changes',
+        },
+        {
+          key: 'defaults.weekly_digest',
+          label: 'Weekly digest of learning space activity',
+        },
+        { key: 'defaults.sms_reminders', label: 'SMS reminders for upcoming sessions' },
       ],
     },
     {
@@ -274,11 +278,14 @@ function UserSettingsTabs({
       title: 'Messages',
       icon: MessageCircle,
       items: [
-        'Email me when I get a direct message',
-        'Email me when a teacher messages me',
-        'Notify me about @mentions',
-        'Notify me about replies to my messages',
-        'Mute busy channels (only @mentions and DMs)',
+        { key: 'messages.direct_message', label: 'Email me when I get a direct message' },
+        { key: 'messages.teacher_message', label: 'Email me when a teacher messages me' },
+        { key: 'messages.mentions', label: 'Notify me about @mentions' },
+        { key: 'messages.replies', label: 'Notify me about replies to my messages' },
+        {
+          key: 'messages.mute_busy',
+          label: 'Mute busy channels (only @mentions and DMs)',
+        },
       ],
     },
     {
@@ -286,12 +293,12 @@ function UserSettingsTabs({
       title: 'Schedule & Sessions',
       icon: Clock,
       items: [
-        'Upcoming session reminder',
-        'Session starting soon',
-        'Session rescheduled',
-        'Session canceled',
-        'Tutor running late / no-show alert',
-        'Make-up session scheduled',
+        { key: 'schedule.upcoming_reminder', label: 'Upcoming session reminder' },
+        { key: 'schedule.starting_soon', label: 'Session starting soon' },
+        { key: 'schedule.rescheduled', label: 'Session rescheduled' },
+        { key: 'schedule.canceled', label: 'Session canceled' },
+        { key: 'schedule.no_show', label: 'Tutor running late / no-show alert' },
+        { key: 'schedule.makeup', label: 'Make-up session scheduled' },
       ],
     },
     {
@@ -299,10 +306,13 @@ function UserSettingsTabs({
       title: 'Homework & Classwork',
       icon: BookOpen,
       items: [
-        'New homework assigned',
-        'Homework due reminder',
-        'Homework feedback posted',
-        'New resource/material added (PDF, link, worksheet)',
+        { key: 'homework.assigned', label: 'New homework assigned' },
+        { key: 'homework.due_reminder', label: 'Homework due reminder' },
+        { key: 'homework.feedback', label: 'Homework feedback posted' },
+        {
+          key: 'homework.new_resource',
+          label: 'New resource/material added (PDF, link, worksheet)',
+        },
       ],
     },
     {
@@ -310,10 +320,10 @@ function UserSettingsTabs({
       title: 'Progress & Reports',
       icon: FileText,
       items: [
-        'Weekly progress report',
-        'Monthly progress report',
-        'Attendance summary',
-        'Milestones/achievements (optional)',
+        { key: 'progress.weekly_report', label: 'Weekly progress report' },
+        { key: 'progress.monthly_report', label: 'Monthly progress report' },
+        { key: 'progress.attendance_summary', label: 'Attendance summary' },
+        { key: 'progress.milestones', label: 'Milestones/achievements (optional)' },
       ],
     },
     {
@@ -321,9 +331,15 @@ function UserSettingsTabs({
       title: 'Announcements',
       icon: Megaphone,
       items: [
-        'Important announcements from ICONIC',
-        'Class announcements (teacher posts)',
-        'Policy or calendar updates (holidays, closures)',
+        { key: 'announcements.important', label: 'Important announcements from ICONIC' },
+        {
+          key: 'announcements.class_posts',
+          label: 'Class announcements (teacher posts)',
+        },
+        {
+          key: 'announcements.policy_updates',
+          label: 'Policy or calendar updates (holidays, closures)',
+        },
       ],
     },
     ...(isGuardianOrAdmin
@@ -333,11 +349,11 @@ function UserSettingsTabs({
             title: 'Billing & Payments',
             icon: Wallet,
             items: [
-              'Payment receipt',
-              'Payment failed',
-              'Invoice ready',
-              'Refund processed',
-              'Plan ending / renewal reminder',
+              { key: 'billing.receipt', label: 'Payment receipt' },
+              { key: 'billing.failed', label: 'Payment failed' },
+              { key: 'billing.invoice_ready', label: 'Invoice ready' },
+              { key: 'billing.refund', label: 'Refund processed' },
+              { key: 'billing.renewal', label: 'Plan ending / renewal reminder' },
             ],
           },
         ]
@@ -347,9 +363,12 @@ function UserSettingsTabs({
       title: 'App & Account',
       icon: ShieldCheck,
       items: [
-        'Security alerts (new login, password change) (recommended always on)',
-        'New device sign-in',
-        'Account changes (role/invite accepted)',
+        {
+          key: 'app.security_alerts',
+          label: 'Security alerts (new login, password change) (recommended always on)',
+        },
+        { key: 'app.new_device', label: 'New device sign-in' },
+        { key: 'app.account_changes', label: 'Account changes (role/invite accepted)' },
       ],
     },
     {
@@ -357,13 +376,39 @@ function UserSettingsTabs({
       title: 'Digest & Frequency',
       icon: SlidersHorizontal,
       items: [
-        'Instant notifications',
-        'Daily digest',
-        'Weekly digest',
-        'Only urgent (schedule changes + direct messages)',
+        { key: 'digest.instant', label: 'Instant notifications' },
+        { key: 'digest.daily', label: 'Daily digest' },
+        { key: 'digest.weekly', label: 'Weekly digest' },
+        {
+          key: 'digest.urgent_only',
+          label: 'Only urgent (schedule changes + direct messages)',
+        },
       ],
     },
   ];
+
+  const notificationKeys = React.useMemo(
+    () =>
+      new Set(
+        NOTIFICATION_UI_SECTIONS.flatMap((section) =>
+          section.items.map((item) => item.key),
+        ),
+      ),
+    [NOTIFICATION_UI_SECTIONS],
+  );
+
+  const [notificationChannels, setNotificationChannels] = React.useState<
+    Record<string, string[]>
+  >(() => {
+    if (!prefs.notificationDefaults) {
+      return {};
+    }
+    return Object.fromEntries(
+      Object.entries(prefs.notificationDefaults)
+        .filter(([key]) => notificationKeys.has(key))
+        .map(([key, value]) => [key, value?.channels ?? []]),
+    );
+  });
   const guardianChildren =
     profile.kind === 'guardian' ? (profile.children?.items ?? []) : [];
   const familyMembers = React.useMemo(() => {
@@ -556,7 +601,7 @@ function UserSettingsTabs({
                       <div className="flex-1">
                         <div className="text-sm font-medium">Basic student info</div>
                         <div className="text-xs text-muted-foreground">
-                          {childProfile?.gradeLevel ?? 'Grade not set'}
+                          {formatGradeLevel(childProfile?.gradeLevel)}
                         </div>
                       </div>
                       <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
@@ -567,7 +612,7 @@ function UserSettingsTabs({
                           <Label htmlFor="settings-grade">Grade level</Label>
                           <Input
                             id="settings-grade"
-                            defaultValue={childProfile?.gradeLevel ?? ''}
+                            defaultValue={childProfile?.gradeLevel?.label ?? ''}
                           />
                         </div>
                         <div className="space-y-2">
@@ -1590,52 +1635,53 @@ function UserSettingsTabs({
                       <CollapsibleContent className="py-4 w-full">
                         <div className="space-y-3">
                           {section.items.map((item) => (
-                          <div
-                            key={item}
-                            className="flex items-start justify-between gap-4 text-sm"
-                          >
-                            <span className="leading-5">{item}</span>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  className="h-8 gap-1 px-2 text-xs"
-                                >
-                                  {formatNotificationChannels(item)}
-                                  <ChevronDown className="h-3 w-3" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                {NOTIFICATION_CHANNEL_OPTIONS.map((option) => {
-                                  const isChecked =
-                                    notificationChannels[item]?.includes(option.key) ??
-                                    false;
-                                  return (
-                                    <DropdownMenuItem
-                                      key={option.key}
-                                      onSelect={(event) => event.preventDefault()}
-                                      className="flex items-center justify-between gap-3"
-                                    >
-                                      <span>{option.label}</span>
-                                      <Switch
-                                        checked={isChecked}
-                                        onCheckedChange={(checked) =>
-                                          toggleNotificationChannel(
-                                            item,
-                                            option.key,
-                                            checked,
-                                          )
-                                        }
-                                        aria-label={`${option.label} notifications`}
-                                      />
-                                    </DropdownMenuItem>
-                                  );
-                                })}
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </div>
-                        ))}
+                            <div
+                              key={item.key}
+                              className="flex items-start justify-between gap-4 text-sm"
+                            >
+                              <span className="leading-5">{item.label}</span>
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="h-8 gap-1 px-2 text-xs"
+                                  >
+                                    {formatNotificationChannels(item.key)}
+                                    <ChevronDown className="h-3 w-3" />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                  {NOTIFICATION_CHANNEL_OPTIONS.map((option) => {
+                                    const isChecked =
+                                      notificationChannels[item.key]?.includes(
+                                        option.key,
+                                      ) ?? false;
+                                    return (
+                                      <DropdownMenuItem
+                                        key={option.key}
+                                        onSelect={(event) => event.preventDefault()}
+                                        className="flex items-center justify-between gap-3"
+                                      >
+                                        <span>{option.label}</span>
+                                        <Switch
+                                          checked={isChecked}
+                                          onCheckedChange={(checked) =>
+                                            toggleNotificationChannel(
+                                              item.key,
+                                              option.key,
+                                              checked,
+                                            )
+                                          }
+                                          aria-label={`${option.label} notifications for ${item.label}`}
+                                        />
+                                      </DropdownMenuItem>
+                                    );
+                                  })}
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </div>
+                          ))}
                         </div>
                       </CollapsibleContent>
                       {index < NOTIFICATION_UI_SECTIONS.length - 1 ? <Separator /> : null}

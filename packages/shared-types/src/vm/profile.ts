@@ -60,7 +60,7 @@ export interface UserPrefsVM {
   notificationDefaults?: NotificationDefaultsVM | null;
 }
 
-export type NotificationChannelVM = 'push' | 'email' | 'sms';
+export type NotificationChannelVM = 'push' | 'email' | 'sms' | 'whatsapp';
 
 export interface NotificationPreferenceVM {
   channels: NotificationChannelVM[];
