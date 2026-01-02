@@ -168,7 +168,7 @@ export function SidebarLeft({
                 >
                   <DropdownMenuItem>
                     <UserPlus className="text-muted-foreground" />
-                    <span>Add my child</span>
+                    <span>Add child</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <MessageSquarePlus className="text-muted-foreground" />
