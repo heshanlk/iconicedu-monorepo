@@ -82,7 +82,6 @@ export const DM_CHANNEL_ELENA: ChannelVM = {
     headerQuickMetaActions: DM_HEADER_QUICK_META,
     headerActions: [
       { key: 'info', label: 'Info', iconKey: 'info' },
-      { key: 'saved', label: 'Saved', iconKey: 'saved', intentKey: 'saved' },
     ],
   },
 };
@@ -131,7 +130,6 @@ export const DM_CHANNEL_KAI: ChannelVM = {
     headerQuickMetaActions: DM_HEADER_QUICK_META,
     headerActions: [
       { key: 'info', label: 'Info', iconKey: 'info' },
-      { key: 'saved', label: 'Saved', iconKey: 'saved', intentKey: 'saved' },
     ],
   },
 };
@@ -180,7 +178,6 @@ export const DM_CHANNEL_PRIYA: ChannelVM = {
     headerQuickMetaActions: DM_HEADER_QUICK_META,
     headerActions: [
       { key: 'info', label: 'Info', iconKey: 'info' },
-      { key: 'saved', label: 'Saved', iconKey: 'saved', intentKey: 'saved' },
     ],
   },
 };
@@ -229,7 +226,6 @@ export const DM_CHANNEL_LEO: ChannelVM = {
     headerQuickMetaActions: DM_HEADER_QUICK_META,
     headerActions: [
       { key: 'info', label: 'Info', iconKey: 'info' },
-      { key: 'saved', label: 'Saved', iconKey: 'saved', intentKey: 'saved' },
     ],
   },
 };
@@ -278,7 +274,6 @@ export const DM_CHANNEL_SOFIA: ChannelVM = {
     headerQuickMetaActions: DM_HEADER_QUICK_META,
     headerActions: [
       { key: 'info', label: 'Info', iconKey: 'info' },
-      { key: 'saved', label: 'Saved', iconKey: 'saved', intentKey: 'saved' },
     ],
   },
 };

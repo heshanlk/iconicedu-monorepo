@@ -128,6 +128,8 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
     useMessagesState();
   const isMobile = useIsMobile();
   const themeKey = channel.ui?.themeKey ?? null;
+  const infoPanel = channel.ui?.infoPanel;
+  const showMembers = infoPanel?.showMembers ?? true;
   const themeHoverClass = themeKey
     ? `theme-${themeKey} group-hover:bg-[var(--theme-hover)] group-hover:text-[var(--theme-bg)]`
     : 'group-hover:bg-primary/15 group-hover:text-primary';
@@ -433,66 +435,75 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
         />
       </div>
 
-      <Separator />
+      {showMembers ? (
+        <>
+          <Separator />
 
-      <div className="space-y-4 p-4 min-w-0">
-        <h3 className="text-sm font-semibold text-foreground">Members</h3>
-        <div className="space-y-3 min-w-0">
-          {learningSpace.people.participants.map((member) => {
-            const dmKey =
-              currentUserId && member.ids.id !== currentUserId
-                ? `dm:${[currentUserId, member.ids.id].sort().join('-')}`
-                : null;
+          <div className="space-y-4 p-4 min-w-0">
+            <h3 className="text-sm font-semibold text-foreground">Members</h3>
+            <div className="space-y-3 min-w-0">
+              {learningSpace.people.participants.map((member) => {
+                const dmKey =
+                  currentUserId && member.ids.id !== currentUserId
+                    ? `dm:${[currentUserId, member.ids.id].sort().join('-')}`
+                    : null;
 
-            return (
-              <div key={member.ids.id} className="flex items-center gap-3">
-                <AvatarWithStatus
-                  name={member.profile.displayName}
-                  avatar={member.profile.avatar}
-                  themeKey={member.ui?.themeKey}
-                  sizeClassName="h-9 w-9"
-                  initialsLength={1}
-                  presence={member.presence}
-                  showStatus
-                />
-                <div className="min-w-0 flex-1">
-                  <div className="truncate text-sm font-medium text-foreground">
-                    {member.profile.displayName}
-                  </div>
-                  {member.presence?.state?.emoji || member.presence?.state?.text ? (
-                    <div className="truncate text-xs text-muted-foreground">
-                      <span className="inline-flex items-center gap-1.5">
-                        {member.presence?.state?.emoji ? (
-                          <span>{member.presence.state.emoji}</span>
-                        ) : null}
-                        {member.presence?.state?.text ? (
-                          <span className="truncate">{member.presence.state.text}</span>
-                        ) : null}
-                      </span>
+                return (
+                  <div key={member.ids.id} className="flex items-center gap-3">
+                    <AvatarWithStatus
+                      name={member.profile.displayName}
+                      avatar={member.profile.avatar}
+                      themeKey={member.ui?.themeKey}
+                      sizeClassName="h-9 w-9"
+                      initialsLength={1}
+                      presence={member.presence}
+                      showStatus
+                    />
+                    <div className="min-w-0 flex-1">
+                      <div className="truncate text-sm font-medium text-foreground">
+                        {member.profile.displayName}
+                      </div>
+                      {member.presence?.state?.emoji ||
+                      member.presence?.state?.text ? (
+                        <div className="truncate text-xs text-muted-foreground">
+                          <span className="inline-flex items-center gap-1.5">
+                            {member.presence?.state?.emoji ? (
+                              <span>{member.presence.state.emoji}</span>
+                            ) : null}
+                            {member.presence?.state?.text ? (
+                              <span className="truncate">
+                                {member.presence.state.text}
+                              </span>
+                            ) : null}
+                          </span>
+                        </div>
+                      ) : null}
                     </div>
-                  ) : null}
+                    {dmKey ? (
+                      <Button
+                        asChild
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 shrink-0 text-muted-foreground hover:bg-primary/15 hover:text-primary"
+                        aria-label={`Message ${member.profile.displayName}`}
+                      >
+                        <a href={`/dashboard/dm/${dmKey}`}>
+                          <MessageCircle className="h-4 w-4" />
+                        </a>
+                      </Button>
+                    ) : null}
+                  </div>
+                );
+              })}
+              {learningSpace.people.participants.length === 0 ? (
+                <div className="text-sm text-muted-foreground">
+                  No members added yet.
                 </div>
-                {dmKey ? (
-                  <Button
-                    asChild
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 shrink-0 text-muted-foreground hover:bg-primary/15 hover:text-primary"
-                    aria-label={`Message ${member.profile.displayName}`}
-                  >
-                    <a href={`/dashboard/dm/${dmKey}`}>
-                      <MessageCircle className="h-4 w-4" />
-                    </a>
-                  </Button>
-                ) : null}
-              </div>
-            );
-          })}
-          {learningSpace.people.participants.length === 0 ? (
-            <div className="text-sm text-muted-foreground">No members added yet.</div>
-          ) : null}
-        </div>
-      </div>
+              ) : null}
+            </div>
+          </div>
+        </>
+      ) : null}
     </div>
   );
 });

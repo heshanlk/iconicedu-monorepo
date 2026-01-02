@@ -104,7 +104,6 @@ export const MATH_CHANNEL: ChannelVM = {
     headerQuickMetaActions: makeHeaderQuickMeta('Wed Mar 4 • 5:30 PM'),
     headerActions: [
       { key: 'info', label: 'Info', iconKey: 'info' },
-      { key: 'saved', label: 'Saved', iconKey: 'saved', intentKey: 'saved' },
     ],
   },
 };
@@ -156,7 +155,6 @@ export const SCIENCE_CHANNEL: ChannelVM = {
     headerQuickMetaActions: makeHeaderQuickMeta('Tue Mar 3 • 5:00 PM'),
     headerActions: [
       { key: 'info', label: 'Info', iconKey: 'info' },
-      { key: 'saved', label: 'Saved', iconKey: 'saved', intentKey: 'saved' },
     ],
   },
 };
@@ -208,7 +206,6 @@ export const ELA_CHANNEL: ChannelVM = {
     headerQuickMetaActions: makeHeaderQuickMeta('Fri Mar 6 • 4:00 PM'),
     headerActions: [
       { key: 'info', label: 'Info', iconKey: 'info' },
-      { key: 'saved', label: 'Saved', iconKey: 'saved', intentKey: 'saved' },
     ],
   },
 };
@@ -260,7 +257,6 @@ export const CHESS_CHANNEL: ChannelVM = {
     headerQuickMetaActions: makeHeaderQuickMeta('Sat Mar 7 • 3:00 PM'),
     headerActions: [
       { key: 'info', label: 'Info', iconKey: 'info' },
-      { key: 'saved', label: 'Saved', iconKey: 'saved', intentKey: 'saved' },
     ],
   },
 };
