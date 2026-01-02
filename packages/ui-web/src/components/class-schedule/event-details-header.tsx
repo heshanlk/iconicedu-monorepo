@@ -1,8 +1,10 @@
 import type { ClassScheduleVM } from '@iconicedu/shared-types';
+import { CalendarDays } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { AvatarGroup, AvatarGroupCount } from '../../ui/avatar';
 import { AvatarWithStatus } from '../shared/avatar-with-status';
 import { formatEventTime } from '../../lib/class-schedule-utils';
+import { ThemedIconBadge } from '../shared/themed-icon';
 
 interface EventDetailsHeaderProps {
   event: ClassScheduleVM;
@@ -16,15 +18,22 @@ export function EventDetailsHeader({ event }: EventDetailsHeaderProps) {
 
   return (
     <div className="bg-background border rounded-xl p-4 space-y-3">
-      <p className="text-sm font-medium">
-        {startDate.toLocaleDateString('en-US', {
-          weekday: 'long',
-          month: 'long',
-          day: 'numeric',
-          year: 'numeric',
-        })}{' '}
-        at {formatEventTime(event.startAt)}
-      </p>
+      <div className="flex items-start gap-3">
+        <ThemedIconBadge
+          icon={CalendarDays}
+          themeKey={event.themeKey ?? undefined}
+          size="sm"
+        />
+        <p className="text-sm font-medium">
+          {startDate.toLocaleDateString('en-US', {
+            weekday: 'long',
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric',
+          })}{' '}
+          at {formatEventTime(event.startAt)}
+        </p>
+      </div>
 
       <h2 className="font-semibold">{event.title}</h2>
 

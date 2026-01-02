@@ -6,7 +6,6 @@ import { cn } from '@iconicedu/ui-web/lib/utils';
 import {
   formatEventTime,
   isEventLive,
-  colorVariants,
 } from '../../lib/class-schedule-utils';
 import { EventDialog } from './event-dialog';
 import { EventLiveIndicator } from './event-live-indicator';
@@ -20,15 +19,23 @@ export function EventCard({ event, compact = false }: EventCardProps) {
   const isLive = isEventLive(event);
   const [open, setOpen] = useState(false);
   const startTime = formatEventTime(event.startAt);
-  const colorClassName = event.color ? colorVariants[event.color] : colorVariants.blue;
+  const themeClassName = event.themeKey ? `theme-${event.themeKey}` : '';
+  const themeStyle = event.themeKey
+    ? {
+        backgroundColor: 'color-mix(in oklab, var(--theme-bg) 12%, transparent)',
+        borderColor: 'color-mix(in oklab, var(--theme-bg) 30%, transparent)',
+      }
+    : undefined;
 
   const eventButton = (
     <button
       type="button"
       className={cn(
         'relative w-full h-full overflow-hidden rounded-md border p-2 text-left text-sm transition-all',
-        colorClassName,
+        'text-foreground',
+        themeClassName,
       )}
+      style={themeStyle}
     >
       {isLive && <EventLiveIndicator />}
 

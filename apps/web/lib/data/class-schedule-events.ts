@@ -30,7 +30,7 @@ export const MATH_SCHEDULE: ClassScheduleVM = {
   timezone: 'America/New_York',
   status: 'scheduled',
   visibility: 'class-members',
-  color: 'blue',
+  themeKey: 'blue',
   participants: [
     {
       userId: EDUCATOR_KAI.ids.id,
@@ -104,7 +104,7 @@ export const SCIENCE_SCHEDULE: ClassScheduleVM = {
   timezone: 'America/New_York',
   status: 'scheduled',
   visibility: 'class-members',
-  color: 'green',
+  themeKey: 'emerald',
   participants: [
     {
       userId: EDUCATOR_PRIYA.ids.id,
@@ -171,7 +171,7 @@ export const ELA_SCHEDULE: ClassScheduleVM = {
   timezone: 'America/New_York',
   status: 'scheduled',
   visibility: 'class-members',
-  color: 'purple',
+  themeKey: 'violet',
   participants: [
     {
       userId: EDUCATOR_ELENA.ids.id,
@@ -235,7 +235,7 @@ export const CHESS_SCHEDULE: ClassScheduleVM = {
   timezone: 'America/New_York',
   status: 'scheduled',
   visibility: 'class-members',
-  color: 'orange',
+  themeKey: 'amber',
   participants: [
     {
       userId: EDUCATOR_LEO.ids.id,

@@ -1,7 +1,4 @@
-
-import type { IANATimezone, ISODateTime, UUID } from './shared';
-
-
+import type { IANATimezone, ISODateTime, ThemeKey, UUID } from './shared';
 
 export type WeekdayVM = 'MO' | 'TU' | 'WE' | 'TH' | 'FR' | 'SA' | 'SU';
 export type ClassScheduleViewVM = 'week' | 'day' | 'month' | 'agenda';
@@ -12,17 +9,6 @@ export type ClassScheduleVisibilityVM =
   | 'class-members'
   | 'public';
 
-export type ClassScheduleColorTokenVM =
-  | 'blue'
-  | 'pink'
-  | 'green'
-  | 'yellow'
-  | 'orange'
-  | 'purple'
-  | 'gray';
-
-
-
 export type ParticipantRoleVM = 'educator' | 'child' | 'guardian' | 'staff' | 'observer';
 export type ParticipationStatusVM = 'invited' | 'accepted' | 'declined' | 'tentative';
 
@@ -31,12 +17,9 @@ export interface ClassScheduleParticipantVM {
   role: ParticipantRoleVM;
   status?: ParticipationStatusVM;
 
-  
   displayName?: string;
   avatarUrl?: string | null;
 }
-
-
 
 export type EventSourceVM =
   | {
@@ -53,8 +36,6 @@ export type EventSourceVM =
     };
 
 export type EventStatusVM = 'scheduled' | 'cancelled' | 'completed' | 'rescheduled';
-
-
 
 export type CancelReasonVM =
   | 'guardian'
@@ -80,8 +61,6 @@ export interface EventAuditInfoVM {
   deletedBy?: UUID;
 }
 
-
-
 export type RecurrenceFrequencyVM = 'daily' | 'weekly' | 'monthly' | 'yearly';
 
 export interface RecurrenceRuleVM {
@@ -94,57 +73,46 @@ export interface RecurrenceRuleVM {
 }
 
 export interface RecurrenceExceptionVM {
-  occurrenceKey: ISODateTime; 
+  occurrenceKey: ISODateTime;
   reason?: string;
 }
 
 export interface RecurrenceOverrideVM {
-  occurrenceKey: ISODateTime; 
+  occurrenceKey: ISODateTime;
   patch: ClassSchedulePatchVM;
 }
 
 export interface RecurrenceVM {
-  seriesId: UUID; 
+  seriesId: UUID;
   rule: RecurrenceRuleVM;
   exceptions?: RecurrenceExceptionVM[];
   overrides?: RecurrenceOverrideVM[];
 }
 
-
-
 export interface ClassScheduleVM {
-  
   id: UUID;
   orgId: UUID;
 
-  
   title: string;
   description?: string | null;
   location?: string | null;
   meetingLink?: string | null;
 
-  
   startAt: ISODateTime;
   endAt: ISODateTime;
   timezone?: IANATimezone;
 
-  
   status: EventStatusVM;
   visibility: ClassScheduleVisibilityVM;
-  color?: ClassScheduleColorTokenVM;
+  themeKey?: ThemeKey | null;
 
-  
   participants: ClassScheduleParticipantVM[];
   source: EventSourceVM;
 
-  
   recurrence?: RecurrenceVM;
 
-  
   audit: EventAuditInfoVM;
 }
-
-
 
 export type ClassSchedulePatchVM = Partial<
   Pick<
@@ -157,47 +125,36 @@ export type ClassSchedulePatchVM = Partial<
     | 'endAt'
     | 'status'
     | 'participants'
-    | 'color'
     | 'visibility'
     | 'source'
     | 'timezone'
   >
 >;
 
-
-
 export interface EventInstanceKeyVM {
-  eventId: UUID; 
-  occurrenceKey: ISODateTime; 
+  eventId: UUID;
+  occurrenceKey: ISODateTime;
 }
 
 export interface ClassScheduleInstanceVM {
-  
   id?: UUID;
 
-  
   key: EventInstanceKeyVM;
 
-  
   startAt: ISODateTime;
   endAt: ISODateTime;
   timezone?: IANATimezone;
 
-  
   status: EventStatusVM;
   isCancelled?: boolean;
 
-  
   title: string;
   description?: string | null;
   location?: string | null;
   meetingLink?: string | null;
 
-  
   visibility: ClassScheduleVisibilityVM;
-  color?: ClassScheduleColorTokenVM;
 
-  
   participants: ClassScheduleParticipantVM[];
   source: EventSourceVM;
 }
