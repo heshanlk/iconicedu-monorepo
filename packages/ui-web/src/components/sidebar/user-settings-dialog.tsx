@@ -4,14 +4,6 @@ import * as React from 'react';
 import { BadgeCheck, Bell, MapPin, SlidersHorizontal, User, Users } from 'lucide-react';
 
 import type { ThemeKey, UserAccountVM, UserProfileVM } from '@iconicedu/shared-types';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '../../ui/dialog';
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '../../ui/drawer';
 import { ScrollArea } from '../../ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../ui/tabs';
 import { useSidebar } from '../../ui/sidebar';
@@ -22,6 +14,7 @@ import { LocationTab } from './user-settings/location-tab';
 import { NotificationsTab } from './user-settings/notifications-tab';
 import { PreferencesTab } from './user-settings/preferences-tab';
 import { ProfileTab } from './user-settings/profile-tab';
+import { ResponsiveDialog } from '../shared/responsive-dialog';
 
 export type UserSettingsTab =
   | 'account'
@@ -93,35 +86,23 @@ export function UserSettingsDialog({
     />
   );
 
-  if (isMobile) {
-    return (
-      <Drawer open={open} onOpenChange={onOpenChange}>
-        <DrawerContent className="h-[85vh]">
-          <div className="flex h-full flex-col min-h-0">
-            <DrawerHeader className="items-start">
-              <DrawerTitle>Settings</DrawerTitle>
-            </DrawerHeader>
-            <div className="flex-1 min-h-0 px-4 pb-4">{content}</div>
-          </div>
-        </DrawerContent>
-      </Drawer>
-    );
-  }
-
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="h-[85vh] max-w-[calc(100vw-32px)] p-0 sm:max-w-[680px]">
-        <div className="flex h-full flex-col min-h-0">
-          <DialogHeader className="p-6">
-            <DialogTitle>Settings</DialogTitle>
-            <DialogDescription>
-              Manage account, billing, and notification preferences.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex-1 min-h-0 px-6 pb-6">{content}</div>
-        </div>
-      </DialogContent>
-    </Dialog>
+    <ResponsiveDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title="Settings"
+      description="Manage account, billing, and notification preferences."
+      isMobile={isMobile}
+      dialogContentClassName="h-[85vh] max-w-[calc(100vw-32px)] p-0 sm:max-w-[680px]"
+      drawerContentClassName="h-[85vh] w-full max-w-none flex flex-col overflow-hidden bg-background p-0 rounded-t-xl before:inset-0 before:rounded-t-xl"
+      dialogHeaderClassName="p-6"
+      drawerHeaderClassName="items-start"
+      containerClassName="h-full"
+      bodyClassName={cn(isMobile ? 'px-4 pb-4' : 'px-6 pb-6')}
+      dialogShowCloseButton
+    >
+      {content}
+    </ResponsiveDialog>
   );
 }
 
