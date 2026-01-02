@@ -8,6 +8,8 @@ import {
   CreditCard,
   LogOut,
   Sparkles,
+  User,
+  Users,
 } from 'lucide-react';
 
 import { AvatarWithStatus } from '../shared/avatar-with-status';
@@ -102,20 +104,20 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
               <DropdownMenuItem onSelect={() => openSettings('account')}>
                 <BadgeCheck />
                 Account
               </DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => openSettings('billing')}>
-                <CreditCard />
-                Billing
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem onSelect={() => openSettings('profile')}>
+                <User />
+                Profile
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => openSettings('family')}>
+                <Users />
+                Family
               </DropdownMenuItem>
               <DropdownMenuItem onSelect={() => openSettings('notifications')}>
                 <Bell />

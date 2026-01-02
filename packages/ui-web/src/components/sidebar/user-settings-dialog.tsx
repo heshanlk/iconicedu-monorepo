@@ -5,15 +5,19 @@ import {
   BadgeCheck,
   Bell,
   Briefcase,
+  BookOpen,
   ChevronRight,
   Clock,
   CreditCard,
+  Lightbulb,
+  FileText,
   Globe,
   GraduationCap,
   Languages,
   Mail,
   MapPin,
   MessageCircle,
+  Megaphone,
   Palette,
   Phone,
   Plus,
@@ -21,6 +25,7 @@ import {
   SlidersHorizontal,
   User,
   Users,
+  Wallet,
 } from 'lucide-react';
 
 import type { ThemeKey, UserAccountVM, UserProfileVM } from '@iconicedu/shared-types';
@@ -35,7 +40,6 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '../../ui/drawe
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../ui/tabs';
 import { Input } from '../../ui/input';
 import { Label } from '../../ui/label';
-import { Checkbox } from '../../ui/checkbox';
 import { Button } from '../../ui/button';
 import { useSidebar } from '../../ui/sidebar';
 import { Badge } from '../../ui/badge';
@@ -66,9 +70,7 @@ export type UserSettingsTab =
   | 'profile'
   | 'preferences'
   | 'location'
-  | 'security'
   | 'family'
-  | 'billing'
   | 'notifications';
 
 const SETTINGS_TABS: Array<{
@@ -80,9 +82,7 @@ const SETTINGS_TABS: Array<{
   { value: 'account', label: 'Account', icon: BadgeCheck },
   { value: 'preferences', label: 'Preferences', icon: SlidersHorizontal },
   { value: 'location', label: 'Location', icon: MapPin },
-  { value: 'security', label: 'Security', icon: ShieldCheck },
   { value: 'family', label: 'Family', icon: Users },
-  { value: 'billing', label: 'Billing', icon: CreditCard },
   { value: 'notifications', label: 'Notifications', icon: Bell },
 ];
 
@@ -197,6 +197,12 @@ function UserSettingsTabs({
   const currentThemeLabel =
     PROFILE_THEME_OPTIONS.find((option) => option.value === currentThemeKey)
       ?.label ?? 'Accent color';
+  const isGuardianOrAdmin =
+    profile.kind === 'guardian' ||
+    roles.some((role) => role.roleKey === 'admin' || role.roleKey === 'owner');
+  const childProfile = profile.kind === 'child' ? profile : null;
+  const educatorProfile = profile.kind === 'educator' ? profile : null;
+  const staffProfile = profile.kind === 'staff' ? profile : null;
 
   const togglePreferredChannel = (channel: string, enabled: boolean) => {
     setPreferredChannelSelections((prev) => {
@@ -206,6 +212,113 @@ function UserSettingsTabs({
       return prev.filter((item) => item !== channel);
     });
   };
+
+  const NOTIFICATION_UI_SECTIONS = [
+    {
+      key: 'defaults',
+      title: 'Defaults',
+      icon: Bell,
+      items: [
+        'Email updates about new messages and schedule changes',
+        'Weekly digest of learning space activity',
+        'SMS reminders for upcoming sessions',
+      ],
+    },
+    {
+      key: 'messages',
+      title: 'Messages',
+      icon: MessageCircle,
+      items: [
+        'Email me when I get a direct message',
+        'Email me when a teacher messages me',
+        'Notify me about @mentions',
+        'Notify me about replies to my messages',
+        'Mute busy channels (only @mentions and DMs)',
+      ],
+    },
+    {
+      key: 'schedule',
+      title: 'Schedule & Sessions',
+      icon: Clock,
+      items: [
+        'Upcoming session reminder',
+        'Session starting soon',
+        'Session rescheduled',
+        'Session canceled',
+        'Tutor running late / no-show alert',
+        'Make-up session scheduled',
+      ],
+    },
+    {
+      key: 'homework',
+      title: 'Homework & Classwork',
+      icon: BookOpen,
+      items: [
+        'New homework assigned',
+        'Homework due reminder',
+        'Homework feedback posted',
+        'New resource/material added (PDF, link, worksheet)',
+      ],
+    },
+    {
+      key: 'progress',
+      title: 'Progress & Reports',
+      icon: FileText,
+      items: [
+        'Weekly progress report',
+        'Monthly progress report',
+        'Attendance summary',
+        'Milestones/achievements (optional)',
+      ],
+    },
+    {
+      key: 'announcements',
+      title: 'Announcements',
+      icon: Megaphone,
+      items: [
+        'Important announcements from ICONIC',
+        'Class announcements (teacher posts)',
+        'Policy or calendar updates (holidays, closures)',
+      ],
+    },
+    ...(isGuardianOrAdmin
+      ? [
+          {
+            key: 'billing',
+            title: 'Billing & Payments',
+            icon: Wallet,
+            items: [
+              'Payment receipt',
+              'Payment failed',
+              'Invoice ready',
+              'Refund processed',
+              'Plan ending / renewal reminder',
+            ],
+          },
+        ]
+      : []),
+    {
+      key: 'app',
+      title: 'App & Account',
+      icon: ShieldCheck,
+      items: [
+        'Security alerts (new login, password change) (recommended always on)',
+        'New device sign-in',
+        'Account changes (role/invite accepted)',
+      ],
+    },
+    {
+      key: 'digest',
+      title: 'Digest & Frequency',
+      icon: SlidersHorizontal,
+      items: [
+        'Instant notifications',
+        'Daily digest',
+        'Weekly digest',
+        'Only urgent (schedule changes + direct messages)',
+      ],
+    },
+  ];
   const guardianChildren =
     profile.kind === 'guardian' ? (profile.children?.items ?? []) : [];
   const familyMembers = React.useMemo(() => {
@@ -378,111 +491,6 @@ function UserSettingsTabs({
               </div>
             </div>
 
-            {profile.kind === 'guardian' ? (
-              <div className="space-y-3">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div className="space-y-1">
-                    <h3 className="text-base font-semibold">Family profile</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Manage guardian details and linked children.
-                    </p>
-                  </div>
-                </div>
-                <Separator />
-                <div className="space-y-1 w-full">
-                  <Collapsible className="rounded-2xl w-full">
-                    <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
-                      <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
-                        <Users className="h-5 w-5" />
-                      </span>
-                      <div className="flex-1">
-                        <div className="text-sm font-medium">Children</div>
-                        <div className="text-xs text-muted-foreground">
-                          {profile.children?.items?.length ?? 0} linked student
-                          {profile.children?.items?.length === 1 ? '' : 's'}
-                        </div>
-                      </div>
-                      <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
-                    </CollapsibleTrigger>
-                    <CollapsibleContent className="py-4 w-full">
-                      <div className="space-y-3">
-                        {profile.children?.items?.length ? (
-                          profile.children.items.map((child) => (
-                            <div
-                              key={child.ids.id}
-                              className="flex items-center gap-3 rounded-xl border border-border/60 px-3 py-2"
-                            >
-                              <Avatar className="size-9">
-                                <AvatarImage src={child.profile.avatar.url ?? undefined} />
-                                <AvatarFallback>
-                                  {(child.profile.displayName ?? 'C')
-                                    .split(' ')
-                                    .map((part) => part[0])
-                                    .join('')
-                                    .slice(0, 2)
-                                    .toUpperCase()}
-                                </AvatarFallback>
-                              </Avatar>
-                              <div className="flex-1">
-                                <div className="text-sm font-medium">
-                                  {child.profile.displayName}
-                                </div>
-                                <div className="text-xs text-muted-foreground">
-                                  {child.gradeLevel ?? 'Grade not set'}
-                                </div>
-                              </div>
-                            </div>
-                          ))
-                        ) : (
-                          <p className="text-sm text-muted-foreground">
-                            No children linked yet.
-                          </p>
-                        )}
-                      </div>
-                    </CollapsibleContent>
-                  </Collapsible>
-                  <Separator />
-                  <Collapsible className="rounded-2xl w-full">
-                    <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
-                      <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
-                        <User className="h-5 w-5" />
-                      </span>
-                      <div className="flex-1">
-                        <div className="text-sm font-medium">Guardian details</div>
-                        <div className="text-xs text-muted-foreground">
-                          Joined {profile.joinedDate}
-                        </div>
-                      </div>
-                      <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
-                    </CollapsibleTrigger>
-                    <CollapsibleContent className="py-4 w-full">
-                      <div className="grid gap-4 sm:grid-cols-2">
-                        <div className="space-y-2 sm:col-span-2">
-                          <Label htmlFor="settings-guardian-joined">Joined date</Label>
-                          <Input
-                            id="settings-guardian-joined"
-                            defaultValue={profile.joinedDate}
-                          />
-                        </div>
-                        <div className="space-y-2 sm:col-span-2">
-                          <Label htmlFor="settings-session-notes">
-                            Session notes visibility
-                          </Label>
-                          <Input
-                            id="settings-session-notes"
-                            defaultValue={profile.sessionNotesVisibility ?? 'shared'}
-                          />
-                        </div>
-                        <div className="sm:col-span-2 flex justify-end">
-                          <Button size="sm">Save</Button>
-                        </div>
-                      </div>
-                    </CollapsibleContent>
-                  </Collapsible>
-                </div>
-              </div>
-            ) : null}
-
             {profile.kind === 'child' ? (
               <div className="space-y-3">
                 <div className="flex flex-wrap items-center justify-between gap-3">
@@ -498,12 +506,12 @@ function UserSettingsTabs({
                   <Collapsible className="rounded-2xl w-full">
                     <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
                       <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
-                        <GraduationCap className="h-5 w-5" />
+                        <User className="h-5 w-5" />
                       </span>
                       <div className="flex-1">
-                        <div className="text-sm font-medium">Learning details</div>
+                        <div className="text-sm font-medium">Basic student info</div>
                         <div className="text-xs text-muted-foreground">
-                          {profile.gradeLevel ?? 'Grade not set'}
+                          {childProfile?.gradeLevel ?? 'Grade not set'}
                         </div>
                       </div>
                       <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
@@ -514,51 +522,125 @@ function UserSettingsTabs({
                           <Label htmlFor="settings-grade">Grade level</Label>
                           <Input
                             id="settings-grade"
-                            defaultValue={profile.gradeLevel ?? ''}
+                            defaultValue={childProfile?.gradeLevel ?? ''}
                           />
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor="settings-birth-year">Birth year</Label>
                           <Input
                             id="settings-birth-year"
-                            defaultValue={profile.birthYear ?? ''}
+                            defaultValue={childProfile?.birthYear ?? ''}
                           />
                         </div>
+                        <div className="sm:col-span-2 flex justify-end">
+                          <Button size="sm">Save</Button>
+                        </div>
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                  <Separator />
+                  <Collapsible className="rounded-2xl w-full">
+                    <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
+                      <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
+                        <BookOpen className="h-5 w-5" />
+                      </span>
+                      <div className="flex-1">
+                        <div className="text-sm font-medium">School details</div>
+                        <div className="text-xs text-muted-foreground">
+                          {childProfile?.schoolName ?? 'School not set'}
+                        </div>
+                      </div>
+                      <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="py-4 w-full">
+                      <div className="grid gap-4 sm:grid-cols-2">
                         <div className="space-y-2 sm:col-span-2">
                           <Label htmlFor="settings-school">School name</Label>
                           <Input
                             id="settings-school"
-                            defaultValue={profile.schoolName ?? ''}
+                            defaultValue={childProfile?.schoolName ?? ''}
                           />
                         </div>
                         <div className="space-y-2 sm:col-span-2">
-                          <Label htmlFor="settings-school-year">School year</Label>
+                          <Label htmlFor="settings-school-year">Academic year</Label>
                           <Input
                             id="settings-school-year"
-                            defaultValue={profile.schoolYear ?? ''}
+                            defaultValue={childProfile?.schoolYear ?? ''}
                           />
                         </div>
+                        <div className="sm:col-span-2 flex justify-end">
+                          <Button size="sm">Save</Button>
+                        </div>
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                  <Separator />
+                  <Collapsible className="rounded-2xl w-full">
+                    <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
+                      <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
+                        <Lightbulb className="h-5 w-5" />
+                      </span>
+                      <div className="flex-1">
+                        <div className="text-sm font-medium">Learner profile</div>
+                        <div className="text-xs text-muted-foreground">
+                          {childProfile?.interests?.length
+                            ? childProfile.interests.join(', ')
+                            : 'Not set'}
+                        </div>
+                      </div>
+                      <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="py-4 w-full">
+                      <div className="grid gap-4 sm:grid-cols-2">
                         <div className="space-y-2 sm:col-span-2">
                           <Label htmlFor="settings-interests">Interests</Label>
                           <Input
                             id="settings-interests"
-                            defaultValue={profile.interests?.join(', ') ?? ''}
+                            defaultValue={childProfile?.interests?.join(', ') ?? ''}
                           />
                         </div>
                         <div className="space-y-2 sm:col-span-2">
                           <Label htmlFor="settings-strengths">Strengths</Label>
                           <Input
                             id="settings-strengths"
-                            defaultValue={profile.strengths?.join(', ') ?? ''}
+                            defaultValue={childProfile?.strengths?.join(', ') ?? ''}
                           />
                         </div>
+                        <div className="sm:col-span-2 flex justify-end">
+                          <Button size="sm">Save</Button>
+                        </div>
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                  <Separator />
+                  <Collapsible className="rounded-2xl w-full">
+                    <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
+                      <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
+                        <SlidersHorizontal className="h-5 w-5" />
+                      </span>
+                      <div className="flex-1">
+                        <div className="text-sm font-medium">
+                          Learning & motivation preferences
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {childProfile?.learningPreferences?.length
+                            ? childProfile.learningPreferences.join(', ')
+                            : 'Not set'}
+                        </div>
+                      </div>
+                      <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="py-4 w-full">
+                      <div className="grid gap-4 sm:grid-cols-2">
                         <div className="space-y-2 sm:col-span-2">
                           <Label htmlFor="settings-learning-preferences">
                             Learning preferences
                           </Label>
                           <Input
                             id="settings-learning-preferences"
-                            defaultValue={profile.learningPreferences?.join(', ') ?? ''}
+                            defaultValue={
+                              childProfile?.learningPreferences?.join(', ') ?? ''
+                            }
                           />
                         </div>
                         <div className="space-y-2 sm:col-span-2">
@@ -567,21 +649,45 @@ function UserSettingsTabs({
                           </Label>
                           <Input
                             id="settings-motivation"
-                            defaultValue={profile.motivationStyles?.join(', ') ?? ''}
+                            defaultValue={childProfile?.motivationStyles?.join(', ') ?? ''}
                           />
                         </div>
+                        <div className="sm:col-span-2 flex justify-end">
+                          <Button size="sm">Save</Button>
+                        </div>
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                  <Separator />
+                  <Collapsible className="rounded-2xl w-full">
+                    <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
+                      <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
+                        <Users className="h-5 w-5" />
+                      </span>
+                      <div className="flex-1">
+                        <div className="text-sm font-medium">
+                          Communication & confidence
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {childProfile?.confidenceLevel ?? 'Not set'}
+                        </div>
+                      </div>
+                      <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="py-4 w-full">
+                      <div className="grid gap-4 sm:grid-cols-2">
                         <div className="space-y-2">
                           <Label htmlFor="settings-confidence">Confidence level</Label>
                           <Input
                             id="settings-confidence"
-                            defaultValue={profile.confidenceLevel ?? ''}
+                            defaultValue={childProfile?.confidenceLevel ?? ''}
                           />
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor="settings-communication">Communication style</Label>
                           <Input
                             id="settings-communication"
-                            defaultValue={profile.communicationStyle ?? ''}
+                            defaultValue={childProfile?.communicationStyle ?? ''}
                           />
                         </div>
                         <div className="sm:col-span-2 flex justify-end">
@@ -608,13 +714,13 @@ function UserSettingsTabs({
                 <div className="space-y-1 w-full">
                   <Collapsible className="rounded-2xl w-full">
                     <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
-                      <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
-                        <GraduationCap className="h-5 w-5" />
-                      </span>
+                    <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
+                      <User className="h-5 w-5" />
+                    </span>
                       <div className="flex-1">
-                        <div className="text-sm font-medium">Educator details</div>
+                        <div className="text-sm font-medium">Basic info</div>
                         <div className="text-xs text-muted-foreground">
-                          {profile.headline ?? 'Headline not set'}
+                          {educatorProfile?.headline ?? 'Headline not set'}
                         </div>
                       </div>
                       <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
@@ -625,37 +731,68 @@ function UserSettingsTabs({
                           <Label htmlFor="settings-educator-headline">Headline</Label>
                           <Input
                             id="settings-educator-headline"
-                            defaultValue={profile.headline ?? ''}
+                            defaultValue={educatorProfile?.headline ?? ''}
                           />
                         </div>
                         <div className="space-y-2 sm:col-span-2">
                           <Label htmlFor="settings-educator-subjects">Subjects</Label>
                           <Input
                             id="settings-educator-subjects"
-                            defaultValue={profile.subjects?.join(', ') ?? ''}
+                            defaultValue={educatorProfile?.subjects?.join(', ') ?? ''}
                           />
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor="settings-educator-grades">Grades supported</Label>
                           <Input
                             id="settings-educator-grades"
-                            defaultValue={profile.gradesSupported?.join(', ') ?? ''}
+                            defaultValue={educatorProfile?.gradesSupported?.join(', ') ?? ''}
                           />
                         </div>
+                        <div className="space-y-2 sm:col-span-2">
+                          <Label htmlFor="settings-educator-video">
+                            Intro video URL
+                          </Label>
+                          <Input
+                            id="settings-educator-video"
+                            defaultValue={educatorProfile?.featuredVideoIntroUrl ?? ''}
+                          />
+                        </div>
+                        <div className="sm:col-span-2 flex justify-end">
+                          <Button size="sm">Save</Button>
+                        </div>
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                  <Separator />
+                  <Collapsible className="rounded-2xl w-full">
+                    <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
+                      <Briefcase className="h-5 w-5" />
+                    </span>
+                      <div className="flex-1">
+                        <div className="text-sm font-medium">Expertise & background</div>
+                        <div className="text-xs text-muted-foreground">
+                          {educatorProfile?.subjects?.join(', ') ?? 'Subjects not set'}
+                        </div>
+                      </div>
+                      <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="py-4 w-full">
+                      <div className="grid gap-4 sm:grid-cols-2">
                         <div className="space-y-2">
                           <Label htmlFor="settings-educator-experience">
                             Experience years
                           </Label>
                           <Input
                             id="settings-educator-experience"
-                            defaultValue={profile.experienceYears ?? ''}
+                            defaultValue={educatorProfile?.experienceYears ?? ''}
                           />
                         </div>
                         <div className="space-y-2 sm:col-span-2">
                           <Label htmlFor="settings-educator-education">Education</Label>
                           <Input
                             id="settings-educator-education"
-                            defaultValue={profile.education ?? ''}
+                            defaultValue={educatorProfile?.education ?? ''}
                           />
                         </div>
                         <div className="space-y-2 sm:col-span-2">
@@ -665,9 +802,42 @@ function UserSettingsTabs({
                           <Input
                             id="settings-educator-certifications"
                             defaultValue={
-                              profile.certifications
+                              educatorProfile?.certifications
                                 ?.map((cert) => cert.name)
                                 .join(', ') ?? ''
+                            }
+                          />
+                        </div>
+                        <div className="sm:col-span-2 flex justify-end">
+                          <Button size="sm">Save</Button>
+                        </div>
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                  <Separator />
+                  <Collapsible className="rounded-2xl w-full">
+                    <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
+                      <SlidersHorizontal className="h-5 w-5" />
+                    </span>
+                      <div className="flex-1">
+                        <div className="text-sm font-medium">Teaching preferences</div>
+                        <div className="text-xs text-muted-foreground">
+                          {educatorProfile?.curriculumTags?.join(', ') ?? 'Not set'}
+                        </div>
+                      </div>
+                      <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="py-4 w-full">
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <div className="space-y-2 sm:col-span-2">
+                          <Label htmlFor="settings-educator-age-groups">
+                            Age groups comfortable with
+                          </Label>
+                          <Input
+                            id="settings-educator-age-groups"
+                            defaultValue={
+                              educatorProfile?.ageGroupsComfortableWith?.join(', ') ?? ''
                             }
                           />
                         </div>
@@ -677,37 +847,7 @@ function UserSettingsTabs({
                           </Label>
                           <Input
                             id="settings-educator-curriculum"
-                            defaultValue={profile.curriculumTags?.join(', ') ?? ''}
-                          />
-                        </div>
-                        <div className="space-y-2 sm:col-span-2">
-                          <Label htmlFor="settings-educator-badges">Badges</Label>
-                          <Input
-                            id="settings-educator-badges"
-                            defaultValue={profile.badges?.join(', ') ?? ''}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="settings-educator-rating">Average rating</Label>
-                          <Input
-                            id="settings-educator-rating"
-                            defaultValue={profile.averageRating ?? ''}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="settings-educator-reviews">Total reviews</Label>
-                          <Input
-                            id="settings-educator-reviews"
-                            defaultValue={profile.totalReviews ?? ''}
-                          />
-                        </div>
-                        <div className="space-y-2 sm:col-span-2">
-                          <Label htmlFor="settings-educator-video">
-                            Intro video URL
-                          </Label>
-                          <Input
-                            id="settings-educator-video"
-                            defaultValue={profile.featuredVideoIntroUrl ?? ''}
+                            defaultValue={educatorProfile?.curriculumTags?.join(', ') ?? ''}
                           />
                         </div>
                         <div className="sm:col-span-2 flex justify-end">
@@ -738,9 +878,11 @@ function UserSettingsTabs({
                         <Briefcase className="h-5 w-5" />
                       </span>
                       <div className="flex-1">
-                        <div className="text-sm font-medium">Staff details</div>
+                        <div className="text-sm font-medium">
+                          Availability & working rules
+                        </div>
                         <div className="text-xs text-muted-foreground">
-                          {profile.jobTitle ?? 'Job title not set'}
+                          {staffProfile?.workingHoursRules?.join(', ') ?? 'Not set'}
                         </div>
                       </div>
                       <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
@@ -748,40 +890,10 @@ function UserSettingsTabs({
                     <CollapsibleContent className="py-4 w-full">
                       <div className="grid gap-4 sm:grid-cols-2">
                         <div className="space-y-2 sm:col-span-2">
-                          <Label htmlFor="settings-staff-title">Job title</Label>
-                          <Input
-                            id="settings-staff-title"
-                            defaultValue={profile.jobTitle ?? ''}
-                          />
-                        </div>
-                        <div className="space-y-2 sm:col-span-2">
-                          <Label htmlFor="settings-staff-department">Department</Label>
-                          <Input
-                            id="settings-staff-department"
-                            defaultValue={profile.department ?? ''}
-                          />
-                        </div>
-                        <div className="space-y-2 sm:col-span-2">
-                          <Label htmlFor="settings-staff-specialties">Specialties</Label>
-                          <Input
-                            id="settings-staff-specialties"
-                            defaultValue={profile.specialties?.join(', ') ?? ''}
-                          />
-                        </div>
-                        <div className="space-y-2 sm:col-span-2">
-                          <Label htmlFor="settings-staff-permissions">
-                            Permissions scope
-                          </Label>
-                          <Input
-                            id="settings-staff-permissions"
-                            defaultValue={profile.permissionsScope ?? ''}
-                          />
-                        </div>
-                        <div className="space-y-2 sm:col-span-2">
-                          <Label htmlFor="settings-staff-hours">Working hours</Label>
+                          <Label htmlFor="settings-staff-hours">Working hours rules</Label>
                           <Input
                             id="settings-staff-hours"
-                            defaultValue={profile.workingHoursRules?.join(', ') ?? ''}
+                            defaultValue={staffProfile?.workingHoursRules?.join(', ') ?? ''}
                           />
                         </div>
                         <div className="sm:col-span-2 flex justify-end">
@@ -1277,46 +1389,6 @@ function UserSettingsTabs({
             </div>
           </TabsContent>
 
-          <TabsContent value="security" className="mt-0 space-y-8 w-full">
-            <div className="space-y-3">
-              <h3 className="text-base font-semibold">Account status</h3>
-              <Separator />
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="settings-account-status">Status</Label>
-                  <Input
-                    id="settings-account-status"
-                    readOnly
-                    value={account?.lifecycle.status ?? 'active'}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="settings-account-created">Created</Label>
-                  <Input
-                    id="settings-account-created"
-                    readOnly
-                    value={account?.lifecycle.createdAt ?? profile.meta.createdAt}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="space-y-3">
-              <h3 className="text-base font-semibold">Roles & access</h3>
-              <Separator />
-              {roles.length ? (
-                <div className="flex flex-wrap gap-2">
-                  {roles.map((role) => (
-                    <Badge key={role.ids.id} variant="secondary">
-                      {role.roleKey}
-                    </Badge>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-sm text-muted-foreground">No roles assigned.</p>
-              )}
-            </div>
-          </TabsContent>
-
           <TabsContent value="family" className="mt-0 space-y-8 w-full">
             <div className="space-y-3">
               <div className="flex flex-wrap items-center justify-between gap-3">
@@ -1434,66 +1506,53 @@ function UserSettingsTabs({
             </div>
           </TabsContent>
 
-          <TabsContent value="billing" className="mt-0 space-y-8 w-full">
-            <div className="space-y-3">
-              <h3 className="text-base font-semibold">Plan</h3>
-              <Separator />
-              <div className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-end">
-                <div className="space-y-2">
-                  <Label htmlFor="settings-plan">Current plan</Label>
-                  <Input id="settings-plan" readOnly value="Family Plus" />
-                </div>
-                <Button variant="outline">Manage plan</Button>
-              </div>
-            </div>
-            <div className="space-y-3">
-              <h3 className="text-base font-semibold">Payment method</h3>
-              <Separator />
-              <div className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-end">
-                <div className="space-y-2">
-                  <Label htmlFor="settings-card">Card</Label>
-                  <Input id="settings-card" readOnly value="Visa •••• 4242" />
-                </div>
-                <Button variant="outline">Update card</Button>
-              </div>
-            </div>
-          </TabsContent>
 
           <TabsContent value="notifications" className="mt-0 space-y-8 w-full">
             <div className="space-y-3">
-              <h3 className="text-base font-semibold">Notifications</h3>
-              <Separator />
-              <div className="grid gap-2 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="settings-defaults">Defaults</Label>
-                  <Input
-                    id="settings-defaults"
-                    readOnly
-                    value={
-                      prefs.notificationDefaults
-                        ? 'Custom preferences'
-                        : 'System defaults'
-                    }
-                  />
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="space-y-1">
+                  <h3 className="text-base font-semibold">Notifications</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Configure alerts, digests, and account notifications.
+                  </p>
                 </div>
               </div>
-              <div className="space-y-4">
-                <Label className="flex items-start gap-3 text-sm">
-                  <Checkbox defaultChecked />
-                  <span className="leading-5">
-                    Email updates about new messages and schedule changes.
-                  </span>
-                </Label>
-                <Label className="flex items-start gap-3 text-sm">
-                  <Checkbox defaultChecked />
-                  <span className="leading-5">
-                    Weekly digest of learning space activity.
-                  </span>
-                </Label>
-                <Label className="flex items-start gap-3 text-sm">
-                  <Checkbox />
-                  <span className="leading-5">SMS reminders for upcoming sessions.</span>
-                </Label>
+              <div className="space-y-1 w-full">
+                {NOTIFICATION_UI_SECTIONS.map((section, index) => {
+                  const Icon = section.icon;
+                  return (
+                    <Collapsible key={section.key} className="rounded-2xl w-full">
+                      <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
+                        <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
+                          <Icon className="h-5 w-5" />
+                        </span>
+                        <div className="flex-1">
+                          <div className="text-sm font-medium">{section.title}</div>
+                          <div className="text-xs text-muted-foreground">
+                            {section.items.length} options
+                          </div>
+                        </div>
+                        <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
+                      </CollapsibleTrigger>
+                      <CollapsibleContent className="py-4 w-full">
+                        <div className="space-y-3">
+                          {section.items.map((item) => (
+                            <div
+                              key={item}
+                              className="flex items-start justify-between gap-4 text-sm"
+                            >
+                              <span className="leading-5">{item}</span>
+                              <Switch aria-label={item} />
+                            </div>
+                          ))}
+                        </div>
+                      </CollapsibleContent>
+                      {index < NOTIFICATION_UI_SECTIONS.length - 1 ? (
+                        <Separator />
+                      ) : null}
+                    </Collapsible>
+                  );
+                })}
               </div>
             </div>
           </TabsContent>
