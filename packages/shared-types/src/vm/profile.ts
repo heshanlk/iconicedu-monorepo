@@ -8,8 +8,6 @@ import type {
   UUID,
 } from './shared';
 
-
-
 export interface AvatarVM {
   source: AvatarSource;
   url?: string | null;
@@ -40,8 +38,6 @@ export interface PresenceVM {
   lastSeenAt?: ISODateTime | null;
   presenceLoaded?: boolean;
 }
-
-
 
 export interface UserIdsVM {
   orgId: UUID;
@@ -87,8 +83,6 @@ export interface UserUiVM {
   themeKey?: ThemeKey | null;
 }
 
-
-
 export interface BaseUserProfileVM {
   ids: UserIdsVM;
   profile: UserProfileBlockVM;
@@ -106,8 +100,6 @@ export interface BaseUserProfileVM {
 
   ui?: UserUiVM;
 }
-
-
 
 export interface EducatorProfileVM extends BaseUserProfileVM {
   kind: 'educator';
@@ -140,8 +132,6 @@ export interface EducatorProfileVM extends BaseUserProfileVM {
   featuredVideoIntroUrl?: string | null;
 }
 
-
-
 export interface ChildProfileVM extends BaseUserProfileVM {
   kind: 'child';
 
@@ -160,8 +150,6 @@ export interface ChildProfileVM extends BaseUserProfileVM {
   communicationStyle?: 'chatty' | 'shy' | null;
 }
 
-
-
 export interface GuardianProfileVM extends BaseUserProfileVM {
   kind: 'guardian';
 
@@ -171,8 +159,6 @@ export interface GuardianProfileVM extends BaseUserProfileVM {
 
   sessionNotesVisibility?: 'private' | 'shared' | null;
 }
-
-
 
 export interface StaffProfileVM extends BaseUserProfileVM {
   kind: 'staff';

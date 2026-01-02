@@ -6,7 +6,10 @@ import {
   Bell,
   ChevronRight,
   CreditCard,
+  Mail,
   MapPin,
+  MessageCircle,
+  Phone,
   Plus,
   ShieldCheck,
   SlidersHorizontal,
@@ -34,7 +37,6 @@ import { Separator } from '../../ui/separator';
 import { Switch } from '../../ui/switch';
 import { ScrollArea } from '../../ui/scroll-area';
 import { Card, CardAction, CardContent } from '../../ui/card';
-import { Item, ItemAction, ItemContent, ItemIcon } from '../../ui/item';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../../ui/tooltip';
 import { InputGroup, InputGroupAddon, InputGroupInput } from '../../ui/input-group';
 import {
@@ -176,10 +178,22 @@ function UserSettingsTabs({
   const prefs = profile.prefs;
   const contacts = account?.contacts;
   const email = contacts?.email ?? '';
+  const preferredChannels = contacts?.preferredContactChannels ?? [];
   const location = profile.location;
   const roles = account?.access?.userRoles ?? [];
   const orgLabel = account?.ids.orgId ?? 'Unknown org';
   const [profileThemes, setProfileThemes] = React.useState<Record<string, ThemeKey>>({});
+  const [preferredChannelSelections, setPreferredChannelSelections] =
+    React.useState<string[]>(preferredChannels);
+
+  const togglePreferredChannel = (channel: string, enabled: boolean) => {
+    setPreferredChannelSelections((prev) => {
+      if (enabled) {
+        return prev.includes(channel) ? prev : [...prev, channel];
+      }
+      return prev.filter((item) => item !== channel);
+    });
+  };
   const guardianChildren =
     profile.kind === 'guardian' ? (profile.children?.items ?? []) : [];
   const familyMembers = React.useMemo(() => {
@@ -278,24 +292,13 @@ function UserSettingsTabs({
               <div className="space-y-1 w-full">
                 <Collapsible className="rounded-2xl w-full">
                   <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
-                    <span
-                      className={cn(
-                        'flex h-10 w-10 items-center justify-center rounded-full border',
-                        contacts?.emailVerified
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-muted text-muted-foreground',
-                      )}
-                    >
-                      <BadgeCheck className="h-5 w-5" />
+                    <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
+                      <Mail className="h-5 w-5" />
                     </span>
                     <div className="flex-1">
-                      <div className="text-sm font-medium">
-                        {contacts?.emailVerified
-                          ? 'Your email has been verified.'
-                          : 'Verify your email.'}
-                      </div>
+                      <div className="text-sm font-medium">Email</div>
                       <div className="text-xs text-muted-foreground">
-                        Manage email and password
+                        {contacts?.email ?? 'Not provided'}
                       </div>
                     </div>
                     <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
@@ -335,6 +338,23 @@ function UserSettingsTabs({
                           </InputGroupAddon>
                         </InputGroup>
                       </div>
+                      <div className="sm:col-span-2 flex items-center justify-between rounded-xl border border-border/60 px-4 py-3">
+                        <div>
+                          <div className="text-sm font-medium">
+                            Receive notifications by email
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            Use this email for account alerts and reminders.
+                          </div>
+                        </div>
+                        <Switch
+                          checked={preferredChannelSelections.includes('email')}
+                          onCheckedChange={(checked) =>
+                            togglePreferredChannel('email', checked)
+                          }
+                          aria-label="Receive notifications by email"
+                        />
+                      </div>
                       <div className="space-y-2 sm:col-span-2">
                         <Label htmlFor="settings-account-password">New password</Label>
                         <Input id="settings-account-password" type="password" />
@@ -356,24 +376,13 @@ function UserSettingsTabs({
               <div className="space-y-1 w-full">
                 <Collapsible className="rounded-2xl w-full">
                   <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
-                    <span
-                      className={cn(
-                        'flex h-10 w-10 items-center justify-center rounded-full border',
-                        contacts?.phoneVerified
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-muted text-muted-foreground',
-                      )}
-                    >
-                      <BadgeCheck className="h-5 w-5" />
+                    <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
+                      <Phone className="h-5 w-5" />
                     </span>
                     <div className="flex-1">
-                      <div className="text-sm font-medium">
-                        {contacts?.phoneVerified
-                          ? 'Your phone number has been verified.'
-                          : 'Verify your phone number.'}
-                      </div>
+                      <div className="text-sm font-medium">Phone</div>
                       <div className="text-xs text-muted-foreground">
-                        Manage phone number
+                        {contacts?.phoneE164 ?? 'Not provided'}
                       </div>
                     </div>
                     <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
@@ -423,6 +432,25 @@ function UserSettingsTabs({
                           </Tooltip>
                         ) : null}
                       </div>
+                      {contacts?.phoneVerified ? (
+                        <div className="sm:col-span-2 flex items-center justify-between rounded-xl border border-border/60 px-4 py-3">
+                          <div>
+                            <div className="text-sm font-medium">
+                              Receive notifications by phone
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              Use SMS for alerts and reminders.
+                            </div>
+                          </div>
+                          <Switch
+                            checked={preferredChannelSelections.includes('sms')}
+                            onCheckedChange={(checked) =>
+                              togglePreferredChannel('sms', checked)
+                            }
+                            aria-label="Receive notifications by phone"
+                          />
+                        </div>
+                      ) : null}
                       <div className="sm:col-span-2 flex justify-end">
                         <Button size="sm">Save</Button>
                       </div>
@@ -434,24 +462,13 @@ function UserSettingsTabs({
               <div className="space-y-1 w-full">
                 <Collapsible className="rounded-2xl w-full">
                   <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
-                    <span
-                      className={cn(
-                        'flex h-10 w-10 items-center justify-center rounded-full border',
-                        contacts?.whatsappVerified
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-muted text-muted-foreground',
-                      )}
-                    >
-                      <BadgeCheck className="h-5 w-5" />
+                    <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
+                      <MessageCircle className="h-5 w-5" />
                     </span>
                     <div className="flex-1">
-                      <div className="text-sm font-medium">
-                        {contacts?.whatsappVerified
-                          ? 'Your WhatsApp number has been verified.'
-                          : 'Verify your WhatsApp number.'}
-                      </div>
+                      <div className="text-sm font-medium">WhatsApp</div>
                       <div className="text-xs text-muted-foreground">
-                        Manage WhatsApp number
+                        {contacts?.whatsappE164 ?? 'Not provided'}
                       </div>
                     </div>
                     <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
@@ -501,6 +518,25 @@ function UserSettingsTabs({
                           </Tooltip>
                         ) : null}
                       </div>
+                      {contacts?.whatsappVerified ? (
+                        <div className="sm:col-span-2 flex items-center justify-between rounded-xl border border-border/60 px-4 py-3">
+                          <div>
+                            <div className="text-sm font-medium">
+                              Receive notifications by WhatsApp
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              Use WhatsApp for alerts and reminders.
+                            </div>
+                          </div>
+                          <Switch
+                            checked={preferredChannelSelections.includes('whatsapp')}
+                            onCheckedChange={(checked) =>
+                              togglePreferredChannel('whatsapp', checked)
+                            }
+                            aria-label="Receive notifications by WhatsApp"
+                          />
+                        </div>
+                      ) : null}
                       <div className="sm:col-span-2 flex justify-end">
                         <Button size="sm">Save</Button>
                       </div>
@@ -545,41 +581,120 @@ function UserSettingsTabs({
 
           <TabsContent value="contact" className="mt-0 space-y-8 w-full">
             <div className="space-y-3">
-              <h3 className="text-base font-semibold">Contact methods</h3>
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="space-y-1">
+                  <h3 className="text-base font-semibold">Contact methods</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Choose how you want to receive notifications and updates.
+                  </p>
+                </div>
+              </div>
               <Separator />
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="settings-email-address">Email</Label>
-                  <Input
-                    id="settings-email-address"
-                    readOnly
-                    value={contacts?.email ?? 'Not provided'}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="settings-phone">Phone</Label>
-                  <Input
-                    id="settings-phone"
-                    readOnly
-                    value={contacts?.phoneE164 ?? 'Not provided'}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="settings-whatsapp">WhatsApp</Label>
-                  <Input
-                    id="settings-whatsapp"
-                    readOnly
-                    value={contacts?.whatsappE164 ?? 'Not provided'}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="settings-preferred">Preferred channels</Label>
-                  <Input
-                    id="settings-preferred"
-                    readOnly
-                    value={contacts?.preferredContactChannels?.join(', ') ?? 'Auto'}
-                  />
-                </div>
+              <div className="space-y-1 w-full">
+                <Collapsible className="rounded-2xl w-full">
+                  <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
+                      <Mail className="h-5 w-5" />
+                    </span>
+                    <div className="flex-1">
+                      <div className="text-sm font-medium">Email</div>
+                      <div className="text-xs text-muted-foreground">
+                        {contacts?.email ?? 'Not provided'}
+                      </div>
+                    </div>
+                    <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="py-4 w-full">
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="space-y-2 sm:col-span-2">
+                        <Label htmlFor="settings-contact-email">Email</Label>
+                        <Input
+                          id="settings-contact-email"
+                          readOnly
+                          value={contacts?.email ?? 'Not provided'}
+                        />
+                      </div>
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+                <Separator />
+                <Collapsible className="rounded-2xl w-full">
+                  <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
+                      <Phone className="h-5 w-5" />
+                    </span>
+                    <div className="flex-1">
+                      <div className="text-sm font-medium">Phone</div>
+                      <div className="text-xs text-muted-foreground">
+                        {contacts?.phoneE164 ?? 'Not provided'}
+                      </div>
+                    </div>
+                    <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="py-4 w-full">
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="space-y-2 sm:col-span-2">
+                        <Label htmlFor="settings-contact-phone">Phone</Label>
+                        <Input
+                          id="settings-contact-phone"
+                          readOnly
+                          value={contacts?.phoneE164 ?? 'Not provided'}
+                        />
+                      </div>
+                      <div className="sm:col-span-2 flex items-center justify-between rounded-xl border border-border/60 px-4 py-3">
+                        <div>
+                          <div className="text-sm font-medium">Preferred channel</div>
+                          <div className="text-xs text-muted-foreground">
+                            Receive notifications by SMS.
+                          </div>
+                        </div>
+                        <Switch
+                          defaultChecked={preferredChannels.includes('sms')}
+                          aria-label="Preferred SMS notifications"
+                        />
+                      </div>
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+                <Separator />
+                <Collapsible className="rounded-2xl w-full">
+                  <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
+                      <MessageCircle className="h-5 w-5" />
+                    </span>
+                    <div className="flex-1">
+                      <div className="text-sm font-medium">WhatsApp</div>
+                      <div className="text-xs text-muted-foreground">
+                        {contacts?.whatsappE164 ?? 'Not provided'}
+                      </div>
+                    </div>
+                    <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="py-4 w-full">
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="space-y-2 sm:col-span-2">
+                        <Label htmlFor="settings-contact-whatsapp">WhatsApp</Label>
+                        <Input
+                          id="settings-contact-whatsapp"
+                          readOnly
+                          value={contacts?.whatsappE164 ?? 'Not provided'}
+                        />
+                      </div>
+                      <div className="sm:col-span-2 flex items-center justify-between rounded-xl border border-border/60 px-4 py-3">
+                        <div>
+                          <div className="text-sm font-medium">Preferred channel</div>
+                          <div className="text-xs text-muted-foreground">
+                            Receive notifications by WhatsApp.
+                          </div>
+                        </div>
+                        <Switch
+                          defaultChecked={preferredChannels.includes('whatsapp')}
+                          aria-label="Preferred WhatsApp notifications"
+                        />
+                      </div>
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
               </div>
             </div>
           </TabsContent>
