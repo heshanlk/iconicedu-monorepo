@@ -532,7 +532,7 @@ function UserSettingsTabs({
                                   }
                                 >
                                   <SelectTrigger className="w-full">
-                                  <SelectValue placeholder="Select color" />
+                                    <SelectValue placeholder="Select color" />
                                   </SelectTrigger>
                                   <SelectContent>
                                     {PROFILE_THEME_OPTIONS.map((option) => (
