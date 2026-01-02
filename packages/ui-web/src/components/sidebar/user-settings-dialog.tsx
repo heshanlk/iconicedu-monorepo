@@ -5,10 +5,14 @@ import {
   BadgeCheck,
   Bell,
   ChevronRight,
+  Clock,
   CreditCard,
+  Globe,
+  Languages,
   Mail,
   MapPin,
   MessageCircle,
+  Palette,
   Phone,
   Plus,
   ShieldCheck,
@@ -56,7 +60,6 @@ import { cn } from '@iconicedu/ui-web/lib/utils';
 export type UserSettingsTab =
   | 'account'
   | 'preferences'
-  | 'contact'
   | 'location'
   | 'security'
   | 'family'
@@ -70,7 +73,6 @@ const SETTINGS_TABS: Array<{
 }> = [
   { value: 'account', label: 'Account', icon: BadgeCheck },
   { value: 'preferences', label: 'Preferences', icon: SlidersHorizontal },
-  { value: 'contact', label: 'Contact', icon: Bell },
   { value: 'location', label: 'Location', icon: MapPin },
   { value: 'security', label: 'Security', icon: ShieldCheck },
   { value: 'family', label: 'Family', icon: Users },
@@ -185,6 +187,10 @@ function UserSettingsTabs({
   const [profileThemes, setProfileThemes] = React.useState<Record<string, ThemeKey>>({});
   const [preferredChannelSelections, setPreferredChannelSelections] =
     React.useState<string[]>(preferredChannels);
+  const currentThemeKey = profileThemes[profile.ids.id] ?? profile.ui?.themeKey ?? 'teal';
+  const currentThemeLabel =
+    PROFILE_THEME_OPTIONS.find((option) => option.value === currentThemeKey)
+      ?.label ?? 'Accent color';
 
   const togglePreferredChannel = (channel: string, enabled: boolean) => {
     setPreferredChannelSelections((prev) => {
@@ -549,57 +555,24 @@ function UserSettingsTabs({
 
           <TabsContent value="preferences" className="mt-0 space-y-8 w-full">
             <div className="space-y-3">
-              <h3 className="text-base font-semibold">Locale & time</h3>
-              <Separator />
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="settings-timezone">Timezone</Label>
-                  <Input id="settings-timezone" readOnly value={prefs.timezone} />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="settings-locale">Locale</Label>
-                  <Input id="settings-locale" readOnly value={prefs.locale ?? 'Auto'} />
-                </div>
-              </div>
-            </div>
-            <div className="space-y-3">
-              <h3 className="text-base font-semibold">Languages</h3>
-              <Separator />
-              {prefs.languagesSpoken?.length ? (
-                <div className="flex flex-wrap gap-2">
-                  {prefs.languagesSpoken.map((language) => (
-                    <Badge key={language} variant="secondary">
-                      {language}
-                    </Badge>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-sm text-muted-foreground">No languages added yet.</p>
-              )}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="contact" className="mt-0 space-y-8 w-full">
-            <div className="space-y-3">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="space-y-1">
-                  <h3 className="text-base font-semibold">Contact methods</h3>
+                  <h3 className="text-base font-semibold">Preferences</h3>
                   <p className="text-sm text-muted-foreground">
-                    Choose how you want to receive notifications and updates.
+                    Update your locale, language, and appearance settings.
                   </p>
                 </div>
               </div>
-              <Separator />
               <div className="space-y-1 w-full">
                 <Collapsible className="rounded-2xl w-full">
                   <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
                     <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
-                      <Mail className="h-5 w-5" />
+                      <Palette className="h-5 w-5" />
                     </span>
                     <div className="flex-1">
-                      <div className="text-sm font-medium">Email</div>
+                      <div className="text-sm font-medium">Accent color</div>
                       <div className="text-xs text-muted-foreground">
-                        {contacts?.email ?? 'Not provided'}
+                        {currentThemeLabel}
                       </div>
                     </div>
                     <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
@@ -607,12 +580,35 @@ function UserSettingsTabs({
                   <CollapsibleContent className="py-4 w-full">
                     <div className="grid gap-4 sm:grid-cols-2">
                       <div className="space-y-2 sm:col-span-2">
-                        <Label htmlFor="settings-contact-email">Email</Label>
-                        <Input
-                          id="settings-contact-email"
-                          readOnly
-                          value={contacts?.email ?? 'Not provided'}
-                        />
+                        <Label>Accent color</Label>
+                        <Select
+                          value={currentThemeKey}
+                          onValueChange={(value) =>
+                            setProfileThemes((prev) => ({
+                              ...prev,
+                              [profile.ids.id]: value as ThemeKey,
+                            }))
+                          }
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select color" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {PROFILE_THEME_OPTIONS.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                <span
+                                  className={`flex items-center gap-2 theme-${option.value}`}
+                                >
+                                  <span className="theme-swatch h-3.5 w-3.5 rounded-full" />
+                                  {option.label}
+                                </span>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="sm:col-span-2 flex justify-end">
+                        <Button size="sm">Save</Button>
                       </div>
                     </div>
                   </CollapsibleContent>
@@ -621,12 +617,12 @@ function UserSettingsTabs({
                 <Collapsible className="rounded-2xl w-full">
                   <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
                     <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
-                      <Phone className="h-5 w-5" />
+                      <Clock className="h-5 w-5" />
                     </span>
                     <div className="flex-1">
-                      <div className="text-sm font-medium">Phone</div>
+                      <div className="text-sm font-medium">Timezone</div>
                       <div className="text-xs text-muted-foreground">
-                        {contacts?.phoneE164 ?? 'Not provided'}
+                        {prefs.timezone}
                       </div>
                     </div>
                     <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
@@ -634,24 +630,11 @@ function UserSettingsTabs({
                   <CollapsibleContent className="py-4 w-full">
                     <div className="grid gap-4 sm:grid-cols-2">
                       <div className="space-y-2 sm:col-span-2">
-                        <Label htmlFor="settings-contact-phone">Phone</Label>
-                        <Input
-                          id="settings-contact-phone"
-                          readOnly
-                          value={contacts?.phoneE164 ?? 'Not provided'}
-                        />
+                        <Label htmlFor="settings-timezone">Timezone</Label>
+                        <Input id="settings-timezone" defaultValue={prefs.timezone} />
                       </div>
-                      <div className="sm:col-span-2 flex items-center justify-between rounded-xl border border-border/60 px-4 py-3">
-                        <div>
-                          <div className="text-sm font-medium">Preferred channel</div>
-                          <div className="text-xs text-muted-foreground">
-                            Receive notifications by SMS.
-                          </div>
-                        </div>
-                        <Switch
-                          defaultChecked={preferredChannels.includes('sms')}
-                          aria-label="Preferred SMS notifications"
-                        />
+                      <div className="sm:col-span-2 flex justify-end">
+                        <Button size="sm">Save</Button>
                       </div>
                     </div>
                   </CollapsibleContent>
@@ -660,12 +643,12 @@ function UserSettingsTabs({
                 <Collapsible className="rounded-2xl w-full">
                   <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
                     <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
-                      <MessageCircle className="h-5 w-5" />
+                      <Globe className="h-5 w-5" />
                     </span>
                     <div className="flex-1">
-                      <div className="text-sm font-medium">WhatsApp</div>
+                      <div className="text-sm font-medium">Locale</div>
                       <div className="text-xs text-muted-foreground">
-                        {contacts?.whatsappE164 ?? 'Not provided'}
+                        {prefs.locale ?? 'Auto'}
                       </div>
                     </div>
                     <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
@@ -673,24 +656,43 @@ function UserSettingsTabs({
                   <CollapsibleContent className="py-4 w-full">
                     <div className="grid gap-4 sm:grid-cols-2">
                       <div className="space-y-2 sm:col-span-2">
-                        <Label htmlFor="settings-contact-whatsapp">WhatsApp</Label>
+                        <Label htmlFor="settings-locale">Locale</Label>
+                        <Input id="settings-locale" defaultValue={prefs.locale ?? ''} />
+                      </div>
+                      <div className="sm:col-span-2 flex justify-end">
+                        <Button size="sm">Save</Button>
+                      </div>
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+                <Separator />
+                <Collapsible className="rounded-2xl w-full">
+                  <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
+                      <Languages className="h-5 w-5" />
+                    </span>
+                    <div className="flex-1">
+                      <div className="text-sm font-medium">Languages spoken</div>
+                      <div className="text-xs text-muted-foreground">
+                        {prefs.languagesSpoken?.length
+                          ? prefs.languagesSpoken.join(', ')
+                          : 'Not set'}
+                      </div>
+                    </div>
+                    <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="py-4 w-full">
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="space-y-2 sm:col-span-2">
+                        <Label htmlFor="settings-languages">Languages spoken</Label>
                         <Input
-                          id="settings-contact-whatsapp"
-                          readOnly
-                          value={contacts?.whatsappE164 ?? 'Not provided'}
+                          id="settings-languages"
+                          defaultValue={prefs.languagesSpoken?.join(', ') ?? ''}
+                          placeholder="English, Spanish"
                         />
                       </div>
-                      <div className="sm:col-span-2 flex items-center justify-between rounded-xl border border-border/60 px-4 py-3">
-                        <div>
-                          <div className="text-sm font-medium">Preferred channel</div>
-                          <div className="text-xs text-muted-foreground">
-                            Receive notifications by WhatsApp.
-                          </div>
-                        </div>
-                        <Switch
-                          defaultChecked={preferredChannels.includes('whatsapp')}
-                          aria-label="Preferred WhatsApp notifications"
-                        />
+                      <div className="sm:col-span-2 flex justify-end">
+                        <Button size="sm">Save</Button>
                       </div>
                     </div>
                   </CollapsibleContent>
@@ -698,6 +700,7 @@ function UserSettingsTabs({
               </div>
             </div>
           </TabsContent>
+
 
           <TabsContent value="location" className="mt-0 space-y-8 w-full">
             <div className="space-y-3">
