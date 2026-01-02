@@ -88,7 +88,6 @@ export interface UserMetaVM {
 }
 
 export interface UserUiVM {
-  color?: string | null;
   themeKey?: ThemeKey | null;
 }
 
