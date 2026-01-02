@@ -33,6 +33,10 @@ import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
 import { Separator } from '../../ui/separator';
 import { Switch } from '../../ui/switch';
 import { ScrollArea } from '../../ui/scroll-area';
+import { Card, CardAction, CardContent } from '../../ui/card';
+import { Item, ItemAction, ItemContent, ItemIcon } from '../../ui/item';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../../ui/tooltip';
+import { InputGroup, InputGroupAddon, InputGroupInput } from '../../ui/input-group';
 import {
   Select,
   SelectContent,
@@ -174,6 +178,7 @@ function UserSettingsTabs({
   const email = contacts?.email ?? '';
   const location = profile.location;
   const roles = account?.access?.userRoles ?? [];
+  const orgLabel = account?.ids.orgId ?? 'Unknown org';
   const [profileThemes, setProfileThemes] = React.useState<Record<string, ThemeKey>>({});
   const guardianChildren =
     profile.kind === 'guardian' ? (profile.children?.items ?? []) : [];
@@ -230,8 +235,8 @@ function UserSettingsTabs({
       <div
         className={cn(
           isMobile
-            ? 'flex min-h-0 flex-1 flex-col gap-4'
-            : 'grid min-h-0 h-full grid-cols-[180px_1fr] gap-6',
+            ? 'flex min-h-0 flex-1 flex-col gap-4 w-full'
+            : 'grid min-h-0 h-full w-full grid-cols-[180px_1fr] gap-6',
         )}
       >
         <TabsList
@@ -258,47 +263,255 @@ function UserSettingsTabs({
           })}
         </TabsList>
 
-        <ScrollArea className={cn('min-h-0 flex-1', isMobile && 'flex-1')}>
-          <TabsContent value="account" className="mt-0 space-y-8">
+        <ScrollArea className={cn('min-h-0 flex-1 w-full min-w-0', isMobile && 'flex-1')}>
+          <TabsContent value="account" className="mt-0 space-y-8 w-full">
             <div className="space-y-3">
-              <h3 className="text-base font-semibold">Profile</h3>
-              <Separator />
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="settings-name">Display name</Label>
-                  <Input id="settings-name" readOnly value={profileBlock.displayName} />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="settings-email">Email</Label>
-                  <Input id="settings-email" readOnly value={email} />
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="space-y-1">
+                  <h3 className="text-base font-semibold">Account Settings</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Manage email, password, and contact verification settings.
+                  </p>
                 </div>
               </div>
-            </div>
-            <div className="space-y-3">
-              <h3 className="text-base font-semibold">Presence</h3>
-              <Separator />
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="settings-status">Status</Label>
-                  <Input
-                    id="settings-status"
-                    readOnly
-                    value={profile.presence?.state.text ?? 'Available'}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="settings-last-seen">Last seen</Label>
-                  <Input
-                    id="settings-last-seen"
-                    readOnly
-                    value={profile.presence?.lastSeenAt ?? 'Just now'}
-                  />
-                </div>
+              {/* <Separator /> */}
+              <div className="space-y-1 w-full">
+                <Collapsible className="rounded-2xl w-full">
+                  <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
+                    <span
+                      className={cn(
+                        'flex h-10 w-10 items-center justify-center rounded-full border',
+                        contacts?.emailVerified
+                          ? 'bg-green-100 text-green-700'
+                          : 'bg-muted text-muted-foreground',
+                      )}
+                    >
+                      <BadgeCheck className="h-5 w-5" />
+                    </span>
+                    <div className="flex-1">
+                      <div className="text-sm font-medium">
+                        {contacts?.emailVerified
+                          ? 'Your email has been verified.'
+                          : 'Verify your email.'}
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        Manage email and password
+                      </div>
+                    </div>
+                    <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="py-4 w-full">
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="space-y-2 sm:col-span-2">
+                        <Label htmlFor="settings-account-email">Email</Label>
+                        <InputGroup>
+                          <InputGroupInput
+                            id="settings-account-email"
+                            defaultValue={email}
+                            aria-label="Email"
+                          />
+                          <InputGroupAddon align="inline-end">
+                            {contacts?.emailVerified ? (
+                              <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
+                                <BadgeCheck className="h-3 w-3" />
+                                <span className="sr-only">Verified</span>
+                              </Badge>
+                            ) : (
+                              <Badge className="bg-muted text-muted-foreground">
+                                <BadgeCheck className="h-3 w-3 text-muted-foreground" />
+                                <span className="sr-only">Not verified</span>
+                              </Badge>
+                            )}
+                            {contacts?.verifiedAt ? (
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className="text-xs text-muted-foreground cursor-help">
+                                    Verified on
+                                  </span>
+                                </TooltipTrigger>
+                                <TooltipContent>{contacts.verifiedAt}</TooltipContent>
+                              </Tooltip>
+                            ) : null}
+                          </InputGroupAddon>
+                        </InputGroup>
+                      </div>
+                      <div className="space-y-2 sm:col-span-2">
+                        <Label htmlFor="settings-account-password">New password</Label>
+                        <Input id="settings-account-password" type="password" />
+                      </div>
+                      <div className="space-y-2 sm:col-span-2">
+                        <Label htmlFor="settings-account-password-confirm">
+                          Confirm password
+                        </Label>
+                        <Input id="settings-account-password-confirm" type="password" />
+                      </div>
+                      <div className="sm:col-span-2 flex justify-end">
+                        <Button size="sm">Save</Button>
+                      </div>
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+                <Separator />
+              </div>
+              <div className="space-y-1 w-full">
+                <Collapsible className="rounded-2xl w-full">
+                  <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
+                    <span
+                      className={cn(
+                        'flex h-10 w-10 items-center justify-center rounded-full border',
+                        contacts?.phoneVerified
+                          ? 'bg-green-100 text-green-700'
+                          : 'bg-muted text-muted-foreground',
+                      )}
+                    >
+                      <BadgeCheck className="h-5 w-5" />
+                    </span>
+                    <div className="flex-1">
+                      <div className="text-sm font-medium">
+                        {contacts?.phoneVerified
+                          ? 'Your phone number has been verified.'
+                          : 'Verify your phone number.'}
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        Manage phone number
+                      </div>
+                    </div>
+                    <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="py-4 w-full">
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="space-y-2 sm:col-span-2">
+                        <Label htmlFor="settings-account-phone">Phone</Label>
+                        <InputGroup>
+                          <InputGroupInput
+                            id="settings-account-phone"
+                            defaultValue={contacts?.phoneE164 ?? ''}
+                            aria-label="Phone"
+                          />
+                          <InputGroupAddon align="inline-end">
+                            {contacts?.phoneVerified ? (
+                              <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
+                                <BadgeCheck className="h-3 w-3" />
+                                <span className="sr-only">Verified</span>
+                              </Badge>
+                            ) : (
+                              <Badge className="bg-muted text-muted-foreground">
+                                <BadgeCheck className="h-3 w-3 text-muted-foreground" />
+                                <span className="sr-only">Not verified</span>
+                              </Badge>
+                            )}
+                            {contacts?.verifiedAt ? (
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className="text-xs text-muted-foreground cursor-help">
+                                    Verified on
+                                  </span>
+                                </TooltipTrigger>
+                                <TooltipContent>{contacts.verifiedAt}</TooltipContent>
+                              </Tooltip>
+                            ) : null}
+                          </InputGroupAddon>
+                        </InputGroup>
+                        {contacts?.verifiedAt ? (
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <span className="text-xs text-muted-foreground cursor-help">
+                                Verified on
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent>{contacts.verifiedAt}</TooltipContent>
+                          </Tooltip>
+                        ) : null}
+                      </div>
+                      <div className="sm:col-span-2 flex justify-end">
+                        <Button size="sm">Save</Button>
+                      </div>
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+                <Separator />
+              </div>
+              <div className="space-y-1 w-full">
+                <Collapsible className="rounded-2xl w-full">
+                  <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
+                    <span
+                      className={cn(
+                        'flex h-10 w-10 items-center justify-center rounded-full border',
+                        contacts?.whatsappVerified
+                          ? 'bg-green-100 text-green-700'
+                          : 'bg-muted text-muted-foreground',
+                      )}
+                    >
+                      <BadgeCheck className="h-5 w-5" />
+                    </span>
+                    <div className="flex-1">
+                      <div className="text-sm font-medium">
+                        {contacts?.whatsappVerified
+                          ? 'Your WhatsApp number has been verified.'
+                          : 'Verify your WhatsApp number.'}
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        Manage WhatsApp number
+                      </div>
+                    </div>
+                    <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="py-4 w-full">
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="space-y-2 sm:col-span-2">
+                        <Label htmlFor="settings-account-whatsapp">WhatsApp</Label>
+                        <InputGroup>
+                          <InputGroupInput
+                            id="settings-account-whatsapp"
+                            defaultValue={contacts?.whatsappE164 ?? ''}
+                            aria-label="WhatsApp"
+                          />
+                          <InputGroupAddon align="inline-end">
+                            {contacts?.whatsappVerified ? (
+                              <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
+                                <BadgeCheck className="h-3 w-3" />
+                                <span className="sr-only">Verified</span>
+                              </Badge>
+                            ) : (
+                              <Badge className="bg-muted text-muted-foreground">
+                                <BadgeCheck className="h-3 w-3 text-muted-foreground" />
+                                <span className="sr-only">Not verified</span>
+                              </Badge>
+                            )}
+                            {contacts?.verifiedAt ? (
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className="text-xs text-muted-foreground cursor-help">
+                                    Verified on
+                                  </span>
+                                </TooltipTrigger>
+                                <TooltipContent>{contacts.verifiedAt}</TooltipContent>
+                              </Tooltip>
+                            ) : null}
+                          </InputGroupAddon>
+                        </InputGroup>
+                        {contacts?.verifiedAt ? (
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <span className="text-xs text-muted-foreground cursor-help">
+                                Verified on
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent>{contacts.verifiedAt}</TooltipContent>
+                          </Tooltip>
+                        ) : null}
+                      </div>
+                      <div className="sm:col-span-2 flex justify-end">
+                        <Button size="sm">Save</Button>
+                      </div>
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
               </div>
             </div>
           </TabsContent>
 
-          <TabsContent value="preferences" className="mt-0 space-y-8">
+          <TabsContent value="preferences" className="mt-0 space-y-8 w-full">
             <div className="space-y-3">
               <h3 className="text-base font-semibold">Locale & time</h3>
               <Separator />
@@ -330,7 +543,7 @@ function UserSettingsTabs({
             </div>
           </TabsContent>
 
-          <TabsContent value="contact" className="mt-0 space-y-8">
+          <TabsContent value="contact" className="mt-0 space-y-8 w-full">
             <div className="space-y-3">
               <h3 className="text-base font-semibold">Contact methods</h3>
               <Separator />
@@ -371,7 +584,7 @@ function UserSettingsTabs({
             </div>
           </TabsContent>
 
-          <TabsContent value="location" className="mt-0 space-y-8">
+          <TabsContent value="location" className="mt-0 space-y-8 w-full">
             <div className="space-y-3">
               <h3 className="text-base font-semibold">Location</h3>
               <Separator />
@@ -412,7 +625,7 @@ function UserSettingsTabs({
             </div>
           </TabsContent>
 
-          <TabsContent value="security" className="mt-0 space-y-8">
+          <TabsContent value="security" className="mt-0 space-y-8 w-full">
             <div className="space-y-3">
               <h3 className="text-base font-semibold">Account status</h3>
               <Separator />
@@ -452,7 +665,7 @@ function UserSettingsTabs({
             </div>
           </TabsContent>
 
-          <TabsContent value="family" className="mt-0 space-y-8">
+          <TabsContent value="family" className="mt-0 space-y-8 w-full">
             <div className="space-y-3">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="space-y-1">
@@ -569,7 +782,7 @@ function UserSettingsTabs({
             </div>
           </TabsContent>
 
-          <TabsContent value="billing" className="mt-0 space-y-8">
+          <TabsContent value="billing" className="mt-0 space-y-8 w-full">
             <div className="space-y-3">
               <h3 className="text-base font-semibold">Plan</h3>
               <Separator />
@@ -594,7 +807,7 @@ function UserSettingsTabs({
             </div>
           </TabsContent>
 
-          <TabsContent value="notifications" className="mt-0 space-y-8">
+          <TabsContent value="notifications" className="mt-0 space-y-8 w-full">
             <div className="space-y-3">
               <h3 className="text-base font-semibold">Notifications</h3>
               <Separator />
