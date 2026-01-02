@@ -78,11 +78,6 @@ const SETTINGS_TABS: Array<{
 ];
 
 const PROFILE_THEME_OPTIONS = [
-  { value: 'slate', label: 'Slate' },
-  { value: 'gray', label: 'Gray' },
-  { value: 'zinc', label: 'Zinc' },
-  { value: 'neutral', label: 'Neutral' },
-  { value: 'stone', label: 'Stone' },
   { value: 'red', label: 'Red' },
   { value: 'orange', label: 'Orange' },
   { value: 'amber', label: 'Amber' },
@@ -149,7 +144,7 @@ export function UserSettingsDialog({
         <DrawerContent className="max-h-[85vh]">
           <div className="flex max-h-[85vh] flex-col">
             <DrawerHeader className="items-start">
-            <DrawerTitle>Settings</DrawerTitle>
+              <DrawerTitle>Settings</DrawerTitle>
             </DrawerHeader>
             <div className="flex-1 overflow-y-auto px-4 pb-4">{content}</div>
           </div>
@@ -208,9 +203,7 @@ function UserSettingsTabs({
   const familyLinkItems = familyLinks ?? [];
   const linkedAccountItems = linkedAccounts ?? [];
   const linkedProfileItems = linkedProfiles ?? [];
-  const [profileThemes, setProfileThemes] = React.useState<Record<string, ThemeKey>>(
-    {},
-  );
+  const [profileThemes, setProfileThemes] = React.useState<Record<string, ThemeKey>>({});
   const childProfilesByAccountId = React.useMemo(() => {
     const map = new Map<string, UserProfileVM>();
     linkedProfileItems.forEach((item) => {
@@ -548,7 +541,8 @@ function UserSettingsTabs({
                       .slice(0, 2)
                       .toUpperCase();
                     const isSelf = !member.canRemove;
-                    const themeValue = profileThemes[member.id] ?? member.themeKey ?? 'teal';
+                    const themeValue =
+                      profileThemes[member.id] ?? member.themeKey ?? 'teal';
                     const themeClass = `theme-${themeValue}`;
                     return (
                       <Collapsible key={member.id} className="rounded-2xl">
@@ -583,8 +577,8 @@ function UserSettingsTabs({
                                 <Label>Display name</Label>
                                 <Input defaultValue={member.name} />
                               </div>
-                            <div className="space-y-2">
-                              <Label>Profile theme</Label>
+                              <div className="space-y-2">
+                                <Label>Profile theme</Label>
                                 <Select
                                   value={themeValue}
                                   onValueChange={(value) =>
@@ -600,7 +594,9 @@ function UserSettingsTabs({
                                   <SelectContent>
                                     {PROFILE_THEME_OPTIONS.map((option) => (
                                       <SelectItem key={option.value} value={option.value}>
-                                        <span className={`flex items-center gap-2 theme-${option.value}`}>
+                                        <span
+                                          className={`flex items-center gap-2 theme-${option.value}`}
+                                        >
                                           <span className="theme-swatch h-3.5 w-3.5 rounded-full" />
                                           {option.label}
                                         </span>

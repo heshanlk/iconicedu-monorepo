@@ -26,6 +26,7 @@ import {
 } from '../../ui/tooltip';
 import { cn } from '../../lib/utils';
 import { AvatarWithStatus } from '../shared/avatar-with-status';
+import { ThemedIconBadge } from '../shared/themed-icon';
 import type { ChannelVM, UserProfileVM } from '@iconicedu/shared-types';
 import { useMessagesState } from './context/messages-state-provider';
 
@@ -210,11 +211,19 @@ export const MessagesContainerHeader = memo(function MessagesContainerHeader({
     }
     const Icon = CHANNEL_ICON_MAP[channel.basics.iconKey ?? ''] ?? Sparkles;
     return (
-      <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-muted text-muted-foreground">
-        <Icon className="h-3.5 w-3.5" />
-      </span>
+      <ThemedIconBadge
+        icon={Icon}
+        themeKey={channel.ui?.themeKey ?? null}
+        size="sm"
+      />
     );
-  }, [channel.basics.kind, channel.basics.iconKey, otherParticipant, toggle]);
+  }, [
+    channel.basics.kind,
+    channel.basics.iconKey,
+    channel.ui?.themeKey,
+    otherParticipant,
+    toggle,
+  ]);
 
   const subtitleItems: HeaderSubtitleItem[] = useMemo(
     () =>

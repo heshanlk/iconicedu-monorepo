@@ -1,6 +1,7 @@
 'use client';
 
 import { memo } from 'react';
+import type { CSSProperties } from 'react';
 import { Bookmark, Info, LifeBuoy } from 'lucide-react';
 import { Button } from '../../ui/button';
 import { cn } from '../../lib/utils';
@@ -13,18 +14,32 @@ const ActionButton = memo(function ActionButton({
   active,
   onClick,
   disabled,
+  themeKey,
+  useThemeHover,
 }: {
   icon: typeof Info;
   label: string;
   active?: boolean;
   onClick: () => void;
   disabled?: boolean;
+  themeKey?: string | null;
+  useThemeHover?: boolean;
 }) {
+  const themeClass = themeKey ? `theme-${themeKey}` : '';
+  const themeHoverStyle = useThemeHover
+    ? ({
+        ['--theme-hover' as string]:
+          'color-mix(in oklab, var(--theme-bg) 18%, transparent)',
+      } as CSSProperties)
+    : undefined;
   return (
     <Button
       variant="ghost"
       size="icon"
-      className={cn('h-9 w-9 text-muted-foreground', active && 'text-primary')}
+      className={cn(
+        'group h-9 w-9 text-muted-foreground',
+        active && 'text-primary',
+      )}
       onClick={onClick}
       aria-label={label}
       disabled={disabled}
@@ -33,7 +48,11 @@ const ActionButton = memo(function ActionButton({
         className={cn(
           'flex h-9 w-9 items-center justify-center rounded-full bg-muted',
           active && 'bg-primary/10',
+          useThemeHover && themeClass,
+          useThemeHover &&
+            'group-hover:bg-[var(--theme-hover)] group-hover:text-[var(--theme-bg)]',
         )}
+        style={themeHoverStyle}
       >
         <Icon className="h-4 w-4" />
       </span>
@@ -81,6 +100,10 @@ export const MessagesContainerHeaderActions = memo(
                 : ({ key: 'channel_info' } as const);
           const isProfileIntent =
             resolvedIntentKey === 'profile' || action.key === 'info';
+          const useThemeHover =
+            action.key === 'info' &&
+            channel.basics.purpose === 'learning-space' &&
+            !!channel.ui?.themeKey;
           const active = isProfileIntent
             ? isActive('profile', {
                 key: 'profile',
@@ -99,6 +122,8 @@ export const MessagesContainerHeaderActions = memo(
               active={active}
               onClick={() => toggle(intent)}
               disabled={disabled}
+              themeKey={channel.ui?.themeKey ?? null}
+              useThemeHover={useThemeHover}
             />
           );
         })}

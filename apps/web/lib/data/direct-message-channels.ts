@@ -78,6 +78,7 @@ export const DM_CHANNEL_ELENA: ChannelVM = {
     },
   },
   ui: {
+    themeKey: EDUCATOR_ELENA.ui?.themeKey ?? null,
     headerQuickMetaActions: DM_HEADER_QUICK_META,
     headerActions: [
       { key: 'info', label: 'Info', iconKey: 'info' },
@@ -126,6 +127,7 @@ export const DM_CHANNEL_KAI: ChannelVM = {
     },
   },
   ui: {
+    themeKey: EDUCATOR_KAI.ui?.themeKey ?? null,
     headerQuickMetaActions: DM_HEADER_QUICK_META,
     headerActions: [
       { key: 'info', label: 'Info', iconKey: 'info' },
@@ -174,6 +176,7 @@ export const DM_CHANNEL_PRIYA: ChannelVM = {
     },
   },
   ui: {
+    themeKey: EDUCATOR_PRIYA.ui?.themeKey ?? null,
     headerQuickMetaActions: DM_HEADER_QUICK_META,
     headerActions: [
       { key: 'info', label: 'Info', iconKey: 'info' },
@@ -222,6 +225,7 @@ export const DM_CHANNEL_LEO: ChannelVM = {
     },
   },
   ui: {
+    themeKey: EDUCATOR_LEO.ui?.themeKey ?? null,
     headerQuickMetaActions: DM_HEADER_QUICK_META,
     headerActions: [
       { key: 'info', label: 'Info', iconKey: 'info' },
@@ -270,6 +274,7 @@ export const DM_CHANNEL_SOFIA: ChannelVM = {
     },
   },
   ui: {
+    themeKey: EDUCATOR_SOFIA.ui?.themeKey ?? null,
     headerQuickMetaActions: DM_HEADER_QUICK_META,
     headerActions: [
       { key: 'info', label: 'Info', iconKey: 'info' },

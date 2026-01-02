@@ -59,6 +59,7 @@ export const SUPPORT_CHANNEL: ChannelVM = {
   },
   ui: {
     defaultRightPanelOpen: false,
+    themeKey: STAFF_SUPPORT.ui?.themeKey ?? null,
     headerQuickMetaActions: SUPPORT_HEADER_QUICK_META,
     headerActions: [{ key: 'info', label: 'Support', iconKey: 'info' }],
     infoPanel: {

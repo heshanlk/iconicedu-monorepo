@@ -1,6 +1,7 @@
 'use client';
 
 import { memo } from 'react';
+import type { CSSProperties } from 'react';
 import {
   ClipboardCheck,
   FileText,
@@ -25,10 +26,12 @@ import { Button } from '../../../ui/button';
 import { ButtonGroup } from '../../../ui/button-group';
 import { Separator } from '../../../ui/separator';
 import { AvatarWithStatus } from '../../shared/avatar-with-status';
+import { ThemedIconBadge } from '../../shared/themed-icon';
 import { MediaFilesPanel } from '../shared/media-files-panel';
 import { useMessagesState } from '../context/messages-state-provider';
 import { formatEventTime } from '../../../lib/class-schedule-utils';
 import { useIsMobile } from '../../../hooks/use-mobile';
+import { cn } from '../../../lib/utils';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -55,15 +58,32 @@ const ActionButton = memo(function ActionButton({
   label,
   href,
   isInactive,
+  themeKey,
 }: {
   icon: typeof Link2;
   label: string;
   href?: string | null;
   isInactive?: boolean;
+  themeKey?: string | null;
 }) {
+  const themeClass = themeKey ? `theme-${themeKey}` : '';
+  const themeHoverStyle = themeKey
+    ? ({
+        ['--theme-hover' as string]:
+          'color-mix(in oklab, var(--theme-bg) 18%, transparent)',
+      } as CSSProperties)
+    : undefined;
   const content = (
     <>
-      <span className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors group-hover:bg-primary/15 group-hover:text-primary">
+      <span
+        className={cn(
+          'flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors',
+          themeKey
+            ? `${themeClass} group-hover:bg-[var(--theme-hover)] group-hover:text-[var(--theme-bg)]`
+            : 'group-hover:bg-primary/15 group-hover:text-primary',
+        )}
+        style={themeHoverStyle}
+      >
         <Icon className="h-4 w-4" />
       </span>
       <span className="w-full truncate text-center">{label}</span>
@@ -107,6 +127,16 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
   const { channel, toggle, messageFilter, toggleMessageFilter, currentUserId } =
     useMessagesState();
   const isMobile = useIsMobile();
+  const themeKey = channel.ui?.themeKey ?? null;
+  const themeHoverClass = themeKey
+    ? `theme-${themeKey} group-hover:bg-[var(--theme-hover)] group-hover:text-[var(--theme-bg)]`
+    : 'group-hover:bg-primary/15 group-hover:text-primary';
+  const themeHoverStyle = themeKey
+    ? ({
+        ['--theme-hover' as string]:
+          'color-mix(in oklab, var(--theme-bg) 18%, transparent)',
+      } as CSSProperties)
+    : undefined;
 
   const iconKey =
     learningSpace.basics.iconKey ?? channel.basics.iconKey ?? 'sparkles';
@@ -122,9 +152,11 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
   return (
     <div className="flex-1 min-w-0">
       <div className="flex flex-col items-center gap-3 p-6 min-w-0 text-center">
-        <div className="flex h-20 w-20 items-center justify-center rounded-full bg-muted text-muted-foreground">
-          <Icon className="h-8 w-8" />
-        </div>
+        <ThemedIconBadge
+          icon={Icon}
+          themeKey={channel.ui?.themeKey ?? null}
+          size="lg"
+        />
         <div className="text-center min-w-0">
           <h2 className="text-lg font-semibold text-foreground break-words">
             {learningSpace.basics.title}
@@ -160,6 +192,7 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
                 label={link.label}
                 href={link.url}
                 isInactive={link.status === 'inactive'}
+                themeKey={themeKey}
               />
             );
           })}
@@ -168,7 +201,22 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
             className="group h-auto w-16 shrink-0 flex-col items-center gap-2 px-1 py-2 text-[11px] font-medium text-muted-foreground hover:bg-transparent"
             onClick={() => toggleMessageFilter('homework')}
           >
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors group-hover:bg-primary/15 group-hover:text-primary">
+            <span
+              className={cn(
+                'flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors',
+                themeKey
+                  ? `theme-${themeKey} group-hover:bg-[var(--theme-hover)] group-hover:text-[var(--theme-bg)]`
+                  : 'group-hover:bg-primary/15 group-hover:text-primary',
+              )}
+              style={
+                themeKey
+                  ? ({
+                      ['--theme-hover' as string]:
+                        'color-mix(in oklab, var(--theme-bg) 18%, transparent)',
+                    } as CSSProperties)
+                  : undefined
+              }
+            >
               <ClipboardCheck
                 className={messageFilter === 'homework' ? 'text-primary' : undefined}
               />
@@ -184,7 +232,22 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
             className="group h-auto w-16 shrink-0 flex-col items-center gap-2 px-1 py-2 text-[11px] font-medium text-muted-foreground hover:bg-transparent"
             onClick={() => toggleMessageFilter('session-summary')}
           >
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors group-hover:bg-primary/15 group-hover:text-primary">
+            <span
+              className={cn(
+                'flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors',
+                themeKey
+                  ? `theme-${themeKey} group-hover:bg-[var(--theme-hover)] group-hover:text-[var(--theme-bg)]`
+                  : 'group-hover:bg-primary/15 group-hover:text-primary',
+              )}
+              style={
+                themeKey
+                  ? ({
+                      ['--theme-hover' as string]:
+                        'color-mix(in oklab, var(--theme-bg) 18%, transparent)',
+                    } as CSSProperties)
+                  : undefined
+              }
+            >
               <FileText
                 className={
                   messageFilter === 'session-summary' ? 'text-primary' : undefined
@@ -204,7 +267,13 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
             className="group h-auto w-16 shrink-0 flex-col items-center gap-2 px-1 py-2 text-[11px] font-medium text-muted-foreground hover:bg-transparent"
             onClick={() => toggle({ key: 'saved' })}
           >
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors group-hover:bg-primary/15 group-hover:text-primary">
+            <span
+              className={cn(
+                'flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors',
+                themeHoverClass,
+              )}
+              style={themeHoverStyle}
+            >
               <Bookmark className="h-4 w-4" />
             </span>
             <span className="w-full truncate text-center">Saved</span>
@@ -215,7 +284,13 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
                 variant="ghost"
                 className="group h-auto w-16 shrink-0 flex-col items-center gap-2 px-1 py-2 text-[11px] font-medium text-muted-foreground hover:bg-transparent"
               >
-                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors group-hover:bg-primary/15 group-hover:text-primary">
+                <span
+                  className={cn(
+                    'flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors',
+                    themeHoverClass,
+                  )}
+                  style={themeHoverStyle}
+                >
                   <MoreHorizontal className="h-4 w-4" />
                 </span>
                 <span className="w-full truncate text-center">More</span>

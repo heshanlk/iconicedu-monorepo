@@ -16,6 +16,7 @@ import type { MessagesRightPanelIntent } from '@iconicedu/shared-types';
 import { Badge } from '../../../ui/badge';
 import { Separator } from '../../../ui/separator';
 import { AvatarWithStatus } from '../../shared/avatar-with-status';
+import { ThemedIconBadge } from '../../shared/themed-icon';
 import { MediaFilesPanel } from '../shared/media-files-panel';
 import { useMessagesState } from '../context/messages-state-provider';
 
@@ -48,9 +49,11 @@ const ChannelInfoPanelContent = memo(function ChannelInfoPanelContent() {
   return (
     <div className="flex-1 min-w-0">
       <div className="flex flex-col items-center gap-3 p-6 min-w-0">
-        <div className="flex h-20 w-20 items-center justify-center rounded-full bg-muted text-muted-foreground">
-          <TopicIcon className="h-8 w-8" />
-        </div>
+        <ThemedIconBadge
+          icon={TopicIcon}
+          themeKey={channel.ui?.themeKey ?? null}
+          size="lg"
+        />
         <div className="text-center min-w-0">
           <h2 className="text-lg font-semibold text-foreground break-words">
             {channel.basics.topic}

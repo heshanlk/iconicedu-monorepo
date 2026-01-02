@@ -39,6 +39,7 @@ import {
 import { cn } from '../../lib/utils';
 import { Empty, EmptyContent } from '../../ui/empty';
 import { AvatarWithStatus } from '../shared/avatar-with-status';
+import { ThemedIconBadge } from '../shared/themed-icon';
 
 export function NavLearningSpaces({
   learningSpaces,
@@ -110,9 +111,12 @@ export function NavLearningSpaces({
                       className="px-2.5"
                     >
                       <a href={`/dashboard/ls/${channel.ids.id}`}>
-                        <span className="flex size-8 items-center justify-center rounded-full border border-border bg-muted text-muted-foreground overflow-hidden">
-                          <Icon className="size-4.5" />
-                        </span>
+                        <ThemedIconBadge
+                          icon={Icon}
+                          themeKey={channel.ui?.themeKey ?? null}
+                          size="md"
+                          className="shrink-0 rounded-full"
+                        />
                         <div className="min-w-0 flex-1">
                           <div className="truncate text-sm font-medium">
                             {space.basics.title}

@@ -100,6 +100,7 @@ export const MATH_CHANNEL: ChannelVM = {
   ui: {
     defaultRightPanelOpen: true,
     defaultRightPanelKey: 'channel_info',
+    themeKey: 'blue',
     headerQuickMetaActions: makeHeaderQuickMeta('Wed Mar 4 • 5:30 PM'),
     headerActions: [
       { key: 'info', label: 'Info', iconKey: 'info' },
@@ -151,6 +152,7 @@ export const SCIENCE_CHANNEL: ChannelVM = {
   ui: {
     defaultRightPanelOpen: true,
     defaultRightPanelKey: 'channel_info',
+    themeKey: 'emerald',
     headerQuickMetaActions: makeHeaderQuickMeta('Tue Mar 3 • 5:00 PM'),
     headerActions: [
       { key: 'info', label: 'Info', iconKey: 'info' },
@@ -202,6 +204,7 @@ export const ELA_CHANNEL: ChannelVM = {
   ui: {
     defaultRightPanelOpen: true,
     defaultRightPanelKey: 'channel_info',
+    themeKey: 'violet',
     headerQuickMetaActions: makeHeaderQuickMeta('Fri Mar 6 • 4:00 PM'),
     headerActions: [
       { key: 'info', label: 'Info', iconKey: 'info' },
@@ -253,6 +256,7 @@ export const CHESS_CHANNEL: ChannelVM = {
   ui: {
     defaultRightPanelOpen: true,
     defaultRightPanelKey: 'channel_info',
+    themeKey: 'amber',
     headerQuickMetaActions: makeHeaderQuickMeta('Sat Mar 7 • 3:00 PM'),
     headerActions: [
       { key: 'info', label: 'Info', iconKey: 'info' },
