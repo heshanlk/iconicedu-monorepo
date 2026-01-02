@@ -74,15 +74,13 @@ export const DM_CHANNEL_ELENA: ChannelVM = {
       channelId: CHANNEL_IDS.dmEducator1,
       lastReadMessageId: DM_EDU1_MESSAGES_CONNECTION.items[1]?.ids.id,
       lastReadAt: '2026-02-06T18:05:00.000Z',
-      unreadCount: 1,
+      unreadCount: 0,
     },
   },
   ui: {
     themeKey: EDUCATOR_ELENA.ui?.themeKey ?? null,
     headerQuickMetaActions: DM_HEADER_QUICK_META,
-    headerActions: [
-      { key: 'info', label: 'Info', iconKey: 'info' },
-    ],
+    headerActions: [{ key: 'info', label: 'Info', iconKey: 'info' }],
   },
 };
 
@@ -128,9 +126,7 @@ export const DM_CHANNEL_KAI: ChannelVM = {
   ui: {
     themeKey: EDUCATOR_KAI.ui?.themeKey ?? null,
     headerQuickMetaActions: DM_HEADER_QUICK_META,
-    headerActions: [
-      { key: 'info', label: 'Info', iconKey: 'info' },
-    ],
+    headerActions: [{ key: 'info', label: 'Info', iconKey: 'info' }],
   },
 };
 
@@ -170,15 +166,13 @@ export const DM_CHANNEL_PRIYA: ChannelVM = {
       channelId: CHANNEL_IDS.dmEducator3,
       lastReadMessageId: DM_EDU3_MESSAGES_CONNECTION.items[0]?.ids.id,
       lastReadAt: '2026-02-06T19:05:00.000Z',
-      unreadCount: 1,
+      unreadCount: 0,
     },
   },
   ui: {
     themeKey: EDUCATOR_PRIYA.ui?.themeKey ?? null,
     headerQuickMetaActions: DM_HEADER_QUICK_META,
-    headerActions: [
-      { key: 'info', label: 'Info', iconKey: 'info' },
-    ],
+    headerActions: [{ key: 'info', label: 'Info', iconKey: 'info' }],
   },
 };
 
@@ -224,9 +218,7 @@ export const DM_CHANNEL_LEO: ChannelVM = {
   ui: {
     themeKey: EDUCATOR_LEO.ui?.themeKey ?? null,
     headerQuickMetaActions: DM_HEADER_QUICK_META,
-    headerActions: [
-      { key: 'info', label: 'Info', iconKey: 'info' },
-    ],
+    headerActions: [{ key: 'info', label: 'Info', iconKey: 'info' }],
   },
 };
 
@@ -266,15 +258,13 @@ export const DM_CHANNEL_SOFIA: ChannelVM = {
       channelId: CHANNEL_IDS.dmEducator5,
       lastReadMessageId: DM_EDU5_MESSAGES_CONNECTION.items[0]?.ids.id,
       lastReadAt: '2026-02-06T20:10:00.000Z',
-      unreadCount: 1,
+      unreadCount: 0,
     },
   },
   ui: {
     themeKey: EDUCATOR_SOFIA.ui?.themeKey ?? null,
     headerQuickMetaActions: DM_HEADER_QUICK_META,
-    headerActions: [
-      { key: 'info', label: 'Info', iconKey: 'info' },
-    ],
+    headerActions: [{ key: 'info', label: 'Info', iconKey: 'info' }],
   },
 };
 

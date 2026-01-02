@@ -110,7 +110,7 @@ export function NavLearningSpaces({
                       isActive={isActive}
                       className="px-2.5"
                     >
-                      <a href={`/dashboard/ls/${channel.ids.id}`}>
+                      <a href={`/spaces/${channel.ids.id}`}>
                         <ThemedIconBadge
                           icon={Icon}
                           themeKey={channel.ui?.themeKey ?? null}

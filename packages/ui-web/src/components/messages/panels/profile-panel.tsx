@@ -25,7 +25,7 @@ export function ProfilePanel({ intent }: ProfilePanelProps) {
     channel.basics.kind === 'dm'
       ? () => {
           if (typeof window !== 'undefined') {
-            window.location.href = `/dashboard/dm/${channel.ids.id}`;
+            window.location.href = `/dm/${channel.ids.id}`;
           }
         }
       : undefined;

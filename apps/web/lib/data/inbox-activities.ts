@@ -308,7 +308,7 @@ const activityItemsEarlier: ActivityFeedItemVM[] = [
       actionButton: {
         label: 'Pay now',
         variant: 'default',
-        href: '/dashboard/payments',
+        href: '/payments',
       },
     },
     state: { importance: 'important', isRead: true },

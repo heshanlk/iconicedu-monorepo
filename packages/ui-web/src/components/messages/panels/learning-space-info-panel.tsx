@@ -358,7 +358,7 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
               String(scheduleDate.getMonth() + 1).padStart(2, '0'),
               String(scheduleDate.getDate()).padStart(2, '0'),
             ].join('-');
-            const calendarUrl = `/dashboard/class-schedule?view=day&date=${dateParam}`;
+            const calendarUrl = `/class-schedule?view=day&date=${dateParam}`;
 
             const shiftDate = (date: Date, offset: number) => {
               const next = new Date(date);
@@ -487,7 +487,7 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
                         className="h-8 w-8 shrink-0 text-muted-foreground hover:bg-primary/15 hover:text-primary"
                         aria-label={`Message ${member.profile.displayName}`}
                       >
-                        <a href={`/dashboard/dm/${dmKey}`}>
+                        <a href={`/dm/${dmKey}`}>
                           <MessageCircle className="h-4 w-4" />
                         </a>
                       </Button>

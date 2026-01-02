@@ -74,10 +74,11 @@ export function SidebarLeft({
   const navMain: SidebarNavItem[] = data.navigation.navMain.map((item) => ({
     ...item,
     icon: ICONS[item.icon],
-    isActive:
-      item.url === '/dashboard'
-        ? activePath === item.url
-        : (activePath?.startsWith(item.url) ?? false),
+    isActive: activePath
+      ? item.url === '/spaces'
+        ? activePath === '/spaces' || activePath.startsWith('/spaces/')
+        : activePath.startsWith(item.url)
+      : false,
   }));
   const navSecondary: SidebarSecondaryItem[] = data.navigation.navSecondary.map(
     (item) => ({
@@ -101,17 +102,14 @@ export function SidebarLeft({
 
   const activeLearningSpaceId = React.useMemo(() => {
     if (!activePath) return null;
-    if (activePath.startsWith('/dashboard/ls/')) {
-      return activePath.split('/').pop() ?? null;
-    }
-    if (activePath.startsWith('/dashboard/learning-space/')) {
+    if (activePath.startsWith('/spaces/')) {
       return activePath.split('/').pop() ?? null;
     }
     return null;
   }, [activePath]);
   const activeDirectMessageId = React.useMemo(() => {
     if (!activePath) return null;
-    if (activePath.startsWith('/dashboard/dm/')) {
+    if (activePath.startsWith('/dm/')) {
       return activePath.split('/').pop() ?? null;
     }
     return null;
