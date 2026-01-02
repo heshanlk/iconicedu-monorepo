@@ -195,8 +195,8 @@ function UserSettingsTabs({
     React.useState<string[]>(preferredChannels);
   const currentThemeKey = profileThemes[profile.ids.id] ?? profile.ui?.themeKey ?? 'teal';
   const currentThemeLabel =
-    PROFILE_THEME_OPTIONS.find((option) => option.value === currentThemeKey)
-      ?.label ?? 'Accent color';
+    PROFILE_THEME_OPTIONS.find((option) => option.value === currentThemeKey)?.label ??
+    'Accent color';
   const isGuardianOrAdmin =
     profile.kind === 'guardian' ||
     roles.some((role) => role.roleKey === 'admin' || role.roleKey === 'owner');
@@ -644,12 +644,12 @@ function UserSettingsTabs({
                           />
                         </div>
                         <div className="space-y-2 sm:col-span-2">
-                          <Label htmlFor="settings-motivation">
-                            Motivation styles
-                          </Label>
+                          <Label htmlFor="settings-motivation">Motivation styles</Label>
                           <Input
                             id="settings-motivation"
-                            defaultValue={childProfile?.motivationStyles?.join(', ') ?? ''}
+                            defaultValue={
+                              childProfile?.motivationStyles?.join(', ') ?? ''
+                            }
                           />
                         </div>
                         <div className="sm:col-span-2 flex justify-end">
@@ -684,7 +684,9 @@ function UserSettingsTabs({
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="settings-communication">Communication style</Label>
+                          <Label htmlFor="settings-communication">
+                            Communication style
+                          </Label>
                           <Input
                             id="settings-communication"
                             defaultValue={childProfile?.communicationStyle ?? ''}
@@ -714,9 +716,9 @@ function UserSettingsTabs({
                 <div className="space-y-1 w-full">
                   <Collapsible className="rounded-2xl w-full">
                     <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
-                    <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
-                      <User className="h-5 w-5" />
-                    </span>
+                      <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
+                        <User className="h-5 w-5" />
+                      </span>
                       <div className="flex-1">
                         <div className="text-sm font-medium">Basic info</div>
                         <div className="text-xs text-muted-foreground">
@@ -742,16 +744,18 @@ function UserSettingsTabs({
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="settings-educator-grades">Grades supported</Label>
+                          <Label htmlFor="settings-educator-grades">
+                            Grades supported
+                          </Label>
                           <Input
                             id="settings-educator-grades"
-                            defaultValue={educatorProfile?.gradesSupported?.join(', ') ?? ''}
+                            defaultValue={
+                              educatorProfile?.gradesSupported?.join(', ') ?? ''
+                            }
                           />
                         </div>
                         <div className="space-y-2 sm:col-span-2">
-                          <Label htmlFor="settings-educator-video">
-                            Intro video URL
-                          </Label>
+                          <Label htmlFor="settings-educator-video">Intro video URL</Label>
                           <Input
                             id="settings-educator-video"
                             defaultValue={educatorProfile?.featuredVideoIntroUrl ?? ''}
@@ -766,9 +770,9 @@ function UserSettingsTabs({
                   <Separator />
                   <Collapsible className="rounded-2xl w-full">
                     <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
-                    <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
-                      <Briefcase className="h-5 w-5" />
-                    </span>
+                      <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
+                        <Briefcase className="h-5 w-5" />
+                      </span>
                       <div className="flex-1">
                         <div className="text-sm font-medium">Expertise & background</div>
                         <div className="text-xs text-muted-foreground">
@@ -817,9 +821,9 @@ function UserSettingsTabs({
                   <Separator />
                   <Collapsible className="rounded-2xl w-full">
                     <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
-                    <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
-                      <SlidersHorizontal className="h-5 w-5" />
-                    </span>
+                      <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
+                        <SlidersHorizontal className="h-5 w-5" />
+                      </span>
                       <div className="flex-1">
                         <div className="text-sm font-medium">Teaching preferences</div>
                         <div className="text-xs text-muted-foreground">
@@ -847,7 +851,9 @@ function UserSettingsTabs({
                           </Label>
                           <Input
                             id="settings-educator-curriculum"
-                            defaultValue={educatorProfile?.curriculumTags?.join(', ') ?? ''}
+                            defaultValue={
+                              educatorProfile?.curriculumTags?.join(', ') ?? ''
+                            }
                           />
                         </div>
                         <div className="sm:col-span-2 flex justify-end">
@@ -890,10 +896,14 @@ function UserSettingsTabs({
                     <CollapsibleContent className="py-4 w-full">
                       <div className="grid gap-4 sm:grid-cols-2">
                         <div className="space-y-2 sm:col-span-2">
-                          <Label htmlFor="settings-staff-hours">Working hours rules</Label>
+                          <Label htmlFor="settings-staff-hours">
+                            Working hours rules
+                          </Label>
                           <Input
                             id="settings-staff-hours"
-                            defaultValue={staffProfile?.workingHoursRules?.join(', ') ?? ''}
+                            defaultValue={
+                              staffProfile?.workingHoursRules?.join(', ') ?? ''
+                            }
                           />
                         </div>
                         <div className="sm:col-span-2 flex justify-end">
@@ -1323,7 +1333,6 @@ function UserSettingsTabs({
             </div>
           </TabsContent>
 
-
           <TabsContent value="location" className="mt-0 space-y-8 w-full">
             <div className="space-y-3">
               <div className="flex flex-wrap items-center justify-between gap-3">
@@ -1506,7 +1515,6 @@ function UserSettingsTabs({
             </div>
           </TabsContent>
 
-
           <TabsContent value="notifications" className="mt-0 space-y-8 w-full">
             <div className="space-y-3">
               <div className="flex flex-wrap items-center justify-between gap-3">
@@ -1547,9 +1555,7 @@ function UserSettingsTabs({
                           ))}
                         </div>
                       </CollapsibleContent>
-                      {index < NOTIFICATION_UI_SECTIONS.length - 1 ? (
-                        <Separator />
-                      ) : null}
+                      {index < NOTIFICATION_UI_SECTIONS.length - 1 ? <Separator /> : null}
                     </Collapsible>
                   );
                 })}
