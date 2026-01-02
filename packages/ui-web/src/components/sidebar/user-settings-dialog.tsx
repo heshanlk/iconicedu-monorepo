@@ -13,13 +13,7 @@ import {
   Users,
 } from 'lucide-react';
 
-import type {
-  FamilyLinkVM,
-  FamilyVM,
-  ThemeKey,
-  UserAccountVM,
-  UserProfileVM,
-} from '@iconicedu/shared-types';
+import type { ThemeKey, UserAccountVM, UserProfileVM } from '@iconicedu/shared-types';
 import {
   Dialog,
   DialogContent,
@@ -105,10 +99,6 @@ type UserSettingsDialogProps = {
   onTabChange: (tab: UserSettingsTab) => void;
   profile: UserProfileVM;
   account?: UserAccountVM | null;
-  families?: FamilyVM[] | null;
-  familyLinks?: FamilyLinkVM[] | null;
-  linkedAccounts?: UserAccountVM[] | null;
-  linkedProfiles?: UserProfileVM[] | null;
 };
 
 export function UserSettingsDialog({
@@ -118,10 +108,6 @@ export function UserSettingsDialog({
   onTabChange,
   profile,
   account,
-  families,
-  familyLinks,
-  linkedAccounts,
-  linkedProfiles,
 }: UserSettingsDialogProps) {
   const { isMobile } = useSidebar();
 
@@ -131,10 +117,6 @@ export function UserSettingsDialog({
       onValueChange={onTabChange}
       profile={profile}
       account={account}
-      families={families}
-      familyLinks={familyLinks}
-      linkedAccounts={linkedAccounts}
-      linkedProfiles={linkedProfiles}
       isMobile={isMobile}
     />
   );
@@ -176,10 +158,6 @@ type UserSettingsTabsProps = {
   onValueChange: (tab: UserSettingsTab) => void;
   profile: UserProfileVM;
   account?: UserAccountVM | null;
-  families?: FamilyVM[] | null;
-  familyLinks?: FamilyLinkVM[] | null;
-  linkedAccounts?: UserAccountVM[] | null;
-  linkedProfiles?: UserProfileVM[] | null;
   isMobile: boolean;
 };
 
@@ -188,10 +166,6 @@ function UserSettingsTabs({
   onValueChange,
   profile,
   account,
-  families,
-  familyLinks,
-  linkedAccounts,
-  linkedProfiles,
   isMobile,
 }: UserSettingsTabsProps) {
   const profileBlock = profile.profile;
@@ -200,32 +174,9 @@ function UserSettingsTabs({
   const email = contacts?.email ?? '';
   const location = profile.location;
   const roles = account?.access?.userRoles ?? [];
-  const familyItems = families ?? [];
-  const familyLinkItems = familyLinks ?? [];
-  const linkedAccountItems = linkedAccounts ?? [];
-  const linkedProfileItems = linkedProfiles ?? [];
   const [profileThemes, setProfileThemes] = React.useState<Record<string, ThemeKey>>({});
-  const childProfilesByAccountId = React.useMemo(() => {
-    const map = new Map<string, UserProfileVM>();
-    linkedProfileItems.forEach((item) => {
-      map.set(item.ids.accountId, item);
-    });
-    return map;
-  }, [linkedProfileItems]);
-  const linkedAccountsById = React.useMemo(() => {
-    const map = new Map<string, UserAccountVM>();
-    linkedAccountItems.forEach((item) => {
-      map.set(item.ids.id, item);
-    });
-    return map;
-  }, [linkedAccountItems]);
-  const guardianAccountId = account?.ids.id ?? null;
-  const guardianChildLinks = guardianAccountId
-    ? familyLinkItems.filter(
-        (link) => link.accounts.guardianAccountId === guardianAccountId,
-      )
-    : [];
-  const familyName = familyItems[0]?.displayName ?? 'Family';
+  const guardianChildren =
+    profile.kind === 'guardian' ? (profile.children?.items ?? []) : [];
   const familyMembers = React.useMemo(() => {
     const members: Array<{
       id: string;
@@ -247,17 +198,15 @@ function UserSettingsTabs({
       themeKey: profile.ui?.themeKey ?? 'teal',
     });
 
-    guardianChildLinks.forEach((link) => {
-      const childProfile = childProfilesByAccountId.get(link.accounts.childAccountId);
-      const childAccount = linkedAccountsById.get(link.accounts.childAccountId);
+    guardianChildren.forEach((childProfile) => {
       members.push({
-        id: `${link.ids.familyId}-${link.accounts.childAccountId}`,
-        name: childProfile?.profile.displayName ?? 'Child',
-        email: childAccount?.contacts.email ?? undefined,
-        avatar: childProfile?.profile.avatar ?? null,
-        roleLabel: link.relation === 'guardian' ? 'Child' : 'Child',
+        id: childProfile.ids.id,
+        name: childProfile.profile.displayName ?? 'Child',
+        email: undefined,
+        avatar: childProfile.profile.avatar ?? null,
+        roleLabel: 'Child',
         canRemove: true,
-        themeKey: childProfile?.ui?.themeKey ?? 'teal',
+        themeKey: childProfile.ui?.themeKey ?? 'teal',
       });
     });
 
@@ -268,9 +217,7 @@ function UserSettingsTabs({
     profileBlock.displayName,
     contacts?.email,
     profile.ui?.themeKey,
-    guardianChildLinks,
-    childProfilesByAccountId,
-    linkedAccountsById,
+    guardianChildren,
   ]);
 
   return (

@@ -11,12 +11,7 @@ import {
 } from 'lucide-react';
 
 import { AvatarWithStatus } from '../shared/avatar-with-status';
-import type {
-  FamilyLinkVM,
-  UserAccountVM,
-  FamilyVM,
-  UserProfileVM,
-} from '@iconicedu/shared-types';
+import type { UserAccountVM, UserProfileVM } from '@iconicedu/shared-types';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,17 +32,9 @@ import { UserSettingsDialog, type UserSettingsTab } from './user-settings-dialog
 export function NavUser({
   profile,
   account,
-  families,
-  familyLinks,
-  linkedProfiles,
-  linkedAccounts,
 }: {
   profile: UserProfileVM;
   account?: UserAccountVM | null;
-  families?: FamilyVM[] | null;
-  familyLinks?: FamilyLinkVM[] | null;
-  linkedProfiles?: UserProfileVM[] | null;
-  linkedAccounts?: UserAccountVM[] | null;
 }) {
   const { isMobile } = useSidebar();
   const secondaryLabel =
@@ -149,10 +136,6 @@ export function NavUser({
           onTabChange={setSettingsTab}
           profile={profile}
           account={account}
-          families={families}
-          familyLinks={familyLinks}
-          linkedProfiles={linkedProfiles}
-          linkedAccounts={linkedAccounts}
         />
       </SidebarMenuItem>
     </SidebarMenu>
