@@ -140,8 +140,7 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
       } as CSSProperties)
     : undefined;
 
-  const iconKey =
-    learningSpace.basics.iconKey ?? channel.basics.iconKey ?? 'sparkles';
+  const iconKey = learningSpace.basics.iconKey ?? channel.basics.iconKey ?? 'sparkles';
   const Icon =
     LEARNING_SPACE_ICON_MAP[iconKey as keyof typeof LEARNING_SPACE_ICON_MAP] ?? Sparkles;
   const schedule = learningSpace.schedule?.scheduleSeries ?? null;
@@ -154,11 +153,7 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
   return (
     <div className="flex-1 min-w-0">
       <div className="flex flex-col items-center gap-3 p-6 min-w-0 text-center">
-        <ThemedIconBadge
-          icon={Icon}
-          themeKey={channel.ui?.themeKey ?? null}
-          size="lg"
-        />
+        <ThemedIconBadge icon={Icon} themeKey={channel.ui?.themeKey ?? null} size="lg" />
         <div className="text-center min-w-0">
           <h2 className="text-lg font-semibold text-foreground break-words">
             {learningSpace.basics.title}
@@ -358,7 +353,7 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
               String(scheduleDate.getMonth() + 1).padStart(2, '0'),
               String(scheduleDate.getDate()).padStart(2, '0'),
             ].join('-');
-            const calendarUrl = `/class-schedule?view=day&date=${dateParam}`;
+            const calendarUrl = `/d/class-schedule?view=day&date=${dateParam}`;
 
             const shiftDate = (date: Date, offset: number) => {
               const next = new Date(date);
@@ -463,8 +458,7 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
                       <div className="truncate text-sm font-medium text-foreground">
                         {member.profile.displayName}
                       </div>
-                      {member.presence?.state?.emoji ||
-                      member.presence?.state?.text ? (
+                      {member.presence?.state?.emoji || member.presence?.state?.text ? (
                         <div className="truncate text-xs text-muted-foreground">
                           <span className="inline-flex items-center gap-1.5">
                             {member.presence?.state?.emoji ? (
@@ -496,9 +490,7 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
                 );
               })}
               {learningSpace.people.participants.length === 0 ? (
-                <div className="text-sm text-muted-foreground">
-                  No members added yet.
-                </div>
+                <div className="text-sm text-muted-foreground">No members added yet.</div>
               ) : null}
             </div>
           </div>

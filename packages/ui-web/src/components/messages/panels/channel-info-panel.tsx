@@ -117,8 +117,7 @@ const ChannelInfoPanelContent = memo(function ChannelInfoPanelContent() {
                     <div className="truncate text-sm font-medium text-foreground">
                       {member.profile.displayName}
                     </div>
-                    {(member.presence?.state?.emoji ||
-                      member.presence?.state?.text) && (
+                    {(member.presence?.state?.emoji || member.presence?.state?.text) && (
                       <div className="truncate text-xs text-muted-foreground">
                         <span className="inline-flex items-center gap-1.5">
                           {member.presence?.state?.emoji ? (
