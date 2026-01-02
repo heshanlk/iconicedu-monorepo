@@ -70,6 +70,7 @@ export function NavUser({
                 name={profile.profile.displayName}
                 avatar={profile.profile.avatar}
                 presence={profile.presence}
+                themeKey={profile.ui?.themeKey}
                 sizeClassName="h-8 w-8 rounded-xl"
                 fallbackClassName="rounded-xl"
                 initialsLength={2}
@@ -97,6 +98,7 @@ export function NavUser({
                   name={profile.profile.displayName}
                   avatar={profile.profile.avatar}
                   presence={profile.presence}
+                  themeKey={profile.ui?.themeKey}
                   sizeClassName="h-8 w-8 rounded-xl"
                   fallbackClassName="rounded-xl"
                   initialsLength={2}

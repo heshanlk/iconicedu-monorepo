@@ -5,6 +5,7 @@ import type {
   LiveStatusVM,
   PresenceDisplayStatusVM,
   PresenceVM,
+  ThemeKey,
 } from '@iconicedu/shared-types';
 import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
 import { cn } from '../../lib/utils';
@@ -33,6 +34,7 @@ interface AvatarWithStatusProps {
   alt?: string;
   fallbackText?: string;
   presence?: PresenceVM | null;
+  themeKey?: ThemeKey | null;
   showStatus?: boolean;
   initialsLength?: number;
   sizeClassName?: string;
@@ -52,6 +54,7 @@ export function AvatarWithStatus({
   name,
   avatar,
   presence,
+  themeKey,
   showStatus,
   initialsLength,
   sizeClassName,
@@ -67,11 +70,16 @@ export function AvatarWithStatus({
   const tooltipEmoji = presence?.state?.emoji?.trim();
   const shouldShowTooltip = Boolean(tooltipText || tooltipEmoji);
 
+  const themeClass = themeKey ? `theme-${themeKey}` : '';
   const avatarNode = (
     <div className="relative">
-      <Avatar className={sizeClassName}>
+      <Avatar
+        className={cn(sizeClassName, themeClass, themeKey ? 'border theme-border' : '')}
+      >
         <AvatarImage src={avatarUrl} alt={name} />
-        <AvatarFallback className={fallbackClassName}>
+        <AvatarFallback
+          className={cn(fallbackClassName, themeKey ? 'theme-bg theme-fg' : '')}
+        >
           {getInitials(name, initialsLength)}
         </AvatarFallback>
       </Avatar>

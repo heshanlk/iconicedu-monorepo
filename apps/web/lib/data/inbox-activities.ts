@@ -15,24 +15,28 @@ const ACTOR_GUARDIAN: ActivityActorProfileVM = {
   id: GUARDIAN_MORGAN.ids.id,
   displayName: GUARDIAN_MORGAN.profile.displayName,
   avatar: GUARDIAN_MORGAN.profile.avatar,
+  themeKey: GUARDIAN_MORGAN.ui?.themeKey ?? null,
 };
 
 const ACTOR_ELENA: ActivityActorProfileVM = {
   id: EDUCATOR_ELENA.ids.id,
   displayName: EDUCATOR_ELENA.profile.displayName,
   avatar: EDUCATOR_ELENA.profile.avatar,
+  themeKey: EDUCATOR_ELENA.ui?.themeKey ?? null,
 };
 
 const ACTOR_KAI: ActivityActorProfileVM = {
   id: EDUCATOR_KAI.ids.id,
   displayName: EDUCATOR_KAI.profile.displayName,
   avatar: EDUCATOR_KAI.profile.avatar,
+  themeKey: EDUCATOR_KAI.ui?.themeKey ?? null,
 };
 
 const ACTOR_PRIYA: ActivityActorProfileVM = {
   id: EDUCATOR_PRIYA.ids.id,
   displayName: EDUCATOR_PRIYA.profile.displayName,
   avatar: EDUCATOR_PRIYA.profile.avatar,
+  themeKey: EDUCATOR_PRIYA.ui?.themeKey ?? null,
 };
 
 const ACTOR_SYSTEM = {
@@ -45,6 +49,7 @@ const ACTOR_SYSTEM = {
     url: null,
     updatedAt: null,
   },
+  themeKey: 'slate' as const,
 };
 
 const activityItemsToday: ActivityFeedItemVM[] = [

@@ -102,6 +102,7 @@ const ChannelInfoPanelContent = memo(function ChannelInfoPanelContent() {
                 name={member.profile.displayName}
                 avatar={member.profile.avatar}
                 presence={member.presence}
+                themeKey={member.ui?.themeKey}
                 sizeClassName="h-9 w-9"
                 initialsLength={1}
               />

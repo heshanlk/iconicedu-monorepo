@@ -72,6 +72,7 @@ export const MessageBase = memo(function MessageBase({
           <AvatarWithStatus
             name={message.core.sender.profile.displayName}
             avatar={message.core.sender.profile.avatar}
+            themeKey={message.core.sender.ui?.themeKey}
             sizeClassName="h-9 w-9"
             initialsLength={1}
           />
@@ -125,6 +126,7 @@ export const MessageBase = memo(function MessageBase({
         <AvatarWithStatus
           name={message.core.sender.profile.displayName}
           avatar={message.core.sender.profile.avatar}
+          themeKey={message.core.sender.ui?.themeKey}
           sizeClassName="h-9 w-9"
           initialsLength={1}
         />

@@ -57,6 +57,7 @@ export function ActivityBadge({ activity, className }: ActivityBadgeProps) {
     <AvatarWithStatus
       name={actorName}
       avatar={actorAvatar}
+      themeKey={actor.themeKey}
       showStatus={false}
       sizeClassName={cn('size-6 shrink-0', className)}
       fallbackClassName="text-[10px]"

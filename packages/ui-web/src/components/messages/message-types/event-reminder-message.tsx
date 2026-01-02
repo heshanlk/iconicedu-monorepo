@@ -110,6 +110,7 @@ export const EventReminderMessage = memo(function EventReminderMessage(
                     key={attendee.ids.id}
                     name={attendee.profile.displayName}
                     avatar={attendee.profile.avatar}
+                    themeKey={attendee.ui?.themeKey}
                     showStatus={false}
                     sizeClassName="h-5 w-5 border-2 border-background"
                     fallbackClassName="text-[8px]"

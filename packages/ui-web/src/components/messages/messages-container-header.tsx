@@ -201,6 +201,7 @@ export const MessagesContainerHeader = memo(function MessagesContainerHeader({
             name={otherParticipant.profile.displayName}
             avatar={otherParticipant.profile.avatar}
             presence={otherParticipant.presence}
+            themeKey={otherParticipant.ui?.themeKey}
             sizeClassName="h-7 w-7"
             initialsLength={1}
           />

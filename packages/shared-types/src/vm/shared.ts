@@ -8,6 +8,30 @@ export type GradeLevelOption = {
   id: string | number;
   label: string;
 } | null;
+
+export type ThemeKey =
+  | 'slate'
+  | 'gray'
+  | 'zinc'
+  | 'neutral'
+  | 'stone'
+  | 'amber'
+  | 'blue'
+  | 'cyan'
+  | 'emerald'
+  | 'fuchsia'
+  | 'green'
+  | 'indigo'
+  | 'lime'
+  | 'orange'
+  | 'pink'
+  | 'purple'
+  | 'red'
+  | 'rose'
+  | 'sky'
+  | 'teal'
+  | 'violet'
+  | 'yellow';
 export interface ConnectionVM<T> {
   items: T[];
   nextCursor?: string | null;

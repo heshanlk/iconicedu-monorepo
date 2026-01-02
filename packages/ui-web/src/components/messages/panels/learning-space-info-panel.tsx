@@ -374,6 +374,7 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
                 <AvatarWithStatus
                   name={member.profile.displayName}
                   avatar={member.profile.avatar}
+                  themeKey={member.ui?.themeKey}
                   sizeClassName="h-9 w-9"
                   initialsLength={1}
                   presence={member.presence}

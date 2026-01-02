@@ -16,6 +16,7 @@ import {
 import type {
   FamilyLinkVM,
   FamilyVM,
+  ThemeKey,
   UserAccountVM,
   UserProfileVM,
 } from '@iconicedu/shared-types';
@@ -35,8 +36,15 @@ import { Button } from '../../ui/button';
 import { useSidebar } from '../../ui/sidebar';
 import { Badge } from '../../ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
-import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
 import { Separator } from '../../ui/separator';
+import { Switch } from '../../ui/switch';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../../ui/select';
 import {
   Collapsible,
   CollapsibleContent,
@@ -67,6 +75,31 @@ const SETTINGS_TABS: Array<{
   { value: 'family', label: 'Family', icon: Users },
   { value: 'billing', label: 'Billing', icon: CreditCard },
   { value: 'notifications', label: 'Notifications', icon: Bell },
+];
+
+const PROFILE_THEME_OPTIONS = [
+  { value: 'slate', label: 'Slate' },
+  { value: 'gray', label: 'Gray' },
+  { value: 'zinc', label: 'Zinc' },
+  { value: 'neutral', label: 'Neutral' },
+  { value: 'stone', label: 'Stone' },
+  { value: 'red', label: 'Red' },
+  { value: 'orange', label: 'Orange' },
+  { value: 'amber', label: 'Amber' },
+  { value: 'yellow', label: 'Yellow' },
+  { value: 'lime', label: 'Lime' },
+  { value: 'green', label: 'Green' },
+  { value: 'emerald', label: 'Emerald' },
+  { value: 'teal', label: 'Teal' },
+  { value: 'cyan', label: 'Cyan' },
+  { value: 'sky', label: 'Sky' },
+  { value: 'blue', label: 'Blue' },
+  { value: 'indigo', label: 'Indigo' },
+  { value: 'violet', label: 'Violet' },
+  { value: 'purple', label: 'Purple' },
+  { value: 'fuchsia', label: 'Fuchsia' },
+  { value: 'pink', label: 'Pink' },
+  { value: 'rose', label: 'Rose' },
 ];
 
 type UserSettingsDialogProps = {
@@ -114,10 +147,12 @@ export function UserSettingsDialog({
     return (
       <Drawer open={open} onOpenChange={onOpenChange}>
         <DrawerContent className="max-h-[85vh]">
-          <DrawerHeader className="items-start">
+          <div className="flex max-h-[85vh] flex-col">
+            <DrawerHeader className="items-start">
             <DrawerTitle>Settings</DrawerTitle>
-          </DrawerHeader>
-          <div className="px-4 pb-4">{content}</div>
+            </DrawerHeader>
+            <div className="flex-1 overflow-y-auto px-4 pb-4">{content}</div>
+          </div>
         </DrawerContent>
       </Drawer>
     );
@@ -126,13 +161,15 @@ export function UserSettingsDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[calc(100vw-32px)] p-0 sm:max-w-[680px]">
-        <DialogHeader className="px-6 pt-6">
-          <DialogTitle>Settings</DialogTitle>
-          <DialogDescription>
-            Manage account, billing, and notification preferences.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="px-6 pb-6">{content}</div>
+        <div className="flex max-h-[85vh] flex-col">
+          <DialogHeader className="px-6 pt-6">
+            <DialogTitle>Settings</DialogTitle>
+            <DialogDescription>
+              Manage account, billing, and notification preferences.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex-1 overflow-y-auto px-6 pb-6">{content}</div>
+        </div>
       </DialogContent>
     </Dialog>
   );
@@ -171,6 +208,9 @@ function UserSettingsTabs({
   const familyLinkItems = familyLinks ?? [];
   const linkedAccountItems = linkedAccounts ?? [];
   const linkedProfileItems = linkedProfiles ?? [];
+  const [profileThemes, setProfileThemes] = React.useState<Record<string, ThemeKey>>(
+    {},
+  );
   const childProfilesByAccountId = React.useMemo(() => {
     const map = new Map<string, UserProfileVM>();
     linkedProfileItems.forEach((item) => {
@@ -200,6 +240,7 @@ function UserSettingsTabs({
       avatar?: UserProfileVM['profile']['avatar'] | null;
       roleLabel: string;
       canRemove: boolean;
+      themeKey: ThemeKey;
     }> = [];
 
     members.push({
@@ -207,8 +248,9 @@ function UserSettingsTabs({
       name: profileBlock.displayName,
       email: contacts?.email ?? undefined,
       avatar: profileBlock.avatar,
-      roleLabel: 'Parent',
+      roleLabel: 'Myself',
       canRemove: false,
+      themeKey: profile.ui?.themeKey ?? 'teal',
     });
 
     guardianChildLinks.forEach((link) => {
@@ -221,6 +263,7 @@ function UserSettingsTabs({
         avatar: childProfile?.profile.avatar ?? null,
         roleLabel: link.relation === 'guardian' ? 'Child' : 'Child',
         canRemove: true,
+        themeKey: childProfile?.ui?.themeKey ?? 'teal',
       });
     });
 
@@ -230,6 +273,7 @@ function UserSettingsTabs({
     profileBlock.avatar,
     profileBlock.displayName,
     contacts?.email,
+    profile.ui?.themeKey,
     guardianChildLinks,
     childProfilesByAccountId,
     linkedAccountsById,
@@ -259,7 +303,11 @@ function UserSettingsTabs({
           {SETTINGS_TABS.map((tab) => {
             const Icon = tab.icon;
             return (
-              <TabsTrigger key={tab.value} value={tab.value} className="gap-2">
+              <TabsTrigger
+                key={tab.value}
+                value={tab.value}
+                className="gap-2 after:hidden data-[state=active]:bg-muted/50"
+              >
                 <Icon className="size-4" />
                 {tab.label}
               </TabsTrigger>
@@ -268,12 +316,11 @@ function UserSettingsTabs({
         </TabsList>
 
         <div className="min-h-0">
-          <TabsContent value="account" className="mt-0 space-y-6">
-            <Card size="sm">
-              <CardHeader>
-                <CardTitle>Profile</CardTitle>
-              </CardHeader>
-              <CardContent className="grid gap-4 sm:grid-cols-2">
+          <TabsContent value="account" className="mt-0 space-y-8">
+            <div className="space-y-3">
+              <h3 className="text-base font-semibold">Profile</h3>
+              <Separator />
+              <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="settings-name">Display name</Label>
                   <Input id="settings-name" readOnly value={profileBlock.displayName} />
@@ -282,13 +329,12 @@ function UserSettingsTabs({
                   <Label htmlFor="settings-email">Email</Label>
                   <Input id="settings-email" readOnly value={email} />
                 </div>
-              </CardContent>
-            </Card>
-            <Card size="sm">
-              <CardHeader>
-                <CardTitle>Presence</CardTitle>
-              </CardHeader>
-              <CardContent className="grid gap-4 sm:grid-cols-2">
+              </div>
+            </div>
+            <div className="space-y-3">
+              <h3 className="text-base font-semibold">Presence</h3>
+              <Separator />
+              <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="settings-status">Status</Label>
                   <Input
@@ -305,16 +351,15 @@ function UserSettingsTabs({
                     value={profile.presence?.lastSeenAt ?? 'Just now'}
                   />
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </TabsContent>
 
-          <TabsContent value="preferences" className="mt-0 space-y-6">
-            <Card size="sm">
-              <CardHeader>
-                <CardTitle>Locale & time</CardTitle>
-              </CardHeader>
-              <CardContent className="grid gap-4 sm:grid-cols-2">
+          <TabsContent value="preferences" className="mt-0 space-y-8">
+            <div className="space-y-3">
+              <h3 className="text-base font-semibold">Locale & time</h3>
+              <Separator />
+              <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="settings-timezone">Timezone</Label>
                   <Input id="settings-timezone" readOnly value={prefs.timezone} />
@@ -323,34 +368,30 @@ function UserSettingsTabs({
                   <Label htmlFor="settings-locale">Locale</Label>
                   <Input id="settings-locale" readOnly value={prefs.locale ?? 'Auto'} />
                 </div>
-              </CardContent>
-            </Card>
-            <Card size="sm">
-              <CardHeader>
-                <CardTitle>Languages</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {prefs.languagesSpoken?.length ? (
-                  <div className="flex flex-wrap gap-2">
-                    {prefs.languagesSpoken.map((language) => (
-                      <Badge key={language} variant="secondary">
-                        {language}
-                      </Badge>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-sm text-muted-foreground">No languages added yet.</p>
-                )}
-              </CardContent>
-            </Card>
+              </div>
+            </div>
+            <div className="space-y-3">
+              <h3 className="text-base font-semibold">Languages</h3>
+              <Separator />
+              {prefs.languagesSpoken?.length ? (
+                <div className="flex flex-wrap gap-2">
+                  {prefs.languagesSpoken.map((language) => (
+                    <Badge key={language} variant="secondary">
+                      {language}
+                    </Badge>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground">No languages added yet.</p>
+              )}
+            </div>
           </TabsContent>
 
-          <TabsContent value="contact" className="mt-0 space-y-6">
-            <Card size="sm">
-              <CardHeader>
-                <CardTitle>Contact methods</CardTitle>
-              </CardHeader>
-              <CardContent className="grid gap-4 sm:grid-cols-2">
+          <TabsContent value="contact" className="mt-0 space-y-8">
+            <div className="space-y-3">
+              <h3 className="text-base font-semibold">Contact methods</h3>
+              <Separator />
+              <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="settings-email-address">Email</Label>
                   <Input
@@ -383,16 +424,15 @@ function UserSettingsTabs({
                     value={contacts?.preferredContactChannels?.join(', ') ?? 'Auto'}
                   />
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </TabsContent>
 
-          <TabsContent value="location" className="mt-0 space-y-6">
-            <Card size="sm">
-              <CardHeader>
-                <CardTitle>Location</CardTitle>
-              </CardHeader>
-              <CardContent className="grid gap-4 sm:grid-cols-2">
+          <TabsContent value="location" className="mt-0 space-y-8">
+            <div className="space-y-3">
+              <h3 className="text-base font-semibold">Location</h3>
+              <Separator />
+              <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="settings-country">Country</Label>
                   <Input
@@ -425,16 +465,15 @@ function UserSettingsTabs({
                     value={location?.postalCode ?? 'Not set'}
                   />
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </TabsContent>
 
-          <TabsContent value="security" className="mt-0 space-y-6">
-            <Card size="sm">
-              <CardHeader>
-                <CardTitle>Account status</CardTitle>
-              </CardHeader>
-              <CardContent className="grid gap-4 sm:grid-cols-2">
+          <TabsContent value="security" className="mt-0 space-y-8">
+            <div className="space-y-3">
+              <h3 className="text-base font-semibold">Account status</h3>
+              <Separator />
+              <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="settings-account-status">Status</Label>
                   <Input
@@ -451,49 +490,55 @@ function UserSettingsTabs({
                     value={account?.lifecycle.createdAt ?? profile.meta.createdAt}
                   />
                 </div>
-              </CardContent>
-            </Card>
-            <Card size="sm">
-              <CardHeader>
-                <CardTitle>Roles & access</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {roles.length ? (
-                  <div className="flex flex-wrap gap-2">
-                    {roles.map((role) => (
-                      <Badge key={role.ids.id} variant="secondary">
-                        {role.roleKey}
-                      </Badge>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-sm text-muted-foreground">No roles assigned.</p>
-                )}
-              </CardContent>
-            </Card>
+              </div>
+            </div>
+            <div className="space-y-3">
+              <h3 className="text-base font-semibold">Roles & access</h3>
+              <Separator />
+              {roles.length ? (
+                <div className="flex flex-wrap gap-2">
+                  {roles.map((role) => (
+                    <Badge key={role.ids.id} variant="secondary">
+                      {role.roleKey}
+                    </Badge>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground">No roles assigned.</p>
+              )}
+            </div>
           </TabsContent>
 
-          <TabsContent value="family" className="mt-0 space-y-6">
-            <Card size="sm">
-              <CardHeader>
-                <CardTitle>Parental controls</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4 text-sm text-muted-foreground">
-                <p>
-                  Parents can link accounts to set limits, manage permissions, and keep
-                  the family safe across learning spaces.
-                </p>
-              </CardContent>
-            </Card>
-            <Card size="sm">
-              <CardHeader className="flex items-center justify-between">
-                <CardTitle>Family members</CardTitle>
+          <TabsContent value="family" className="mt-0 space-y-8">
+            <div className="space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="space-y-1">
+                  <h3 className="text-base font-semibold">Parental controls</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Parents can link accounts to set limits, manage permissions, and keep
+                    the family safe across learning spaces.
+                  </p>
+                </div>
+              </div>
+              <Separator />
+              <div className="space-y-2">
+                <div className="text-sm font-medium">{familyName}</div>
+                <div className="text-xs text-muted-foreground">
+                  Manage linked profiles and guardians.
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <h3 className="text-base font-semibold">Family members</h3>
                 <Button variant="outline" size="sm">
                   <Plus className="size-4" />
                   Add child
                 </Button>
-              </CardHeader>
-              <CardContent className="space-y-1">
+              </div>
+              <Separator />
+              <div className="space-y-1">
                 {familyMembers.length ? (
                   familyMembers.map((member, index) => {
                     const initials = member.name
@@ -502,15 +547,17 @@ function UserSettingsTabs({
                       .join('')
                       .slice(0, 2)
                       .toUpperCase();
+                    const isSelf = !member.canRemove;
+                    const themeValue = profileThemes[member.id] ?? member.themeKey ?? 'teal';
+                    const themeClass = `theme-${themeValue}`;
                     return (
-                      <Collapsible
-                        key={member.id}
-                        className="rounded-2xl border border-border/60"
-                      >
-                        <CollapsibleTrigger className="flex w-full items-center gap-3 px-3 py-3 text-left">
-                          <Avatar className="size-10">
+                      <Collapsible key={member.id} className="rounded-2xl">
+                        <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
+                          <Avatar className={`size-10 border theme-border ${themeClass}`}>
                             <AvatarImage src={member.avatar?.url ?? undefined} />
-                            <AvatarFallback>{initials}</AvatarFallback>
+                            <AvatarFallback className="theme-bg theme-fg">
+                              {initials}
+                            </AvatarFallback>
                           </Avatar>
                           <div className="flex-1">
                             <div className="flex items-center gap-2">
@@ -521,85 +568,54 @@ function UserSettingsTabs({
                               {member.email ?? 'Invitation sent'}
                             </div>
                           </div>
-                          <ChevronRight className="size-4 text-muted-foreground" />
+                          <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
                         </CollapsibleTrigger>
-                        <CollapsibleContent className="border-t border-border/60 px-3 py-3">
-                          <div className="space-y-4">
-                            <div className="flex flex-wrap gap-2">
-                              <Button variant="outline" size="sm">
-                                Change name
+                        <CollapsibleContent className="py-4">
+                          {isSelf ? (
+                            <div className="flex justify-end">
+                              <Button variant="destructive" size="sm">
+                                Remove from family
                               </Button>
-                              <Button variant="outline" size="sm">
-                                Change photo
-                              </Button>
-                              {member.canRemove ? (
+                            </div>
+                          ) : (
+                            <div className="space-y-4">
+                              <div className="space-y-2">
+                                <Label>Display name</Label>
+                                <Input defaultValue={member.name} />
+                              </div>
+                            <div className="space-y-2">
+                              <Label>Profile theme</Label>
+                                <Select
+                                  value={themeValue}
+                                  onValueChange={(value) =>
+                                    setProfileThemes((prev) => ({
+                                      ...prev,
+                                      [member.id]: value as ThemeKey,
+                                    }))
+                                  }
+                                >
+                                  <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Select theme" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {PROFILE_THEME_OPTIONS.map((option) => (
+                                      <SelectItem key={option.value} value={option.value}>
+                                        <span className={`flex items-center gap-2 theme-${option.value}`}>
+                                          <span className="theme-swatch h-3.5 w-3.5 rounded-full" />
+                                          {option.label}
+                                        </span>
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              <div className="flex justify-end">
                                 <Button variant="destructive" size="sm">
                                   Remove from family
                                 </Button>
-                              ) : null}
-                            </div>
-                            <div className="space-y-4 text-sm">
-                              <div className="flex items-start justify-between gap-4">
-                                <div>
-                                  <div className="font-medium">Quiet hours</div>
-                                  <div className="text-xs text-muted-foreground">
-                                    Schedule hours when learning spaces are muted.
-                                  </div>
-                                </div>
-                                <Button variant="outline" size="sm">
-                                  Enabled
-                                </Button>
-                              </div>
-                              <div className="grid gap-3 sm:grid-cols-2">
-                                <div className="space-y-2">
-                                  <Label>Start time</Label>
-                                  <Input readOnly value="7:00 PM" />
-                                </div>
-                                <div className="space-y-2">
-                                  <Label>End time</Label>
-                                  <Input readOnly value="7:00 AM" />
-                                </div>
-                              </div>
-                              <Separator />
-                              <div className="flex items-start justify-between gap-4">
-                                <div>
-                                  <div className="font-medium">
-                                    Reduce sensitive content
-                                  </div>
-                                  <div className="text-xs text-muted-foreground">
-                                    Add extra safeguards for younger learners.
-                                  </div>
-                                </div>
-                                <Button variant="outline" size="sm">
-                                  On
-                                </Button>
-                              </div>
-                              <div className="flex items-start justify-between gap-4">
-                                <div>
-                                  <div className="font-medium">
-                                    Improve experiences for everyone
-                                  </div>
-                                  <div className="text-xs text-muted-foreground">
-                                    Allow anonymized data to improve lessons.
-                                  </div>
-                                </div>
-                                <Button variant="outline" size="sm">
-                                  Off
-                                </Button>
-                              </div>
-                              <div className="flex items-start justify-between gap-4">
-                                <div>
-                                  <div className="font-medium">Voice mode</div>
-                                  <div className="text-xs text-muted-foreground">
-                                    Enable voice for guided practice.
-                                  </div>
-                                </div>
-                                <Button variant="outline" size="sm">
-                                  On
-                                </Button>
                               </div>
                             </div>
-                          </div>
+                          )}
                         </CollapsibleContent>
                         {index < familyMembers.length - 1 ? <Separator /> : null}
                       </Collapsible>
@@ -610,57 +626,54 @@ function UserSettingsTabs({
                     No family members added yet.
                   </p>
                 )}
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </TabsContent>
 
-          <TabsContent value="billing" className="mt-0 space-y-6">
-            <Card size="sm">
-              <CardHeader>
-                <CardTitle>Plan</CardTitle>
-              </CardHeader>
-              <CardContent className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-end">
+          <TabsContent value="billing" className="mt-0 space-y-8">
+            <div className="space-y-3">
+              <h3 className="text-base font-semibold">Plan</h3>
+              <Separator />
+              <div className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-end">
                 <div className="space-y-2">
                   <Label htmlFor="settings-plan">Current plan</Label>
                   <Input id="settings-plan" readOnly value="Family Plus" />
                 </div>
                 <Button variant="outline">Manage plan</Button>
-              </CardContent>
-            </Card>
-            <Card size="sm">
-              <CardHeader>
-                <CardTitle>Payment method</CardTitle>
-              </CardHeader>
-              <CardContent className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-end">
+              </div>
+            </div>
+            <div className="space-y-3">
+              <h3 className="text-base font-semibold">Payment method</h3>
+              <Separator />
+              <div className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-end">
                 <div className="space-y-2">
                   <Label htmlFor="settings-card">Card</Label>
                   <Input id="settings-card" readOnly value="Visa •••• 4242" />
                 </div>
                 <Button variant="outline">Update card</Button>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </TabsContent>
 
-          <TabsContent value="notifications" className="mt-0 space-y-6">
-            <Card size="sm">
-              <CardHeader>
-                <CardTitle>Notifications</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid gap-2 sm:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="settings-defaults">Defaults</Label>
-                    <Input
-                      id="settings-defaults"
-                      readOnly
-                      value={
-                        prefs.notificationDefaults
-                          ? 'Custom preferences'
-                          : 'System defaults'
-                      }
-                    />
-                  </div>
+          <TabsContent value="notifications" className="mt-0 space-y-8">
+            <div className="space-y-3">
+              <h3 className="text-base font-semibold">Notifications</h3>
+              <Separator />
+              <div className="grid gap-2 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="settings-defaults">Defaults</Label>
+                  <Input
+                    id="settings-defaults"
+                    readOnly
+                    value={
+                      prefs.notificationDefaults
+                        ? 'Custom preferences'
+                        : 'System defaults'
+                    }
+                  />
                 </div>
+              </div>
+              <div className="space-y-4">
                 <Label className="flex items-start gap-3 text-sm">
                   <Checkbox defaultChecked />
                   <span className="leading-5">
@@ -677,8 +690,8 @@ function UserSettingsTabs({
                   <Checkbox />
                   <span className="leading-5">SMS reminders for upcoming sessions.</span>
                 </Label>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </TabsContent>
         </div>
       </div>

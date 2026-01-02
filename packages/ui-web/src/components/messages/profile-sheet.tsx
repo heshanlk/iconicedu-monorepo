@@ -75,6 +75,7 @@ export function ProfileContent({
           name={user.profile.displayName}
           avatar={user.profile.avatar}
           presence={user.presence}
+          themeKey={user.ui?.themeKey}
           showStatus
           sizeClassName="h-20 w-20"
           statusClassName="bottom-1 right-1 h-4 w-4"

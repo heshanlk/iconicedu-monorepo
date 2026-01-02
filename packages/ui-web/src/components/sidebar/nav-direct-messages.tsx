@@ -61,6 +61,7 @@ export function NavDirectMessages({
                     name={name}
                     avatar={otherParticipant?.profile.avatar}
                     presence={otherParticipant?.presence}
+                    themeKey={otherParticipant?.ui?.themeKey}
                     sizeClassName="size-7"
                     statusClassName="bottom-0 right-0 h-2 w-2 border border-background"
                     fallbackClassName="text-xs font-medium"

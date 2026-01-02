@@ -65,10 +65,10 @@ export function NavLearningSpaces({
             <AvatarWithStatus
               name={child.profile.displayName}
               showStatus={false}
+              themeKey={child.ui?.themeKey}
               sizeClassName="size-5"
               fallbackClassName={cn(
                 'text-[10px] font-semibold leading-none uppercase',
-                child.ui?.color ?? '',
               )}
               initialsLength={1}
             />

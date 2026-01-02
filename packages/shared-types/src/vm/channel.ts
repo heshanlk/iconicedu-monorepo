@@ -1,4 +1,4 @@
-import type { ConnectionVM, EntityRefVM, ISODateTime, UUID } from './shared';
+import type { ConnectionVM, EntityRefVM, ISODateTime, ThemeKey, UUID } from './shared';
 import type { UserProfileVM } from './profile';
 import type { ChannelReadStateVM, MessageVM } from './message';
 import type { MessagesRightPanelIntentKey } from './message';
@@ -137,7 +137,7 @@ export interface ChannelDmVM {
 export interface ChannelUiDefaultsVM {
   defaultRightPanelOpen?: boolean;
   defaultRightPanelKey?: MessagesRightPanelIntentKey;
-  themeColor?: string | null;
+  themeKey?: ThemeKey | null;
   infoPanel?: {
     showHeader?: boolean;
     showDetails?: boolean;

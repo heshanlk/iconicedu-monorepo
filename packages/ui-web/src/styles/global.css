@@ -134,3 +134,152 @@
 [data-vaul-drawer][data-vaul-drawer-direction='bottom']::after {
   height: 0 !important;
 }
+
+.theme-bg {
+  background-color: var(--theme-bg);
+}
+
+.theme-fg {
+  color: var(--theme-fg);
+}
+
+.theme-border {
+  border-color: var(--theme-border);
+}
+
+.theme-swatch {
+  background-color: var(--theme-bg);
+  border: 1px solid var(--theme-border);
+}
+
+.theme-slate {
+  --theme-bg: #64748b;
+  --theme-fg: #ffffff;
+  --theme-border: #64748b;
+}
+
+.theme-gray {
+  --theme-bg: #6b7280;
+  --theme-fg: #ffffff;
+  --theme-border: #6b7280;
+}
+
+.theme-zinc {
+  --theme-bg: #71717a;
+  --theme-fg: #ffffff;
+  --theme-border: #71717a;
+}
+
+.theme-neutral {
+  --theme-bg: #737373;
+  --theme-fg: #ffffff;
+  --theme-border: #737373;
+}
+
+.theme-stone {
+  --theme-bg: #78716c;
+  --theme-fg: #ffffff;
+  --theme-border: #78716c;
+}
+
+.theme-red {
+  --theme-bg: #ef4444;
+  --theme-fg: #ffffff;
+  --theme-border: #ef4444;
+}
+
+.theme-orange {
+  --theme-bg: #f97316;
+  --theme-fg: #ffffff;
+  --theme-border: #f97316;
+}
+
+.theme-amber {
+  --theme-bg: #f59e0b;
+  --theme-fg: #1f2937;
+  --theme-border: #f59e0b;
+}
+
+.theme-yellow {
+  --theme-bg: #eab308;
+  --theme-fg: #1f2937;
+  --theme-border: #eab308;
+}
+
+.theme-lime {
+  --theme-bg: #84cc16;
+  --theme-fg: #1f2937;
+  --theme-border: #84cc16;
+}
+
+.theme-green {
+  --theme-bg: #22c55e;
+  --theme-fg: #ffffff;
+  --theme-border: #22c55e;
+}
+
+.theme-emerald {
+  --theme-bg: #10b981;
+  --theme-fg: #ffffff;
+  --theme-border: #10b981;
+}
+
+.theme-teal {
+  --theme-bg: #14b8a6;
+  --theme-fg: #ffffff;
+  --theme-border: #14b8a6;
+}
+
+.theme-cyan {
+  --theme-bg: #06b6d4;
+  --theme-fg: #ffffff;
+  --theme-border: #06b6d4;
+}
+
+.theme-sky {
+  --theme-bg: #0ea5e9;
+  --theme-fg: #ffffff;
+  --theme-border: #0ea5e9;
+}
+
+.theme-blue {
+  --theme-bg: #3b82f6;
+  --theme-fg: #ffffff;
+  --theme-border: #3b82f6;
+}
+
+.theme-indigo {
+  --theme-bg: #6366f1;
+  --theme-fg: #ffffff;
+  --theme-border: #6366f1;
+}
+
+.theme-violet {
+  --theme-bg: #8b5cf6;
+  --theme-fg: #ffffff;
+  --theme-border: #8b5cf6;
+}
+
+.theme-purple {
+  --theme-bg: #a855f7;
+  --theme-fg: #ffffff;
+  --theme-border: #a855f7;
+}
+
+.theme-fuchsia {
+  --theme-bg: #d946ef;
+  --theme-fg: #ffffff;
+  --theme-border: #d946ef;
+}
+
+.theme-pink {
+  --theme-bg: #ec4899;
+  --theme-fg: #ffffff;
+  --theme-border: #ec4899;
+}
+
+.theme-rose {
+  --theme-bg: #f43f5e;
+  --theme-fg: #ffffff;
+  --theme-border: #f43f5e;
+}

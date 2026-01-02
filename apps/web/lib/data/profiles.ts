@@ -78,7 +78,7 @@ export const CHILD_AVA: ChildProfileVM = {
     updatedAt: '2026-01-15T00:00:00.000Z',
   },
   ui: {
-    color: 'bg-green-500 text-white',
+    themeKey: 'emerald',
   },
   gradeLevel: { id: 3, label: 'Grade 3' },
   birthYear: 2016,
@@ -134,7 +134,7 @@ export const CHILD_MILO: ChildProfileVM = {
     updatedAt: '2026-01-15T00:00:00.000Z',
   },
   ui: {
-    color: 'bg-yellow-500 text-white',
+    themeKey: 'emerald',
   },
   gradeLevel: { id: 5, label: 'Grade 5' },
   birthYear: 2014,
@@ -190,7 +190,7 @@ export const CHILD_MAYA: ChildProfileVM = {
     updatedAt: '2026-01-15T00:00:00.000Z',
   },
   ui: {
-    color: 'bg-red-500 text-white',
+    themeKey: 'rose',
   },
   gradeLevel: { id: 6, label: 'Grade 6' },
   birthYear: 2013,
@@ -246,7 +246,7 @@ export const GUARDIAN_MORGAN: GuardianProfileVM = {
     updatedAt: '2026-01-20T00:00:00.000Z',
   },
   ui: {
-    color: 'bg-yellow-500 text-white',
+    themeKey: 'amber',
   },
   joinedDate: '2020-02-14T00:00:00.000Z',
   sessionNotesVisibility: 'shared',
@@ -296,6 +296,9 @@ export const EDUCATOR_ELENA: EducatorProfileVM = {
   meta: {
     createdAt: '2018-06-01T00:00:00.000Z',
     updatedAt: '2026-01-21T00:00:00.000Z',
+  },
+  ui: {
+    themeKey: 'blue',
   },
   headline: 'Middle School ELA Coach',
   subjects: ['ELA', 'Writing'],
@@ -357,6 +360,9 @@ export const EDUCATOR_KAI: EducatorProfileVM = {
     createdAt: '2017-03-10T00:00:00.000Z',
     updatedAt: '2026-01-21T00:00:00.000Z',
   },
+  ui: {
+    themeKey: 'teal',
+  },
   headline: 'Math Foundations Tutor',
   subjects: ['Math'],
   gradesSupported: [{ id: 3, label: 'Grade 3' }],
@@ -414,6 +420,9 @@ export const EDUCATOR_PRIYA: EducatorProfileVM = {
     createdAt: '2019-01-12T00:00:00.000Z',
     updatedAt: '2026-01-21T00:00:00.000Z',
   },
+  ui: {
+    themeKey: 'violet',
+  },
   headline: 'Science Lab Mentor',
   subjects: ['Science', 'STEM'],
   gradesSupported: [{ id: 5, label: 'Grade 5' }],
@@ -470,6 +479,9 @@ export const EDUCATOR_LEO: EducatorProfileVM = {
   meta: {
     createdAt: '2016-10-04T00:00:00.000Z',
     updatedAt: '2026-01-21T00:00:00.000Z',
+  },
+  ui: {
+    themeKey: 'orange',
   },
   headline: 'Chess Strategy Coach',
   subjects: ['Chess'],
@@ -531,6 +543,9 @@ export const EDUCATOR_SOFIA: EducatorProfileVM = {
     createdAt: '2022-05-22T00:00:00.000Z',
     updatedAt: '2026-01-21T00:00:00.000Z',
   },
+  ui: {
+    themeKey: 'fuchsia',
+  },
   headline: 'Learning Strategist',
   subjects: ['Study Skills'],
   gradesSupported: [
@@ -590,6 +605,9 @@ export const STAFF_SUPPORT: StaffProfileVM = {
   meta: {
     createdAt: '2024-02-01T00:00:00.000Z',
     updatedAt: '2026-01-21T00:00:00.000Z',
+  },
+  ui: {
+    themeKey: 'zinc',
   },
   department: 'Customer Success',
   jobTitle: 'Support Specialist',

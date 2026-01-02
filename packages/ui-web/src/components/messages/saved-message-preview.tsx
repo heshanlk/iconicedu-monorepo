@@ -70,6 +70,7 @@ export function SavedMessagePreview({ message, onClick }: SavedMessagePreviewPro
       <AvatarWithStatus
         name={message.core.sender.profile.displayName}
         avatar={message.core.sender.profile.avatar}
+        themeKey={message.core.sender.ui?.themeKey}
         sizeClassName="h-10 w-10 flex-shrink-0"
         initialsLength={1}
       />

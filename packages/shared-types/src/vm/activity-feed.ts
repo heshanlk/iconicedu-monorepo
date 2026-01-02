@@ -1,6 +1,6 @@
 
 import type { AvatarVM } from './profile';
-import type { ConnectionVM, EntityRefVM, ISODateTime, UUID } from './shared';
+import type { ConnectionVM, EntityRefVM, ISODateTime, ThemeKey, UUID } from './shared';
 
 
 
@@ -65,12 +65,14 @@ export type SystemProfileVM = {
   id: UUID;
   displayName: string;
   avatar: AvatarVM;
+  themeKey?: ThemeKey | null;
 };
 
 export interface ActivityActorProfileVM {
   id: UUID;
   displayName: string;
   avatar: AvatarVM;
+  themeKey?: ThemeKey | null;
 }
 
 export type ActivityActorVM = ActivityActorProfileVM | SystemProfileVM;

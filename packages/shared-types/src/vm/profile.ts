@@ -4,6 +4,7 @@ import type {
   ConnectionVM,
   GradeLevelOption,
   ISODateTime,
+  ThemeKey,
   UUID,
 } from './shared';
 
@@ -82,8 +83,8 @@ export interface UserMetaVM {
 }
 
 export interface UserUiVM {
-  
   color?: string | null;
+  themeKey?: ThemeKey | null;
 }
 
 
