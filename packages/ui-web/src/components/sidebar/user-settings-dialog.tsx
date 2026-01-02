@@ -521,7 +521,7 @@ function UserSettingsTabs({
                                 <Input defaultValue={member.name} />
                               </div>
                               <div className="space-y-2">
-                                <Label>Profile theme</Label>
+                                <Label>Accent color</Label>
                                 <Select
                                   value={themeValue}
                                   onValueChange={(value) =>
@@ -532,7 +532,7 @@ function UserSettingsTabs({
                                   }
                                 >
                                   <SelectTrigger className="w-full">
-                                    <SelectValue placeholder="Select theme" />
+                                  <SelectValue placeholder="Select color" />
                                   </SelectTrigger>
                                   <SelectContent>
                                     {PROFILE_THEME_OPTIONS.map((option) => (
