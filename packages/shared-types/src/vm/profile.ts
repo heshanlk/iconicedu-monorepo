@@ -57,8 +57,17 @@ export interface UserPrefsVM {
   timezone: string;
   locale?: string | null;
   languagesSpoken?: string[] | null;
-  notificationDefaults?: Record<string, unknown> | null;
+  notificationDefaults?: NotificationDefaultsVM | null;
 }
+
+export type NotificationChannelVM = 'push' | 'email' | 'sms';
+
+export interface NotificationPreferenceVM {
+  channels: NotificationChannelVM[];
+  muted?: boolean | null;
+}
+
+export type NotificationDefaultsVM = Record<string, NotificationPreferenceVM>;
 
 export interface UserLocationVM {
   countryCode?: string | null;

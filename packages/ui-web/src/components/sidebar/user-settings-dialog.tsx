@@ -6,6 +6,7 @@ import {
   Bell,
   Briefcase,
   BookOpen,
+  ChevronDown,
   ChevronRight,
   Clock,
   CreditCard,
@@ -49,6 +50,12 @@ import { Switch } from '../../ui/switch';
 import { ScrollArea } from '../../ui/scroll-area';
 import { Textarea } from '../../ui/textarea';
 import { Card, CardAction, CardContent } from '../../ui/card';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '../../ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../../ui/tooltip';
 import { InputGroup, InputGroupAddon, InputGroupInput } from '../../ui/input-group';
 import {
@@ -200,6 +207,11 @@ function UserSettingsTabs({
   const isGuardianOrAdmin =
     profile.kind === 'guardian' ||
     roles.some((role) => role.roleKey === 'admin' || role.roleKey === 'owner');
+  const NOTIFICATION_CHANNEL_OPTIONS = [
+    { key: 'push', label: 'Push' },
+    { key: 'email', label: 'Email' },
+    { key: 'sms', label: 'SMS' },
+  ];
   const childProfile = profile.kind === 'child' ? profile : null;
   const educatorProfile = profile.kind === 'educator' ? profile : null;
   const staffProfile = profile.kind === 'staff' ? profile : null;
@@ -211,6 +223,39 @@ function UserSettingsTabs({
       }
       return prev.filter((item) => item !== channel);
     });
+  };
+  const [notificationChannels, setNotificationChannels] = React.useState<
+    Record<string, string[]>
+  >({});
+
+  const toggleNotificationChannel = (
+    itemKey: string,
+    channel: string,
+    enabled: boolean,
+  ) => {
+    setNotificationChannels((prev) => {
+      const current = prev[itemKey] ?? [];
+      if (enabled) {
+        return current.includes(channel)
+          ? prev
+          : { ...prev, [itemKey]: [...current, channel] };
+      }
+      return { ...prev, [itemKey]: current.filter((entry) => entry !== channel) };
+    });
+  };
+
+  const formatNotificationChannels = (itemKey: string) => {
+    const selected = notificationChannels[itemKey] ?? [];
+    if (!selected.length) {
+      return 'Off';
+    }
+    return selected
+      .map(
+        (key) =>
+          NOTIFICATION_CHANNEL_OPTIONS.find((option) => option.key === key)?.label,
+      )
+      .filter(Boolean)
+      .join(', ');
   };
 
   const NOTIFICATION_UI_SECTIONS = [
@@ -1545,14 +1590,52 @@ function UserSettingsTabs({
                       <CollapsibleContent className="py-4 w-full">
                         <div className="space-y-3">
                           {section.items.map((item) => (
-                            <div
-                              key={item}
-                              className="flex items-start justify-between gap-4 text-sm"
-                            >
-                              <span className="leading-5">{item}</span>
-                              <Switch aria-label={item} />
-                            </div>
-                          ))}
+                          <div
+                            key={item}
+                            className="flex items-start justify-between gap-4 text-sm"
+                          >
+                            <span className="leading-5">{item}</span>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="h-8 gap-1 px-2 text-xs"
+                                >
+                                  {formatNotificationChannels(item)}
+                                  <ChevronDown className="h-3 w-3" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                {NOTIFICATION_CHANNEL_OPTIONS.map((option) => {
+                                  const isChecked =
+                                    notificationChannels[item]?.includes(option.key) ??
+                                    false;
+                                  return (
+                                    <DropdownMenuItem
+                                      key={option.key}
+                                      onSelect={(event) => event.preventDefault()}
+                                      className="flex items-center justify-between gap-3"
+                                    >
+                                      <span>{option.label}</span>
+                                      <Switch
+                                        checked={isChecked}
+                                        onCheckedChange={(checked) =>
+                                          toggleNotificationChannel(
+                                            item,
+                                            option.key,
+                                            checked,
+                                          )
+                                        }
+                                        aria-label={`${option.label} notifications`}
+                                      />
+                                    </DropdownMenuItem>
+                                  );
+                                })}
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </div>
+                        ))}
                         </div>
                       </CollapsibleContent>
                       {index < NOTIFICATION_UI_SECTIONS.length - 1 ? <Separator /> : null}

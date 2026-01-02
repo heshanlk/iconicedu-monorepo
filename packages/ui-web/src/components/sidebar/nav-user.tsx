@@ -7,6 +7,7 @@ import {
   ChevronsUpDown,
   CreditCard,
   LogOut,
+  SlidersHorizontal,
   Sparkles,
   User,
   Users,
@@ -114,6 +115,10 @@ export function NavUser({
               <DropdownMenuItem onSelect={() => openSettings('profile')}>
                 <User />
                 Profile
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => openSettings('preferences')}>
+                <SlidersHorizontal />
+                Preferences
               </DropdownMenuItem>
               <DropdownMenuItem onSelect={() => openSettings('family')}>
                 <Users />
