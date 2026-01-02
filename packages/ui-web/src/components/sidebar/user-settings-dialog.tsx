@@ -704,41 +704,65 @@ function UserSettingsTabs({
 
           <TabsContent value="location" className="mt-0 space-y-8 w-full">
             <div className="space-y-3">
-              <h3 className="text-base font-semibold">Location</h3>
-              <Separator />
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="settings-country">Country</Label>
-                  <Input
-                    id="settings-country"
-                    readOnly
-                    value={location?.countryName ?? location?.countryCode ?? 'Not set'}
-                  />
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="space-y-1">
+                  <h3 className="text-base font-semibold">Location</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Manage your country, region, and local address details.
+                  </p>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="settings-region">Region / State</Label>
-                  <Input
-                    id="settings-region"
-                    readOnly
-                    value={location?.region ?? 'Not set'}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="settings-city">City</Label>
-                  <Input
-                    id="settings-city"
-                    readOnly
-                    value={location?.city ?? 'Not set'}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="settings-postal">Postal code</Label>
-                  <Input
-                    id="settings-postal"
-                    readOnly
-                    value={location?.postalCode ?? 'Not set'}
-                  />
-                </div>
+              </div>
+              <div className="space-y-1 w-full">
+                <Collapsible className="rounded-2xl w-full">
+                  <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
+                      <MapPin className="h-5 w-5" />
+                    </span>
+                    <div className="flex-1">
+                      <div className="text-sm font-medium">Address</div>
+                      <div className="text-xs text-muted-foreground">
+                        {location?.city ?? 'City'}, {location?.region ?? 'State'}{' '}
+                        {location?.postalCode ?? 'Zip'} •{' '}
+                        {location?.countryName ?? location?.countryCode ?? 'Country'}
+                      </div>
+                    </div>
+                    <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="py-4 w-full">
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="space-y-2 sm:col-span-2">
+                        <Label htmlFor="settings-city">City</Label>
+                        <Input id="settings-city" defaultValue={location?.city ?? ''} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="settings-region">State</Label>
+                        <Input
+                          id="settings-region"
+                          defaultValue={location?.region ?? ''}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="settings-postal">Zip</Label>
+                        <Input
+                          id="settings-postal"
+                          defaultValue={location?.postalCode ?? ''}
+                        />
+                      </div>
+                      <div className="space-y-2 sm:col-span-2">
+                        <Label htmlFor="settings-country">Country</Label>
+                        <Input
+                          id="settings-country"
+                          defaultValue={
+                            location?.countryName ?? location?.countryCode ?? ''
+                          }
+                        />
+                      </div>
+                      <div className="sm:col-span-2 flex justify-end">
+                        <Button size="sm">Save</Button>
+                      </div>
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
               </div>
             </div>
           </TabsContent>
