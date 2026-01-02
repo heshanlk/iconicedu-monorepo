@@ -74,17 +74,15 @@ export function UserSettingsDialog({
   profile,
   account,
 }: UserSettingsDialogProps) {
-  const { isMobile } = useSidebar();
-
   const content = (
     <UserSettingsTabs
       value={activeTab}
       onValueChange={onTabChange}
       profile={profile}
       account={account}
-      isMobile={isMobile}
     />
   );
+  const { isMobile } = useSidebar();
 
   return (
     <ResponsiveDialog
@@ -92,7 +90,6 @@ export function UserSettingsDialog({
       onOpenChange={onOpenChange}
       title="Settings"
       description="Manage account, billing, and notification preferences."
-      isMobile={isMobile}
       dialogContentClassName="h-[85vh] max-w-[calc(100vw-32px)] p-0 sm:max-w-[680px]"
       drawerContentClassName="h-[85vh] w-full max-w-none flex flex-col overflow-hidden bg-background p-0 rounded-t-xl before:inset-0 before:rounded-t-xl"
       dialogHeaderClassName="p-6"
@@ -111,7 +108,6 @@ type UserSettingsTabsProps = {
   onValueChange: (tab: UserSettingsTab) => void;
   profile: UserProfileVM;
   account?: UserAccountVM | null;
-  isMobile: boolean;
 };
 
 function UserSettingsTabs({
@@ -119,8 +115,8 @@ function UserSettingsTabs({
   onValueChange,
   profile,
   account,
-  isMobile,
 }: UserSettingsTabsProps) {
+  const { isMobile } = useSidebar();
   const profileBlock = profile.profile;
   const prefs = profile.prefs;
   const contacts = account?.contacts;

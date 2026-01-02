@@ -29,7 +29,6 @@ type ResponsiveDialogProps = {
   trigger?: React.ReactNode;
   children: React.ReactNode;
   showHeader?: boolean;
-  isMobile?: boolean;
   dialogContentClassName?: string;
   drawerContentClassName?: string;
   dialogHeaderClassName?: string;
@@ -53,7 +52,6 @@ export function ResponsiveDialog({
   trigger,
   children,
   showHeader = true,
-  isMobile,
   dialogContentClassName,
   drawerContentClassName,
   dialogHeaderClassName,
@@ -68,7 +66,7 @@ export function ResponsiveDialog({
   dialogProps,
   drawerProps,
 }: ResponsiveDialogProps) {
-  const isMobileView = isMobile ?? useIsMobile();
+  const isMobileView = useIsMobile();
   const dialogTitleClasses = cn(!showHeader && 'sr-only', dialogTitleClassName);
   const drawerTitleClasses = cn(!showHeader && 'sr-only', drawerTitleClassName);
 

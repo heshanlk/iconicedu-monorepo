@@ -7,7 +7,6 @@ import type { ClassScheduleVM } from '@iconicedu/shared-types';
 import { EventDetailsHeader } from './event-details-header';
 import { EventDetailsInfo } from './event-details-info';
 import { EventActions } from './event-actions';
-import { useIsMobile } from '../../hooks/use-mobile';
 import { ResponsiveDialog } from '../shared/responsive-dialog';
 
 interface EventDialogProps {
@@ -18,7 +17,6 @@ interface EventDialogProps {
 }
 
 export function EventDialog({ event, open, onOpenChange, children }: EventDialogProps) {
-  const isMobile = useIsMobile();
   const content = (
     // <ScrollArea className="max-h-[85vh]">
     <div className="p-4">
@@ -41,7 +39,6 @@ export function EventDialog({ event, open, onOpenChange, children }: EventDialog
       title={event.title || 'Class schedule details'}
       trigger={children}
       showHeader={false}
-      isMobile={isMobile}
       dialogShowCloseButton={false}
       drawerProps={{ 'data-vaul-custom-container': true }}
       drawerContentClassName="flex flex-col overflow-hidden bg-background p-0 rounded-t-xl before:inset-0 before:rounded-t-xl"
