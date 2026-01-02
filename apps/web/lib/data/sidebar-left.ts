@@ -14,29 +14,29 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftDataVM = {
     navMain: [
       {
         title: 'Home',
-        url: '/spaces',
+        url: '/d',
         icon: 'home',
       },
       {
         title: 'Calendar',
-        url: '/class-schedule',
+        url: '/d/class-schedule',
         icon: 'class-schedule',
       },
       {
         title: 'Inbox',
-        url: '/inbox',
+        url: '/d/inbox',
         icon: 'inbox',
       },
     ],
     navSecondary: [
       {
         title: 'Support',
-        url: '/support',
+        url: '/d/support',
         icon: 'life-buoy',
       },
       {
         title: 'Feedback',
-        url: '/feedback',
+        url: '/d/feedback',
         icon: 'send',
       },
     ],
