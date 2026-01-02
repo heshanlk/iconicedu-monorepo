@@ -19,6 +19,7 @@ export interface ClassScheduleParticipantVM {
 
   displayName?: string;
   avatarUrl?: string | null;
+  themeKey?: ThemeKey | null;
 }
 
 export type EventSourceVM =

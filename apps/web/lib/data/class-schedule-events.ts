@@ -15,7 +15,6 @@ import {
   EDUCATOR_KAI,
   EDUCATOR_LEO,
   EDUCATOR_PRIYA,
-  GUARDIAN_MORGAN,
 } from './profiles';
 
 export const MATH_SCHEDULE: ClassScheduleVM = {
@@ -38,13 +37,7 @@ export const MATH_SCHEDULE: ClassScheduleVM = {
       status: 'accepted',
       displayName: EDUCATOR_KAI.profile.displayName,
       avatarUrl: EDUCATOR_KAI.profile.avatar.url ?? null,
-    },
-    {
-      userId: GUARDIAN_MORGAN.ids.id,
-      role: 'guardian',
-      status: 'accepted',
-      displayName: GUARDIAN_MORGAN.profile.displayName,
-      avatarUrl: GUARDIAN_MORGAN.profile.avatar.url ?? null,
+      themeKey: EDUCATOR_KAI.ui?.themeKey ?? null,
     },
     {
       userId: CHILD_AVA.ids.id,
@@ -52,6 +45,7 @@ export const MATH_SCHEDULE: ClassScheduleVM = {
       status: 'accepted',
       displayName: CHILD_AVA.profile.displayName,
       avatarUrl: CHILD_AVA.profile.avatar.url ?? null,
+      themeKey: CHILD_AVA.ui?.themeKey ?? null,
     },
   ],
   source: {
@@ -112,13 +106,7 @@ export const SCIENCE_SCHEDULE: ClassScheduleVM = {
       status: 'accepted',
       displayName: EDUCATOR_PRIYA.profile.displayName,
       avatarUrl: EDUCATOR_PRIYA.profile.avatar.url ?? null,
-    },
-    {
-      userId: GUARDIAN_MORGAN.ids.id,
-      role: 'guardian',
-      status: 'accepted',
-      displayName: GUARDIAN_MORGAN.profile.displayName,
-      avatarUrl: GUARDIAN_MORGAN.profile.avatar.url ?? null,
+      themeKey: EDUCATOR_PRIYA.ui?.themeKey ?? null,
     },
     {
       userId: CHILD_MILO.ids.id,
@@ -126,6 +114,7 @@ export const SCIENCE_SCHEDULE: ClassScheduleVM = {
       status: 'accepted',
       displayName: CHILD_MILO.profile.displayName,
       avatarUrl: CHILD_MILO.profile.avatar.url ?? null,
+      themeKey: CHILD_MILO.ui?.themeKey ?? null,
     },
   ],
   source: {
@@ -179,13 +168,7 @@ export const ELA_SCHEDULE: ClassScheduleVM = {
       status: 'accepted',
       displayName: EDUCATOR_ELENA.profile.displayName,
       avatarUrl: EDUCATOR_ELENA.profile.avatar.url ?? null,
-    },
-    {
-      userId: GUARDIAN_MORGAN.ids.id,
-      role: 'guardian',
-      status: 'accepted',
-      displayName: GUARDIAN_MORGAN.profile.displayName,
-      avatarUrl: GUARDIAN_MORGAN.profile.avatar.url ?? null,
+      themeKey: EDUCATOR_ELENA.ui?.themeKey ?? null,
     },
     {
       userId: CHILD_MAYA.ids.id,
@@ -193,6 +176,7 @@ export const ELA_SCHEDULE: ClassScheduleVM = {
       status: 'accepted',
       displayName: CHILD_MAYA.profile.displayName,
       avatarUrl: CHILD_MAYA.profile.avatar.url ?? null,
+      themeKey: CHILD_MAYA.ui?.themeKey ?? null,
     },
   ],
   source: {
@@ -243,13 +227,7 @@ export const CHESS_SCHEDULE: ClassScheduleVM = {
       status: 'accepted',
       displayName: EDUCATOR_LEO.profile.displayName,
       avatarUrl: EDUCATOR_LEO.profile.avatar.url ?? null,
-    },
-    {
-      userId: GUARDIAN_MORGAN.ids.id,
-      role: 'guardian',
-      status: 'accepted',
-      displayName: GUARDIAN_MORGAN.profile.displayName,
-      avatarUrl: GUARDIAN_MORGAN.profile.avatar.url ?? null,
+      themeKey: EDUCATOR_LEO.ui?.themeKey ?? null,
     },
     {
       userId: CHILD_AVA.ids.id,
@@ -257,6 +235,7 @@ export const CHESS_SCHEDULE: ClassScheduleVM = {
       status: 'tentative',
       displayName: CHILD_AVA.profile.displayName,
       avatarUrl: CHILD_AVA.profile.avatar.url ?? null,
+      themeKey: CHILD_AVA.ui?.themeKey ?? null,
     },
   ],
   source: {

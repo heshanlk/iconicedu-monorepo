@@ -46,6 +46,7 @@ export function EventDetailsHeader({ event }: EventDetailsHeaderProps) {
               key={index}
               name={participant.displayName ?? `Guest ${index + 1}`}
               avatar={{ source: 'external', url: participant.avatarUrl ?? '' }}
+              themeKey={participant.themeKey ?? null}
               showStatus={false}
               sizeClassName={cn('border-2 border-background')}
             />
