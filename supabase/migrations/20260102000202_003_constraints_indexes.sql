@@ -52,3 +52,15 @@ create index if not exists class_schedule_participants_org_profile_idx
 
 create index if not exists activity_feed_items_tab_idx
   on public.activity_feed_items (org_id, tab_key, occurred_at desc);
+
+create index if not exists accounts_org_status_idx
+  on public.accounts (org_id, status)
+  where deleted_at is null;
+
+create index if not exists profiles_org_kind_idx
+  on public.profiles (org_id, kind)
+  where deleted_at is null;
+
+create index if not exists channels_org_kind_idx
+  on public.channels (org_id, kind)
+  where deleted_at is null;
