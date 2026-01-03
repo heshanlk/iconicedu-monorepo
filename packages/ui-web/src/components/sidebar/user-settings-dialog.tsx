@@ -245,7 +245,7 @@ function UserSettingsTabs({
         </TabsList>
 
         <ScrollArea className={cn('min-h-0 flex-1 w-full min-w-0', isMobile && 'flex-1')}>
-          <TabsContent value="profile" className="mt-0 space-y-8 w-full">
+          <TabsContent value="profile" className="mt-0 space-y-8 w-full px-1">
             <ProfileTab
               profile={profile}
               profileBlock={profileBlock}
@@ -257,7 +257,7 @@ function UserSettingsTabs({
             />
           </TabsContent>
 
-          <TabsContent value="account" className="mt-0 space-y-8 w-full">
+          <TabsContent value="account" className="mt-0 space-y-8 w-full px-1">
             <AccountTab
               contacts={contacts}
               email={email}
@@ -266,7 +266,7 @@ function UserSettingsTabs({
             />
           </TabsContent>
 
-          <TabsContent value="preferences" className="mt-0 space-y-8 w-full">
+          <TabsContent value="preferences" className="mt-0 space-y-8 w-full px-1">
             <PreferencesTab
               currentThemeKey={currentThemeKey}
               currentThemeLabel={currentThemeLabel}
@@ -277,11 +277,11 @@ function UserSettingsTabs({
             />
           </TabsContent>
 
-          <TabsContent value="location" className="mt-0 space-y-8 w-full">
+          <TabsContent value="location" className="mt-0 space-y-8 w-full px-1">
             <LocationTab location={location} />
           </TabsContent>
 
-          <TabsContent value="family" className="mt-0 space-y-8 w-full">
+          <TabsContent value="family" className="mt-0 space-y-8 w-full px-1">
             <FamilyTab
               familyMembers={familyMembers}
               profileThemes={profileThemes}
@@ -290,7 +290,7 @@ function UserSettingsTabs({
             />
           </TabsContent>
 
-          <TabsContent value="notifications" className="mt-0 space-y-8 w-full">
+          <TabsContent value="notifications" className="mt-0 space-y-8 w-full px-1">
             <NotificationsTab
               isGuardianOrAdmin={isGuardianOrAdmin}
               notificationChannels={notificationChannels}
