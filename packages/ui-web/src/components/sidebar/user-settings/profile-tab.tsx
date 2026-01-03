@@ -12,6 +12,7 @@ import {
 import type {
   ChildProfileVM,
   EducatorProfileVM,
+  GradeLevelOption,
   StaffProfileVM,
   ThemeKey,
   UserProfileVM,
@@ -38,6 +39,12 @@ type ProfileTabProps = {
   formatGradeLevel: (
     gradeLevel?: { id: string | number; label: string } | null,
   ) => string;
+  childGradeLevel?: { id: string | number; label: string } | null;
+  educatorSubjects?: string[];
+  educatorGradesSupported?: GradeLevelOption[];
+  educatorCurriculumTags?: string[];
+  educatorBadges?: string[];
+  staffSpecialties?: string[];
 };
 
 export function ProfileTab({
@@ -48,6 +55,12 @@ export function ProfileTab({
   educatorProfile,
   staffProfile,
   formatGradeLevel,
+  childGradeLevel,
+  educatorSubjects = [],
+  educatorGradesSupported = [],
+  educatorCurriculumTags = [],
+  educatorBadges = [],
+  staffSpecialties = [],
 }: ProfileTabProps) {
   return (
     <div className="space-y-8 w-full">
@@ -156,7 +169,7 @@ export function ProfileTab({
                 <div className="flex-1">
                   <div className="text-sm font-medium">Basic student info</div>
                   <div className="text-xs text-muted-foreground">
-                    {formatGradeLevel(childProfile?.gradeLevel)}
+                    {formatGradeLevel(childGradeLevel ?? childProfile?.gradeLevel)}
                   </div>
                 </div>
                 <ChevronIcon />
@@ -167,7 +180,7 @@ export function ProfileTab({
                     <Label htmlFor="settings-grade">Grade level</Label>
                     <Input
                       id="settings-grade"
-                      defaultValue={childProfile?.gradeLevel?.label ?? ''}
+                      defaultValue={childGradeLevel?.label ?? ''}
                     />
                   </div>
                   <div className="space-y-2">
@@ -377,14 +390,17 @@ export function ProfileTab({
                     <Label htmlFor="settings-educator-subjects">Subjects</Label>
                     <Input
                       id="settings-educator-subjects"
-                      defaultValue={educatorProfile?.subjects?.join(', ') ?? ''}
+                      defaultValue={educatorSubjects.join(', ') ?? ''}
                     />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="settings-educator-grades">Grades supported</Label>
                     <Input
                       id="settings-educator-grades"
-                      defaultValue={educatorProfile?.gradesSupported?.join(', ') ?? ''}
+                      defaultValue={educatorGradesSupported
+                        .map((grade) => grade?.label)
+                        .filter(Boolean)
+                        .join(', ')}
                     />
                   </div>
                   <div className="space-y-2 sm:col-span-2">
@@ -409,7 +425,7 @@ export function ProfileTab({
                 <div className="flex-1">
                   <div className="text-sm font-medium">Expertise & background</div>
                   <div className="text-xs text-muted-foreground">
-                    {educatorProfile?.subjects?.join(', ') ?? 'Subjects not set'}
+                    {educatorSubjects.join(', ') || 'Subjects not set'}
                   </div>
                 </div>
                 <ChevronIcon />
@@ -441,6 +457,13 @@ export function ProfileTab({
                       }
                     />
                   </div>
+                  <div className="space-y-2 sm:col-span-2">
+                    <Label htmlFor="settings-educator-badges">Badges</Label>
+                    <Input
+                      id="settings-educator-badges"
+                      defaultValue={educatorBadges.join(', ')}
+                    />
+                  </div>
                   <div className="sm:col-span-2 flex justify-end">
                     <Button size="sm">Save</Button>
                   </div>
@@ -456,7 +479,7 @@ export function ProfileTab({
                 <div className="flex-1">
                   <div className="text-sm font-medium">Teaching preferences</div>
                   <div className="text-xs text-muted-foreground">
-                    {educatorProfile?.curriculumTags?.join(', ') ?? 'Not set'}
+                    {educatorCurriculumTags.join(', ') || 'Not set'}
                   </div>
                 </div>
                 <ChevronIcon />
@@ -478,7 +501,7 @@ export function ProfileTab({
                     <Label htmlFor="settings-educator-curriculum">Curriculum tags</Label>
                     <Input
                       id="settings-educator-curriculum"
-                      defaultValue={educatorProfile?.curriculumTags?.join(', ') ?? ''}
+                      defaultValue={educatorCurriculumTags.join(', ')}
                     />
                   </div>
                   <div className="sm:col-span-2 flex justify-end">
@@ -525,6 +548,13 @@ export function ProfileTab({
                     <Input
                       id="settings-staff-hours"
                       defaultValue={staffProfile?.workingHoursRules?.join(', ') ?? ''}
+                    />
+                  </div>
+                  <div className="space-y-2 sm:col-span-2">
+                    <Label htmlFor="settings-staff-specialties">Specialties</Label>
+                    <Input
+                      id="settings-staff-specialties"
+                      defaultValue={staffSpecialties.join(', ')}
                     />
                   </div>
                   <div className="sm:col-span-2 flex justify-end">
