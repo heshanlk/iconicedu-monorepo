@@ -35,20 +35,35 @@ import { UserSettingsDialog, type UserSettingsTab } from './user-settings-dialog
 export function NavUser({
   profile,
   account,
+  onLogout,
 }: {
   profile: UserProfileVM;
   account?: UserAccountVM | null;
+  onLogout?: () => Promise<void> | void;
 }) {
   const { isMobile } = useSidebar();
   const secondaryLabel =
     account?.contacts.email ?? profile.prefs.locale ?? profile.prefs.timezone ?? '';
   const [settingsOpen, setSettingsOpen] = React.useState(false);
   const [settingsTab, setSettingsTab] = React.useState<UserSettingsTab>('account');
+  const [isLoggingOut, setIsLoggingOut] = React.useState(false);
 
   const openSettings = React.useCallback((tab: UserSettingsTab) => {
     setSettingsTab(tab);
     setSettingsOpen(true);
   }, []);
+
+  const handleLogout = React.useCallback(async () => {
+    if (!onLogout) {
+      return;
+    }
+    setIsLoggingOut(true);
+    try {
+      await onLogout();
+    } finally {
+      setIsLoggingOut(false);
+    }
+  }, [onLogout]);
 
   return (
     <SidebarMenu>
@@ -130,7 +145,7 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onSelect={handleLogout} disabled={isLoggingOut}>
               <LogOut />
               Log out
             </DropdownMenuItem>

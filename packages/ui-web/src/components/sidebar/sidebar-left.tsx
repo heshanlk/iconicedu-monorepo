@@ -66,10 +66,12 @@ const ICONS = {
 export function SidebarLeft({
   data,
   activePath,
+  onLogout,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
   data: SidebarLeftDataVM;
   activePath?: string | null;
+  onLogout?: () => Promise<void> | void;
 }) {
   const navMain: SidebarNavItem[] = data.navigation.navMain.map((item) => ({
     ...item,
@@ -220,7 +222,11 @@ export function SidebarLeft({
         <NavSecondary items={navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser profile={data.user.profile} account={data.user.account} />
+        <NavUser
+          profile={data.user.profile}
+          account={data.user.account}
+          onLogout={onLogout}
+        />
       </SidebarFooter>
     </Sidebar>
   );
