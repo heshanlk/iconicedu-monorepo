@@ -1,10 +1,5 @@
 import type { MessageVM, ThreadVM } from '@iconicedu/shared-types';
-import {
-  CHANNEL_IDS,
-  MESSAGE_IDS,
-  ORG_ID,
-  THREAD_IDS,
-} from './ids';
+import { CHANNEL_IDS, MESSAGE_IDS, ORG_ID, THREAD_IDS } from './ids';
 import {
   CHILD_MAYA_PROFILE,
   CHILD_TEHARA_PROFILE,
@@ -30,11 +25,7 @@ const THREAD_MATH_FEEDBACK: ThreadVM = {
     messageCount: 3,
     lastReplyAt: '2025-12-20T20:10:00.000Z',
   },
-  participants: [
-    EDUCATOR_PRIYA_PROFILE,
-    GUARDIAN_RILEY_PROFILE,
-    CHILD_TEVIN_PROFILE,
-  ],
+  participants: [EDUCATOR_PRIYA_PROFILE, GUARDIAN_RILEY_PROFILE, CHILD_TEVIN_PROFILE],
   readState: {
     threadId: THREAD_IDS.mathFeedback,
     channelId: CHANNEL_IDS.mathSpace,
@@ -77,8 +68,8 @@ export const MATH_CHANNEL_MESSAGES: MessageVM[] = [
     },
     social: {
       reactions: [
-        { emoji: 'thumbs_up', count: 2, reactedByMe: true },
-        { emoji: 'sparkles', count: 1 },
+        { emoji: '👍', count: 2, reactedByMe: true },
+        { emoji: '✨', count: 1 },
       ],
     },
     state: { isSaved: true },
@@ -129,7 +120,7 @@ export const MATH_CHANNEL_MESSAGES: MessageVM[] = [
       visibility: { type: 'all' },
     },
     social: {
-      reactions: [{ emoji: 'star', count: 1 }],
+      reactions: [{ emoji: '⭐', count: 1 }],
       thread: {
         ...THREAD_MATH_FEEDBACK,
         parent: {
@@ -169,7 +160,7 @@ export const MATH_CHANNEL_MESSAGES: MessageVM[] = [
     state: { isSaved: true },
     content: { text: 'How did this session feel for you?' },
     feedback: {
-      prompt: 'Rate today\'s math session',
+      prompt: "Rate today's math session",
       sessionTitle: 'Math Foundations - Fractions',
       rating: 5,
       submittedAt: '2025-12-20T20:05:00.000Z',
@@ -185,7 +176,7 @@ export const MATH_CHANNEL_MESSAGES: MessageVM[] = [
       visibility: { type: 'all' },
     },
     social: {
-      reactions: [{ emoji: 'chart', count: 1 }],
+      reactions: [{ emoji: '📈', count: 1 }],
     },
     state: { isSaved: false },
     content: {
@@ -213,7 +204,7 @@ export const MATH_CHANNEL_MESSAGES: MessageVM[] = [
       reactions: [],
     },
     state: { isSaved: true },
-    content: { text: 'Summary from today\'s math session.' },
+    content: { text: "Summary from today's math session." },
     session: {
       title: 'Math Foundations - Fractions',
       startAt: '2025-12-21T17:00:00.000Z',
@@ -235,7 +226,7 @@ export const SCIENCE_CHANNEL_MESSAGES: MessageVM[] = [
       visibility: { type: 'all' },
     },
     social: {
-      reactions: [{ emoji: 'microscope', count: 2 }],
+      reactions: [{ emoji: '🔬', count: 2 }],
     },
     state: { isSaved: false },
     content: {
@@ -275,7 +266,7 @@ export const ELA_CHANNEL_MESSAGES: MessageVM[] = [
       visibility: { type: 'all' },
     },
     social: {
-      reactions: [{ emoji: 'book', count: 1 }],
+      reactions: [{ emoji: '📘', count: 1 }],
     },
     state: { isSaved: false },
     content: {
@@ -294,7 +285,7 @@ export const ELA_CHANNEL_MESSAGES: MessageVM[] = [
       reactions: [],
     },
     state: { isSaved: true },
-    content: { text: 'Summary for today\'s writing session.' },
+    content: { text: "Summary for today's writing session." },
     session: {
       title: 'Writing Workshop - Story Seeds',
       startAt: '2025-12-18T18:30:00.000Z',
@@ -350,7 +341,7 @@ export const CHESS_CHANNEL_MESSAGES: MessageVM[] = [
       visibility: { type: 'all' },
     },
     social: {
-      reactions: [{ emoji: 'chess', count: 2 }],
+      reactions: [{ emoji: '♟️', count: 2 }],
     },
     state: { isSaved: false },
     content: {
@@ -375,7 +366,8 @@ export const CHESS_CHANNEL_MESSAGES: MessageVM[] = [
       startAt: '2025-12-26T00:30:00.000Z',
       endAt: '2025-12-26T01:15:00.000Z',
       location: 'Zoom',
-      meetingLink: 'https://us06web.zoom.us/j/88676118659?pwd=gsLCQZrCkU60T91Dc37DaaNiWdsgTq.1',
+      meetingLink:
+        'https://us06web.zoom.us/j/88676118659?pwd=gsLCQZrCkU60T91Dc37DaaNiWdsgTq.1',
       attendees: [EDUCATOR_MISHAN_PROFILE, CHILD_TEVIN_PROFILE],
     },
   },
@@ -448,7 +440,7 @@ export const DM_LUCAS_MESSAGES: MessageVM[] = [
     },
     social: { reactions: [] },
     state: { isSaved: false },
-    content: { text: 'Looking forward to tomorrow\'s lab. Please prep vinegar.' },
+    content: { text: "Looking forward to tomorrow's lab. Please prep vinegar." },
   },
 ];
 
@@ -463,7 +455,7 @@ export const DM_MISHAN_MESSAGES: MessageVM[] = [
     },
     social: { reactions: [] },
     state: { isSaved: false },
-    content: { text: 'Audio recap of today\'s chess puzzle.' },
+    content: { text: "Audio recap of today's chess puzzle." },
     audio: {
       url: 'https://files.example.com/chess-recap.mp3',
       durationSeconds: 42,
@@ -514,6 +506,6 @@ export const SUPPORT_CHANNEL_MESSAGES: MessageVM[] = [
     },
     social: { reactions: [] },
     state: { isSaved: false },
-    content: { text: 'I need help rescheduling next week\'s session.' },
+    content: { text: "I need help rescheduling next week's session." },
   },
 ];
