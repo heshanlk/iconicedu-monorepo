@@ -30,7 +30,7 @@ export const CHILD_TEVIN_PROFILE: UserProfileVM = {
     },
   },
   presence: {
-    state: { text: 'Listening to music' },
+    state: { text: 'Listening to music', emoji: '🎧' },
     liveStatus: 'away',
     displayStatus: 'away',
     lastSeenAt: '2025-02-12T20:05:00.000Z',
@@ -434,9 +434,7 @@ export const EDUCATOR_ELENA_PROFILE: UserProfileVM = {
   ],
   education: 'B.A. English Literature, NYU',
   experienceYears: 6,
-  certifications: [
-    { name: 'Reading Specialist', issuer: 'NY State', year: 2019 },
-  ],
+  certifications: [{ name: 'Reading Specialist', issuer: 'NY State', year: 2019 }],
   joinedDate: '2024-09-18T09:30:00.000Z',
   ageGroupsComfortableWith: ['8-10', '10-12'],
   identityVerificationStatus: 'verified',
@@ -509,9 +507,7 @@ export const EDUCATOR_LUCAS_PROFILE: UserProfileVM = {
   ],
   education: 'B.S. Biology, University of Colorado',
   experienceYears: 7,
-  certifications: [
-    { name: 'STEM Leadership', issuer: 'NAE', year: 2020 },
-  ],
+  certifications: [{ name: 'STEM Leadership', issuer: 'NAE', year: 2020 }],
   joinedDate: '2024-09-20T10:00:00.000Z',
   ageGroupsComfortableWith: ['9-11', '10-12'],
   identityVerificationStatus: 'verified',
@@ -584,9 +580,7 @@ export const EDUCATOR_MISHAN_PROFILE: UserProfileVM = {
   ],
   education: 'FIDE Instructor',
   experienceYears: 10,
-  certifications: [
-    { name: 'FIDE Instructor', issuer: 'FIDE', year: 2017 },
-  ],
+  certifications: [{ name: 'FIDE Instructor', issuer: 'FIDE', year: 2017 }],
   joinedDate: '2024-09-22T11:30:00.000Z',
   ageGroupsComfortableWith: ['8-10', '10-13'],
   identityVerificationStatus: 'verified',
@@ -659,9 +653,7 @@ export const EDUCATOR_AVA_PROFILE: UserProfileVM = {
   ],
   education: 'B.S. Applied Mathematics, UC Davis',
   experienceYears: 5,
-  certifications: [
-    { name: 'Math Intervention', issuer: 'CTCM', year: 2022 },
-  ],
+  certifications: [{ name: 'Math Intervention', issuer: 'CTCM', year: 2022 }],
   joinedDate: '2024-09-25T12:30:00.000Z',
   ageGroupsComfortableWith: ['9-11', '11-13'],
   identityVerificationStatus: 'verified',

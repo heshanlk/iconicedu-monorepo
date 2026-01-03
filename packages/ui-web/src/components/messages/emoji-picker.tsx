@@ -171,8 +171,8 @@ export const EmojiPicker = memo(function EmojiPicker({
       <PopoverContent
         className="w-[320px] p-0"
         align="end"
-        alignOffset={-70}
-        side="top"
+        alignOffset={-65}
+        side="bottom"
         sideOffset={10}
         style={{ zIndex: 9999 }}
       >

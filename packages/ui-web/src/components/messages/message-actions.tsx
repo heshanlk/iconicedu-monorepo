@@ -103,18 +103,18 @@ export const MessageActions = memo(function MessageActions({
               <Button
                 variant="ghost"
                 size="icon"
-              className="h-7 w-7"
-              onClick={handleThreadClick}
-              aria-label={message.social.thread ? 'Reply in thread' : 'Start a thread'}
-            >
-              <MessageCircle className="h-4 w-4" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>{message.social.thread ? 'Reply in thread' : 'Start a thread'}</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+                className="h-7 w-7"
+                onClick={handleThreadClick}
+                aria-label={message.social.thread ? 'Reply in thread' : 'Start a thread'}
+              >
+                <MessageCircle className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{message.social.thread ? 'Reply in thread' : 'Start a thread'}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       )}
 
       <TooltipProvider>
@@ -181,28 +181,24 @@ export const MessageActions = memo(function MessageActions({
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-        <DropdownMenuContent align="end" className="w-48 z-[100]">
-          <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+        <DropdownMenuContent align="end" sideOffset={10} className="w-48 z-[100]">
+          <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="py-2">
             <Forward className="mr-2 h-4 w-4" />
             <span>Forward</span>
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+          <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="py-2">
             <Copy className="mr-2 h-4 w-4" />
             <span>Copy text</span>
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-            <Pin className="mr-2 h-4 w-4" />
-            <span>Pin message</span>
-          </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleHideClick}>
+          <DropdownMenuItem onClick={handleHideClick} className="py-2">
             <EyeOff className="mr-2 h-4 w-4" />
             <span>Hide message</span>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
             onSelect={(e) => e.preventDefault()}
-            className="text-destructive focus:text-destructive"
+            className="py-2 text-destructive focus:text-destructive"
           >
             <Trash2 className="mr-2 h-4 w-4" />
             <span>Delete</span>
