@@ -53,7 +53,7 @@ export function InboxContainer({ feed }: { feed: ActivityFeedVM }) {
       prev.map((section) => ({
         ...section,
         items: section.items.map((item) => {
-          if (item.id === id) {
+          if (item.ids.id === id) {
             return {
               ...item,
               state: {
@@ -68,7 +68,7 @@ export function InboxContainer({ feed }: { feed: ActivityFeedVM }) {
               subActivities: {
                 ...item.subActivities,
                 items: item.subActivities.items.map((sub) =>
-                  sub.id === id
+                  sub.ids.id === id
                     ? {
                         ...sub,
                         state: {
@@ -142,7 +142,7 @@ export function InboxContainer({ feed }: { feed: ActivityFeedVM }) {
                 </h2>
                 <div className="space-y-1">
                   {section.items.map((activity) => (
-                    <div key={activity.id} className="relative">
+                    <div key={activity.ids.id} className="relative">
                       {renderActivity(activity)}
                     </div>
                   ))}

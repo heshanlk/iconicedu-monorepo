@@ -48,7 +48,7 @@ export const MediaFilesPanel = memo(function MediaFilesPanel({
             <div className="grid grid-cols-2 gap-3">
               {scopedMedia.slice(0, 6).map((item) => (
                 <div
-                  key={item.id}
+                  key={item.ids.id}
                   className="aspect-square overflow-hidden rounded-xl bg-muted"
                 >
                   <img
@@ -68,7 +68,7 @@ export const MediaFilesPanel = memo(function MediaFilesPanel({
             <div className="space-y-2">
               {scopedFiles.slice(0, 6).map((item) => (
                 <div
-                  key={item.id}
+                  key={item.ids.id}
                   className="flex items-center gap-3 rounded-lg border border-border p-2"
                 >
                   <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted text-muted-foreground">

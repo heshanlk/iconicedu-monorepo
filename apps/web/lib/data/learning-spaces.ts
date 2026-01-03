@@ -1,172 +1,225 @@
 import type { LearningSpaceVM } from '@iconicedu/shared-types';
-import { LEARNING_SPACE_IDS, ORG_ID } from './ids';
+import { CHANNEL_IDS, LEARNING_SPACE_IDS, ORG_ID } from './ids';
 import {
-  CHESS_SCHEDULE,
-  ELA_SCHEDULE,
-  MATH_SCHEDULE,
-  SCIENCE_SCHEDULE,
-} from './class-schedule-events';
-import {
-  CHESS_LEARNING_LINKS,
-  ELA_LEARNING_LINKS,
-  MATH_LEARNING_LINKS,
-  SCIENCE_LEARNING_LINKS,
-} from './learning-space-links';
-import {
-  CHESS_CHANNEL,
-  ELA_CHANNEL,
-  MATH_CHANNEL,
-  SCIENCE_CHANNEL,
-} from './learning-space-channels';
-import {
-  CHILD_AVA,
-  CHILD_MAYA,
-  CHILD_MILO,
-  EDUCATOR_ELENA,
-  EDUCATOR_KAI,
-  EDUCATOR_LEO,
-  EDUCATOR_PRIYA,
-  GUARDIAN_MORGAN,
+  CHILD_MAYA_PROFILE,
+  CHILD_TEHARA_PROFILE,
+  CHILD_TEVIN_PROFILE,
+  EDUCATOR_ELENA_PROFILE,
+  EDUCATOR_LUCAS_PROFILE,
+  EDUCATOR_MISHAN_PROFILE,
+  EDUCATOR_PRIYA_PROFILE,
+  GUARDIAN_RILEY_PROFILE,
 } from './profiles';
-
-export const LEARNING_SPACE_MATH: LearningSpaceVM = {
-  ids: {
-    id: LEARNING_SPACE_IDS.math,
-    orgId: ORG_ID,
-  },
-  basics: {
-    kind: 'one_on_one',
-    status: 'active',
-    title: 'Math Mastery',
-    iconKey: 'square-pi',
-    subject: 'MATH',
-    description: 'Number fluency, reasoning, and problem solving.',
-  },
-  channels: {
-    primaryChannel: MATH_CHANNEL,
-  },
-  schedule: {
-    scheduleSeries: MATH_SCHEDULE,
-  },
-  resources: {
-    links: MATH_LEARNING_LINKS,
-  },
-  lifecycle: {
-    createdAt: '2025-09-01T00:00:00.000Z',
-    createdBy: EDUCATOR_KAI.ids.id,
-    archivedAt: null,
-  },
-  people: {
-    participants: [GUARDIAN_MORGAN, CHILD_AVA, EDUCATOR_KAI],
-  },
-};
-
-export const LEARNING_SPACE_SCIENCE: LearningSpaceVM = {
-  ids: {
-    id: LEARNING_SPACE_IDS.science,
-    orgId: ORG_ID,
-  },
-  basics: {
-    kind: 'small_group',
-    status: 'active',
-    title: 'Science Lab',
-    iconKey: 'earth',
-    subject: 'SCIENCE',
-    description: 'Hands-on labs with weekly reflections.',
-  },
-  channels: {
-    primaryChannel: SCIENCE_CHANNEL,
-  },
-  schedule: {
-    scheduleSeries: SCIENCE_SCHEDULE,
-  },
-  resources: {
-    links: SCIENCE_LEARNING_LINKS,
-  },
-  lifecycle: {
-    createdAt: '2025-09-02T00:00:00.000Z',
-    createdBy: EDUCATOR_PRIYA.ids.id,
-    archivedAt: null,
-  },
-  people: {
-    participants: [GUARDIAN_MORGAN, CHILD_MILO, EDUCATOR_PRIYA],
-  },
-};
-
-export const LEARNING_SPACE_ELA: LearningSpaceVM = {
-  ids: {
-    id: LEARNING_SPACE_IDS.ela,
-    orgId: ORG_ID,
-  },
-  basics: {
-    kind: 'one_on_one',
-    status: 'active',
-    title: 'ELA Studio',
-    iconKey: 'languages',
-    subject: 'ELA',
-    description: 'Reading circles and narrative writing.',
-  },
-  channels: {
-    primaryChannel: ELA_CHANNEL,
-  },
-  schedule: {
-    scheduleSeries: ELA_SCHEDULE,
-  },
-  resources: {
-    links: ELA_LEARNING_LINKS,
-  },
-  lifecycle: {
-    createdAt: '2025-09-03T00:00:00.000Z',
-    createdBy: EDUCATOR_ELENA.ids.id,
-    archivedAt: null,
-  },
-  people: {
-    participants: [GUARDIAN_MORGAN, CHILD_MAYA, EDUCATOR_ELENA],
-  },
-};
-
-export const LEARNING_SPACE_CHESS: LearningSpaceVM = {
-  ids: {
-    id: LEARNING_SPACE_IDS.chess,
-    orgId: ORG_ID,
-  },
-  basics: {
-    kind: 'small_group',
-    status: 'active',
-    title: 'Chess Studio',
-    iconKey: 'chef-hat',
-    subject: 'CHESS',
-    description: 'Tactics, openings, and game review.',
-  },
-  channels: {
-    primaryChannel: CHESS_CHANNEL,
-  },
-  schedule: {
-    scheduleSeries: CHESS_SCHEDULE,
-  },
-  resources: {
-    links: CHESS_LEARNING_LINKS,
-  },
-  lifecycle: {
-    createdAt: '2025-09-04T00:00:00.000Z',
-    createdBy: EDUCATOR_LEO.ids.id,
-    archivedAt: null,
-  },
-  people: {
-    participants: [GUARDIAN_MORGAN, CHILD_AVA, EDUCATOR_LEO],
-  },
-};
+import {
+  CHESS_SCHEDULE_EVENT,
+  ELA_SCHEDULE_EVENT,
+  MATH_SCHEDULE_EVENT,
+  SCIENCE_SCHEDULE_EVENT,
+} from './class-schedule-events';
+import { LEARNING_SPACE_CHANNELS_BY_ID } from './channel-message-data';
 
 export const LEARNING_SPACES: LearningSpaceVM[] = [
-  LEARNING_SPACE_MATH,
-  LEARNING_SPACE_SCIENCE,
-  LEARNING_SPACE_ELA,
-  LEARNING_SPACE_CHESS,
+  {
+    ids: { id: LEARNING_SPACE_IDS.math, orgId: ORG_ID },
+    basics: {
+      kind: 'one_on_one',
+      status: 'active',
+      title: 'Math Foundations',
+      iconKey: 'square-pi',
+      subject: 'MATH',
+      description: 'Build core math confidence with weekly practice.',
+    },
+    channels: {
+      primaryChannel: LEARNING_SPACE_CHANNELS_BY_ID[CHANNEL_IDS.mathSpace],
+    },
+    schedule: {
+      scheduleSeries: MATH_SCHEDULE_EVENT,
+    },
+    resources: {
+      links: [
+        {
+          label: 'Join Zoom',
+          iconKey: 'video',
+          url: MATH_SCHEDULE_EVENT.meetingLink,
+          status: 'active',
+        },
+        {
+          label: 'Math Workbook',
+          iconKey: 'folder',
+          url: 'https://files.example.com/math-workbook.pdf',
+          status: 'active',
+        },
+        {
+          label: 'Homework Hub',
+          iconKey: 'graduation-cap',
+          url: 'https://iconic.edu/homework/math',
+          status: 'active',
+        },
+      ],
+    },
+    lifecycle: {
+      createdAt: '2025-12-15T08:00:00.000Z',
+      createdBy: EDUCATOR_PRIYA_PROFILE.ids.id,
+      archivedAt: null,
+    },
+    participants: [
+      EDUCATOR_PRIYA_PROFILE,
+      GUARDIAN_RILEY_PROFILE,
+      CHILD_TEVIN_PROFILE,
+    ],
+  },
+  {
+    ids: { id: LEARNING_SPACE_IDS.science, orgId: ORG_ID },
+    basics: {
+      kind: 'one_on_one',
+      status: 'active',
+      title: 'Science Lab Explorers',
+      iconKey: 'earth',
+      subject: 'SCIENCE',
+      description: 'Hands-on lab activities and inquiry skills.',
+    },
+    channels: {
+      primaryChannel: LEARNING_SPACE_CHANNELS_BY_ID[CHANNEL_IDS.scienceSpace],
+    },
+    schedule: {
+      scheduleSeries: SCIENCE_SCHEDULE_EVENT,
+    },
+    resources: {
+      links: [
+        {
+          label: 'Join Zoom',
+          iconKey: 'video',
+          url: SCIENCE_SCHEDULE_EVENT.meetingLink,
+          status: 'active',
+        },
+        {
+          label: 'Lab Kit Checklist',
+          iconKey: 'folder',
+          url: 'https://files.example.com/science-kit-checklist.pdf',
+          status: 'active',
+        },
+        {
+          label: 'Weekly Experiments',
+          iconKey: 'graduation-cap',
+          url: 'https://iconic.edu/resources/science',
+          status: 'active',
+        },
+      ],
+    },
+    lifecycle: {
+      createdAt: '2025-12-18T08:30:00.000Z',
+      createdBy: EDUCATOR_LUCAS_PROFILE.ids.id,
+      archivedAt: null,
+    },
+    participants: [
+      EDUCATOR_LUCAS_PROFILE,
+      GUARDIAN_RILEY_PROFILE,
+      CHILD_TEHARA_PROFILE,
+    ],
+  },
+  {
+    ids: { id: LEARNING_SPACE_IDS.ela, orgId: ORG_ID },
+    basics: {
+      kind: 'one_on_one',
+      status: 'active',
+      title: 'Writing Workshop',
+      iconKey: 'languages',
+      subject: 'ELA',
+      description: 'Writing practice with structured feedback.',
+    },
+    channels: {
+      primaryChannel: LEARNING_SPACE_CHANNELS_BY_ID[CHANNEL_IDS.elaSpace],
+    },
+    schedule: {
+      scheduleSeries: ELA_SCHEDULE_EVENT,
+    },
+    resources: {
+      links: [
+        {
+          label: 'Join Zoom',
+          iconKey: 'video',
+          url: ELA_SCHEDULE_EVENT.meetingLink,
+          status: 'active',
+        },
+        {
+          label: 'Story Prompts',
+          iconKey: 'folder',
+          url: 'https://files.example.com/story-prompt.pdf',
+          status: 'active',
+        },
+        {
+          label: 'Writing Guide',
+          iconKey: 'graduation-cap',
+          url: 'https://iconic.edu/resources/ela',
+          status: 'active',
+        },
+      ],
+    },
+    lifecycle: {
+      createdAt: '2025-12-20T09:15:00.000Z',
+      createdBy: EDUCATOR_ELENA_PROFILE.ids.id,
+      archivedAt: null,
+    },
+    participants: [
+      EDUCATOR_ELENA_PROFILE,
+      GUARDIAN_RILEY_PROFILE,
+      CHILD_MAYA_PROFILE,
+    ],
+  },
+  {
+    ids: { id: LEARNING_SPACE_IDS.chess, orgId: ORG_ID },
+    basics: {
+      kind: 'one_on_one',
+      status: 'active',
+      title: 'Chess Strategy Lab',
+      iconKey: 'chef-hat',
+      subject: 'CHESS',
+      description: 'Weekly strategy session and tactical puzzles.',
+    },
+    channels: {
+      primaryChannel: LEARNING_SPACE_CHANNELS_BY_ID[CHANNEL_IDS.chessSpace],
+    },
+    schedule: {
+      scheduleSeries: CHESS_SCHEDULE_EVENT,
+    },
+    resources: {
+      links: [
+        {
+          label: 'Join Zoom',
+          iconKey: 'video',
+          url: CHESS_SCHEDULE_EVENT.meetingLink,
+          status: 'active',
+        },
+        {
+          label: 'Tactics Library',
+          iconKey: 'folder',
+          url: 'https://iconic.edu/resources/chess',
+          status: 'active',
+        },
+        {
+          label: 'Puzzle Pack',
+          iconKey: 'graduation-cap',
+          url: 'https://files.example.com/chess-puzzles.pdf',
+          status: 'active',
+        },
+      ],
+    },
+    lifecycle: {
+      createdAt: '2025-12-22T08:30:00.000Z',
+      createdBy: EDUCATOR_MISHAN_PROFILE.ids.id,
+      archivedAt: null,
+    },
+    participants: [
+      EDUCATOR_MISHAN_PROFILE,
+      GUARDIAN_RILEY_PROFILE,
+      CHILD_TEVIN_PROFILE,
+    ],
+  },
 ];
 
 export const LEARNING_SPACE_BY_CHANNEL_ID: Record<string, LearningSpaceVM> = {
-  [MATH_CHANNEL.ids.id]: LEARNING_SPACE_MATH,
-  [SCIENCE_CHANNEL.ids.id]: LEARNING_SPACE_SCIENCE,
-  [ELA_CHANNEL.ids.id]: LEARNING_SPACE_ELA,
-  [CHESS_CHANNEL.ids.id]: LEARNING_SPACE_CHESS,
+  [CHANNEL_IDS.mathSpace]: LEARNING_SPACES[0],
+  [CHANNEL_IDS.scienceSpace]: LEARNING_SPACES[1],
+  [CHANNEL_IDS.elaSpace]: LEARNING_SPACES[2],
+  [CHANNEL_IDS.chessSpace]: LEARNING_SPACES[3],
 };

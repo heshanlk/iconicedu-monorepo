@@ -58,7 +58,7 @@ export function ActivityWithSubitems({
       {hasSubActivities && !isCollapsed && (
         <div className="relative ml-6 md:ml-[42px] animate-in slide-in-from-top-2 fade-in duration-300">
           {subActivities.map((sub: ActivityFeedLeafItemVM) => (
-            <div key={sub.id} className="relative">
+            <div key={sub.ids.id} className="relative">
               {sub.content.expandedContent ? (
                 <ActivityBasicWithExpandedContent
                   activity={sub}

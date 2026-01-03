@@ -147,7 +147,10 @@ export function MessagesStateProvider({
       thread: ThreadVM,
       data: { replies: ConnectionVM<MessageVM>; parentMessage?: MessageVM },
     ) => {
-      setThreadDataState((prev) => ({ ...prev, [thread.id]: { thread, ...data } }));
+      setThreadDataState((prev) => ({
+        ...prev,
+        [thread.ids.id]: { thread, ...data },
+      }));
     },
     [],
   );

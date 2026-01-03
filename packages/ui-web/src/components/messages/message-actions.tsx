@@ -64,7 +64,7 @@ export const MessageActions = memo(function MessageActions({
       const snippet =
         'content' in message && message.content?.text ? message.content.text : null;
       const newThread: ThreadVM = {
-        id: message.ids.id,
+        ids: { id: message.ids.id, orgId: message.ids.orgId },
         parent: {
           messageId: message.ids.id,
           snippet,

@@ -1,66 +1,57 @@
 import type { FamilyLinkVM, FamilyVM } from '@iconicedu/shared-types';
-import { ACCOUNT_IDS, FAMILY_IDS, ORG_ID } from './ids';
+import { ACCOUNT_IDS, FAMILY_IDS, FAMILY_LINK_IDS, ORG_ID } from './ids';
 
 export const MORGAN_FAMILY: FamilyVM = {
-  ids: {
-    orgId: ORG_ID,
-    id: FAMILY_IDS.family,
-  },
+  ids: { id: FAMILY_IDS.morganFamily, orgId: ORG_ID },
   displayName: 'Morgan Family',
 };
 
-export const FAMILY_LINK_AVA: FamilyLinkVM = {
+export const FAMILY_LINK_RILEY_TEVIN: FamilyLinkVM = {
   ids: {
+    id: FAMILY_LINK_IDS.rileyTevin,
     orgId: ORG_ID,
-    id: FAMILY_IDS.linkA,
-    familyId: FAMILY_IDS.family,
+    familyId: FAMILY_IDS.morganFamily,
   },
   accounts: {
-    guardianAccountId: ACCOUNT_IDS.guardian,
-    childAccountId: ACCOUNT_IDS.childA,
+    guardianAccountId: ACCOUNT_IDS.guardianRiley,
+    childAccountId: ACCOUNT_IDS.childTevin,
   },
   relation: 'guardian',
-  permissionsScope: ['view-progress', 'schedule-session', 'message-educator'],
+  permissionsScope: ['scheduling', 'billing', 'learning-progress'],
 };
 
-export const FAMILY_LINK_MILO: FamilyLinkVM = {
+export const FAMILY_LINK_RILEY_TEHARA: FamilyLinkVM = {
   ids: {
+    id: FAMILY_LINK_IDS.rileyTehara,
     orgId: ORG_ID,
-    id: FAMILY_IDS.linkB,
-    familyId: FAMILY_IDS.family,
+    familyId: FAMILY_IDS.morganFamily,
   },
   accounts: {
-    guardianAccountId: ACCOUNT_IDS.guardian,
-    childAccountId: ACCOUNT_IDS.childB,
-  },
-  relation: 'caregiver',
-  permissionsScope: ['view-progress', 'schedule-session', 'message-educator'],
-};
-
-export const FAMILY_LINK_MAYA: FamilyLinkVM = {
-  ids: {
-    orgId: ORG_ID,
-    id: FAMILY_IDS.linkC,
-    familyId: FAMILY_IDS.family,
-  },
-  accounts: {
-    guardianAccountId: ACCOUNT_IDS.guardian,
-    childAccountId: ACCOUNT_IDS.childC,
+    guardianAccountId: ACCOUNT_IDS.guardianRiley,
+    childAccountId: ACCOUNT_IDS.childTehara,
   },
   relation: 'guardian',
-  permissionsScope: ['view-progress', 'schedule-session', 'message-educator'],
+  permissionsScope: ['scheduling', 'learning-progress'],
 };
 
-export const FAMILIES: FamilyVM[] = [MORGAN_FAMILY];
+export const FAMILY_LINK_RILEY_MAYA: FamilyLinkVM = {
+  ids: {
+    id: FAMILY_LINK_IDS.rileyMaya,
+    orgId: ORG_ID,
+    familyId: FAMILY_IDS.morganFamily,
+  },
+  accounts: {
+    guardianAccountId: ACCOUNT_IDS.guardianRiley,
+    childAccountId: ACCOUNT_IDS.childMaya,
+  },
+  relation: 'guardian',
+  permissionsScope: ['scheduling', 'learning-progress'],
+};
 
 export const FAMILY_LINKS: FamilyLinkVM[] = [
-  FAMILY_LINK_AVA,
-  FAMILY_LINK_MILO,
-  FAMILY_LINK_MAYA,
+  FAMILY_LINK_RILEY_TEVIN,
+  FAMILY_LINK_RILEY_TEHARA,
+  FAMILY_LINK_RILEY_MAYA,
 ];
 
-export const FAMILY_LINKS_BY_ID: Record<string, FamilyLinkVM> = {
-  [FAMILY_IDS.linkA]: FAMILY_LINK_AVA,
-  [FAMILY_IDS.linkB]: FAMILY_LINK_MILO,
-  [FAMILY_IDS.linkC]: FAMILY_LINK_MAYA,
-};
+export const FAMILIES: FamilyVM[] = [MORGAN_FAMILY];

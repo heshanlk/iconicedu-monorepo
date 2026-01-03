@@ -50,7 +50,7 @@ export function DayView({
   >();
 
   dayEvents.forEach((event) => {
-    const layout = dayLayout.get(event.id);
+    const layout = dayLayout.get(event.ids.id);
     if (!layout) return;
     const startMinutes = timeToMinutes(event.startAt);
     const info = clusterInfo.get(layout.clusterId);
@@ -142,7 +142,7 @@ export function DayView({
                 const endMinutes = timeToMinutes(event.endAt);
                 const top = (startMinutes / 30) * 32;
                 const height = ((endMinutes - startMinutes) / 30) * 32;
-                const layout = dayLayout.get(event.id);
+                const layout = dayLayout.get(event.ids.id);
                 const columns = layout?.columns ?? 1;
                 const column = layout?.column ?? 0;
                 if (column >= maxVisibleColumns) {
@@ -161,7 +161,7 @@ export function DayView({
 
                 return (
                   <div
-                    key={event.id}
+                    key={event.ids.id}
                     className="absolute px-1 py-1 pointer-events-none"
                     style={{
                       top: `${top}px`,
@@ -210,7 +210,10 @@ export function DayView({
                         </div>
                         <div className="max-h-48 overflow-auto">
                           {info.hiddenEvents.map((hidden) => (
-                            <div key={hidden.id} className="pointer-events-auto">
+                            <div
+                              key={hidden.ids.id}
+                              className="pointer-events-auto"
+                            >
                               <EventCard event={hidden} />
                             </div>
                           ))}

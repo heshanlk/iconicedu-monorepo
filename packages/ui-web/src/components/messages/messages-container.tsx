@@ -65,7 +65,7 @@ export function MessagesContainer({ channel }: MessagesContainerProps) {
   const handleOpenThread = useCallback(
     (thread: ThreadVM, parentMessage: MessageVM) => {
       const threadMessages = messages
-        .filter((message) => message.social.thread?.id === thread.id)
+        .filter((message) => message.social.thread?.ids.id === thread.ids.id)
         .sort(
           (a, b) =>
             new Date(a.core.createdAt).getTime() - new Date(b.core.createdAt).getTime(),
@@ -86,7 +86,7 @@ export function MessagesContainer({ channel }: MessagesContainerProps) {
         },
         parentMessage,
       });
-      toggle({ key: 'thread', threadId: thread.id });
+      toggle({ key: 'thread', threadId: thread.ids.id });
     },
     [messages, setThreadData, toggle],
   );
@@ -98,7 +98,7 @@ export function MessagesContainer({ channel }: MessagesContainerProps) {
         toggleMessageFilter(messageFilter);
       }
       const newMessage: TextMessageVM = {
-        ids: { id: `msg-${Date.now()}` },
+        ids: { id: `msg-${Date.now()}`, orgId: channel.ids.orgId },
         core: {
           type: 'text',
           sender: senderProfile,
@@ -115,7 +115,7 @@ export function MessagesContainer({ channel }: MessagesContainerProps) {
       };
       addMessage(newMessage);
     },
-    [addMessage, senderProfile, messageFilter, toggleMessageFilter],
+    [addMessage, senderProfile, messageFilter, toggleMessageFilter, channel.ids.orgId],
   );
 
   const handleProfileClick = useCallback(
@@ -217,7 +217,7 @@ export function MessagesContainer({ channel }: MessagesContainerProps) {
     if (!senderProfile) return;
     setCreateTextMessage(
       (content: string): TextMessageVM => ({
-        ids: { id: `reply-${Date.now()}` },
+        ids: { id: `reply-${Date.now()}`, orgId: channel.ids.orgId },
         core: {
           type: 'text',
           sender: senderProfile,
@@ -233,7 +233,7 @@ export function MessagesContainer({ channel }: MessagesContainerProps) {
         content: { text: content },
       }),
     );
-  }, [senderProfile, setCreateTextMessage]);
+  }, [senderProfile, setCreateTextMessage, channel.ids.orgId]);
 
   useEffect(() => {
     setThreadHandlers({

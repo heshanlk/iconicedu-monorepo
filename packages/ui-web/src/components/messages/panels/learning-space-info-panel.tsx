@@ -437,7 +437,7 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
           <div className="space-y-4 p-4 min-w-0">
             <h3 className="text-sm font-semibold text-foreground">Members</h3>
             <div className="space-y-3 min-w-0">
-              {learningSpace.people.participants.map((member) => {
+              {learningSpace.participants.map((member) => {
                 const dmKey =
                   currentUserId && member.ids.id !== currentUserId
                     ? `dm:${[currentUserId, member.ids.id].sort().join('-')}`
@@ -481,7 +481,7 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
                         className="h-8 w-8 shrink-0 text-muted-foreground hover:bg-primary/15 hover:text-primary"
                         aria-label={`Message ${member.profile.displayName}`}
                       >
-                        <a href={`/dm/${dmKey}`}>
+                        <a href={`/d/dm/${dmKey}`}>
                           <MessageCircle className="h-4 w-4" />
                         </a>
                       </Button>
@@ -489,7 +489,7 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
                   </div>
                 );
               })}
-              {learningSpace.people.participants.length === 0 ? (
+              {learningSpace.participants.length === 0 ? (
                 <div className="text-sm text-muted-foreground">No members added yet.</div>
               ) : null}
             </div>

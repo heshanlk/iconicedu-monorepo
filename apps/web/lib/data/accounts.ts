@@ -1,283 +1,242 @@
 import type { UserAccountVM } from '@iconicedu/shared-types';
 import { ACCOUNT_IDS, ORG_ID } from './ids';
 import {
-  ROLE_CHILD_AVA,
-  ROLE_CHILD_MAYA,
-  ROLE_CHILD_MILO,
-  ROLE_EDUCATOR_ELENA,
-  ROLE_EDUCATOR_KAI,
-  ROLE_EDUCATOR_LEO,
-  ROLE_EDUCATOR_PRIYA,
-  ROLE_EDUCATOR_SOFIA,
-  ROLE_GUARDIAN,
-  ROLE_STAFF_SUPPORT,
+  CHILD_MAYA_ROLE,
+  CHILD_TEHARA_ROLE,
+  CHILD_TEVIN_ROLE,
+  EDUCATOR_AVA_ROLE,
+  EDUCATOR_ELENA_ROLE,
+  EDUCATOR_LUCAS_ROLE,
+  EDUCATOR_MISHAN_ROLE,
+  EDUCATOR_PRIYA_ROLE,
+  GUARDIAN_ROLE,
+  STAFF_SUPPORT_ROLE,
 } from './roles';
-import { FAMILY_LINK_AVA, FAMILY_LINK_MAYA, FAMILY_LINK_MILO } from './families';
 
-export const ACCOUNT_GUARDIAN: UserAccountVM = {
-  ids: {
-    orgId: ORG_ID,
-    id: ACCOUNT_IDS.guardian,
-  },
+export const GUARDIAN_ACCOUNT: UserAccountVM = {
+  ids: { id: ACCOUNT_IDS.guardianRiley, orgId: ORG_ID },
   contacts: {
-    email: 'riley.morgan@example.com',
-    phoneE164: '+12125551234',
+    email: 'riley.morgan@iconic.edu',
+    phoneE164: '+14085551234',
+    whatsappE164: '+14085559876',
     emailVerified: true,
     phoneVerified: true,
+    whatsappVerified: false,
+    verifiedAt: '2025-01-08T15:20:00.000Z',
     preferredContactChannels: ['email', 'sms'],
   },
   access: {
-    userRoles: [ROLE_GUARDIAN],
-    activeContext: {
-      roleKey: 'guardian',
-      familyLink: FAMILY_LINK_AVA,
-    },
+    userRoles: [GUARDIAN_ROLE],
+    activeContext: { roleKey: 'guardian' },
   },
   lifecycle: {
     status: 'active',
-    createdAt: '2020-02-14T00:00:00.000Z',
-    updatedAt: '2026-01-20T00:00:00.000Z',
+    createdAt: '2024-12-15T10:05:00.000Z',
+    updatedAt: '2025-02-01T08:30:00.000Z',
   },
 };
 
-export const ACCOUNT_CHILD_AVA: UserAccountVM = {
-  ids: {
-    orgId: ORG_ID,
-    id: ACCOUNT_IDS.childA,
-  },
+export const CHILD_TEVIN_ACCOUNT: UserAccountVM = {
+  ids: { id: ACCOUNT_IDS.childTevin, orgId: ORG_ID },
   contacts: {
-    email: null,
-    phoneE164: null,
-    emailVerified: false,
-    phoneVerified: false,
-    preferredContactChannels: null,
-  },
-  access: {
-    userRoles: [ROLE_CHILD_AVA],
-    activeContext: {
-      roleKey: 'child',
-      familyLink: FAMILY_LINK_AVA,
-    },
-  },
-  lifecycle: {
-    status: 'active',
-    createdAt: '2016-05-18T00:00:00.000Z',
-    updatedAt: '2026-01-15T00:00:00.000Z',
-  },
-};
-
-export const ACCOUNT_CHILD_MILO: UserAccountVM = {
-  ids: {
-    orgId: ORG_ID,
-    id: ACCOUNT_IDS.childB,
-  },
-  contacts: {
-    email: null,
-    phoneE164: null,
-    emailVerified: false,
-    phoneVerified: false,
-    preferredContactChannels: null,
-  },
-  access: {
-    userRoles: [ROLE_CHILD_MILO],
-    activeContext: {
-      roleKey: 'child',
-      familyLink: FAMILY_LINK_MILO,
-    },
-  },
-  lifecycle: {
-    status: 'active',
-    createdAt: '2014-04-11T00:00:00.000Z',
-    updatedAt: '2026-01-15T00:00:00.000Z',
-  },
-};
-
-export const ACCOUNT_CHILD_MAYA: UserAccountVM = {
-  ids: {
-    orgId: ORG_ID,
-    id: ACCOUNT_IDS.childC,
-  },
-  contacts: {
-    email: null,
-    phoneE164: null,
-    emailVerified: false,
-    phoneVerified: false,
-    preferredContactChannels: null,
-  },
-  access: {
-    userRoles: [ROLE_CHILD_MAYA],
-    activeContext: {
-      roleKey: 'child',
-      familyLink: FAMILY_LINK_MAYA,
-    },
-  },
-  lifecycle: {
-    status: 'active',
-    createdAt: '2013-03-06T00:00:00.000Z',
-    updatedAt: '2026-01-15T00:00:00.000Z',
-  },
-};
-
-export const ACCOUNT_EDUCATOR_ELENA: UserAccountVM = {
-  ids: {
-    orgId: ORG_ID,
-    id: ACCOUNT_IDS.educator1,
-  },
-  contacts: {
-    email: 'elena.brooks@example.com',
-    phoneE164: '+19175550112',
+    email: 'tevin.morgan@iconic.edu',
     emailVerified: true,
-    phoneVerified: true,
     preferredContactChannels: ['email'],
   },
   access: {
-    userRoles: [ROLE_EDUCATOR_ELENA],
+    userRoles: [CHILD_TEVIN_ROLE],
+    activeContext: { roleKey: 'child' },
+  },
+  lifecycle: {
+    status: 'active',
+    createdAt: '2025-01-02T09:00:00.000Z',
+    updatedAt: '2025-02-10T11:15:00.000Z',
+  },
+};
+
+export const CHILD_TEHARA_ACCOUNT: UserAccountVM = {
+  ids: { id: ACCOUNT_IDS.childTehara, orgId: ORG_ID },
+  contacts: {
+    email: 'tehara.morgan@iconic.edu',
+    emailVerified: false,
+    preferredContactChannels: ['email'],
+  },
+  access: {
+    userRoles: [CHILD_TEHARA_ROLE],
+    activeContext: { roleKey: 'child' },
+  },
+  lifecycle: {
+    status: 'active',
+    createdAt: '2025-01-02T09:05:00.000Z',
+    updatedAt: '2025-02-10T11:20:00.000Z',
+  },
+};
+
+export const CHILD_MAYA_ACCOUNT: UserAccountVM = {
+  ids: { id: ACCOUNT_IDS.childMaya, orgId: ORG_ID },
+  contacts: {
+    email: 'maya.morgan@iconic.edu',
+    emailVerified: true,
+    preferredContactChannels: ['email'],
+  },
+  access: {
+    userRoles: [CHILD_MAYA_ROLE],
+    activeContext: { roleKey: 'child' },
+  },
+  lifecycle: {
+    status: 'active',
+    createdAt: '2025-01-02T09:10:00.000Z',
+    updatedAt: '2025-02-10T11:25:00.000Z',
+  },
+};
+
+export const EDUCATOR_PRIYA_ACCOUNT: UserAccountVM = {
+  ids: { id: ACCOUNT_IDS.educatorPriya, orgId: ORG_ID },
+  contacts: {
+    email: 'priya.nair@iconic.edu',
+    phoneE164: '+14155550111',
+    emailVerified: true,
+    phoneVerified: true,
+    verifiedAt: '2024-09-15T10:00:00.000Z',
+    preferredContactChannels: ['email'],
+  },
+  access: {
+    userRoles: [EDUCATOR_PRIYA_ROLE],
     activeContext: { roleKey: 'educator' },
   },
   lifecycle: {
     status: 'active',
-    createdAt: '2018-06-01T00:00:00.000Z',
-    updatedAt: '2026-01-21T00:00:00.000Z',
+    createdAt: '2024-09-01T12:00:00.000Z',
+    updatedAt: '2025-01-15T09:30:00.000Z',
   },
 };
 
-export const ACCOUNT_EDUCATOR_KAI: UserAccountVM = {
-  ids: {
-    orgId: ORG_ID,
-    id: ACCOUNT_IDS.educator2,
-  },
+export const EDUCATOR_ELENA_ACCOUNT: UserAccountVM = {
+  ids: { id: ACCOUNT_IDS.educatorElena, orgId: ORG_ID },
   contacts: {
-    email: 'kai.patel@example.com',
-    phoneE164: '+12015550119',
+    email: 'elena.brooks@iconic.edu',
+    phoneE164: '+14155550222',
     emailVerified: true,
     phoneVerified: true,
+    verifiedAt: '2024-09-15T10:05:00.000Z',
+    preferredContactChannels: ['email'],
+  },
+  access: {
+    userRoles: [EDUCATOR_ELENA_ROLE],
+    activeContext: { roleKey: 'educator' },
+  },
+  lifecycle: {
+    status: 'active',
+    createdAt: '2024-09-01T12:05:00.000Z',
+    updatedAt: '2025-01-18T10:10:00.000Z',
+  },
+};
+
+export const EDUCATOR_LUCAS_ACCOUNT: UserAccountVM = {
+  ids: { id: ACCOUNT_IDS.educatorLucas, orgId: ORG_ID },
+  contacts: {
+    email: 'lucas.choi@iconic.edu',
+    phoneE164: '+14155550333',
+    emailVerified: true,
+    phoneVerified: false,
+    preferredContactChannels: ['email'],
+  },
+  access: {
+    userRoles: [EDUCATOR_LUCAS_ROLE],
+    activeContext: { roleKey: 'educator' },
+  },
+  lifecycle: {
+    status: 'active',
+    createdAt: '2024-09-01T12:10:00.000Z',
+    updatedAt: '2025-01-20T11:00:00.000Z',
+  },
+};
+
+export const EDUCATOR_MISHAN_ACCOUNT: UserAccountVM = {
+  ids: { id: ACCOUNT_IDS.educatorMishan, orgId: ORG_ID },
+  contacts: {
+    email: 'mishan.perera@iconic.edu',
+    phoneE164: '+14155550444',
+    emailVerified: true,
+    phoneVerified: true,
+    verifiedAt: '2024-09-20T08:45:00.000Z',
     preferredContactChannels: ['email', 'sms'],
   },
   access: {
-    userRoles: [ROLE_EDUCATOR_KAI],
+    userRoles: [EDUCATOR_MISHAN_ROLE],
     activeContext: { roleKey: 'educator' },
   },
   lifecycle: {
     status: 'active',
-    createdAt: '2017-03-10T00:00:00.000Z',
-    updatedAt: '2026-01-21T00:00:00.000Z',
+    createdAt: '2024-09-01T12:15:00.000Z',
+    updatedAt: '2025-01-25T12:00:00.000Z',
   },
 };
 
-export const ACCOUNT_EDUCATOR_PRIYA: UserAccountVM = {
-  ids: {
-    orgId: ORG_ID,
-    id: ACCOUNT_IDS.educator3,
-  },
+export const EDUCATOR_AVA_ACCOUNT: UserAccountVM = {
+  ids: { id: ACCOUNT_IDS.educatorAva, orgId: ORG_ID },
   contacts: {
-    email: 'priya.natarajan@example.com',
-    phoneE164: '+12015550120',
+    email: 'ava.patel@iconic.edu',
+    phoneE164: '+14155550555',
     emailVerified: true,
     phoneVerified: true,
+    verifiedAt: '2024-09-20T08:50:00.000Z',
     preferredContactChannels: ['email'],
   },
   access: {
-    userRoles: [ROLE_EDUCATOR_PRIYA],
+    userRoles: [EDUCATOR_AVA_ROLE],
     activeContext: { roleKey: 'educator' },
   },
   lifecycle: {
     status: 'active',
-    createdAt: '2019-01-12T00:00:00.000Z',
-    updatedAt: '2026-01-21T00:00:00.000Z',
+    createdAt: '2024-09-01T12:20:00.000Z',
+    updatedAt: '2025-01-30T14:00:00.000Z',
   },
 };
 
-export const ACCOUNT_EDUCATOR_LEO: UserAccountVM = {
-  ids: {
-    orgId: ORG_ID,
-    id: ACCOUNT_IDS.educator4,
-  },
+export const STAFF_SUPPORT_ACCOUNT: UserAccountVM = {
+  ids: { id: ACCOUNT_IDS.staffSupport, orgId: ORG_ID },
   contacts: {
-    email: 'leo.martinez@example.com',
-    phoneE164: '+17185550121',
+    email: 'support@iconic.edu',
+    phoneE164: '+14155550666',
     emailVerified: true,
     phoneVerified: true,
+    verifiedAt: '2024-08-25T09:00:00.000Z',
     preferredContactChannels: ['email', 'sms'],
   },
   access: {
-    userRoles: [ROLE_EDUCATOR_LEO],
-    activeContext: { roleKey: 'educator' },
-  },
-  lifecycle: {
-    status: 'active',
-    createdAt: '2016-10-04T00:00:00.000Z',
-    updatedAt: '2026-01-21T00:00:00.000Z',
-  },
-};
-
-export const ACCOUNT_EDUCATOR_SOFIA: UserAccountVM = {
-  ids: {
-    orgId: ORG_ID,
-    id: ACCOUNT_IDS.educator5,
-  },
-  contacts: {
-    email: 'sofia.rossi@example.com',
-    phoneE164: '+390699955501',
-    emailVerified: true,
-    phoneVerified: false,
-    preferredContactChannels: ['email'],
-  },
-  access: {
-    userRoles: [ROLE_EDUCATOR_SOFIA],
-    activeContext: { roleKey: 'educator' },
-  },
-  lifecycle: {
-    status: 'active',
-    createdAt: '2022-05-22T00:00:00.000Z',
-    updatedAt: '2026-01-21T00:00:00.000Z',
-  },
-};
-
-export const ACCOUNT_STAFF_SUPPORT: UserAccountVM = {
-  ids: {
-    orgId: ORG_ID,
-    id: ACCOUNT_IDS.staff,
-  },
-  contacts: {
-    email: 'support@iconicedu.com',
-    phoneE164: '+12125550099',
-    emailVerified: true,
-    phoneVerified: false,
-    preferredContactChannels: ['email'],
-  },
-  access: {
-    userRoles: [ROLE_STAFF_SUPPORT],
+    userRoles: [STAFF_SUPPORT_ROLE],
     activeContext: { roleKey: 'staff' },
   },
   lifecycle: {
     status: 'active',
-    createdAt: '2024-02-01T00:00:00.000Z',
-    updatedAt: '2026-01-21T00:00:00.000Z',
+    createdAt: '2024-08-15T08:30:00.000Z',
+    updatedAt: '2025-02-01T08:00:00.000Z',
   },
 };
 
-export const USER_ACCOUNTS: UserAccountVM[] = [
-  ACCOUNT_GUARDIAN,
-  ACCOUNT_CHILD_AVA,
-  ACCOUNT_CHILD_MILO,
-  ACCOUNT_CHILD_MAYA,
-  ACCOUNT_EDUCATOR_ELENA,
-  ACCOUNT_EDUCATOR_KAI,
-  ACCOUNT_EDUCATOR_PRIYA,
-  ACCOUNT_EDUCATOR_LEO,
-  ACCOUNT_EDUCATOR_SOFIA,
-  ACCOUNT_STAFF_SUPPORT,
+export const ACCOUNTS: UserAccountVM[] = [
+  GUARDIAN_ACCOUNT,
+  CHILD_TEVIN_ACCOUNT,
+  CHILD_TEHARA_ACCOUNT,
+  CHILD_MAYA_ACCOUNT,
+  EDUCATOR_PRIYA_ACCOUNT,
+  EDUCATOR_ELENA_ACCOUNT,
+  EDUCATOR_LUCAS_ACCOUNT,
+  EDUCATOR_MISHAN_ACCOUNT,
+  EDUCATOR_AVA_ACCOUNT,
+  STAFF_SUPPORT_ACCOUNT,
 ];
 
 export const ACCOUNTS_BY_ID: Record<string, UserAccountVM> = {
-  [ACCOUNT_IDS.guardian]: ACCOUNT_GUARDIAN,
-  [ACCOUNT_IDS.childA]: ACCOUNT_CHILD_AVA,
-  [ACCOUNT_IDS.childB]: ACCOUNT_CHILD_MILO,
-  [ACCOUNT_IDS.childC]: ACCOUNT_CHILD_MAYA,
-  [ACCOUNT_IDS.educator1]: ACCOUNT_EDUCATOR_ELENA,
-  [ACCOUNT_IDS.educator2]: ACCOUNT_EDUCATOR_KAI,
-  [ACCOUNT_IDS.educator3]: ACCOUNT_EDUCATOR_PRIYA,
-  [ACCOUNT_IDS.educator4]: ACCOUNT_EDUCATOR_LEO,
-  [ACCOUNT_IDS.educator5]: ACCOUNT_EDUCATOR_SOFIA,
-  [ACCOUNT_IDS.staff]: ACCOUNT_STAFF_SUPPORT,
+  [GUARDIAN_ACCOUNT.ids.id]: GUARDIAN_ACCOUNT,
+  [CHILD_TEVIN_ACCOUNT.ids.id]: CHILD_TEVIN_ACCOUNT,
+  [CHILD_TEHARA_ACCOUNT.ids.id]: CHILD_TEHARA_ACCOUNT,
+  [CHILD_MAYA_ACCOUNT.ids.id]: CHILD_MAYA_ACCOUNT,
+  [EDUCATOR_PRIYA_ACCOUNT.ids.id]: EDUCATOR_PRIYA_ACCOUNT,
+  [EDUCATOR_ELENA_ACCOUNT.ids.id]: EDUCATOR_ELENA_ACCOUNT,
+  [EDUCATOR_LUCAS_ACCOUNT.ids.id]: EDUCATOR_LUCAS_ACCOUNT,
+  [EDUCATOR_MISHAN_ACCOUNT.ids.id]: EDUCATOR_MISHAN_ACCOUNT,
+  [EDUCATOR_AVA_ACCOUNT.ids.id]: EDUCATOR_AVA_ACCOUNT,
+  [STAFF_SUPPORT_ACCOUNT.ids.id]: STAFF_SUPPORT_ACCOUNT,
 };

@@ -1,14 +1,26 @@
 import type { SidebarLeftDataVM } from '@iconicedu/shared-types';
-import { ACCOUNT_GUARDIAN } from './accounts';
-import { DIRECT_MESSAGE_CHANNELS } from './direct-message-channels';
-import { CHANNEL_IDS } from './ids';
+import { GUARDIAN_ACCOUNT, CHILD_MAYA_ACCOUNT, CHILD_TEHARA_ACCOUNT, CHILD_TEVIN_ACCOUNT } from './accounts';
+import { FAMILIES, FAMILY_LINKS } from './families';
 import { LEARNING_SPACES } from './learning-spaces';
-import { GUARDIAN_MORGAN } from './profiles';
+import {
+  DIRECT_MESSAGE_CHANNELS_WITH_MESSAGES,
+} from './channel-message-data';
+import { CHANNEL_IDS } from './ids';
+import {
+  CHILD_MAYA_PROFILE,
+  CHILD_TEHARA_PROFILE,
+  CHILD_TEVIN_PROFILE,
+  GUARDIAN_RILEY_PROFILE,
+} from './profiles';
 
 export const SIDEBAR_LEFT_DATA: SidebarLeftDataVM = {
   user: {
-    profile: GUARDIAN_MORGAN,
-    account: ACCOUNT_GUARDIAN,
+    profile: GUARDIAN_RILEY_PROFILE,
+    account: GUARDIAN_ACCOUNT,
+    families: FAMILIES,
+    familyLinks: FAMILY_LINKS,
+    linkedProfiles: [CHILD_TEVIN_PROFILE, CHILD_TEHARA_PROFILE, CHILD_MAYA_PROFILE],
+    linkedAccounts: [CHILD_TEVIN_ACCOUNT, CHILD_TEHARA_ACCOUNT, CHILD_MAYA_ACCOUNT],
   },
   navigation: {
     navMain: [
@@ -18,7 +30,7 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftDataVM = {
         icon: 'home',
       },
       {
-        title: 'Calendar',
+        title: 'Class schedule',
         url: '/d/class-schedule',
         icon: 'class-schedule',
       },
@@ -26,23 +38,29 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftDataVM = {
         title: 'Inbox',
         url: '/d/inbox',
         icon: 'inbox',
+        count: 3,
+      },
+      {
+        title: 'Learning spaces',
+        url: '/d/spaces',
+        icon: 'languages',
+      },
+      {
+        title: 'Direct messages',
+        url: '/d/dm',
+        icon: 'send',
       },
     ],
     navSecondary: [
       {
         title: 'Support',
-        url: '/d/support',
+        url: `/d/c/${CHANNEL_IDS.support}`,
         icon: 'life-buoy',
-      },
-      {
-        title: 'Feedback',
-        url: '/d/feedback',
-        icon: 'send',
       },
     ],
   },
   collections: {
     learningSpaces: LEARNING_SPACES,
-    directMessages: DIRECT_MESSAGE_CHANNELS,
+    directMessages: DIRECT_MESSAGE_CHANNELS_WITH_MESSAGES,
   },
 };

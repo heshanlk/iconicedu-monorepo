@@ -226,7 +226,7 @@ export function ActivityItemBase({
                 size="icon"
                 variant="ghost"
                 className="size-5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                onClick={(event) => onMarkRead(activity.id, event)}
+                onClick={(event) => onMarkRead(activity.ids.id, event)}
                 data-action-button="true"
               >
                 <Check className="size-3.5" />

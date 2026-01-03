@@ -47,10 +47,6 @@ export interface LearningSpaceLifecycleVM {
   archivedAt?: ISODateTime | null;
 }
 
-export interface LearningSpacePeopleVM {
-  participants: UserProfileVM[];
-}
-
 export interface LearningSpaceVM {
   ids: IdsBaseVM;
   basics: LearningSpaceBasicsVM;
@@ -63,5 +59,5 @@ export interface LearningSpaceVM {
 
   lifecycle: LearningSpaceLifecycleVM;
 
-  people: LearningSpacePeopleVM;
+  participants: UserProfileVM[];
 }

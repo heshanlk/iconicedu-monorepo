@@ -82,8 +82,10 @@ export function ThreadPanel({ intent }: ThreadPanelProps) {
     );
   const threadMessages = useMemo(
     () =>
-      messages.filter((message) => message.social.thread?.id === threadData.thread.id),
-    [messages, threadData.thread.id],
+      messages.filter(
+        (message) => message.social.thread?.ids.id === threadData.thread.ids.id,
+      ),
+    [messages, threadData.thread.ids.id],
   );
   const sortedThreadMessages = useMemo(() => {
     const messageMap = new Map<string, (typeof messages)[number]>();

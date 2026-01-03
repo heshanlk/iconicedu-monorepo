@@ -151,7 +151,7 @@ export function getEventLayout(events: ClassScheduleVM[]) {
         columnEndTimes[columnIndex] = end;
       }
 
-      assignments.push({ id: event.id, column: columnIndex });
+      assignments.push({ id: event.ids.id, column: columnIndex });
     });
 
     const columns = columnEndTimes.length;
@@ -272,7 +272,10 @@ export const expandRecurringEvents = (
       const occurrence: ClassScheduleVM = {
         ...event,
         ...override,
-        id: `${event.id}__${occurrenceKey}`,
+        ids: {
+          ...event.ids,
+          id: `${event.ids.id}__${occurrenceKey}`,
+        },
         startAt: override?.startAt ?? occurrenceStart.toISOString(),
         endAt: override?.endAt ?? occurrenceEnd.toISOString(),
         recurrence: undefined,
