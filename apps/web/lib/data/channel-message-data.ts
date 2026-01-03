@@ -75,7 +75,7 @@ const mathChannel: ChannelVM = {
     readState: {
       channelId: CHANNEL_IDS.mathSpace,
       lastReadMessageId: MATH_CHANNEL_MESSAGES[MATH_CHANNEL_MESSAGES.length - 1]?.ids.id,
-      lastReadAt: '2026-02-21T18:20:00.000Z',
+      lastReadAt: '2025-12-21T18:20:00.000Z',
       unreadCount: 0,
     },
   },
@@ -145,7 +145,7 @@ const scienceChannel: ChannelVM = {
       channelId: CHANNEL_IDS.scienceSpace,
       lastReadMessageId:
         SCIENCE_CHANNEL_MESSAGES[SCIENCE_CHANNEL_MESSAGES.length - 1]?.ids.id,
-      lastReadAt: '2026-02-19T19:00:00.000Z',
+      lastReadAt: '2025-12-19T19:00:00.000Z',
       unreadCount: 1,
     },
   },
@@ -212,7 +212,7 @@ const elaChannel: ChannelVM = {
     readState: {
       channelId: CHANNEL_IDS.elaSpace,
       lastReadMessageId: ELA_CHANNEL_MESSAGES[0]?.ids.id,
-      lastReadAt: '2026-02-18T19:10:00.000Z',
+      lastReadAt: '2025-12-18T19:10:00.000Z',
       unreadCount: 2,
     },
   },
@@ -281,7 +281,7 @@ const chessChannel: ChannelVM = {
     readState: {
       channelId: CHANNEL_IDS.chessSpace,
       lastReadMessageId: CHESS_CHANNEL_MESSAGES[0]?.ids.id,
-      lastReadAt: '2026-02-18T20:05:00.000Z',
+      lastReadAt: '2025-12-18T20:05:00.000Z',
       unreadCount: 1,
     },
   },
@@ -341,7 +341,7 @@ const dmPriyaChannel: ChannelVM = {
     readState: {
       channelId: CHANNEL_IDS.dmPriya,
       lastReadMessageId: DM_PRIYA_MESSAGES[DM_PRIYA_MESSAGES.length - 1]?.ids.id,
-      lastReadAt: '2026-02-18T17:25:00.000Z',
+      lastReadAt: '2025-12-18T17:25:00.000Z',
       unreadCount: 0,
     },
   },
@@ -385,7 +385,7 @@ const dmElenaChannel: ChannelVM = {
     readState: {
       channelId: CHANNEL_IDS.dmElena,
       lastReadMessageId: DM_ELENA_MESSAGES[0]?.ids.id,
-      lastReadAt: '2026-02-18T16:45:00.000Z',
+      lastReadAt: '2025-12-18T16:45:00.000Z',
       unreadCount: 1,
     },
   },
@@ -426,7 +426,7 @@ const dmLucasChannel: ChannelVM = {
     readState: {
       channelId: CHANNEL_IDS.dmLucas,
       lastReadMessageId: DM_LUCAS_MESSAGES[0]?.ids.id,
-      lastReadAt: '2026-02-18T17:55:00.000Z',
+      lastReadAt: '2025-12-18T17:55:00.000Z',
       unreadCount: 0,
     },
   },
@@ -467,7 +467,7 @@ const dmMishanChannel: ChannelVM = {
     readState: {
       channelId: CHANNEL_IDS.dmMishan,
       lastReadMessageId: DM_MISHAN_MESSAGES[0]?.ids.id,
-      lastReadAt: '2026-02-18T18:15:00.000Z',
+      lastReadAt: '2025-12-18T18:15:00.000Z',
       unreadCount: 0,
     },
   },
@@ -508,7 +508,7 @@ const dmAvaChannel: ChannelVM = {
     readState: {
       channelId: CHANNEL_IDS.dmAva,
       lastReadMessageId: DM_AVA_MESSAGES[0]?.ids.id,
-      lastReadAt: '2026-02-18T18:25:00.000Z',
+      lastReadAt: '2025-12-18T18:25:00.000Z',
       unreadCount: 0,
     },
   },
@@ -548,7 +548,7 @@ const supportChannel: ChannelVM = {
       channelId: CHANNEL_IDS.support,
       lastReadMessageId:
         SUPPORT_CHANNEL_MESSAGES[SUPPORT_CHANNEL_MESSAGES.length - 1]?.ids.id,
-      lastReadAt: '2026-02-18T16:05:00.000Z',
+      lastReadAt: '2025-12-18T16:05:00.000Z',
       unreadCount: 0,
     },
   },

@@ -29,11 +29,12 @@ export function ActivityBadge({ activity, className }: ActivityBadgeProps) {
 
     return (
       <AvatarGroup className={cn('shrink-0 pt-0.5', className)}>
-        {avatars.map((avatar, idx) => (
+        {avatars.map((avatarItem, idx) => (
           <AvatarWithStatus
-            key={`${avatar.seed ?? 'avatar'}-${idx}`}
-            name={avatar.seed ?? 'Avatar'}
-            avatar={avatar}
+            key={`${avatarItem.name}-${idx}`}
+            name={avatarItem.name}
+            avatar={avatarItem.avatar}
+            themeKey={avatarItem.themeKey}
             showStatus={false}
             sizeClassName="size-6 border-2 border-background"
             initialsLength={2}

@@ -22,8 +22,8 @@ export const MATH_SCHEDULE_EVENT: ClassScheduleVM = {
   description: 'Weekly math session focused on number sense and fluency.',
   location: 'Zoom',
   meetingLink: 'https://us06web.zoom.us/j/82163287655?pwd=MujGqqespu4eUIe6zE3CpLqasOp6Nu.1',
-  startAt: '2026-03-03T23:00:00.000Z',
-  endAt: '2026-03-03T23:45:00.000Z',
+  startAt: '2026-01-06T23:00:00.000Z',
+  endAt: '2026-01-06T23:45:00.000Z',
   timezone: 'America/Los_Angeles',
   status: 'scheduled',
   visibility: 'class-members',
@@ -61,16 +61,16 @@ export const MATH_SCHEDULE_EVENT: ClassScheduleVM = {
     },
     exceptions: [
       {
-        occurrenceKey: '2026-03-24T23:00:00.000Z',
+        occurrenceKey: '2026-01-27T23:00:00.000Z',
         reason: 'Spring break',
       },
     ],
     overrides: [
       {
-        occurrenceKey: '2026-03-10T23:00:00.000Z',
+        occurrenceKey: '2026-01-13T23:00:00.000Z',
         patch: {
-          startAt: '2026-03-10T23:30:00.000Z',
-          endAt: '2026-03-11T00:15:00.000Z',
+          startAt: '2026-01-13T23:30:00.000Z',
+          endAt: '2026-01-14T00:15:00.000Z',
           location: 'Zoom (updated link)',
         },
       },
@@ -79,7 +79,7 @@ export const MATH_SCHEDULE_EVENT: ClassScheduleVM = {
   audit: {
     createdAt: '2025-12-15T08:00:00.000Z',
     createdBy: EDUCATOR_PRIYA_PROFILE.ids.id,
-    updatedAt: '2026-02-20T10:00:00.000Z',
+    updatedAt: '2026-01-01T10:00:00.000Z',
     updatedBy: EDUCATOR_PRIYA_PROFILE.ids.id,
   },
 };
@@ -90,8 +90,8 @@ export const SCIENCE_SCHEDULE_EVENT: ClassScheduleVM = {
   description: 'Hands-on experiments and guided inquiry.',
   location: 'Zoom',
   meetingLink: 'https://us06web.zoom.us/j/88676118659?pwd=gsLCQZrCkU60T91Dc37DaaNiWdsgTq.1',
-  startAt: '2026-03-04T23:30:00.000Z',
-  endAt: '2026-03-05T00:15:00.000Z',
+  startAt: '2026-01-07T23:30:00.000Z',
+  endAt: '2026-01-08T00:15:00.000Z',
   timezone: 'America/Los_Angeles',
   status: 'scheduled',
   visibility: 'class-members',
@@ -129,7 +129,7 @@ export const SCIENCE_SCHEDULE_EVENT: ClassScheduleVM = {
     },
     overrides: [
       {
-        occurrenceKey: '2026-03-11T23:30:00.000Z',
+        occurrenceKey: '2026-01-14T23:30:00.000Z',
         patch: {
           description: 'Special lab: volcano reaction',
         },
@@ -139,7 +139,7 @@ export const SCIENCE_SCHEDULE_EVENT: ClassScheduleVM = {
   audit: {
     createdAt: '2025-12-18T08:30:00.000Z',
     createdBy: EDUCATOR_LUCAS_PROFILE.ids.id,
-    updatedAt: '2026-02-22T09:00:00.000Z',
+    updatedAt: '2026-01-01T09:00:00.000Z',
     updatedBy: EDUCATOR_LUCAS_PROFILE.ids.id,
   },
 };
@@ -150,8 +150,8 @@ export const ELA_SCHEDULE_EVENT: ClassScheduleVM = {
   description: 'Crafting narratives and improving clarity.',
   location: 'Zoom',
   meetingLink: 'https://us06web.zoom.us/j/82163287655?pwd=MujGqqespu4eUIe6zE3CpLqasOp6Nu.1',
-  startAt: '2026-03-05T00:00:00.000Z',
-  endAt: '2026-03-05T00:45:00.000Z',
+  startAt: '2026-01-08T00:00:00.000Z',
+  endAt: '2026-01-08T00:45:00.000Z',
   timezone: 'America/Los_Angeles',
   status: 'scheduled',
   visibility: 'class-members',
@@ -189,10 +189,10 @@ export const ELA_SCHEDULE_EVENT: ClassScheduleVM = {
     },
     overrides: [
       {
-        occurrenceKey: '2026-03-12T00:00:00.000Z',
+        occurrenceKey: '2026-01-15T00:00:00.000Z',
         patch: {
-          startAt: '2026-03-12T00:15:00.000Z',
-          endAt: '2026-03-12T01:00:00.000Z',
+          startAt: '2026-01-15T00:15:00.000Z',
+          endAt: '2026-01-15T01:00:00.000Z',
         },
       },
     ],
@@ -200,7 +200,7 @@ export const ELA_SCHEDULE_EVENT: ClassScheduleVM = {
   audit: {
     createdAt: '2025-12-20T09:15:00.000Z',
     createdBy: EDUCATOR_ELENA_PROFILE.ids.id,
-    updatedAt: '2026-02-23T09:45:00.000Z',
+    updatedAt: '2026-01-01T09:45:00.000Z',
     updatedBy: EDUCATOR_ELENA_PROFILE.ids.id,
   },
 };
@@ -211,8 +211,8 @@ export const CHESS_SCHEDULE_EVENT: ClassScheduleVM = {
   description: 'Build opening strategies and tactical awareness.',
   location: 'Zoom',
   meetingLink: 'https://us06web.zoom.us/j/88676118659?pwd=gsLCQZrCkU60T91Dc37DaaNiWdsgTq.1',
-  startAt: '2026-03-06T00:30:00.000Z',
-  endAt: '2026-03-06T01:15:00.000Z',
+  startAt: '2026-01-02T23:30:00.000Z',
+  endAt: '2026-01-03T00:15:00.000Z',
   timezone: 'America/Los_Angeles',
   status: 'scheduled',
   visibility: 'class-members',
@@ -250,7 +250,7 @@ export const CHESS_SCHEDULE_EVENT: ClassScheduleVM = {
     },
     exceptions: [
       {
-        occurrenceKey: '2026-03-20T00:30:00.000Z',
+        occurrenceKey: '2026-01-23T23:30:00.000Z',
         reason: 'Tournament week',
       },
     ],
@@ -258,7 +258,7 @@ export const CHESS_SCHEDULE_EVENT: ClassScheduleVM = {
   audit: {
     createdAt: '2025-12-22T08:30:00.000Z',
     createdBy: EDUCATOR_MISHAN_PROFILE.ids.id,
-    updatedAt: '2026-02-24T09:00:00.000Z',
+    updatedAt: '2026-01-01T09:00:00.000Z',
     updatedBy: EDUCATOR_MISHAN_PROFILE.ids.id,
   },
 };

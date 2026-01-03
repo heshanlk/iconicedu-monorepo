@@ -21,7 +21,7 @@ export const MATH_CHANNEL_FILES: ChannelFileItemVM[] = [
     mimeType: 'application/pdf',
     size: 312000,
     tool: 'pdf',
-    createdAt: '2026-02-19T17:30:00.000Z',
+    createdAt: '2025-12-19T17:30:00.000Z',
   },
 ];
 
@@ -40,7 +40,7 @@ export const SCIENCE_CHANNEL_FILES: ChannelFileItemVM[] = [
     mimeType: 'application/pdf',
     size: 402000,
     tool: 'pdf',
-    createdAt: '2026-02-19T18:45:00.000Z',
+    createdAt: '2025-12-19T18:45:00.000Z',
   },
 ];
 
@@ -59,7 +59,7 @@ export const ELA_CHANNEL_FILES: ChannelFileItemVM[] = [
     mimeType: 'application/pdf',
     size: 156000,
     tool: 'pdf',
-    createdAt: '2026-02-18T19:25:00.000Z',
+    createdAt: '2025-12-18T19:25:00.000Z',
   },
 ];
 
@@ -78,7 +78,7 @@ export const DM_PRIYA_FILES: ChannelFileItemVM[] = [
     mimeType: 'application/pdf',
     size: 280000,
     tool: 'pdf',
-    createdAt: '2026-02-18T17:10:00.000Z',
+    createdAt: '2025-12-18T17:10:00.000Z',
   },
 ];
 
@@ -97,6 +97,6 @@ export const DM_ELENA_FILES: ChannelFileItemVM[] = [
     mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     size: 182000,
     tool: 'word',
-    createdAt: '2026-02-18T16:40:00.000Z',
+    createdAt: '2025-12-18T16:40:00.000Z',
   },
 ];

@@ -63,8 +63,8 @@ const MATH_HOMEWORK_ACTIVITY: ActivityFeedItemVM = {
   kind: 'leaf',
   ids: { id: ACTIVITY_IDS.mathHomework, orgId: ORG_ID },
   timestamps: {
-    occurredAt: '2026-02-19T17:30:00.000Z',
-    createdAt: '2026-02-19T17:35:00.000Z',
+    occurredAt: '2025-12-19T17:30:00.000Z',
+    createdAt: '2025-12-19T17:35:00.000Z',
   },
   tabKey: 'classes',
   audience: {
@@ -96,8 +96,8 @@ const MATH_HOMEWORK_SUBMIT_ACTIVITY: ActivityFeedItemVM = {
   kind: 'leaf',
   ids: { id: ACTIVITY_IDS.mathHomeworkSubmit, orgId: ORG_ID },
   timestamps: {
-    occurredAt: '2026-02-20T19:40:00.000Z',
-    createdAt: '2026-02-20T19:42:00.000Z',
+    occurredAt: '2025-12-20T19:40:00.000Z',
+    createdAt: '2025-12-20T19:42:00.000Z',
   },
   tabKey: 'classes',
   audience: {
@@ -124,8 +124,8 @@ const SCIENCE_FILE_ACTIVITY: ActivityFeedItemVM = {
   kind: 'leaf',
   ids: { id: ACTIVITY_IDS.scienceFile, orgId: ORG_ID },
   timestamps: {
-    occurredAt: '2026-02-19T18:45:00.000Z',
-    createdAt: '2026-02-19T18:46:00.000Z',
+    occurredAt: '2025-12-19T18:45:00.000Z',
+    createdAt: '2025-12-19T18:46:00.000Z',
   },
   tabKey: 'classes',
   audience: {
@@ -153,8 +153,8 @@ const ELA_SUMMARY_ACTIVITY: ActivityFeedItemVM = {
   kind: 'leaf',
   ids: { id: ACTIVITY_IDS.elaSummary, orgId: ORG_ID },
   timestamps: {
-    occurredAt: '2026-02-18T19:20:00.000Z',
-    createdAt: '2026-02-18T19:21:00.000Z',
+    occurredAt: '2025-12-18T19:20:00.000Z',
+    createdAt: '2025-12-18T19:21:00.000Z',
   },
   tabKey: 'classes',
   audience: {
@@ -181,8 +181,8 @@ const SYSTEM_PAYMENT_ACTIVITY: ActivityFeedItemVM = {
   kind: 'leaf',
   ids: { id: ACTIVITY_IDS.systemPayment, orgId: ORG_ID },
   timestamps: {
-    occurredAt: '2026-02-17T14:00:00.000Z',
-    createdAt: '2026-02-17T14:01:00.000Z',
+    occurredAt: '2025-12-17T14:00:00.000Z',
+    createdAt: '2025-12-17T14:01:00.000Z',
   },
   tabKey: 'payment',
   audience: {
@@ -213,8 +213,8 @@ const GROUPED_HOMEWORK_ACTIVITY: ActivityFeedItemVM = {
   kind: 'group',
   ids: { id: ACTIVITY_IDS.groupHomework, orgId: ORG_ID },
   timestamps: {
-    occurredAt: '2026-02-20T21:00:00.000Z',
-    createdAt: '2026-02-20T21:01:00.000Z',
+    occurredAt: '2025-12-20T21:00:00.000Z',
+    createdAt: '2025-12-20T21:01:00.000Z',
   },
   tabKey: 'classes',
   audience: {
@@ -233,8 +233,16 @@ const GROUPED_HOMEWORK_ACTIVITY: ActivityFeedItemVM = {
     leading: {
       kind: 'avatars',
       avatars: [
-        EDUCATOR_PRIYA_PROFILE.profile.avatar,
-        EDUCATOR_ELENA_PROFILE.profile.avatar,
+        {
+          name: EDUCATOR_PRIYA_PROFILE.profile.displayName,
+          avatar: EDUCATOR_PRIYA_PROFILE.profile.avatar,
+          themeKey: EDUCATOR_PRIYA_PROFILE.ui?.themeKey ?? null,
+        },
+        {
+          name: EDUCATOR_ELENA_PROFILE.profile.displayName,
+          avatar: EDUCATOR_ELENA_PROFILE.profile.avatar,
+          themeKey: EDUCATOR_ELENA_PROFILE.ui?.themeKey ?? null,
+        },
       ],
       overflowCount: 0,
     },
@@ -253,8 +261,8 @@ const GROUPED_HOMEWORK_ACTIVITY: ActivityFeedItemVM = {
         kind: 'leaf',
         ids: { id: ACTIVITY_IDS.groupHomework1, orgId: ORG_ID },
         timestamps: {
-          occurredAt: '2026-02-20T20:50:00.000Z',
-          createdAt: '2026-02-20T20:55:00.000Z',
+          occurredAt: '2025-12-20T20:50:00.000Z',
+          createdAt: '2025-12-20T20:55:00.000Z',
         },
         tabKey: 'classes',
         audience: {
@@ -280,8 +288,8 @@ const GROUPED_HOMEWORK_ACTIVITY: ActivityFeedItemVM = {
         kind: 'leaf',
         ids: { id: ACTIVITY_IDS.groupHomework2, orgId: ORG_ID },
         timestamps: {
-          occurredAt: '2026-02-20T20:52:00.000Z',
-          createdAt: '2026-02-20T20:56:00.000Z',
+          occurredAt: '2025-12-20T20:52:00.000Z',
+          createdAt: '2025-12-20T20:56:00.000Z',
         },
         tabKey: 'classes',
         audience: {

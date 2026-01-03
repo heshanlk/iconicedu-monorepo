@@ -1,10 +1,13 @@
 import type { SidebarLeftDataVM } from '@iconicedu/shared-types';
-import { GUARDIAN_ACCOUNT, CHILD_MAYA_ACCOUNT, CHILD_TEHARA_ACCOUNT, CHILD_TEVIN_ACCOUNT } from './accounts';
+import {
+  GUARDIAN_ACCOUNT,
+  CHILD_MAYA_ACCOUNT,
+  CHILD_TEHARA_ACCOUNT,
+  CHILD_TEVIN_ACCOUNT,
+} from './accounts';
 import { FAMILIES, FAMILY_LINKS } from './families';
 import { LEARNING_SPACES } from './learning-spaces';
-import {
-  DIRECT_MESSAGE_CHANNELS_WITH_MESSAGES,
-} from './channel-message-data';
+import { DIRECT_MESSAGE_CHANNELS_WITH_MESSAGES } from './channel-message-data';
 import { CHANNEL_IDS } from './ids';
 import {
   CHILD_MAYA_PROFILE,
@@ -39,16 +42,6 @@ export const SIDEBAR_LEFT_DATA: SidebarLeftDataVM = {
         url: '/d/inbox',
         icon: 'inbox',
         count: 3,
-      },
-      {
-        title: 'Learning spaces',
-        url: '/d/spaces',
-        icon: 'languages',
-      },
-      {
-        title: 'Direct messages',
-        url: '/d/dm',
-        icon: 'send',
       },
     ],
     navSecondary: [

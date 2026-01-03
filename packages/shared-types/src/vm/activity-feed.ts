@@ -99,7 +99,11 @@ export type InboxLeadingVM =
     }
   | {
       kind: 'avatars';
-      avatars: AvatarVM[];
+      avatars: Array<{
+        name: string;
+        avatar: AvatarVM;
+        themeKey?: ThemeKey | null;
+      }>;
       overflowCount?: number;
     };
 

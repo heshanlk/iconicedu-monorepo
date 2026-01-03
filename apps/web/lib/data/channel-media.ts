@@ -19,7 +19,7 @@ export const MATH_CHANNEL_MEDIA: ChannelMediaItemVM[] = [
     name: 'fractions-work.jpg',
     width: 1600,
     height: 1200,
-    createdAt: '2026-02-20T19:40:00.000Z',
+    createdAt: '2025-12-20T19:40:00.000Z',
   },
 ];
 
@@ -37,6 +37,6 @@ export const DM_PRIYA_MEDIA: ChannelMediaItemVM[] = [
     name: 'fractions-sample.png',
     width: 1200,
     height: 900,
-    createdAt: '2026-02-18T17:25:00.000Z',
+    createdAt: '2025-12-18T17:25:00.000Z',
   },
 ];

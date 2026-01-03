@@ -28,7 +28,7 @@ const THREAD_MATH_FEEDBACK: ThreadVM = {
   },
   stats: {
     messageCount: 3,
-    lastReplyAt: '2026-02-20T20:10:00.000Z',
+    lastReplyAt: '2025-12-20T20:10:00.000Z',
   },
   participants: [
     EDUCATOR_PRIYA_PROFILE,
@@ -39,7 +39,7 @@ const THREAD_MATH_FEEDBACK: ThreadVM = {
     threadId: THREAD_IDS.mathFeedback,
     channelId: CHANNEL_IDS.mathSpace,
     lastReadMessageId: MESSAGE_IDS.mathHomeworkSubmit,
-    lastReadAt: '2026-02-20T20:10:00.000Z',
+    lastReadAt: '2025-12-20T20:10:00.000Z',
     unreadCount: 0,
   },
 };
@@ -54,14 +54,14 @@ const THREAD_ELA_HOMEWORK: ThreadVM = {
   },
   stats: {
     messageCount: 1,
-    lastReplyAt: '2026-02-18T19:25:00.000Z',
+    lastReplyAt: '2025-12-18T19:25:00.000Z',
   },
   participants: [EDUCATOR_ELENA_PROFILE, GUARDIAN_RILEY_PROFILE, CHILD_MAYA_PROFILE],
   readState: {
     threadId: THREAD_IDS.elaHomework,
     channelId: CHANNEL_IDS.elaSpace,
     lastReadMessageId: MESSAGE_IDS.elaHomework,
-    lastReadAt: '2026-02-18T19:25:00.000Z',
+    lastReadAt: '2025-12-18T19:25:00.000Z',
     unreadCount: 0,
   },
 };
@@ -72,7 +72,7 @@ export const MATH_CHANNEL_MESSAGES: MessageVM[] = [
     core: {
       type: 'text',
       sender: EDUCATOR_PRIYA_PROFILE,
-      createdAt: '2026-02-18T18:00:00.000Z',
+      createdAt: '2025-12-18T18:00:00.000Z',
       visibility: { type: 'all' },
     },
     social: {
@@ -91,7 +91,7 @@ export const MATH_CHANNEL_MESSAGES: MessageVM[] = [
     core: {
       type: 'lesson-assignment',
       sender: EDUCATOR_PRIYA_PROFILE,
-      createdAt: '2026-02-19T17:30:00.000Z',
+      createdAt: '2025-12-19T17:30:00.000Z',
       visibility: { type: 'all' },
     },
     social: {
@@ -105,7 +105,7 @@ export const MATH_CHANNEL_MESSAGES: MessageVM[] = [
     assignment: {
       title: 'Fractions Practice Set',
       description: 'Focus on equivalent fractions and number lines.',
-      dueAt: '2026-02-22T03:00:00.000Z',
+      dueAt: '2025-12-22T03:00:00.000Z',
       subject: 'Math',
       attachments: [
         {
@@ -125,7 +125,7 @@ export const MATH_CHANNEL_MESSAGES: MessageVM[] = [
     core: {
       type: 'homework-submission',
       sender: CHILD_TEVIN_PROFILE,
-      createdAt: '2026-02-20T19:40:00.000Z',
+      createdAt: '2025-12-20T19:40:00.000Z',
       visibility: { type: 'all' },
     },
     social: {
@@ -142,7 +142,7 @@ export const MATH_CHANNEL_MESSAGES: MessageVM[] = [
     content: { text: 'Here is my worksheet submission.' },
     homework: {
       assignmentTitle: 'Fractions Practice Set',
-      submittedAt: '2026-02-20T19:40:00.000Z',
+      submittedAt: '2025-12-20T19:40:00.000Z',
       attachments: [
         {
           type: 'image',
@@ -160,7 +160,7 @@ export const MATH_CHANNEL_MESSAGES: MessageVM[] = [
     core: {
       type: 'feedback-request',
       sender: EDUCATOR_PRIYA_PROFILE,
-      createdAt: '2026-02-20T20:00:00.000Z',
+      createdAt: '2025-12-20T20:00:00.000Z',
       visibility: { type: 'all' },
     },
     social: {
@@ -172,7 +172,7 @@ export const MATH_CHANNEL_MESSAGES: MessageVM[] = [
       prompt: 'Rate today\'s math session',
       sessionTitle: 'Math Foundations - Fractions',
       rating: 5,
-      submittedAt: '2026-02-20T20:05:00.000Z',
+      submittedAt: '2025-12-20T20:05:00.000Z',
       comment: 'Great pace and clear examples.',
     },
   },
@@ -181,7 +181,7 @@ export const MATH_CHANNEL_MESSAGES: MessageVM[] = [
     core: {
       type: 'progress-update',
       sender: EDUCATOR_PRIYA_PROFILE,
-      createdAt: '2026-02-21T17:30:00.000Z',
+      createdAt: '2025-12-21T17:30:00.000Z',
       visibility: { type: 'all' },
     },
     social: {
@@ -206,7 +206,7 @@ export const MATH_CHANNEL_MESSAGES: MessageVM[] = [
     core: {
       type: 'session-summary',
       sender: EDUCATOR_PRIYA_PROFILE,
-      createdAt: '2026-02-21T18:15:00.000Z',
+      createdAt: '2025-12-21T18:15:00.000Z',
       visibility: { type: 'all' },
     },
     social: {
@@ -216,7 +216,7 @@ export const MATH_CHANNEL_MESSAGES: MessageVM[] = [
     content: { text: 'Summary from today\'s math session.' },
     session: {
       title: 'Math Foundations - Fractions',
-      startAt: '2026-02-21T17:00:00.000Z',
+      startAt: '2025-12-21T17:00:00.000Z',
       durationMinutes: 45,
       summary: 'Reviewed equivalent fractions and number line placement.',
       highlights: ['Strong participation', 'Accurate number line placement'],
@@ -231,7 +231,7 @@ export const SCIENCE_CHANNEL_MESSAGES: MessageVM[] = [
     core: {
       type: 'text',
       sender: EDUCATOR_LUCAS_PROFILE,
-      createdAt: '2026-02-18T18:30:00.000Z',
+      createdAt: '2025-12-18T18:30:00.000Z',
       visibility: { type: 'all' },
     },
     social: {
@@ -247,7 +247,7 @@ export const SCIENCE_CHANNEL_MESSAGES: MessageVM[] = [
     core: {
       type: 'file',
       sender: EDUCATOR_LUCAS_PROFILE,
-      createdAt: '2026-02-19T18:45:00.000Z',
+      createdAt: '2025-12-19T18:45:00.000Z',
       visibility: { type: 'all' },
     },
     social: {
@@ -271,7 +271,7 @@ export const ELA_CHANNEL_MESSAGES: MessageVM[] = [
     core: {
       type: 'text',
       sender: EDUCATOR_ELENA_PROFILE,
-      createdAt: '2026-02-18T19:00:00.000Z',
+      createdAt: '2025-12-18T19:00:00.000Z',
       visibility: { type: 'all' },
     },
     social: {
@@ -287,7 +287,7 @@ export const ELA_CHANNEL_MESSAGES: MessageVM[] = [
     core: {
       type: 'session-summary',
       sender: EDUCATOR_ELENA_PROFILE,
-      createdAt: '2026-02-18T19:20:00.000Z',
+      createdAt: '2025-12-18T19:20:00.000Z',
       visibility: { type: 'all' },
     },
     social: {
@@ -297,7 +297,7 @@ export const ELA_CHANNEL_MESSAGES: MessageVM[] = [
     content: { text: 'Summary for today\'s writing session.' },
     session: {
       title: 'Writing Workshop - Story Seeds',
-      startAt: '2026-02-18T18:30:00.000Z',
+      startAt: '2025-12-18T18:30:00.000Z',
       durationMinutes: 45,
       summary: 'Explored story openings and character development.',
       highlights: ['Strong opening paragraph', 'Great descriptive language'],
@@ -309,7 +309,7 @@ export const ELA_CHANNEL_MESSAGES: MessageVM[] = [
     core: {
       type: 'lesson-assignment',
       sender: EDUCATOR_ELENA_PROFILE,
-      createdAt: '2026-02-18T19:25:00.000Z',
+      createdAt: '2025-12-18T19:25:00.000Z',
       visibility: { type: 'all' },
     },
     social: {
@@ -323,7 +323,7 @@ export const ELA_CHANNEL_MESSAGES: MessageVM[] = [
     assignment: {
       title: 'Story Prompt Draft',
       description: 'Use the prompt to craft a 1-page draft.',
-      dueAt: '2026-02-23T03:00:00.000Z',
+      dueAt: '2025-12-23T03:00:00.000Z',
       subject: 'ELA',
       attachments: [
         {
@@ -346,7 +346,7 @@ export const CHESS_CHANNEL_MESSAGES: MessageVM[] = [
     core: {
       type: 'text',
       sender: EDUCATOR_MISHAN_PROFILE,
-      createdAt: '2026-02-18T20:00:00.000Z',
+      createdAt: '2025-12-18T20:00:00.000Z',
       visibility: { type: 'all' },
     },
     social: {
@@ -362,7 +362,7 @@ export const CHESS_CHANNEL_MESSAGES: MessageVM[] = [
     core: {
       type: 'event-reminder',
       sender: EDUCATOR_MISHAN_PROFILE,
-      createdAt: '2026-02-18T20:10:00.000Z',
+      createdAt: '2025-12-18T20:10:00.000Z',
       visibility: { type: 'all' },
     },
     social: { reactions: [] },
@@ -372,8 +372,8 @@ export const CHESS_CHANNEL_MESSAGES: MessageVM[] = [
     },
     event: {
       title: 'Chess Strategy Lab',
-      startAt: '2026-03-06T00:30:00.000Z',
-      endAt: '2026-03-06T01:15:00.000Z',
+      startAt: '2025-12-26T00:30:00.000Z',
+      endAt: '2025-12-26T01:15:00.000Z',
       location: 'Zoom',
       meetingLink: 'https://us06web.zoom.us/j/88676118659?pwd=gsLCQZrCkU60T91Dc37DaaNiWdsgTq.1',
       attendees: [EDUCATOR_MISHAN_PROFILE, CHILD_TEVIN_PROFILE],
@@ -387,7 +387,7 @@ export const DM_PRIYA_MESSAGES: MessageVM[] = [
     core: {
       type: 'text',
       sender: GUARDIAN_RILEY_PROFILE,
-      createdAt: '2026-02-18T17:10:00.000Z',
+      createdAt: '2025-12-18T17:10:00.000Z',
       visibility: { type: 'all' },
     },
     social: { reactions: [] },
@@ -399,7 +399,7 @@ export const DM_PRIYA_MESSAGES: MessageVM[] = [
     core: {
       type: 'image',
       sender: EDUCATOR_PRIYA_PROFILE,
-      createdAt: '2026-02-18T17:25:00.000Z',
+      createdAt: '2025-12-18T17:25:00.000Z',
       visibility: { type: 'all' },
     },
     social: { reactions: [] },
@@ -421,7 +421,7 @@ export const DM_ELENA_MESSAGES: MessageVM[] = [
     core: {
       type: 'file',
       sender: EDUCATOR_ELENA_PROFILE,
-      createdAt: '2026-02-18T16:40:00.000Z',
+      createdAt: '2025-12-18T16:40:00.000Z',
       visibility: { type: 'all' },
     },
     social: { reactions: [] },
@@ -443,7 +443,7 @@ export const DM_LUCAS_MESSAGES: MessageVM[] = [
     core: {
       type: 'text',
       sender: EDUCATOR_LUCAS_PROFILE,
-      createdAt: '2026-02-18T17:50:00.000Z',
+      createdAt: '2025-12-18T17:50:00.000Z',
       visibility: { type: 'all' },
     },
     social: { reactions: [] },
@@ -458,7 +458,7 @@ export const DM_MISHAN_MESSAGES: MessageVM[] = [
     core: {
       type: 'audio-recording',
       sender: EDUCATOR_MISHAN_PROFILE,
-      createdAt: '2026-02-18T18:10:00.000Z',
+      createdAt: '2025-12-18T18:10:00.000Z',
       visibility: { type: 'all' },
     },
     social: { reactions: [] },
@@ -480,7 +480,7 @@ export const DM_AVA_MESSAGES: MessageVM[] = [
     core: {
       type: 'text',
       sender: EDUCATOR_AVA_PROFILE,
-      createdAt: '2026-02-18T18:20:00.000Z',
+      createdAt: '2025-12-18T18:20:00.000Z',
       visibility: { type: 'all' },
     },
     social: { reactions: [] },
@@ -495,7 +495,7 @@ export const SUPPORT_CHANNEL_MESSAGES: MessageVM[] = [
     core: {
       type: 'text',
       sender: STAFF_SUPPORT_PROFILE,
-      createdAt: '2026-02-18T16:00:00.000Z',
+      createdAt: '2025-12-18T16:00:00.000Z',
       visibility: { type: 'all' },
     },
     social: { reactions: [] },
@@ -509,7 +509,7 @@ export const SUPPORT_CHANNEL_MESSAGES: MessageVM[] = [
     core: {
       type: 'text',
       sender: GUARDIAN_RILEY_PROFILE,
-      createdAt: '2026-02-18T16:05:00.000Z',
+      createdAt: '2025-12-18T16:05:00.000Z',
       visibility: { type: 'all' },
     },
     social: { reactions: [] },
