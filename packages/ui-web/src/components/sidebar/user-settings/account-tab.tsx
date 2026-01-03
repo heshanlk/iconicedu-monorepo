@@ -66,26 +66,21 @@ export function AccountTab({
                     />
                     <InputGroupAddon align="inline-end">
                       {contacts?.emailVerified ? (
-                        <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
-                          <BadgeCheck className="h-3 w-3" />
-                          <span className="sr-only">Verified</span>
-                        </Badge>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
+                              <BadgeCheck className="h-3 w-3" />
+                              <span className="sr-only">Verified</span>
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent>{contacts.emailVerifiedAt}</TooltipContent>
+                        </Tooltip>
                       ) : (
                         <Badge className="bg-muted text-muted-foreground">
                           <BadgeCheck className="h-3 w-3 text-muted-foreground" />
                           <span className="sr-only">Not verified</span>
                         </Badge>
                       )}
-                      {contacts?.verifiedAt ? (
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <span className="text-xs text-muted-foreground cursor-help">
-                              Verified on
-                            </span>
-                          </TooltipTrigger>
-                          <TooltipContent>{contacts.verifiedAt}</TooltipContent>
-                        </Tooltip>
-                      ) : null}
                     </InputGroupAddon>
                   </InputGroup>
                 </div>
@@ -150,38 +145,23 @@ export function AccountTab({
                     />
                     <InputGroupAddon align="inline-end">
                       {contacts?.phoneVerified ? (
-                        <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
-                          <BadgeCheck className="h-3 w-3" />
-                          <span className="sr-only">Verified</span>
-                        </Badge>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
+                              <BadgeCheck className="h-3 w-3" />
+                              <span className="sr-only">Verified</span>
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent>{contacts.phoneVerifiedAt}</TooltipContent>
+                        </Tooltip>
                       ) : (
                         <Badge className="bg-muted text-muted-foreground">
                           <BadgeCheck className="h-3 w-3 text-muted-foreground" />
                           <span className="sr-only">Not verified</span>
                         </Badge>
                       )}
-                      {contacts?.verifiedAt ? (
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <span className="text-xs text-muted-foreground cursor-help">
-                              Verified on
-                            </span>
-                          </TooltipTrigger>
-                          <TooltipContent>{contacts.verifiedAt}</TooltipContent>
-                        </Tooltip>
-                      ) : null}
                     </InputGroupAddon>
                   </InputGroup>
-                  {contacts?.verifiedAt ? (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <span className="text-xs text-muted-foreground cursor-help">
-                          Verified on
-                        </span>
-                      </TooltipTrigger>
-                      <TooltipContent>{contacts.verifiedAt}</TooltipContent>
-                    </Tooltip>
-                  ) : null}
                 </div>
                 {contacts?.phoneVerified ? (
                   <div className="sm:col-span-2 flex items-center justify-between rounded-xl border border-border/60 px-4 py-3">
@@ -195,7 +175,9 @@ export function AccountTab({
                     </div>
                     <Switch
                       checked={preferredChannelSelections.includes('sms')}
-                      onCheckedChange={(checked) => togglePreferredChannel('sms', checked)}
+                      onCheckedChange={(checked) =>
+                        togglePreferredChannel('sms', checked)
+                      }
                       aria-label="Receive notifications by phone"
                     />
                   </div>
@@ -234,38 +216,23 @@ export function AccountTab({
                     />
                     <InputGroupAddon align="inline-end">
                       {contacts?.whatsappVerified ? (
-                        <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
-                          <BadgeCheck className="h-3 w-3" />
-                          <span className="sr-only">Verified</span>
-                        </Badge>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
+                              <BadgeCheck className="h-3 w-3" />
+                              <span className="sr-only">Verified</span>
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent>{contacts.whatsappVerifiedAt}</TooltipContent>
+                        </Tooltip>
                       ) : (
                         <Badge className="bg-muted text-muted-foreground">
                           <BadgeCheck className="h-3 w-3 text-muted-foreground" />
                           <span className="sr-only">Not verified</span>
                         </Badge>
                       )}
-                      {contacts?.verifiedAt ? (
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <span className="text-xs text-muted-foreground cursor-help">
-                              Verified on
-                            </span>
-                          </TooltipTrigger>
-                          <TooltipContent>{contacts.verifiedAt}</TooltipContent>
-                        </Tooltip>
-                      ) : null}
                     </InputGroupAddon>
                   </InputGroup>
-                  {contacts?.verifiedAt ? (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <span className="text-xs text-muted-foreground cursor-help">
-                          Verified on
-                        </span>
-                      </TooltipTrigger>
-                      <TooltipContent>{contacts.verifiedAt}</TooltipContent>
-                    </Tooltip>
-                  ) : null}
                 </div>
                 {contacts?.whatsappVerified ? (
                   <div className="sm:col-span-2 flex items-center justify-between rounded-xl border border-border/60 px-4 py-3">

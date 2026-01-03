@@ -44,10 +44,6 @@ const ChannelInfoPanelContent = memo(function ChannelInfoPanelContent() {
   const iconKey = channel.basics.iconKey ?? 'sparkles';
   const TopicIcon =
     CHANNEL_ICON_MAP[iconKey as keyof typeof CHANNEL_ICON_MAP] ?? Sparkles;
-  const nextSessionItem = (channel.ui?.headerQuickMetaActions ?? []).find(
-    (item) => item.key === 'next-session',
-  );
-
   return (
     <div className="flex-1 min-w-0">
       <div className="flex flex-col items-center gap-3 p-6 min-w-0">
@@ -72,22 +68,6 @@ const ChannelInfoPanelContent = memo(function ChannelInfoPanelContent() {
           </Badge>
         ) : null}
       </div>
-
-      <div className="space-y-4 p-4 min-w-0">
-        <h3 className="text-sm font-semibold text-foreground">Details</h3>
-        <div className="space-y-3 text-sm text-muted-foreground min-w-0">
-          {nextSessionItem?.label ? (
-            <div>
-              <div className="text-xs text-muted-foreground">Next session</div>
-              <div className="text-sm text-foreground break-words">
-                {nextSessionItem.label}
-              </div>
-            </div>
-          ) : null}
-        </div>
-      </div>
-
-      <Separator />
 
       <div className="space-y-4 p-4 min-w-0">
         <MediaFilesPanel

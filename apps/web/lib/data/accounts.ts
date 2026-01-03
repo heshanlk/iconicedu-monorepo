@@ -22,7 +22,8 @@ export const GUARDIAN_ACCOUNT: UserAccountVM = {
     emailVerified: true,
     phoneVerified: true,
     whatsappVerified: false,
-    verifiedAt: '2025-01-08T15:20:00.000Z',
+    emailVerifiedAt: '2025-01-08T15:20:00.000Z',
+    phoneVerifiedAt: '2025-01-08T15:25:00.000Z',
     preferredContactChannels: ['email', 'sms'],
   },
   access: {
@@ -41,6 +42,7 @@ export const CHILD_TEVIN_ACCOUNT: UserAccountVM = {
   contacts: {
     email: 'tevin.morgan@iconic.edu',
     emailVerified: true,
+    emailVerifiedAt: '2025-01-02T09:30:00.000Z',
     preferredContactChannels: ['email'],
   },
   access: {
@@ -59,6 +61,7 @@ export const CHILD_TEHARA_ACCOUNT: UserAccountVM = {
   contacts: {
     email: 'tehara.morgan@iconic.edu',
     emailVerified: false,
+    emailVerifiedAt: null,
     preferredContactChannels: ['email'],
   },
   access: {
@@ -77,6 +80,7 @@ export const CHILD_MAYA_ACCOUNT: UserAccountVM = {
   contacts: {
     email: 'maya.morgan@iconic.edu',
     emailVerified: true,
+    emailVerifiedAt: '2025-01-02T09:45:00.000Z',
     preferredContactChannels: ['email'],
   },
   access: {
@@ -97,7 +101,8 @@ export const EDUCATOR_PRIYA_ACCOUNT: UserAccountVM = {
     phoneE164: '+14155550111',
     emailVerified: true,
     phoneVerified: true,
-    verifiedAt: '2024-09-15T10:00:00.000Z',
+    emailVerifiedAt: '2024-09-15T10:00:00.000Z',
+    phoneVerifiedAt: '2024-09-15T10:10:00.000Z',
     preferredContactChannels: ['email'],
   },
   access: {
@@ -118,7 +123,8 @@ export const EDUCATOR_ELENA_ACCOUNT: UserAccountVM = {
     phoneE164: '+14155550222',
     emailVerified: true,
     phoneVerified: true,
-    verifiedAt: '2024-09-15T10:05:00.000Z',
+    emailVerifiedAt: '2024-09-15T10:05:00.000Z',
+    phoneVerifiedAt: '2024-09-15T10:15:00.000Z',
     preferredContactChannels: ['email'],
   },
   access: {
@@ -139,6 +145,8 @@ export const EDUCATOR_LUCAS_ACCOUNT: UserAccountVM = {
     phoneE164: '+14155550333',
     emailVerified: true,
     phoneVerified: false,
+    emailVerifiedAt: '2024-09-16T09:00:00.000Z',
+    phoneVerifiedAt: null,
     preferredContactChannels: ['email'],
   },
   access: {
@@ -159,7 +167,8 @@ export const EDUCATOR_MISHAN_ACCOUNT: UserAccountVM = {
     phoneE164: '+14155550444',
     emailVerified: true,
     phoneVerified: true,
-    verifiedAt: '2024-09-20T08:45:00.000Z',
+    emailVerifiedAt: '2024-09-20T08:45:00.000Z',
+    phoneVerifiedAt: '2024-09-20T08:55:00.000Z',
     preferredContactChannels: ['email', 'sms'],
   },
   access: {
@@ -180,7 +189,8 @@ export const EDUCATOR_AVA_ACCOUNT: UserAccountVM = {
     phoneE164: '+14155550555',
     emailVerified: true,
     phoneVerified: true,
-    verifiedAt: '2024-09-20T08:50:00.000Z',
+    emailVerifiedAt: '2024-09-20T08:50:00.000Z',
+    phoneVerifiedAt: '2024-09-20T09:00:00.000Z',
     preferredContactChannels: ['email'],
   },
   access: {
@@ -201,7 +211,8 @@ export const STAFF_SUPPORT_ACCOUNT: UserAccountVM = {
     phoneE164: '+14155550666',
     emailVerified: true,
     phoneVerified: true,
-    verifiedAt: '2024-08-25T09:00:00.000Z',
+    emailVerifiedAt: '2024-08-25T09:00:00.000Z',
+    phoneVerifiedAt: '2024-08-25T09:10:00.000Z',
     preferredContactChannels: ['email', 'sms'],
   },
   access: {

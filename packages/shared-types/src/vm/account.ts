@@ -9,9 +9,11 @@ export interface UserContactVM {
   whatsappE164?: string | null;
 
   emailVerified?: boolean;
+  emailVerifiedAt?: ISODateTime | null;
   phoneVerified?: boolean;
+  phoneVerifiedAt?: ISODateTime | null;
   whatsappVerified?: boolean;
-  verifiedAt?: ISODateTime | null;
+  whatsappVerifiedAt?: ISODateTime | null;
 
   preferredContactChannels?: ContactChannelVM[] | null;
 }

@@ -85,7 +85,7 @@ const mathChannel: ChannelVM = {
     defaultRightPanelKey: 'channel_info',
     infoPanel: {
       showHeader: true,
-      showDetails: true,
+      showDetails: false,
       showMedia: true,
       showMembers: true,
       showQuickActions: true,
@@ -155,7 +155,7 @@ const scienceChannel: ChannelVM = {
     defaultRightPanelKey: 'channel_info',
     infoPanel: {
       showHeader: true,
-      showDetails: true,
+      showDetails: false,
       showMedia: true,
       showMembers: true,
       showQuickActions: true,
@@ -222,7 +222,7 @@ const elaChannel: ChannelVM = {
     defaultRightPanelKey: 'channel_info',
     infoPanel: {
       showHeader: true,
-      showDetails: true,
+      showDetails: false,
       showMedia: true,
       showMembers: true,
       showQuickActions: true,
@@ -291,7 +291,7 @@ const chessChannel: ChannelVM = {
     defaultRightPanelKey: 'channel_info',
     infoPanel: {
       showHeader: true,
-      showDetails: true,
+      showDetails: false,
       showMedia: true,
       showMembers: true,
       showQuickActions: true,
@@ -557,7 +557,7 @@ const supportChannel: ChannelVM = {
     defaultRightPanelOpen: false,
     infoPanel: {
       showHeader: true,
-      showDetails: true,
+      showDetails: false,
       showMedia: false,
       showMembers: false,
       showQuickActions: false,
