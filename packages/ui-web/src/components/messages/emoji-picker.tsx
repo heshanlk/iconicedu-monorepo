@@ -170,20 +170,21 @@ export const EmojiPicker = memo(function EmojiPicker({
       <PopoverTrigger asChild>{children}</PopoverTrigger>
       <PopoverContent
         className="w-[320px] p-0"
-        align="start"
+        align="end"
+        alignOffset={-70}
         side="top"
-        sideOffset={8}
+        sideOffset={10}
         style={{ zIndex: 9999 }}
       >
         <Tabs
           defaultValue={recentEmojis.length > 0 ? 'recent' : 'smileys'}
           className="w-full"
         >
-          <TabsList className="w-full justify-start rounded-none border-b bg-transparent p-0">
+          <TabsList className="w-full justify-start rounded-none border-b-0 bg-transparent p-0">
             {recentEmojis.length > 0 && (
               <TabsTrigger
                 value="recent"
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-b-primary data-[state=active]:bg-transparent"
               >
                 <Clock className="h-4 w-4" />
               </TabsTrigger>
@@ -192,7 +193,7 @@ export const EmojiPicker = memo(function EmojiPicker({
               <TabsTrigger
                 key={key}
                 value={key}
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-b-primary data-[state=active]:bg-transparent"
               >
                 {label}
               </TabsTrigger>
