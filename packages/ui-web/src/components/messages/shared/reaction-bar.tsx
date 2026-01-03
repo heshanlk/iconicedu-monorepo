@@ -47,7 +47,7 @@ export const ReactionBar = memo(function ReactionBar({
                       variant="ghost"
                       size="sm"
                       onClick={() => handleReactionClick(reaction.emoji)}
-                      className={`h-6 min-w-[2.5rem] px-2 text-xs transition-all duration-200 hover:scale-110 hover:shadow-md ${
+                      className={`h-6 min-w-[2.5rem] px-2 text-xs border-muted-foreground/20 transition-all duration-200 hover:scale-110 hover:shadow-md ${
                         isUserReaction
                           ? 'bg-primary/10 text-primary border-primary/20'
                           : ''
