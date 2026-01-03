@@ -84,6 +84,7 @@ export const MESSAGE_IDS = {
   mathFeedbackRequest: '7f04a5b6-d7e8-4013-9f9a-3c4d5e6f7a89',
   mathProgress: '8015b6c7-e8f9-4124-8a0b-4d5e6f7a8b90',
   mathSessionSummary: '9126c7d8-f901-4235-9b1c-5e6f7a8b9c01',
+  mathSessionComplete: 'a137d8e9-0123-4346-8c2d-6f7a8b9c0d13',
   scienceWelcome: 'a237d8e9-0123-4346-8c2d-6f7a8b9c0d12',
   scienceResource: 'b348e9f0-1234-4457-9d3e-7a8b9c0d1e23',
   elaWelcome: 'c459f001-2345-4568-8e4f-8b9c0d1e2f34',

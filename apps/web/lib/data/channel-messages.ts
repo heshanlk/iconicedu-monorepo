@@ -10,6 +10,7 @@ import {
   EDUCATOR_MISHAN_PROFILE,
   EDUCATOR_PRIYA_PROFILE,
   GUARDIAN_RILEY_PROFILE,
+  SYSTEM_PROFILE,
   STAFF_SUPPORT_PROFILE,
 } from './profiles';
 
@@ -212,6 +213,26 @@ export const MATH_CHANNEL_MESSAGES: MessageVM[] = [
       summary: 'Reviewed equivalent fractions and number line placement.',
       highlights: ['Strong participation', 'Accurate number line placement'],
       nextSteps: ['Practice with mixed numbers', 'Review worksheet corrections'],
+    },
+  },
+  {
+    ids: { id: MESSAGE_IDS.mathSessionComplete, orgId: ORG_ID },
+    core: {
+      type: 'session-complete',
+      sender: SYSTEM_PROFILE,
+      createdAt: '2025-12-21T18:20:00.000Z',
+      visibility: { type: 'all' },
+    },
+    social: {
+      reactions: [{ emoji: '✅', count: 1 }],
+    },
+    state: { isSaved: false },
+    content: { text: 'Session ready to mark as complete.' },
+    session: {
+      title: 'Math Foundations - Fractions',
+      startAt: '2025-12-21T17:00:00.000Z',
+      endAt: '2025-12-21T17:45:00.000Z',
+      completedAt: null,
     },
   },
 ];
