@@ -1,6 +1,55 @@
 import type { UserProfileVM } from '@iconicedu/shared-types';
 import { ACCOUNT_IDS, ORG_ID, PROFILE_IDS } from './ids';
 
+export const SYSTEM_PROFILE: UserProfileVM = {
+  kind: 'system',
+  ids: {
+    id: PROFILE_IDS.system,
+    orgId: ORG_ID,
+    accountId: ACCOUNT_IDS.system,
+  },
+  profile: {
+    displayName: 'ICONIC System',
+    firstName: 'ICONIC',
+    lastName: 'System',
+    bio: 'System-generated notifications and updates.',
+    avatar: {
+      source: 'seed',
+      seed: 'iconic-system',
+      url: null,
+      updatedAt: '2025-01-01T00:00:00.000Z',
+    },
+  },
+  prefs: {
+    timezone: 'America/Los_Angeles',
+    locale: 'en-US',
+    languagesSpoken: ['English'],
+    notificationDefaults: {
+      'system.alerts': { channels: ['email'] },
+    },
+  },
+  presence: null,
+  status: 'active',
+  location: {
+    countryCode: 'US',
+    countryName: 'United States',
+    region: 'CA',
+    city: 'San Francisco',
+    postalCode: '94105',
+  },
+  internal: {
+    notesInternal: 'System profile used for automated notices.',
+    leadSource: 'system',
+  },
+  meta: {
+    createdAt: '2024-01-01T00:00:00.000Z',
+    updatedAt: '2025-01-01T00:00:00.000Z',
+  },
+  ui: {
+    themeKey: 'blue',
+  },
+};
+
 export const CHILD_TEVIN_PROFILE: UserProfileVM = {
   kind: 'child',
   ids: {
@@ -726,6 +775,7 @@ export const STAFF_SUPPORT_PROFILE: UserProfileVM = {
 };
 
 export const PROFILES: UserProfileVM[] = [
+  SYSTEM_PROFILE,
   GUARDIAN_RILEY_PROFILE,
   CHILD_TEVIN_PROFILE,
   CHILD_TEHARA_PROFILE,
@@ -739,6 +789,7 @@ export const PROFILES: UserProfileVM[] = [
 ];
 
 export const PROFILES_BY_ID: Record<string, UserProfileVM> = {
+  [SYSTEM_PROFILE.ids.id]: SYSTEM_PROFILE,
   [GUARDIAN_RILEY_PROFILE.ids.id]: GUARDIAN_RILEY_PROFILE,
   [CHILD_TEVIN_PROFILE.ids.id]: CHILD_TEVIN_PROFILE,
   [CHILD_TEHARA_PROFILE.ids.id]: CHILD_TEHARA_PROFILE,

@@ -37,6 +37,7 @@ export function ActivityBadge({ activity, className }: ActivityBadgeProps) {
             themeKey={avatarItem.themeKey}
             showStatus={false}
             sizeClassName="size-6 border-2 border-background"
+            fallbackClassName="text-[10px]"
             initialsLength={2}
           />
         ))}
@@ -50,15 +51,15 @@ export function ActivityBadge({ activity, className }: ActivityBadgeProps) {
   }
 
   const actor = activity.refs.actor;
-  const actorName = actor.displayName;
-  const actorAvatar = actor.avatar;
+  const actorName = actor.profile.displayName;
+  const actorAvatar = actor.profile.avatar;
   const initials = getInitials(actorName);
 
   return (
     <AvatarWithStatus
       name={actorName}
       avatar={actorAvatar}
-      themeKey={actor.themeKey}
+      themeKey={actor.ui?.themeKey}
       showStatus={false}
       sizeClassName={cn('size-6 shrink-0', className)}
       fallbackClassName="text-[10px]"

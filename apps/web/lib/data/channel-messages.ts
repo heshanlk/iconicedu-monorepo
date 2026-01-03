@@ -22,7 +22,7 @@ const THREAD_MATH_FEEDBACK: ThreadVM = {
     authorName: EDUCATOR_PRIYA_PROFILE.profile.displayName,
   },
   stats: {
-    messageCount: 3,
+    messageCount: 1,
     lastReplyAt: '2025-12-20T20:10:00.000Z',
   },
   participants: [EDUCATOR_PRIYA_PROFILE, GUARDIAN_RILEY_PROFILE, CHILD_TEVIN_PROFILE],
@@ -31,7 +31,7 @@ const THREAD_MATH_FEEDBACK: ThreadVM = {
     channelId: CHANNEL_IDS.mathSpace,
     lastReadMessageId: MESSAGE_IDS.mathHomeworkSubmit,
     lastReadAt: '2025-12-20T20:10:00.000Z',
-    unreadCount: 0,
+    unreadCount: 2,
   },
 };
 
@@ -62,7 +62,7 @@ export const MATH_CHANNEL_MESSAGES: MessageVM[] = [
     ids: { id: MESSAGE_IDS.mathWelcome, orgId: ORG_ID },
     core: {
       type: 'text',
-      sender: EDUCATOR_PRIYA_PROFILE,
+      sender: GUARDIAN_RILEY_PROFILE,
       createdAt: '2025-12-18T18:00:00.000Z',
       visibility: { type: 'all' },
     },

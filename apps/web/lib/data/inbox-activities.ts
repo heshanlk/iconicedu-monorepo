@@ -1,9 +1,4 @@
-import type {
-  ActivityFeedVM,
-  ActivityFeedItemVM,
-  ActivityActorProfileVM,
-  SystemProfileVM,
-} from '@iconicedu/shared-types';
+import type { ActivityFeedVM, ActivityFeedItemVM } from '@iconicedu/shared-types';
 import {
   ACTIVITY_IDS,
   CHANNEL_IDS,
@@ -16,48 +11,8 @@ import {
   EDUCATOR_LUCAS_PROFILE,
   EDUCATOR_PRIYA_PROFILE,
   GUARDIAN_RILEY_PROFILE,
+  SYSTEM_PROFILE,
 } from './profiles';
-
-const SYSTEM_ACTOR: SystemProfileVM = {
-  kind: 'system',
-  ids: { id: '9b3b6e4d-8b1c-4a6a-9f22-3a2fbc0d45a1', orgId: ORG_ID },
-  displayName: 'ICONIC',
-  avatar: {
-    source: 'seed',
-    seed: 'iconic-system',
-    url: null,
-    updatedAt: '2025-01-01T00:00:00.000Z',
-  },
-  themeKey: 'blue',
-};
-
-const ACTOR_PRIYA: ActivityActorProfileVM = {
-  ids: { id: EDUCATOR_PRIYA_PROFILE.ids.id, orgId: ORG_ID },
-  displayName: EDUCATOR_PRIYA_PROFILE.profile.displayName,
-  avatar: EDUCATOR_PRIYA_PROFILE.profile.avatar,
-  themeKey: EDUCATOR_PRIYA_PROFILE.ui?.themeKey ?? null,
-};
-
-const ACTOR_ELENA: ActivityActorProfileVM = {
-  ids: { id: EDUCATOR_ELENA_PROFILE.ids.id, orgId: ORG_ID },
-  displayName: EDUCATOR_ELENA_PROFILE.profile.displayName,
-  avatar: EDUCATOR_ELENA_PROFILE.profile.avatar,
-  themeKey: EDUCATOR_ELENA_PROFILE.ui?.themeKey ?? null,
-};
-
-const ACTOR_LUCAS: ActivityActorProfileVM = {
-  ids: { id: EDUCATOR_LUCAS_PROFILE.ids.id, orgId: ORG_ID },
-  displayName: EDUCATOR_LUCAS_PROFILE.profile.displayName,
-  avatar: EDUCATOR_LUCAS_PROFILE.profile.avatar,
-  themeKey: EDUCATOR_LUCAS_PROFILE.ui?.themeKey ?? null,
-};
-
-const ACTOR_RILEY: ActivityActorProfileVM = {
-  ids: { id: GUARDIAN_RILEY_PROFILE.ids.id, orgId: ORG_ID },
-  displayName: GUARDIAN_RILEY_PROFILE.profile.displayName,
-  avatar: GUARDIAN_RILEY_PROFILE.profile.avatar,
-  themeKey: GUARDIAN_RILEY_PROFILE.ui?.themeKey ?? null,
-};
 
 const MATH_HOMEWORK_ACTIVITY: ActivityFeedItemVM = {
   kind: 'leaf',
@@ -73,7 +28,7 @@ const MATH_HOMEWORK_ACTIVITY: ActivityFeedItemVM = {
   },
   verb: 'homework.assigned',
   refs: {
-    actor: ACTOR_PRIYA,
+    actor: EDUCATOR_PRIYA_PROFILE,
     target: { kind: 'learning_space', id: LEARNING_SPACE_IDS.math },
   },
   content: {
@@ -83,6 +38,8 @@ const MATH_HOMEWORK_ACTIVITY: ActivityFeedItemVM = {
       secondary: 'Fractions Practice Set',
     },
     summary: 'Due Sunday, Feb 22',
+    expandedContent:
+      'Focus on equivalent fractions and number lines. Complete problems 1-10 before next session.',
     actionButton: {
       label: 'View homework',
       variant: 'default',
@@ -106,7 +63,7 @@ const MATH_HOMEWORK_SUBMIT_ACTIVITY: ActivityFeedItemVM = {
   },
   verb: 'homework.submitted',
   refs: {
-    actor: ACTOR_RILEY,
+    actor: GUARDIAN_RILEY_PROFILE,
     target: { kind: 'learning_space', id: LEARNING_SPACE_IDS.math },
   },
   content: {
@@ -134,7 +91,7 @@ const SCIENCE_FILE_ACTIVITY: ActivityFeedItemVM = {
   },
   verb: 'file.uploaded',
   refs: {
-    actor: ACTOR_LUCAS,
+    actor: EDUCATOR_LUCAS_PROFILE,
     target: { kind: 'learning_space', id: LEARNING_SPACE_IDS.science },
     object: { kind: 'file', id: FILE_IDS.scienceLabPdf },
   },
@@ -145,6 +102,8 @@ const SCIENCE_FILE_ACTIVITY: ActivityFeedItemVM = {
       secondary: 'Science Lab Explorers',
     },
     summary: 'science-lab-guide.pdf',
+    expandedContent:
+      'Includes safety checklist, materials list, and a short pre-lab quiz.',
   },
   state: { importance: 'normal', isRead: true },
 };
@@ -163,7 +122,7 @@ const ELA_SUMMARY_ACTIVITY: ActivityFeedItemVM = {
   },
   verb: 'summary.posted',
   refs: {
-    actor: ACTOR_ELENA,
+    actor: EDUCATOR_ELENA_PROFILE,
     target: { kind: 'learning_space', id: LEARNING_SPACE_IDS.ela },
   },
   content: {
@@ -173,6 +132,8 @@ const ELA_SUMMARY_ACTIVITY: ActivityFeedItemVM = {
       secondary: 'Writing Workshop',
     },
     summary: 'Story Seeds discussion highlights',
+    expandedContent:
+      'Covered narrative hooks, character arcs, and setting details. Next session: revise your opening paragraph.',
   },
   state: { importance: 'normal', isRead: true },
 };
@@ -191,7 +152,7 @@ const SYSTEM_PAYMENT_ACTIVITY: ActivityFeedItemVM = {
   },
   verb: 'role.changed',
   refs: {
-    actor: SYSTEM_ACTOR,
+    actor: SYSTEM_PROFILE,
   },
   content: {
     leading: { kind: 'icon', iconKey: 'CreditCard', tone: 'warning' },
@@ -223,7 +184,7 @@ const GROUPED_HOMEWORK_ACTIVITY: ActivityFeedItemVM = {
   },
   verb: 'homework.assigned',
   refs: {
-    actor: ACTOR_PRIYA,
+    actor: EDUCATOR_PRIYA_PROFILE,
   },
   grouping: {
     groupType: 'homework',
@@ -251,6 +212,8 @@ const GROUPED_HOMEWORK_ACTIVITY: ActivityFeedItemVM = {
       secondary: 'Math + Writing',
     },
     summary: 'Review assignments for the week',
+    expandedContent:
+      'Math: Fractions Practice Set. Writing: Story Prompt Draft with feedback goals.',
   },
   state: { importance: 'normal', isRead: false },
   isCollapsed: true,
@@ -271,7 +234,7 @@ const GROUPED_HOMEWORK_ACTIVITY: ActivityFeedItemVM = {
         },
         verb: 'homework.assigned',
         refs: {
-          actor: ACTOR_PRIYA,
+          actor: EDUCATOR_PRIYA_PROFILE,
           target: { kind: 'learning_space', id: LEARNING_SPACE_IDS.math },
         },
         content: {
@@ -298,7 +261,7 @@ const GROUPED_HOMEWORK_ACTIVITY: ActivityFeedItemVM = {
         },
         verb: 'homework.assigned',
         refs: {
-          actor: ACTOR_ELENA,
+          actor: EDUCATOR_ELENA_PROFILE,
           target: { kind: 'learning_space', id: LEARNING_SPACE_IDS.ela },
         },
         content: {

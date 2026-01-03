@@ -176,8 +176,13 @@ export interface StaffProfileVM extends BaseUserProfileVM {
   workingHoursRules?: string[] | null;
 }
 
+export interface SystemProfileVM extends BaseUserProfileVM {
+  kind: 'system';
+}
+
 export type UserProfileVM =
   | EducatorProfileVM
   | GuardianProfileVM
   | ChildProfileVM
-  | StaffProfileVM;
+  | StaffProfileVM
+  | SystemProfileVM;

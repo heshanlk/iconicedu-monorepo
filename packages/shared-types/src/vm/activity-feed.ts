@@ -1,4 +1,4 @@
-import type { AvatarVM } from './profile';
+import type { AvatarVM, UserProfileVM } from './profile';
 import type {
   ConnectionVM,
   EntityRefVM,
@@ -60,22 +60,7 @@ export type AudienceRuleVM =
   | { kind: 'users_only'; userIds: UUID[] }
   | { kind: 'exclude_users'; userIds: UUID[] };
 
-export type SystemProfileVM = {
-  kind: 'system';
-  ids: IdsBaseVM;
-  displayName: string;
-  avatar: AvatarVM;
-  themeKey?: ThemeKey | null;
-};
-
-export interface ActivityActorProfileVM {
-  ids: IdsBaseVM;
-  displayName: string;
-  avatar: AvatarVM;
-  themeKey?: ThemeKey | null;
-}
-
-export type ActivityActorVM = ActivityActorProfileVM | SystemProfileVM;
+export type ActivityActorVM = UserProfileVM;
 
 export type InboxTabKeyVM = 'all' | 'classes' | 'payment' | 'system';
 
