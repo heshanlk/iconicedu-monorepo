@@ -1,20 +1,6 @@
 create extension if not exists "pgcrypto";
 create extension if not exists "uuid-ossp";
 
-create or replace function public.is_org_member(_org_id uuid)
-returns boolean
-language sql
-stable
-as $$
-  select exists (
-    select 1
-    from public.accounts a
-    where a.org_id = _org_id
-      and a.auth_user_id = auth.uid()
-      and a.deleted_at is null
-  );
-$$;
-
 create or replace function public.set_updated_at()
 returns trigger
 language plpgsql
@@ -120,6 +106,20 @@ create table public.accounts (
   deleted_at timestamptz,
   deleted_by uuid
 );
+
+create or replace function public.is_org_member(_org_id uuid)
+returns boolean
+language sql
+stable
+as $$
+  select exists (
+    select 1
+    from public.accounts a
+    where a.org_id = _org_id
+      and a.auth_user_id = auth.uid()
+      and a.deleted_at is null
+  );
+$$;
 
 create table public.user_roles (
   id uuid primary key default gen_random_uuid(),
@@ -1097,7 +1097,7 @@ create policy "org members can read accounts"
 
 create policy "org members can write accounts"
   on public.accounts
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1108,7 +1108,7 @@ create policy "org members can read roles"
 
 create policy "org members can write roles"
   on public.user_roles
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1119,7 +1119,7 @@ create policy "org members can read profiles"
 
 create policy "org members can write profiles"
   on public.profiles
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1130,7 +1130,7 @@ create policy "org members can read educator profiles"
 
 create policy "org members can write educator profiles"
   on public.educator_profiles
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1141,7 +1141,7 @@ create policy "org members can read child profiles"
 
 create policy "org members can write child profiles"
   on public.child_profiles
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1152,7 +1152,7 @@ create policy "org members can read guardian profiles"
 
 create policy "org members can write guardian profiles"
   on public.guardian_profiles
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1163,7 +1163,7 @@ create policy "org members can read staff profiles"
 
 create policy "org members can write staff profiles"
   on public.staff_profiles
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1174,7 +1174,7 @@ create policy "org members can read profile presence"
 
 create policy "org members can write profile presence"
   on public.profile_presence
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1185,7 +1185,7 @@ create policy "org members can read notification preferences"
 
 create policy "org members can write notification preferences"
   on public.notification_preferences
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1196,7 +1196,7 @@ create policy "org members can read educator subjects"
 
 create policy "org members can write educator subjects"
   on public.educator_profile_subjects
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1207,7 +1207,7 @@ create policy "org members can read educator grade levels"
 
 create policy "org members can write educator grade levels"
   on public.educator_profile_grade_levels
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1218,7 +1218,7 @@ create policy "org members can read child grade level"
 
 create policy "org members can write child grade level"
   on public.child_profile_grade_level
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1229,7 +1229,7 @@ create policy "org members can read educator curriculum tags"
 
 create policy "org members can write educator curriculum tags"
   on public.educator_profile_curriculum_tags
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1240,7 +1240,7 @@ create policy "org members can read educator badges"
 
 create policy "org members can write educator badges"
   on public.educator_profile_badges
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1251,7 +1251,7 @@ create policy "org members can read staff specialties"
 
 create policy "org members can write staff specialties"
   on public.staff_profile_specialties
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1262,7 +1262,7 @@ create policy "org members can read families"
 
 create policy "org members can write families"
   on public.families
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1273,7 +1273,7 @@ create policy "org members can read family links"
 
 create policy "org members can write family links"
   on public.family_links
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1284,7 +1284,7 @@ create policy "org members can read channels"
 
 create policy "org members can write channels"
   on public.channels
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1295,7 +1295,7 @@ create policy "org members can read channel capabilities"
 
 create policy "org members can write channel capabilities"
   on public.channel_capabilities
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1315,7 +1315,7 @@ create policy "channel members can read channel members"
 
 create policy "org members can write channel members"
   on public.channel_members
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1335,7 +1335,7 @@ create policy "channel members can read messages"
 
 create policy "channel members can write messages"
   on public.messages
-  for insert, update, delete
+  for all
   using (
     exists (
       select 1
@@ -1364,7 +1364,7 @@ create policy "org members can read message payloads"
 
 create policy "org members can write message payloads"
   on public.message_text
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1375,7 +1375,7 @@ create policy "org members can read message images"
 
 create policy "org members can write message images"
   on public.message_image
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1386,7 +1386,7 @@ create policy "org members can read message files"
 
 create policy "org members can write message files"
   on public.message_file
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1397,7 +1397,7 @@ create policy "org members can read message design files"
 
 create policy "org members can write message design files"
   on public.message_design_file_update
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1408,7 +1408,7 @@ create policy "org members can read message payment reminders"
 
 create policy "org members can write message payment reminders"
   on public.message_payment_reminder
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1419,7 +1419,7 @@ create policy "org members can read message event reminders"
 
 create policy "org members can write message event reminders"
   on public.message_event_reminder
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1430,7 +1430,7 @@ create policy "org members can read message feedback requests"
 
 create policy "org members can write message feedback requests"
   on public.message_feedback_request
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1441,7 +1441,7 @@ create policy "org members can read message lesson assignments"
 
 create policy "org members can write message lesson assignments"
   on public.message_lesson_assignment
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1452,7 +1452,7 @@ create policy "org members can read message progress updates"
 
 create policy "org members can write message progress updates"
   on public.message_progress_update
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1463,7 +1463,7 @@ create policy "org members can read message session bookings"
 
 create policy "org members can write message session bookings"
   on public.message_session_booking
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1474,7 +1474,7 @@ create policy "org members can read message session complete"
 
 create policy "org members can write message session complete"
   on public.message_session_complete
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1485,7 +1485,7 @@ create policy "org members can read message session summary"
 
 create policy "org members can write message session summary"
   on public.message_session_summary
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1496,7 +1496,7 @@ create policy "org members can read message homework submission"
 
 create policy "org members can write message homework submission"
   on public.message_homework_submission
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1507,7 +1507,7 @@ create policy "org members can read message link preview"
 
 create policy "org members can write message link preview"
   on public.message_link_preview
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1518,7 +1518,7 @@ create policy "org members can read message audio recording"
 
 create policy "org members can write message audio recording"
   on public.message_audio_recording
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1529,7 +1529,7 @@ create policy "org members can read misc tables"
 
 create policy "org members can write misc tables"
   on public.channel_read_state
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1540,7 +1540,7 @@ create policy "org members can read threads"
 
 create policy "org members can write threads"
   on public.threads
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1551,7 +1551,7 @@ create policy "org members can read thread participants"
 
 create policy "org members can write thread participants"
   on public.thread_participants
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1562,7 +1562,7 @@ create policy "org members can read thread read state"
 
 create policy "org members can write thread read state"
   on public.thread_read_state
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1573,7 +1573,7 @@ create policy "org members can read reactions"
 
 create policy "org members can write reactions"
   on public.message_reactions
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1584,7 +1584,7 @@ create policy "org members can read reaction counts"
 
 create policy "org members can write reaction counts"
   on public.message_reaction_counts
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1595,7 +1595,7 @@ create policy "org members can read channel media"
 
 create policy "org members can write channel media"
   on public.channel_media
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1606,7 +1606,7 @@ create policy "org members can read channel files"
 
 create policy "org members can write channel files"
   on public.channel_files
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1617,7 +1617,7 @@ create policy "org members can read learning spaces"
 
 create policy "org members can write learning spaces"
   on public.learning_spaces
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1628,7 +1628,7 @@ create policy "org members can read learning space channels"
 
 create policy "org members can write learning space channels"
   on public.learning_space_channels
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1639,7 +1639,7 @@ create policy "org members can read learning space participants"
 
 create policy "org members can write learning space participants"
   on public.learning_space_participants
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1650,7 +1650,7 @@ create policy "org members can read learning space links"
 
 create policy "org members can write learning space links"
   on public.learning_space_links
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1661,7 +1661,7 @@ create policy "org members can read schedules"
 
 create policy "org members can write schedules"
   on public.class_schedules
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1672,7 +1672,7 @@ create policy "org members can read schedule participants"
 
 create policy "org members can write schedule participants"
   on public.class_schedule_participants
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1683,7 +1683,7 @@ create policy "org members can read schedule recurrence"
 
 create policy "org members can write schedule recurrence"
   on public.class_schedule_recurrence
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1694,7 +1694,7 @@ create policy "org members can read schedule exceptions"
 
 create policy "org members can write schedule exceptions"
   on public.class_schedule_recurrence_exceptions
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1705,7 +1705,7 @@ create policy "org members can read schedule overrides"
 
 create policy "org members can write schedule overrides"
   on public.class_schedule_recurrence_overrides
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1716,7 +1716,7 @@ create policy "org members can read activity feed"
 
 create policy "org members can write activity feed"
   on public.activity_feed_items
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
@@ -1727,7 +1727,7 @@ create policy "org members can read activity feed groups"
 
 create policy "org members can write activity feed groups"
   on public.activity_feed_group_members
-  for insert, update, delete
+  for all
   using (public.is_org_member(org_id))
   with check (public.is_org_member(org_id));
 
