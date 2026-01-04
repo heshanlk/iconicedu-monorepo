@@ -222,6 +222,8 @@ async function buildSidebarUser(
     )
     .eq('account_id', account.id)
     .is('deleted_at', null)
+    .order('created_at', { ascending: false })
+    .limit(1)
     .maybeSingle<ProfileRow>();
 
   const externalAvatarUrl = resolveExternalAvatarUrl(user);
@@ -229,23 +231,26 @@ async function buildSidebarUser(
   if (!profileRow) {
     const derivedKind = deriveProfileKind(userRoles);
     const displayName = deriveDisplayName(user);
-    const { data: insertedProfile } = await supabase
+    const { data: insertedProfile, error: profileUpsertError } = await supabase
       .from('profiles')
-      .insert({
-        org_id: account.org_id,
-        account_id: account.id,
-        kind: derivedKind,
-        display_name: displayName,
-        first_name: null,
-        last_name: null,
-        avatar_source: externalAvatarUrl ? 'external' : 'seed',
-        avatar_url: externalAvatarUrl,
-        avatar_seed: user.id,
-        timezone: 'UTC',
-        locale: 'en-US',
-        status: 'active',
-        ui_theme_key: 'teal',
-      })
+      .upsert(
+        {
+          org_id: account.org_id,
+          account_id: account.id,
+          kind: derivedKind,
+          display_name: displayName,
+          first_name: null,
+          last_name: null,
+          avatar_source: externalAvatarUrl ? 'external' : 'seed',
+          avatar_url: externalAvatarUrl,
+          avatar_seed: user.id,
+          timezone: 'UTC',
+          locale: 'en-US',
+          status: 'active',
+          ui_theme_key: 'teal',
+        },
+        { onConflict: 'org_id,account_id' },
+      )
       .select(
         [
           'id',
@@ -278,11 +283,70 @@ async function buildSidebarUser(
       )
       .single<ProfileRow>();
 
-    profileRow = insertedProfile ?? null;
+    if (profileUpsertError?.code === '42P10') {
+      const { data: fallbackProfile, error: fallbackError } = await supabase
+        .from('profiles')
+        .insert({
+          org_id: account.org_id,
+          account_id: account.id,
+          kind: derivedKind,
+          display_name: displayName,
+          first_name: null,
+          last_name: null,
+          avatar_source: externalAvatarUrl ? 'external' : 'seed',
+          avatar_url: externalAvatarUrl,
+          avatar_seed: user.id,
+          timezone: 'UTC',
+          locale: 'en-US',
+          status: 'active',
+          ui_theme_key: 'teal',
+        })
+        .select(
+          [
+            'id',
+            'org_id',
+            'account_id',
+            'kind',
+            'display_name',
+            'first_name',
+            'last_name',
+            'bio',
+            'avatar_source',
+            'avatar_url',
+            'avatar_seed',
+            'avatar_updated_at',
+            'timezone',
+            'locale',
+            'languages_spoken',
+            'status',
+            'country_code',
+            'country_name',
+            'region',
+            'city',
+            'postal_code',
+            'notes_internal',
+            'lead_source',
+            'ui_theme_key',
+            'created_at',
+            'updated_at',
+          ].join(','),
+        )
+        .single<ProfileRow>();
+
+      if (fallbackError) {
+        throw fallbackError;
+      }
+
+      profileRow = fallbackProfile ?? null;
+    } else if (profileUpsertError) {
+      throw profileUpsertError;
+    } else {
+      profileRow = insertedProfile ?? null;
+    }
   }
 
   if (!profileRow) {
-    redirect('/login');
+    throw new Error('Profile record missing for authenticated user.');
   }
 
   if (

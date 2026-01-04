@@ -54,15 +54,27 @@ export function AccountTab({
   const [isWhatsappSaving, setIsWhatsappSaving] = React.useState(false);
   const showToast = showOnboardingToast && !isAccountToastDismissed;
 
+  const formatPhoneInput = React.useCallback((value: string) => {
+    return new AsYouType().input(value);
+  }, []);
+
   React.useEffect(() => {
     if (expandWhatsapp && !whatsappValue.trim() && phoneValue.trim()) {
       setWhatsappValue(phoneValue.trim());
     }
   }, [expandWhatsapp, phoneValue, whatsappValue]);
 
-  const formatPhoneInput = React.useCallback((value: string) => {
-    return new AsYouType().input(value);
-  }, []);
+  React.useEffect(() => {
+    if (!isPhoneFocused) {
+      setPhoneValue(formatPhoneInput(contacts?.phoneE164 ?? ''));
+    }
+  }, [contacts?.phoneE164, formatPhoneInput, isPhoneFocused]);
+
+  React.useEffect(() => {
+    if (!isWhatsappFocused) {
+      setWhatsappValue(formatPhoneInput(contacts?.whatsappE164 ?? ''));
+    }
+  }, [contacts?.whatsappE164, formatPhoneInput, isWhatsappFocused]);
 
   const handlePhoneContinue = React.useCallback(async () => {
     if (!onPhoneContinue) {
@@ -162,6 +174,22 @@ export function AccountTab({
                   {contacts?.email ?? 'Not provided'}
                 </div>
               </div>
+              {contacts?.emailVerified ? (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
+                      <BadgeCheck className="h-3 w-3" />
+                      <span className="sr-only">Verified</span>
+                    </Badge>
+                  </TooltipTrigger>
+                  <TooltipContent>{contacts.emailVerifiedAt}</TooltipContent>
+                </Tooltip>
+              ) : (
+                <Badge className="bg-muted text-muted-foreground">
+                  <BadgeCheck className="h-3 w-3 text-muted-foreground" />
+                  <span className="sr-only">Not verified</span>
+                </Badge>
+              )}
               <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
             </CollapsibleTrigger>
             <CollapsibleContent className="py-4 w-full">
@@ -220,7 +248,6 @@ export function AccountTab({
               </div>
             </CollapsibleContent>
           </Collapsible>
-          <Separator />
         </div>
         <div className="space-y-1 w-full">
           <Collapsible className="rounded-2xl w-full" open={expandPhone || undefined}>
@@ -234,6 +261,22 @@ export function AccountTab({
                   {contacts?.phoneE164 ?? 'Not provided'}
                 </div>
               </div>
+              {contacts?.phoneVerified ? (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
+                      <BadgeCheck className="h-3 w-3" />
+                      <span className="sr-only">Verified</span>
+                    </Badge>
+                  </TooltipTrigger>
+                  <TooltipContent>{contacts.phoneVerifiedAt}</TooltipContent>
+                </Tooltip>
+              ) : (
+                <Badge className="bg-muted text-muted-foreground">
+                  <BadgeCheck className="h-3 w-3 text-muted-foreground" />
+                  <span className="sr-only">Not verified</span>
+                </Badge>
+              )}
               <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
             </CollapsibleTrigger>
             <CollapsibleContent className="py-4 w-full">
@@ -353,6 +396,22 @@ export function AccountTab({
                   {contacts?.whatsappE164 ?? 'Not provided'}
                 </div>
               </div>
+              {contacts?.whatsappVerified ? (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
+                      <BadgeCheck className="h-3 w-3" />
+                      <span className="sr-only">Verified</span>
+                    </Badge>
+                  </TooltipTrigger>
+                  <TooltipContent>{contacts.whatsappVerifiedAt}</TooltipContent>
+                </Tooltip>
+              ) : (
+                <Badge className="bg-muted text-muted-foreground">
+                  <BadgeCheck className="h-3 w-3 text-muted-foreground" />
+                  <span className="sr-only">Not verified</span>
+                </Badge>
+              )}
               <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
             </CollapsibleTrigger>
             <CollapsibleContent className="py-4 w-full">
@@ -414,8 +473,8 @@ export function AccountTab({
                       We’ll send a verification code by text. Include your country code
                       (e.g. +1, +44, +61).
                     </div>
-                    {phoneError ? (
-                      <div className="text-xs text-destructive">{phoneError}</div>
+                    {whatsappError ? (
+                      <div className="text-xs text-destructive">{whatsappError}</div>
                     ) : null}
                   </div>
                 </div>
@@ -437,9 +496,6 @@ export function AccountTab({
                       aria-label="Receive notifications by WhatsApp"
                     />
                   </div>
-                ) : null}
-                {whatsappError ? (
-                  <div className="text-xs text-destructive">{whatsappError}</div>
                 ) : null}
                 <div className="sm:col-span-2 flex justify-end">
                   {expandWhatsapp && onWhatsappContinue ? (
