@@ -69,6 +69,7 @@ export function SidebarLeft({
   activePath,
   onLogout,
   forceProfileCompletion,
+  forceAccountCompletion,
   onProfileSave,
   onAvatarUpload,
   ...props
@@ -77,6 +78,7 @@ export function SidebarLeft({
   activePath?: string | null;
   onLogout?: () => Promise<void> | void;
   forceProfileCompletion?: boolean;
+  forceAccountCompletion?: boolean;
   onProfileSave?: (input: ProfileSaveInput) => Promise<void> | void;
   onAvatarUpload?: (input: ProfileAvatarInput) => Promise<void> | void;
 }) {
@@ -234,6 +236,7 @@ export function SidebarLeft({
           account={data.user.account}
           onLogout={onLogout}
           forceProfileCompletion={forceProfileCompletion}
+          forceAccountCompletion={forceAccountCompletion}
           onProfileSave={onProfileSave}
           onAvatarUpload={onAvatarUpload}
         />

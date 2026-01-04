@@ -77,6 +77,7 @@ type UserSettingsDialogProps = {
   profile: UserProfileVM;
   account?: UserAccountVM | null;
   forceProfileCompletion?: boolean;
+  forceAccountCompletion?: boolean;
   onLogout?: () => Promise<void> | void;
   onProfileSave?: (input: ProfileSaveInput) => Promise<void> | void;
   onAvatarUpload?: (input: ProfileAvatarInput) => Promise<void> | void;
@@ -90,25 +91,37 @@ export function UserSettingsDialog({
   profile,
   account,
   forceProfileCompletion = false,
+  forceAccountCompletion = false,
   onLogout,
   onProfileSave,
   onAvatarUpload,
 }: UserSettingsDialogProps) {
+  const [profileCompletionOverride, setProfileCompletionOverride] =
+    React.useState(false);
+
+  React.useEffect(() => {
+    if (!forceProfileCompletion) {
+      setProfileCompletionOverride(false);
+    }
+  }, [forceProfileCompletion]);
   const handleOpenChange = React.useCallback(
     (nextOpen: boolean) => {
-      if (forceProfileCompletion && !nextOpen) {
+      if ((forceProfileCompletion || forceAccountCompletion) && !nextOpen) {
         return;
       }
       onOpenChange(nextOpen);
     },
-    [forceProfileCompletion, onOpenChange],
+    [forceAccountCompletion, forceProfileCompletion, onOpenChange],
   );
 
   const content = (
     <UserSettingsTabs
       value={activeTab}
       onValueChange={(nextTab) => {
-        if (forceProfileCompletion && nextTab !== 'profile') {
+        if (forceProfileCompletion && !profileCompletionOverride && nextTab !== 'profile') {
+          return;
+        }
+        if (forceAccountCompletion && nextTab !== 'account') {
           return;
         }
         onTabChange(nextTab);
@@ -116,11 +129,22 @@ export function UserSettingsDialog({
       profile={profile}
       account={account}
       expandProfileDetails={forceProfileCompletion}
-      lockTabs={forceProfileCompletion}
+      lockTabs={(forceProfileCompletion && !profileCompletionOverride) || forceAccountCompletion}
+      lockedTab={
+        forceProfileCompletion && !profileCompletionOverride
+          ? 'profile'
+          : forceAccountCompletion
+            ? 'account'
+            : null
+      }
       showLogout={forceProfileCompletion}
       onLogout={onLogout}
       onProfileSave={onProfileSave}
       onAvatarUpload={onAvatarUpload}
+      onProfileContinue={() => {
+        setProfileCompletionOverride(true);
+        onTabChange('account');
+      }}
     />
   );
   const { isMobile } = useSidebar();
@@ -137,7 +161,7 @@ export function UserSettingsDialog({
       drawerHeaderClassName="items-start"
       containerClassName="h-full"
       bodyClassName={cn(isMobile ? 'px-4 pb-4' : 'px-6 pb-6')}
-      dialogShowCloseButton={!forceProfileCompletion}
+      dialogShowCloseButton={!(forceProfileCompletion || forceAccountCompletion)}
     >
       {content}
     </ResponsiveDialog>
@@ -151,10 +175,12 @@ type UserSettingsTabsProps = {
   account?: UserAccountVM | null;
   expandProfileDetails?: boolean;
   lockTabs?: boolean;
+  lockedTab?: UserSettingsTab | null;
   showLogout?: boolean;
   onLogout?: () => Promise<void> | void;
   onProfileSave?: (input: ProfileSaveInput) => Promise<void> | void;
   onAvatarUpload?: (input: ProfileAvatarInput) => Promise<void> | void;
+  onProfileContinue?: () => void;
 };
 
 function UserSettingsTabs({
@@ -164,18 +190,23 @@ function UserSettingsTabs({
   account,
   expandProfileDetails = false,
   lockTabs = false,
+  lockedTab = null,
   showLogout = false,
   onLogout,
   onProfileSave,
   onAvatarUpload,
+  onProfileContinue,
 }: UserSettingsTabsProps) {
   const { isMobile } = useSidebar();
-  const activeValue = lockTabs ? 'profile' : value;
+  const activeValue = lockTabs ? lockedTab ?? 'profile' : value;
   const profileBlock = profile.profile;
   const prefs = profile.prefs;
   const contacts = account?.contacts;
   const email = contacts?.email ?? '';
-  const preferredChannels = contacts?.preferredContactChannels ?? [];
+  const preferredChannels =
+    contacts?.preferredContactChannels && contacts.preferredContactChannels.length > 0
+      ? contacts.preferredContactChannels
+      : ['email'];
   const location = profile.location;
   const roles = account?.access?.userRoles ?? [];
   const [profileThemes, setProfileThemes] = React.useState<Record<string, ThemeKey>>({});
@@ -191,6 +222,7 @@ function UserSettingsTabs({
   const childProfile = profile.kind === 'child' ? profile : null;
   const educatorProfile = profile.kind === 'educator' ? profile : null;
   const staffProfile = profile.kind === 'staff' ? profile : null;
+  const requiresPhone = lockTabs && lockedTab === 'account';
 
   const togglePreferredChannel = (channel: string, enabled: boolean) => {
     setPreferredChannelSelections((prev) => {
@@ -285,7 +317,7 @@ function UserSettingsTabs({
         >
           {SETTINGS_TABS.map((tab) => {
             const Icon = tab.icon;
-            const isLocked = lockTabs && tab.value !== 'profile';
+            const isLocked = lockTabs && tab.value !== (lockedTab ?? 'profile');
             return (
               <TabsTrigger
                 key={tab.value}
@@ -318,18 +350,20 @@ function UserSettingsTabs({
 
         <ScrollArea className={cn('min-h-0 flex-1 w-full min-w-0', isMobile && 'flex-1')}>
           <TabsContent value="profile" className="mt-0 space-y-8 w-full px-1">
-            <ProfileTab
-              profile={profile}
-              profileBlock={profileBlock}
-              currentThemeKey={currentThemeKey}
-              childProfile={childProfile}
-              educatorProfile={educatorProfile}
-              staffProfile={staffProfile}
-              formatGradeLevel={formatGradeLevel}
-              expandProfileDetails={expandProfileDetails}
-              onProfileSave={onProfileSave}
-              onAvatarUpload={onAvatarUpload}
-            />
+          <ProfileTab
+            profile={profile}
+            profileBlock={profileBlock}
+            currentThemeKey={currentThemeKey}
+            childProfile={childProfile}
+            educatorProfile={educatorProfile}
+            staffProfile={staffProfile}
+            formatGradeLevel={formatGradeLevel}
+            expandProfileDetails={expandProfileDetails}
+            primaryActionLabel={lockTabs && lockedTab === 'profile' ? 'Continue' : 'Save'}
+            onPrimaryActionComplete={onProfileContinue}
+            onProfileSave={onProfileSave}
+            onAvatarUpload={onAvatarUpload}
+          />
           </TabsContent>
 
           <TabsContent value="account" className="mt-0 space-y-8 w-full px-1">
@@ -338,6 +372,7 @@ function UserSettingsTabs({
               email={email}
               preferredChannelSelections={preferredChannelSelections}
               togglePreferredChannel={togglePreferredChannel}
+              requirePhone={requiresPhone}
             />
           </TabsContent>
 

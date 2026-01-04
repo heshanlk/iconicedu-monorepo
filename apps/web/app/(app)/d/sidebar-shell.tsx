@@ -14,10 +14,12 @@ export function SidebarShell({
   children,
   data,
   forceProfileCompletion,
+  forceAccountCompletion,
 }: {
   children: ReactNode;
   data: SidebarLeftDataVM;
   forceProfileCompletion?: boolean;
+  forceAccountCompletion?: boolean;
 }) {
   const pathname = usePathname();
   const supabase = React.useMemo(() => createSupabaseBrowserClient(), []);
@@ -160,6 +162,7 @@ export function SidebarShell({
         activePath={pathname}
         onLogout={handleLogout}
         forceProfileCompletion={forceProfileCompletion}
+        forceAccountCompletion={forceAccountCompletion}
         onProfileSave={handleProfileSave}
         onAvatarUpload={handleAvatarUpload}
       />

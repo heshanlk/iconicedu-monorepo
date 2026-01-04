@@ -21,6 +21,7 @@ type AccountTabProps = {
   email: string;
   preferredChannelSelections: string[];
   togglePreferredChannel: (channel: string, enabled: boolean) => void;
+  requirePhone?: boolean;
 };
 
 export function AccountTab({
@@ -28,6 +29,7 @@ export function AccountTab({
   email,
   preferredChannelSelections,
   togglePreferredChannel,
+  requirePhone = false,
 }: AccountTabProps) {
   return (
     <div className="space-y-8 w-full">
@@ -136,12 +138,15 @@ export function AccountTab({
             <CollapsibleContent className="py-4 w-full">
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2 sm:col-span-2">
-                  <Label htmlFor="settings-account-phone">Phone</Label>
+                    <Label htmlFor="settings-account-phone">
+                      Phone {requirePhone ? <span className="text-destructive">*</span> : null}
+                    </Label>
                   <InputGroup>
                     <InputGroupInput
                       id="settings-account-phone"
                       defaultValue={contacts?.phoneE164 ?? ''}
                       aria-label="Phone"
+                      required={requirePhone}
                     />
                     <InputGroupAddon align="inline-end">
                       {contacts?.phoneVerified ? (
@@ -180,6 +185,10 @@ export function AccountTab({
                       }
                       aria-label="Receive notifications by phone"
                     />
+                  </div>
+                ) : requirePhone ? (
+                  <div className="sm:col-span-2 rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-xs text-destructive">
+                    Phone verification is required to continue.
                   </div>
                 ) : null}
                 <div className="sm:col-span-2 flex justify-end">

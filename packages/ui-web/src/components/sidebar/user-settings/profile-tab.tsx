@@ -48,6 +48,8 @@ type ProfileTabProps = {
   educatorBadges?: string[];
   staffSpecialties?: string[];
   expandProfileDetails?: boolean;
+  primaryActionLabel?: string;
+  onPrimaryActionComplete?: () => void;
   onProfileSave?: (input: ProfileSaveInput) => Promise<void> | void;
   onAvatarUpload?: (input: ProfileAvatarInput) => Promise<void> | void;
 };
@@ -82,6 +84,8 @@ export function ProfileTab({
   educatorBadges = [],
   staffSpecialties = [],
   expandProfileDetails = false,
+  primaryActionLabel = 'Save',
+  onPrimaryActionComplete,
   onProfileSave,
   onAvatarUpload,
 }: ProfileTabProps) {
@@ -95,10 +99,8 @@ export function ProfileTab({
   const [isFirstFocused, setIsFirstFocused] = React.useState(false);
   const [isLastFocused, setIsLastFocused] = React.useState(false);
   const showProfileTaskToast =
-    expandProfileDetails &&
-    (!firstNameValue.trim() || !lastNameValue.trim());
-  const [isProfileToastDismissed, setIsProfileToastDismissed] =
-    React.useState(false);
+    expandProfileDetails && (!firstNameValue.trim() || !lastNameValue.trim());
+  const [isProfileToastDismissed, setIsProfileToastDismissed] = React.useState(false);
   const [displayNameValue, setDisplayNameValue] = React.useState(
     profileBlock.displayName ?? '',
   );
@@ -107,9 +109,7 @@ export function ProfileTab({
   const [isSaving, setIsSaving] = React.useState(false);
   const [saveSuccess, setSaveSuccess] = React.useState(false);
   const [avatarPreview, setAvatarPreview] = React.useState<string | null>(null);
-  const [avatarUploadError, setAvatarUploadError] = React.useState<string | null>(
-    null,
-  );
+  const [avatarUploadError, setAvatarUploadError] = React.useState<string | null>(null);
   const [isUploadingAvatar, setIsUploadingAvatar] = React.useState(false);
   const avatarInputRef = React.useRef<HTMLInputElement | null>(null);
 
@@ -132,52 +132,55 @@ export function ProfileTab({
     profileBlock.bio,
   ]);
 
-  const handleProfileSave = React.useCallback(async () => {
-    setSaveError(null);
-    setSaveSuccess(false);
+  const handleProfileSave = React.useCallback(
+    async (afterSave?: () => void) => {
+      setSaveError(null);
+      setSaveSuccess(false);
 
-    const trimmedFirstName = firstNameValue.trim();
-    const trimmedLastName = lastNameValue.trim();
-    const trimmedDisplayName = displayNameValue.trim();
-    const trimmedBio = bioValue.trim();
+      const trimmedFirstName = firstNameValue.trim();
+      const trimmedLastName = lastNameValue.trim();
+      const trimmedDisplayName = displayNameValue.trim();
+      const trimmedBio = bioValue.trim();
 
-    if (!trimmedFirstName || !trimmedLastName) {
-      setSaveError('First and last name are required.');
-      return;
-    }
+      if (!trimmedFirstName || !trimmedLastName) {
+        setSaveError('First and last name are required.');
+        return;
+      }
 
-    if (!onProfileSave) {
-      setSaveSuccess(true);
-      return;
-    }
+      if (!onProfileSave) {
+        setSaveSuccess(true);
+        afterSave?.();
+        return;
+      }
 
-    setIsSaving(true);
-    try {
-      await onProfileSave({
-        profileId: profile.ids.id,
-        orgId: profile.ids.orgId,
-        displayName: trimmedDisplayName || `${trimmedFirstName} ${trimmedLastName}`,
-        firstName: trimmedFirstName,
-        lastName: trimmedLastName,
-        bio: trimmedBio || null,
-      });
-      setSaveSuccess(true);
-    } catch (error) {
-      setSaveError(
-        error instanceof Error ? error.message : 'Unable to save profile.',
-      );
-    } finally {
-      setIsSaving(false);
-    }
-  }, [
-    bioValue,
-    displayNameValue,
-    firstNameValue,
-    lastNameValue,
-    onProfileSave,
-    profile.ids.id,
-    profile.ids.orgId,
-  ]);
+      setIsSaving(true);
+      try {
+        await onProfileSave({
+          profileId: profile.ids.id,
+          orgId: profile.ids.orgId,
+          displayName: trimmedDisplayName || `${trimmedFirstName} ${trimmedLastName}`,
+          firstName: trimmedFirstName,
+          lastName: trimmedLastName,
+          bio: trimmedBio || null,
+        });
+        setSaveSuccess(true);
+        afterSave?.();
+      } catch (error) {
+        setSaveError(error instanceof Error ? error.message : 'Unable to save profile.');
+      } finally {
+        setIsSaving(false);
+      }
+    },
+    [
+      bioValue,
+      displayNameValue,
+      firstNameValue,
+      lastNameValue,
+      onProfileSave,
+      profile.ids.id,
+      profile.ids.orgId,
+    ],
+  );
 
   React.useEffect(() => {
     return () => {
@@ -239,10 +242,20 @@ export function ProfileTab({
           <div className="flex items-start justify-between gap-3">
             <div className="space-y-1">
               <div className="font-medium text-foreground">
-                Complete your profile to continue
+                Please fill out{' '}
+                <span className="relative inline-flex items-center rounded-2xl px-2 py-1">
+                  <BorderBeam
+                    size={48}
+                    initialOffset={12}
+                    className="from-transparent via-pink-500 to-transparent"
+                    transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                  />
+                  <span className="relative z-10">required</span>
+                </span>{' '}
+                details to continue.
               </div>
               <div className="text-muted-foreground">
-                Please fill in your first and last name.
+                Fields marked as <span className="text-destructive">*</span> are required.
               </div>
             </div>
             <button
@@ -421,8 +434,12 @@ export function ProfileTab({
                       <span className="text-primary">Profile saved.</span>
                     ) : null}
                   </div>
-                  <Button size="sm" onClick={handleProfileSave} disabled={isSaving}>
-                    {isSaving ? 'Saving...' : 'Save'}
+                  <Button
+                    size="sm"
+                    onClick={() => handleProfileSave(onPrimaryActionComplete)}
+                    disabled={isSaving}
+                  >
+                    {isSaving ? 'Saving...' : primaryActionLabel}
                   </Button>
                 </div>
               </div>

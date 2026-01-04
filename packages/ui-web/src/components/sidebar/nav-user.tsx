@@ -38,6 +38,7 @@ export function NavUser({
   account,
   onLogout,
   forceProfileCompletion,
+  forceAccountCompletion,
   onProfileSave,
   onAvatarUpload,
 }: {
@@ -45,6 +46,7 @@ export function NavUser({
   account?: UserAccountVM | null;
   onLogout?: () => Promise<void> | void;
   forceProfileCompletion?: boolean;
+  forceAccountCompletion?: boolean;
   onProfileSave?: (input: ProfileSaveInput) => Promise<void> | void;
   onAvatarUpload?: (input: ProfileAvatarInput) => Promise<void> | void;
 }) {
@@ -64,8 +66,13 @@ export function NavUser({
     if (forceProfileCompletion) {
       setSettingsTab('profile');
       setSettingsOpen(true);
+      return;
     }
-  }, [forceProfileCompletion]);
+    if (forceAccountCompletion) {
+      setSettingsTab('account');
+      setSettingsOpen(true);
+    }
+  }, [forceProfileCompletion, forceAccountCompletion]);
 
   const handleLogout = React.useCallback(async () => {
     if (!onLogout) {
@@ -173,6 +180,7 @@ export function NavUser({
           profile={profile}
           account={account}
           forceProfileCompletion={forceProfileCompletion}
+          forceAccountCompletion={forceAccountCompletion}
           onLogout={onLogout}
           onProfileSave={onProfileSave}
           onAvatarUpload={onAvatarUpload}

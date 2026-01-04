@@ -57,6 +57,7 @@ export default async function Layout({ children }: { children: ReactNode }) {
         org_id: ORG.id,
         auth_user_id: data.user.id,
         email: data.user.email ?? null,
+        preferred_contact_channels: ['email'],
         status: 'active',
       })
       .select('id, org_id')
@@ -71,9 +72,10 @@ export default async function Layout({ children }: { children: ReactNode }) {
 
   const { accountVM, profileVM } = await buildSidebarUser(supabase, data.user, account);
 
-  const needsProfileCompletion =
+  const needsNameCompletion =
     !profileVM.profile.firstName?.trim() || !profileVM.profile.lastName?.trim();
-
+  const needsPhoneCompletion =
+    !accountVM.contacts.phoneE164?.trim() || !accountVM.contacts.phoneVerified;
   const sidebarData: SidebarLeftDataVM = {
     ...SIDEBAR_LEFT_DATA,
     user: {
@@ -85,7 +87,11 @@ export default async function Layout({ children }: { children: ReactNode }) {
   return (
     <>
       <SidebarProvider>
-        <SidebarShell data={sidebarData} forceProfileCompletion={needsProfileCompletion}>
+        <SidebarShell
+          data={sidebarData}
+          forceProfileCompletion={needsNameCompletion}
+          forceAccountCompletion={!needsNameCompletion && needsPhoneCompletion}
+        >
           {children}
         </SidebarShell>
       </SidebarProvider>
@@ -95,7 +101,12 @@ export default async function Layout({ children }: { children: ReactNode }) {
 
 async function buildSidebarUser(
   supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>,
-  user: { id: string; email?: string | null; user_metadata?: Record<string, unknown> },
+  user: {
+    id: string;
+    email?: string | null;
+    user_metadata?: Record<string, unknown>;
+    app_metadata?: Record<string, unknown>;
+  },
   account: { id: string; org_id: string },
 ): Promise<{ accountVM: UserAccountVM; profileVM: UserProfileVM }> {
   const { data: accountRow } = await supabase
@@ -161,7 +172,7 @@ async function buildSidebarUser(
       preferredContactChannels:
         (accountRow?.preferred_contact_channels as Array<
           'email' | 'sms' | 'whatsapp'
-        > | null) ?? null,
+        > | null) ?? ['email'],
     },
     access: userRoles.length
       ? {
@@ -213,6 +224,8 @@ async function buildSidebarUser(
     .is('deleted_at', null)
     .maybeSingle<ProfileRow>();
 
+  const externalAvatarUrl = resolveExternalAvatarUrl(user);
+
   if (!profileRow) {
     const derivedKind = deriveProfileKind(userRoles);
     const displayName = deriveDisplayName(user);
@@ -225,7 +238,8 @@ async function buildSidebarUser(
         display_name: displayName,
         first_name: null,
         last_name: null,
-        avatar_source: 'seed',
+        avatar_source: externalAvatarUrl ? 'external' : 'seed',
+        avatar_url: externalAvatarUrl,
         avatar_seed: user.id,
         timezone: 'UTC',
         locale: 'en-US',
@@ -269,6 +283,56 @@ async function buildSidebarUser(
 
   if (!profileRow) {
     redirect('/login');
+  }
+
+  if (
+    externalAvatarUrl &&
+    !profileRow.avatar_url &&
+    resolveAvatarSource(profileRow.avatar_source) === 'seed'
+  ) {
+    const { data: updatedProfile } = await supabase
+      .from('profiles')
+      .update({
+        avatar_source: 'external',
+        avatar_url: externalAvatarUrl,
+      })
+      .eq('id', profileRow.id)
+      .eq('org_id', profileRow.org_id)
+      .select(
+        [
+          'id',
+          'org_id',
+          'account_id',
+          'kind',
+          'display_name',
+          'first_name',
+          'last_name',
+          'bio',
+          'avatar_source',
+          'avatar_url',
+          'avatar_seed',
+          'avatar_updated_at',
+          'timezone',
+          'locale',
+          'languages_spoken',
+          'status',
+          'country_code',
+          'country_name',
+          'region',
+          'city',
+          'postal_code',
+          'notes_internal',
+          'lead_source',
+          'ui_theme_key',
+          'created_at',
+          'updated_at',
+        ].join(','),
+      )
+      .maybeSingle<ProfileRow>();
+
+    if (updatedProfile) {
+      profileRow = updatedProfile;
+    }
   }
 
   const notificationDefaults = await loadNotificationDefaults(
@@ -342,6 +406,26 @@ function deriveDisplayName(user: {
     return user.email.split('@')[0];
   }
   return 'New user';
+}
+
+function resolveExternalAvatarUrl(user: {
+  user_metadata?: Record<string, unknown>;
+  app_metadata?: Record<string, unknown>;
+}): string | null {
+  const provider = user.app_metadata?.provider;
+  if (provider !== 'google') {
+    return null;
+  }
+
+  const avatarUrl =
+    (typeof user.user_metadata?.avatar_url === 'string'
+      ? user.user_metadata.avatar_url
+      : null) ??
+    (typeof user.user_metadata?.picture === 'string'
+      ? user.user_metadata.picture
+      : null);
+
+  return avatarUrl && avatarUrl.trim() ? avatarUrl.trim() : null;
 }
 
 function deriveProfileKind(userRoles: UserRoleVM[]): UserProfileVM['kind'] {
