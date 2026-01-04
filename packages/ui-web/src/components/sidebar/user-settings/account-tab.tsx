@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { BadgeCheck, ChevronRight, Mail, MessageCircle, Phone } from 'lucide-react';
+import { BadgeCheck, ChevronRight, Mail, MessageCircle, Phone, X } from 'lucide-react';
 
 import type { UserAccountVM } from '@iconicedu/shared-types';
 import { Badge } from '../../../ui/badge';
+import { BorderBeam } from '../../../ui/border-beam';
 import { Button } from '../../../ui/button';
 import {
   Collapsible,
@@ -31,8 +32,45 @@ export function AccountTab({
   togglePreferredChannel,
   requirePhone = false,
 }: AccountTabProps) {
+  const [isAccountToastDismissed, setIsAccountToastDismissed] = React.useState(false);
+  const [phoneValue, setPhoneValue] = React.useState(contacts?.phoneE164 ?? '');
+  const [isPhoneFocused, setIsPhoneFocused] = React.useState(false);
+
   return (
     <div className="space-y-8 w-full">
+      {requirePhone && !isAccountToastDismissed ? (
+        <div className="rounded-2xl border border-primary/20 bg-primary/5 px-4 py-3 text-sm shadow-sm">
+          <div className="flex items-start justify-between gap-3">
+            <div className="space-y-1">
+              <div className="font-medium text-foreground">
+                Please verify your phone number to continue.
+              </div>
+              <div className="text-muted-foreground">
+                Fields marked as{' '}
+                <span className="relative inline-flex items-center">
+                  <BorderBeam
+                    size={48}
+                    initialOffset={12}
+                    borderWidth={2}
+                    className="from-transparent via-pink-500 to-transparent"
+                    transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                  />
+                  <span className="relative z-10 text-destructive">*</span>
+                </span>{' '}
+                are required.
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsAccountToastDismissed(true)}
+              className="inline-flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground"
+              aria-label="Dismiss"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      ) : null}
       <div className="space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="space-y-1">
@@ -141,32 +179,47 @@ export function AccountTab({
                     <Label htmlFor="settings-account-phone">
                       Phone {requirePhone ? <span className="text-destructive">*</span> : null}
                     </Label>
-                  <InputGroup>
-                    <InputGroupInput
-                      id="settings-account-phone"
-                      defaultValue={contacts?.phoneE164 ?? ''}
-                      aria-label="Phone"
-                      required={requirePhone}
-                    />
-                    <InputGroupAddon align="inline-end">
-                      {contacts?.phoneVerified ? (
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
-                              <BadgeCheck className="h-3 w-3" />
-                              <span className="sr-only">Verified</span>
+                    <div className="relative rounded-full">
+                      {requirePhone && !phoneValue.trim() && !isPhoneFocused ? (
+                        <BorderBeam
+                          size={60}
+                          initialOffset={20}
+                          borderWidth={2}
+                          className="from-transparent via-pink-500 to-transparent"
+                          transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                        />
+                      ) : null}
+                      <InputGroup>
+                        <InputGroupInput
+                          id="settings-account-phone"
+                          value={phoneValue}
+                          aria-label="Phone"
+                          required={requirePhone}
+                          placeholder="+1 415 555 0100"
+                          onFocus={() => setIsPhoneFocused(true)}
+                          onBlur={() => setIsPhoneFocused(false)}
+                          onChange={(event) => setPhoneValue(event.target.value)}
+                        />
+                        <InputGroupAddon align="inline-end">
+                          {contacts?.phoneVerified ? (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
+                                  <BadgeCheck className="h-3 w-3" />
+                                  <span className="sr-only">Verified</span>
+                                </Badge>
+                              </TooltipTrigger>
+                              <TooltipContent>{contacts.phoneVerifiedAt}</TooltipContent>
+                            </Tooltip>
+                          ) : (
+                            <Badge className="bg-muted text-muted-foreground">
+                              <BadgeCheck className="h-3 w-3 text-muted-foreground" />
+                              <span className="sr-only">Not verified</span>
                             </Badge>
-                          </TooltipTrigger>
-                          <TooltipContent>{contacts.phoneVerifiedAt}</TooltipContent>
-                        </Tooltip>
-                      ) : (
-                        <Badge className="bg-muted text-muted-foreground">
-                          <BadgeCheck className="h-3 w-3 text-muted-foreground" />
-                          <span className="sr-only">Not verified</span>
-                        </Badge>
-                      )}
-                    </InputGroupAddon>
-                  </InputGroup>
+                          )}
+                        </InputGroupAddon>
+                      </InputGroup>
+                    </div>
                 </div>
                 {contacts?.phoneVerified ? (
                   <div className="sm:col-span-2 flex items-center justify-between rounded-xl border border-border/60 px-4 py-3">
