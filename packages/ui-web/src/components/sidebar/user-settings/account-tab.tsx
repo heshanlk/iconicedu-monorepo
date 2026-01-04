@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { AsYouType, parsePhoneNumberFromString } from 'libphonenumber-js';
 import { BadgeCheck, ChevronRight, Mail, MessageCircle, Phone, X } from 'lucide-react';
 
 import type { UserAccountVM } from '@iconicedu/shared-types';
@@ -42,15 +43,13 @@ export function AccountTab({
   onPhoneContinue,
   onWhatsappContinue,
 }: AccountTabProps) {
-  const [isAccountToastDismissed, setIsAccountToastDismissed] =
-    React.useState(false);
+  const [isAccountToastDismissed, setIsAccountToastDismissed] = React.useState(false);
   const [phoneValue, setPhoneValue] = React.useState(contacts?.phoneE164 ?? '');
   const [isPhoneFocused, setIsPhoneFocused] = React.useState(false);
   const [phoneError, setPhoneError] = React.useState<string | null>(null);
-  const [whatsappValue, setWhatsappValue] = React.useState(
-    contacts?.whatsappE164 ?? '',
-  );
+  const [whatsappValue, setWhatsappValue] = React.useState(contacts?.whatsappE164 ?? '');
   const [isWhatsappFocused, setIsWhatsappFocused] = React.useState(false);
+  const [whatsappError, setWhatsappError] = React.useState<string | null>(null);
   const [isPhoneSaving, setIsPhoneSaving] = React.useState(false);
   const [isWhatsappSaving, setIsWhatsappSaving] = React.useState(false);
   const showToast = showOnboardingToast && !isAccountToastDismissed;
@@ -61,68 +60,47 @@ export function AccountTab({
     }
   }, [expandWhatsapp, phoneValue, whatsappValue]);
 
-  const normalizePhone = React.useCallback((value: string) => {
-    const trimmed = value.trim();
-    if (!trimmed) return '';
-    const digits = trimmed.replace(/[^\d+]/g, '');
-    const normalized = digits.startsWith('+')
-      ? `+${digits.replace(/[^\d]/g, '')}`
-      : `+${digits.replace(/[^\d]/g, '')}`;
-    return normalized === '+' ? '' : normalized;
-  }, []);
-
-  const formatInternationalPhone = React.useCallback((value: string) => {
-    const normalized = normalizePhone(value);
-    if (!normalized) return '';
-    const digits = normalized.replace(/\D/g, '');
-    const countryLength = Math.min(3, digits.length);
-    const country = digits.slice(0, countryLength);
-    const rest = digits.slice(countryLength);
-    const groups: string[] = [];
-    for (let index = 0; index < rest.length; index += 3) {
-      groups.push(rest.slice(index, index + 3));
-    }
-    return `+${[country, ...groups].filter(Boolean).join(' ')}`.trim();
-  }, [normalizePhone]);
-
-  const isValidInternationalPhone = React.useCallback((value: string) => {
-    if (!value.startsWith('+')) return false;
-    const digits = value.replace(/[^\d]/g, '');
-    return digits.length >= 8 && digits.length <= 15;
+  const formatPhoneInput = React.useCallback((value: string) => {
+    return new AsYouType().input(value);
   }, []);
 
   const handlePhoneContinue = React.useCallback(async () => {
     if (!onPhoneContinue) {
       return;
     }
-    const normalized = normalizePhone(phoneValue);
-    if (!normalized) {
+    const parsed = parsePhoneNumberFromString(phoneValue);
+    if (!phoneValue.trim()) {
       setPhoneError('Please enter your phone number.');
       return;
     }
-    if (!isValidInternationalPhone(normalized)) {
+    if (!parsed?.isValid()) {
       setPhoneError('Enter a valid international number (e.g. +1 415 555 0100).');
       return;
     }
     setIsPhoneSaving(true);
     try {
-      await onPhoneContinue(normalized);
+      await onPhoneContinue(parsed.number);
     } finally {
       setIsPhoneSaving(false);
     }
-  }, [isValidInternationalPhone, normalizePhone, onPhoneContinue, phoneValue]);
+  }, [onPhoneContinue, phoneValue]);
 
   const handleWhatsappContinue = React.useCallback(async () => {
     if (!onWhatsappContinue) {
       return;
     }
-    const trimmed = whatsappValue.trim();
-    if (!trimmed) {
+    const parsed = parsePhoneNumberFromString(whatsappValue);
+    if (!whatsappValue.trim()) {
+      setWhatsappError('Please enter your WhatsApp number.');
+      return;
+    }
+    if (!parsed?.isValid()) {
+      setWhatsappError('Enter a valid international number (e.g. +1 415 555 0100).');
       return;
     }
     setIsWhatsappSaving(true);
     try {
-      await onWhatsappContinue(trimmed);
+      await onWhatsappContinue(parsed.number);
     } finally {
       setIsWhatsappSaving(false);
     }
@@ -189,12 +167,15 @@ export function AccountTab({
             <CollapsibleContent className="py-4 w-full">
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2 sm:col-span-2">
-                  <Label htmlFor="settings-account-email">Email</Label>
+                  <Label htmlFor="settings-account-email">
+                    Email <span className="text-destructive">*</span>
+                  </Label>
                   <InputGroup>
                     <InputGroupInput
                       id="settings-account-email"
                       defaultValue={email}
                       aria-label="Email"
+                      required
                     />
                     <InputGroupAddon align="inline-end">
                       {contacts?.emailVerified ? (
@@ -258,23 +239,24 @@ export function AccountTab({
             <CollapsibleContent className="py-4 w-full">
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2 sm:col-span-2">
-                    <Label htmlFor="settings-account-phone">
-                      Phone {expandPhone || requirePhone ? (
-                        <span className="text-destructive">*</span>
-                      ) : null}
-                    </Label>
-                    <div className="relative rounded-full">
-                      {(expandPhone || requirePhone) &&
-                      !phoneValue.trim() &&
-                      !isPhoneFocused ? (
-                        <BorderBeam
-                          size={60}
-                          initialOffset={20}
-                          borderWidth={2}
-                          className="from-transparent via-pink-500 to-transparent"
-                          transition={{ type: 'spring', stiffness: 60, damping: 20 }}
-                        />
-                      ) : null}
+                  <Label htmlFor="settings-account-phone">
+                    Phone{' '}
+                    {expandPhone || requirePhone ? (
+                      <span className="text-destructive">*</span>
+                    ) : null}
+                  </Label>
+                  <div className="relative rounded-full">
+                    {(expandPhone || requirePhone) &&
+                    !phoneValue.trim() &&
+                    !isPhoneFocused ? (
+                      <BorderBeam
+                        size={60}
+                        initialOffset={20}
+                        borderWidth={2}
+                        className="from-transparent via-pink-500 to-transparent"
+                        transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                      />
+                    ) : null}
                     <InputGroup>
                       <InputGroupInput
                         id="settings-account-phone"
@@ -285,39 +267,42 @@ export function AccountTab({
                         onFocus={() => setIsPhoneFocused(true)}
                         onBlur={() => {
                           setIsPhoneFocused(false);
-                          const formatted = formatInternationalPhone(phoneValue);
+                          const formatted = formatPhoneInput(phoneValue);
                           if (formatted) {
                             setPhoneValue(formatted);
-                            setPhoneError(null);
                           }
                         }}
                         onChange={(event) => {
-                          setPhoneValue(formatInternationalPhone(event.target.value));
+                          setPhoneValue(formatPhoneInput(event.target.value));
                           if (phoneError) {
                             setPhoneError(null);
                           }
                         }}
                       />
-                        <InputGroupAddon align="inline-end">
-                          {contacts?.phoneVerified ? (
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
-                                  <BadgeCheck className="h-3 w-3" />
-                                  <span className="sr-only">Verified</span>
-                                </Badge>
-                              </TooltipTrigger>
-                              <TooltipContent>{contacts.phoneVerifiedAt}</TooltipContent>
-                            </Tooltip>
-                          ) : (
-                            <Badge className="bg-muted text-muted-foreground">
-                              <BadgeCheck className="h-3 w-3 text-muted-foreground" />
-                              <span className="sr-only">Not verified</span>
-                            </Badge>
-                          )}
-                        </InputGroupAddon>
-                      </InputGroup>
-                    </div>
+                      <InputGroupAddon align="inline-end">
+                        {contacts?.phoneVerified ? (
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
+                                <BadgeCheck className="h-3 w-3" />
+                                <span className="sr-only">Verified</span>
+                              </Badge>
+                            </TooltipTrigger>
+                            <TooltipContent>{contacts.phoneVerifiedAt}</TooltipContent>
+                          </Tooltip>
+                        ) : (
+                          <Badge className="bg-muted text-muted-foreground">
+                            <BadgeCheck className="h-3 w-3 text-muted-foreground" />
+                            <span className="sr-only">Not verified</span>
+                          </Badge>
+                        )}
+                      </InputGroupAddon>
+                    </InputGroup>
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    We’ll send a verification code by text. Include your country code
+                    (e.g. +1, +44, +61).
+                  </div>
                 </div>
                 {contacts?.phoneVerified ? (
                   <div className="sm:col-span-2 flex items-center justify-between rounded-xl border border-border/60 px-4 py-3">
@@ -336,10 +321,6 @@ export function AccountTab({
                       }
                       aria-label="Receive notifications by phone"
                     />
-                  </div>
-                ) : expandPhone || requirePhone ? (
-                  <div className="sm:col-span-2 rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-xs text-destructive">
-                    Phone verification is required to continue.
                   </div>
                 ) : null}
                 <div className="sm:col-span-2 flex justify-end">
@@ -398,33 +379,36 @@ export function AccountTab({
                         onFocus={() => setIsWhatsappFocused(true)}
                         onBlur={() => {
                           setIsWhatsappFocused(false);
-                          const formatted = formatInternationalPhone(whatsappValue);
+                          const formatted = formatPhoneInput(whatsappValue);
                           if (formatted) {
                             setWhatsappValue(formatted);
                           }
                         }}
-                        onChange={(event) =>
-                          setWhatsappValue(formatInternationalPhone(event.target.value))
-                        }
+                        onChange={(event) => {
+                          setWhatsappValue(formatPhoneInput(event.target.value));
+                          if (whatsappError) {
+                            setWhatsappError(null);
+                          }
+                        }}
                       />
-                    <InputGroupAddon align="inline-end">
-                      {contacts?.whatsappVerified ? (
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
-                              <BadgeCheck className="h-3 w-3" />
-                              <span className="sr-only">Verified</span>
-                            </Badge>
-                          </TooltipTrigger>
-                          <TooltipContent>{contacts.whatsappVerifiedAt}</TooltipContent>
-                        </Tooltip>
-                      ) : (
-                        <Badge className="bg-muted text-muted-foreground">
-                          <BadgeCheck className="h-3 w-3 text-muted-foreground" />
-                          <span className="sr-only">Not verified</span>
-                        </Badge>
-                      )}
-                    </InputGroupAddon>
+                      <InputGroupAddon align="inline-end">
+                        {contacts?.whatsappVerified ? (
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
+                                <BadgeCheck className="h-3 w-3" />
+                                <span className="sr-only">Verified</span>
+                              </Badge>
+                            </TooltipTrigger>
+                            <TooltipContent>{contacts.whatsappVerifiedAt}</TooltipContent>
+                          </Tooltip>
+                        ) : (
+                          <Badge className="bg-muted text-muted-foreground">
+                            <BadgeCheck className="h-3 w-3 text-muted-foreground" />
+                            <span className="sr-only">Not verified</span>
+                          </Badge>
+                        )}
+                      </InputGroupAddon>
                     </InputGroup>
                     <div className="text-xs text-muted-foreground">
                       We’ll send a verification code by text. Include your country code
@@ -453,6 +437,9 @@ export function AccountTab({
                       aria-label="Receive notifications by WhatsApp"
                     />
                   </div>
+                ) : null}
+                {whatsappError ? (
+                  <div className="text-xs text-destructive">{whatsappError}</div>
                 ) : null}
                 <div className="sm:col-span-2 flex justify-end">
                   {expandWhatsapp && onWhatsappContinue ? (
