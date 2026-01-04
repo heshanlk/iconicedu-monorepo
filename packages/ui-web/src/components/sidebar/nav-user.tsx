@@ -30,10 +30,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '../../ui/sidebar';
-import {
-  UserSettingsDialog,
-  type UserSettingsTab,
-} from './user-settings-dialog';
+import { UserSettingsDialog, type UserSettingsTab } from './user-settings-dialog';
 import type { ProfileAvatarInput, ProfileSaveInput } from './user-settings/profile-tab';
 
 export function NavUser({
@@ -93,8 +90,8 @@ export function NavUser({
                 avatar={profile.profile.avatar}
                 presence={profile.presence}
                 themeKey={profile.ui?.themeKey}
-                sizeClassName="h-8 w-8 rounded-xl"
-                fallbackClassName="rounded-xl"
+                sizeClassName="h-8 w-8 rounded-full"
+                fallbackClassName="rounded-full"
                 initialsLength={2}
               />
               <div className="grid flex-1 text-left text-sm leading-tight">
@@ -121,8 +118,8 @@ export function NavUser({
                   avatar={profile.profile.avatar}
                   presence={profile.presence}
                   themeKey={profile.ui?.themeKey}
-                  sizeClassName="h-8 w-8 rounded-xl"
-                  fallbackClassName="rounded-xl"
+                  sizeClassName="h-8 w-8 rounded-full"
+                  fallbackClassName="rounded-full"
                   initialsLength={2}
                 />
                 <div className="grid flex-1 text-left text-sm leading-tight">
