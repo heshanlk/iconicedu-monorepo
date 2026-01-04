@@ -1,0 +1,248 @@
+import type {
+  NotificationDefaultsVM,
+  NotificationPreferenceVM,
+  PresenceVM,
+  UserAccountVM,
+  UserProfileVM,
+} from '@iconicedu/shared-types';
+import type { AccountRow, ProfileRow } from '@iconicedu/shared-types';
+import type { SupabaseClient } from '@supabase/supabase-js';
+
+import { mapAccountRowToVM, mapUserRoles } from './mappers/account.mapper';
+import { mapBaseProfile } from './mappers/base-profile.mapper';
+import {
+  deriveDisplayName,
+  deriveProfileKind,
+  resolveAvatarSource,
+  resolveExternalAvatarUrl,
+} from './derive';
+import { createSignedAvatarUrl } from './queries/avatar.query';
+import { getAccountById } from './queries/accounts.query';
+import { getNotificationDefaults } from './queries/notification-defaults.query';
+import { getPresence } from './queries/presence.query';
+import {
+  getProfileByAccountId,
+  insertProfileForAccount,
+  updateProfileAvatar,
+  upsertProfileForAccount,
+} from './queries/profiles.query';
+import { getUserRoles } from './queries/roles.query';
+import { buildChildProfile } from './builders/child.builder';
+import { buildEducatorProfile } from './builders/educator.builder';
+import { buildGuardianProfile } from './builders/guardian.builder';
+import { buildStaffProfile } from './builders/staff.builder';
+
+export async function buildSidebarUser(
+  supabase: SupabaseClient,
+  user: {
+    id: string;
+    email?: string | null;
+    user_metadata?: Record<string, unknown>;
+    app_metadata?: Record<string, unknown>;
+  },
+  account: { id: string; org_id: string },
+): Promise<{ accountVM: UserAccountVM; profileVM: UserProfileVM }> {
+  const [accountRow, roleRows, profileResponse] = await Promise.all([
+    getAccountById(supabase, account.id),
+    getUserRoles(supabase, account.id, account.org_id),
+    getProfileByAccountId(supabase, account.id),
+  ]);
+
+  const userRoles = mapUserRoles(roleRows.data ?? []);
+  const accountVM = mapAccountRowToVM(accountRow.data as AccountRow | null, {
+    accountId: account.id,
+    orgId: account.org_id,
+    authEmail: user.email ?? null,
+    userRoles,
+  });
+
+  let profileRow = profileResponse.data as ProfileRow | null;
+  const externalAvatarUrl = resolveExternalAvatarUrl(user);
+
+  if (!profileRow) {
+    const derivedKind = deriveProfileKind(userRoles);
+    const displayName = deriveDisplayName(user);
+
+    const upserted = await upsertProfileForAccount(supabase, {
+      orgId: account.org_id,
+      accountId: account.id,
+      kind: derivedKind,
+      displayName,
+      avatarSource: externalAvatarUrl ? 'external' : 'seed',
+      avatarUrl: externalAvatarUrl,
+      avatarSeed: user.id,
+      timezone: 'UTC',
+      locale: 'en-US',
+      status: 'active',
+      uiThemeKey: 'teal',
+    });
+
+    if (upserted.error?.code === '42P10') {
+      const fallback = await insertProfileForAccount(supabase, {
+        orgId: account.org_id,
+        accountId: account.id,
+        kind: derivedKind,
+        displayName,
+        avatarSource: externalAvatarUrl ? 'external' : 'seed',
+        avatarUrl: externalAvatarUrl,
+        avatarSeed: user.id,
+        timezone: 'UTC',
+        locale: 'en-US',
+        status: 'active',
+        uiThemeKey: 'teal',
+      });
+
+      if (fallback.error) {
+        throw fallback.error;
+      }
+
+      profileRow = fallback.data ?? null;
+    } else if (upserted.error) {
+      throw upserted.error;
+    } else {
+      profileRow = upserted.data ?? null;
+    }
+  }
+
+  if (!profileRow) {
+    throw new Error('Profile record missing for authenticated user.');
+  }
+
+  if (
+    externalAvatarUrl &&
+    !profileRow.avatar_url &&
+    resolveAvatarSource(profileRow.avatar_source) === 'seed'
+  ) {
+    const updated = await updateProfileAvatar(supabase, {
+      profileId: profileRow.id,
+      orgId: profileRow.org_id,
+      avatarUrl: externalAvatarUrl,
+      avatarSource: 'external',
+    });
+
+    if (updated.data) {
+      profileRow = updated.data;
+    }
+  }
+
+  const [notificationDefaults, presence, avatarUrl] = await Promise.all([
+    loadNotificationDefaults(supabase, profileRow.org_id, profileRow.id),
+    loadPresence(supabase, profileRow.org_id, profileRow.id),
+    resolveAvatarUrl(
+      supabase,
+      profileRow.avatar_source,
+      profileRow.avatar_url ?? null,
+    ),
+  ]);
+
+  const baseProfile = mapBaseProfile(profileRow, {
+    notificationDefaults,
+    presence,
+    avatarUrlOverride: avatarUrl,
+  });
+
+  if (profileRow.kind === 'educator') {
+    return {
+      accountVM,
+      profileVM: await buildEducatorProfile(supabase, baseProfile, profileRow),
+    };
+  }
+
+  if (profileRow.kind === 'child') {
+    return {
+      accountVM,
+      profileVM: await buildChildProfile(supabase, baseProfile, profileRow),
+    };
+  }
+
+  if (profileRow.kind === 'staff') {
+    return {
+      accountVM,
+      profileVM: await buildStaffProfile(supabase, baseProfile, profileRow),
+    };
+  }
+
+  if (profileRow.kind === 'guardian') {
+    return {
+      accountVM,
+      profileVM: await buildGuardianProfile(supabase, baseProfile, profileRow),
+    };
+  }
+
+  return {
+    accountVM,
+    profileVM: {
+      ...baseProfile,
+      kind: 'system',
+    },
+  };
+}
+
+async function loadNotificationDefaults(
+  supabase: SupabaseClient,
+  orgId: string,
+  profileId: string,
+): Promise<NotificationDefaultsVM | null> {
+  const { data } = await getNotificationDefaults(supabase, orgId, profileId);
+
+  if (!data?.length) {
+    return null;
+  }
+
+  const defaults: NotificationDefaultsVM = {};
+  data.forEach((item) => {
+    const channels = Array.isArray(item.channels)
+      ? (item.channels.filter(Boolean) as NotificationPreferenceVM['channels'])
+      : [];
+    defaults[item.pref_key] = {
+      channels,
+      muted: item.muted ?? null,
+    };
+  });
+
+  return defaults;
+}
+
+async function loadPresence(
+  supabase: SupabaseClient,
+  orgId: string,
+  profileId: string,
+): Promise<PresenceVM | null> {
+  const { data } = await getPresence(supabase, orgId, profileId);
+  if (!data) {
+    return null;
+  }
+
+  return {
+    state: {
+      text: data.state_text,
+      emoji: data.state_emoji,
+      expiresAt: data.state_expires_at,
+    },
+    liveStatus: data.live_status ?? 'offline',
+    displayStatus: data.display_status ?? undefined,
+    lastSeenAt: data.last_seen_at,
+    presenceLoaded: data.presence_loaded ?? undefined,
+  };
+}
+
+async function resolveAvatarUrl(
+  supabase: SupabaseClient,
+  avatarSource: string,
+  avatarUrl: string | null,
+): Promise<string | null> {
+  if (!avatarUrl) {
+    return null;
+  }
+
+  if (resolveAvatarSource(avatarSource) !== 'upload') {
+    return avatarUrl;
+  }
+
+  const { data, error } = await createSignedAvatarUrl(supabase, avatarUrl);
+  if (error) {
+    return null;
+  }
+
+  return data?.signedUrl ?? null;
+}
