@@ -352,14 +352,15 @@ function UserSettingsTabs({
   const { isMobile } = useSidebar();
   const activeValue = lockTabs ? lockedTab ?? 'profile' : value;
   const showOnboardingToast = Boolean(onboardingStep);
-  const expandPhone = onboardingStep === 'account-phone';
+  const profileBlock = profile.profile;
+  const prefs = profile.prefs;
+  const contacts = account?.contacts;
+  const hasPhone = Boolean(contacts?.phoneE164?.trim());
+  const expandPhone = onboardingStep === 'account-phone' && !hasPhone;
   const expandWhatsapp = onboardingStep === 'account-whatsapp';
   const expandTimezone = onboardingStep === 'preferences-timezone';
   const expandLocation = onboardingStep === 'location';
   const showFamilyOnboardingToast = onboardingStep === 'family';
-  const profileBlock = profile.profile;
-  const prefs = profile.prefs;
-  const contacts = account?.contacts;
   const email = contacts?.email ?? '';
   const preferredChannels =
     contacts?.preferredContactChannels && contacts.preferredContactChannels.length > 0

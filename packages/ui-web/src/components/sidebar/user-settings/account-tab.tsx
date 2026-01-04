@@ -46,6 +46,7 @@ export function AccountTab({
     React.useState(false);
   const [phoneValue, setPhoneValue] = React.useState(contacts?.phoneE164 ?? '');
   const [isPhoneFocused, setIsPhoneFocused] = React.useState(false);
+  const [phoneError, setPhoneError] = React.useState<string | null>(null);
   const [whatsappValue, setWhatsappValue] = React.useState(
     contacts?.whatsappE164 ?? '',
   );
@@ -60,21 +61,56 @@ export function AccountTab({
     }
   }, [expandWhatsapp, phoneValue, whatsappValue]);
 
+  const normalizePhone = React.useCallback((value: string) => {
+    const trimmed = value.trim();
+    if (!trimmed) return '';
+    const digits = trimmed.replace(/[^\d+]/g, '');
+    const normalized = digits.startsWith('+')
+      ? `+${digits.replace(/[^\d]/g, '')}`
+      : `+${digits.replace(/[^\d]/g, '')}`;
+    return normalized === '+' ? '' : normalized;
+  }, []);
+
+  const formatInternationalPhone = React.useCallback((value: string) => {
+    const normalized = normalizePhone(value);
+    if (!normalized) return '';
+    const digits = normalized.replace(/\D/g, '');
+    const countryLength = Math.min(3, digits.length);
+    const country = digits.slice(0, countryLength);
+    const rest = digits.slice(countryLength);
+    const groups: string[] = [];
+    for (let index = 0; index < rest.length; index += 3) {
+      groups.push(rest.slice(index, index + 3));
+    }
+    return `+${[country, ...groups].filter(Boolean).join(' ')}`.trim();
+  }, [normalizePhone]);
+
+  const isValidInternationalPhone = React.useCallback((value: string) => {
+    if (!value.startsWith('+')) return false;
+    const digits = value.replace(/[^\d]/g, '');
+    return digits.length >= 8 && digits.length <= 15;
+  }, []);
+
   const handlePhoneContinue = React.useCallback(async () => {
     if (!onPhoneContinue) {
       return;
     }
-    const trimmed = phoneValue.trim();
-    if (!trimmed) {
+    const normalized = normalizePhone(phoneValue);
+    if (!normalized) {
+      setPhoneError('Please enter your phone number.');
+      return;
+    }
+    if (!isValidInternationalPhone(normalized)) {
+      setPhoneError('Enter a valid international number (e.g. +1 415 555 0100).');
       return;
     }
     setIsPhoneSaving(true);
     try {
-      await onPhoneContinue(trimmed);
+      await onPhoneContinue(normalized);
     } finally {
       setIsPhoneSaving(false);
     }
-  }, [onPhoneContinue, phoneValue]);
+  }, [isValidInternationalPhone, normalizePhone, onPhoneContinue, phoneValue]);
 
   const handleWhatsappContinue = React.useCallback(async () => {
     if (!onWhatsappContinue) {
@@ -197,16 +233,6 @@ export function AccountTab({
                     aria-label="Receive notifications by email"
                   />
                 </div>
-                <div className="space-y-2 sm:col-span-2">
-                  <Label htmlFor="settings-account-password">New password</Label>
-                  <Input id="settings-account-password" type="password" />
-                </div>
-                <div className="space-y-2 sm:col-span-2">
-                  <Label htmlFor="settings-account-password-confirm">
-                    Confirm password
-                  </Label>
-                  <Input id="settings-account-password-confirm" type="password" />
-                </div>
                 <div className="sm:col-span-2 flex justify-end">
                   <Button size="sm">Save</Button>
                 </div>
@@ -249,17 +275,29 @@ export function AccountTab({
                           transition={{ type: 'spring', stiffness: 60, damping: 20 }}
                         />
                       ) : null}
-                      <InputGroup>
-                        <InputGroupInput
-                          id="settings-account-phone"
-                          value={phoneValue}
-                          aria-label="Phone"
-                          required={expandPhone || requirePhone}
-                          placeholder="+1 415 555 0100"
-                          onFocus={() => setIsPhoneFocused(true)}
-                          onBlur={() => setIsPhoneFocused(false)}
-                          onChange={(event) => setPhoneValue(event.target.value)}
-                        />
+                    <InputGroup>
+                      <InputGroupInput
+                        id="settings-account-phone"
+                        value={phoneValue}
+                        aria-label="Phone"
+                        required={expandPhone || requirePhone}
+                        placeholder="+1 415 555 0100"
+                        onFocus={() => setIsPhoneFocused(true)}
+                        onBlur={() => {
+                          setIsPhoneFocused(false);
+                          const formatted = formatInternationalPhone(phoneValue);
+                          if (formatted) {
+                            setPhoneValue(formatted);
+                            setPhoneError(null);
+                          }
+                        }}
+                        onChange={(event) => {
+                          setPhoneValue(formatInternationalPhone(event.target.value));
+                          if (phoneError) {
+                            setPhoneError(null);
+                          }
+                        }}
+                      />
                         <InputGroupAddon align="inline-end">
                           {contacts?.phoneVerified ? (
                             <Tooltip>
@@ -358,8 +396,16 @@ export function AccountTab({
                         required={expandWhatsapp}
                         placeholder="+1 415 555 0100"
                         onFocus={() => setIsWhatsappFocused(true)}
-                        onBlur={() => setIsWhatsappFocused(false)}
-                        onChange={(event) => setWhatsappValue(event.target.value)}
+                        onBlur={() => {
+                          setIsWhatsappFocused(false);
+                          const formatted = formatInternationalPhone(whatsappValue);
+                          if (formatted) {
+                            setWhatsappValue(formatted);
+                          }
+                        }}
+                        onChange={(event) =>
+                          setWhatsappValue(formatInternationalPhone(event.target.value))
+                        }
                       />
                     <InputGroupAddon align="inline-end">
                       {contacts?.whatsappVerified ? (
@@ -380,6 +426,13 @@ export function AccountTab({
                       )}
                     </InputGroupAddon>
                     </InputGroup>
+                    <div className="text-xs text-muted-foreground">
+                      We’ll send a verification code by text. Include your country code
+                      (e.g. +1, +44, +61).
+                    </div>
+                    {phoneError ? (
+                      <div className="text-xs text-destructive">{phoneError}</div>
+                    ) : null}
                   </div>
                 </div>
                 {contacts?.whatsappVerified ? (
