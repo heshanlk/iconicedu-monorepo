@@ -23,6 +23,11 @@ type AccountTabProps = {
   preferredChannelSelections: string[];
   togglePreferredChannel: (channel: string, enabled: boolean) => void;
   requirePhone?: boolean;
+  expandPhone?: boolean;
+  expandWhatsapp?: boolean;
+  showOnboardingToast?: boolean;
+  onPhoneContinue?: (phone: string) => Promise<void> | void;
+  onWhatsappContinue?: (whatsapp: string) => Promise<void> | void;
 };
 
 export function AccountTab({
@@ -31,19 +36,70 @@ export function AccountTab({
   preferredChannelSelections,
   togglePreferredChannel,
   requirePhone = false,
+  expandPhone = false,
+  expandWhatsapp = false,
+  showOnboardingToast = false,
+  onPhoneContinue,
+  onWhatsappContinue,
 }: AccountTabProps) {
-  const [isAccountToastDismissed, setIsAccountToastDismissed] = React.useState(false);
+  const [isAccountToastDismissed, setIsAccountToastDismissed] =
+    React.useState(false);
   const [phoneValue, setPhoneValue] = React.useState(contacts?.phoneE164 ?? '');
   const [isPhoneFocused, setIsPhoneFocused] = React.useState(false);
+  const [whatsappValue, setWhatsappValue] = React.useState(
+    contacts?.whatsappE164 ?? '',
+  );
+  const [isWhatsappFocused, setIsWhatsappFocused] = React.useState(false);
+  const [isPhoneSaving, setIsPhoneSaving] = React.useState(false);
+  const [isWhatsappSaving, setIsWhatsappSaving] = React.useState(false);
+  const showToast = showOnboardingToast && !isAccountToastDismissed;
+
+  React.useEffect(() => {
+    if (expandWhatsapp && !whatsappValue.trim() && phoneValue.trim()) {
+      setWhatsappValue(phoneValue.trim());
+    }
+  }, [expandWhatsapp, phoneValue, whatsappValue]);
+
+  const handlePhoneContinue = React.useCallback(async () => {
+    if (!onPhoneContinue) {
+      return;
+    }
+    const trimmed = phoneValue.trim();
+    if (!trimmed) {
+      return;
+    }
+    setIsPhoneSaving(true);
+    try {
+      await onPhoneContinue(trimmed);
+    } finally {
+      setIsPhoneSaving(false);
+    }
+  }, [onPhoneContinue, phoneValue]);
+
+  const handleWhatsappContinue = React.useCallback(async () => {
+    if (!onWhatsappContinue) {
+      return;
+    }
+    const trimmed = whatsappValue.trim();
+    if (!trimmed) {
+      return;
+    }
+    setIsWhatsappSaving(true);
+    try {
+      await onWhatsappContinue(trimmed);
+    } finally {
+      setIsWhatsappSaving(false);
+    }
+  }, [onWhatsappContinue, whatsappValue]);
 
   return (
     <div className="space-y-8 w-full">
-      {requirePhone && !isAccountToastDismissed ? (
+      {showToast ? (
         <div className="rounded-2xl border border-primary/20 bg-primary/5 px-4 py-3 text-sm shadow-sm">
           <div className="flex items-start justify-between gap-3">
             <div className="space-y-1">
               <div className="font-medium text-foreground">
-                Please verify your phone number to continue.
+                Please fill out required details to continue.
               </div>
               <div className="text-muted-foreground">
                 Fields marked as{' '}
@@ -160,7 +216,7 @@ export function AccountTab({
           <Separator />
         </div>
         <div className="space-y-1 w-full">
-          <Collapsible className="rounded-2xl w-full">
+          <Collapsible className="rounded-2xl w-full" open={expandPhone || undefined}>
             <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
               <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
                 <Phone className="h-5 w-5" />
@@ -177,10 +233,14 @@ export function AccountTab({
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2 sm:col-span-2">
                     <Label htmlFor="settings-account-phone">
-                      Phone {requirePhone ? <span className="text-destructive">*</span> : null}
+                      Phone {expandPhone || requirePhone ? (
+                        <span className="text-destructive">*</span>
+                      ) : null}
                     </Label>
                     <div className="relative rounded-full">
-                      {requirePhone && !phoneValue.trim() && !isPhoneFocused ? (
+                      {(expandPhone || requirePhone) &&
+                      !phoneValue.trim() &&
+                      !isPhoneFocused ? (
                         <BorderBeam
                           size={60}
                           initialOffset={20}
@@ -194,7 +254,7 @@ export function AccountTab({
                           id="settings-account-phone"
                           value={phoneValue}
                           aria-label="Phone"
-                          required={requirePhone}
+                          required={expandPhone || requirePhone}
                           placeholder="+1 415 555 0100"
                           onFocus={() => setIsPhoneFocused(true)}
                           onBlur={() => setIsPhoneFocused(false)}
@@ -239,13 +299,23 @@ export function AccountTab({
                       aria-label="Receive notifications by phone"
                     />
                   </div>
-                ) : requirePhone ? (
+                ) : expandPhone || requirePhone ? (
                   <div className="sm:col-span-2 rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-xs text-destructive">
                     Phone verification is required to continue.
                   </div>
                 ) : null}
                 <div className="sm:col-span-2 flex justify-end">
-                  <Button size="sm">Save</Button>
+                  {expandPhone && onPhoneContinue ? (
+                    <Button
+                      size="sm"
+                      onClick={handlePhoneContinue}
+                      disabled={isPhoneSaving}
+                    >
+                      {isPhoneSaving ? 'Saving...' : 'Continue'}
+                    </Button>
+                  ) : (
+                    <Button size="sm">Save</Button>
+                  )}
                 </div>
               </div>
             </CollapsibleContent>
@@ -253,7 +323,7 @@ export function AccountTab({
           <Separator />
         </div>
         <div className="space-y-1 w-full">
-          <Collapsible className="rounded-2xl w-full">
+          <Collapsible className="rounded-2xl w-full" open={expandWhatsapp || undefined}>
             <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
               <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
                 <MessageCircle className="h-5 w-5" />
@@ -270,12 +340,27 @@ export function AccountTab({
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2 sm:col-span-2">
                   <Label htmlFor="settings-account-whatsapp">WhatsApp</Label>
-                  <InputGroup>
-                    <InputGroupInput
-                      id="settings-account-whatsapp"
-                      defaultValue={contacts?.whatsappE164 ?? ''}
-                      aria-label="WhatsApp"
-                    />
+                  <div className="relative rounded-full">
+                    {expandWhatsapp && !whatsappValue.trim() && !isWhatsappFocused ? (
+                      <BorderBeam
+                        size={60}
+                        initialOffset={20}
+                        borderWidth={2}
+                        className="from-transparent via-pink-500 to-transparent"
+                        transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                      />
+                    ) : null}
+                    <InputGroup>
+                      <InputGroupInput
+                        id="settings-account-whatsapp"
+                        value={whatsappValue}
+                        aria-label="WhatsApp"
+                        required={expandWhatsapp}
+                        placeholder="+1 415 555 0100"
+                        onFocus={() => setIsWhatsappFocused(true)}
+                        onBlur={() => setIsWhatsappFocused(false)}
+                        onChange={(event) => setWhatsappValue(event.target.value)}
+                      />
                     <InputGroupAddon align="inline-end">
                       {contacts?.whatsappVerified ? (
                         <Tooltip>
@@ -294,7 +379,8 @@ export function AccountTab({
                         </Badge>
                       )}
                     </InputGroupAddon>
-                  </InputGroup>
+                    </InputGroup>
+                  </div>
                 </div>
                 {contacts?.whatsappVerified ? (
                   <div className="sm:col-span-2 flex items-center justify-between rounded-xl border border-border/60 px-4 py-3">
@@ -316,7 +402,17 @@ export function AccountTab({
                   </div>
                 ) : null}
                 <div className="sm:col-span-2 flex justify-end">
-                  <Button size="sm">Save</Button>
+                  {expandWhatsapp && onWhatsappContinue ? (
+                    <Button
+                      size="sm"
+                      onClick={handleWhatsappContinue}
+                      disabled={isWhatsappSaving}
+                    >
+                      {isWhatsappSaving ? 'Saving...' : 'Continue'}
+                    </Button>
+                  ) : (
+                    <Button size="sm">Save</Button>
+                  )}
                 </div>
               </div>
             </CollapsibleContent>

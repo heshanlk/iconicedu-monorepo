@@ -71,6 +71,9 @@ export function SidebarLeft({
   forceProfileCompletion,
   forceAccountCompletion,
   onProfileSave,
+  onAccountUpdate,
+  onPrefsSave,
+  onLocationSave,
   onAvatarUpload,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
@@ -80,6 +83,32 @@ export function SidebarLeft({
   forceProfileCompletion?: boolean;
   forceAccountCompletion?: boolean;
   onProfileSave?: (input: ProfileSaveInput) => Promise<void> | void;
+  onAccountUpdate?: (input: {
+    accountId: string;
+    orgId: string;
+    phoneE164?: string | null;
+    whatsappE164?: string | null;
+    phoneVerified?: boolean;
+    whatsappVerified?: boolean;
+    preferredContactChannels?: string[] | null;
+  }) => Promise<void> | void;
+  onPrefsSave?: (input: {
+    profileId: string;
+    orgId: string;
+    timezone?: string;
+    locale?: string | null;
+    languagesSpoken?: string[] | null;
+    themeKey?: string | null;
+  }) => Promise<void> | void;
+  onLocationSave?: (input: {
+    profileId: string;
+    orgId: string;
+    city: string;
+    region: string;
+    postalCode: string;
+    countryCode?: string | null;
+    countryName?: string | null;
+  }) => Promise<void> | void;
   onAvatarUpload?: (input: ProfileAvatarInput) => Promise<void> | void;
 }) {
   const navMain: SidebarNavItem[] = data.navigation.navMain.map((item) => ({
@@ -238,6 +267,9 @@ export function SidebarLeft({
           forceProfileCompletion={forceProfileCompletion}
           forceAccountCompletion={forceAccountCompletion}
           onProfileSave={onProfileSave}
+          onAccountUpdate={onAccountUpdate}
+          onPrefsSave={onPrefsSave}
+          onLocationSave={onLocationSave}
           onAvatarUpload={onAvatarUpload}
         />
       </SidebarFooter>

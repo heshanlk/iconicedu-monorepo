@@ -40,6 +40,9 @@ export function NavUser({
   forceProfileCompletion,
   forceAccountCompletion,
   onProfileSave,
+  onAccountUpdate,
+  onPrefsSave,
+  onLocationSave,
   onAvatarUpload,
 }: {
   profile: UserProfileVM;
@@ -48,6 +51,32 @@ export function NavUser({
   forceProfileCompletion?: boolean;
   forceAccountCompletion?: boolean;
   onProfileSave?: (input: ProfileSaveInput) => Promise<void> | void;
+  onAccountUpdate?: (input: {
+    accountId: string;
+    orgId: string;
+    phoneE164?: string | null;
+    whatsappE164?: string | null;
+    phoneVerified?: boolean;
+    whatsappVerified?: boolean;
+    preferredContactChannels?: string[] | null;
+  }) => Promise<void> | void;
+  onPrefsSave?: (input: {
+    profileId: string;
+    orgId: string;
+    timezone?: string;
+    locale?: string | null;
+    languagesSpoken?: string[] | null;
+    themeKey?: string | null;
+  }) => Promise<void> | void;
+  onLocationSave?: (input: {
+    profileId: string;
+    orgId: string;
+    city: string;
+    region: string;
+    postalCode: string;
+    countryCode?: string | null;
+    countryName?: string | null;
+  }) => Promise<void> | void;
   onAvatarUpload?: (input: ProfileAvatarInput) => Promise<void> | void;
 }) {
   const { isMobile } = useSidebar();
@@ -183,6 +212,9 @@ export function NavUser({
           forceAccountCompletion={forceAccountCompletion}
           onLogout={onLogout}
           onProfileSave={onProfileSave}
+          onAccountUpdate={onAccountUpdate}
+          onPrefsSave={onPrefsSave}
+          onLocationSave={onLocationSave}
           onAvatarUpload={onAvatarUpload}
         />
       </SidebarMenuItem>

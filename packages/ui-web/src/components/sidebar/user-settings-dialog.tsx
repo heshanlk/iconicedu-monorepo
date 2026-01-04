@@ -36,6 +36,14 @@ export type UserSettingsTab =
   | 'family'
   | 'notifications';
 
+type OnboardingStep =
+  | 'profile'
+  | 'account-phone'
+  | 'account-whatsapp'
+  | 'preferences-timezone'
+  | 'location'
+  | 'family';
+
 const SETTINGS_TABS: Array<{
   value: UserSettingsTab;
   label: string;
@@ -80,6 +88,32 @@ type UserSettingsDialogProps = {
   forceAccountCompletion?: boolean;
   onLogout?: () => Promise<void> | void;
   onProfileSave?: (input: ProfileSaveInput) => Promise<void> | void;
+  onAccountUpdate?: (input: {
+    accountId: string;
+    orgId: string;
+    phoneE164?: string | null;
+    whatsappE164?: string | null;
+    phoneVerified?: boolean;
+    whatsappVerified?: boolean;
+    preferredContactChannels?: string[] | null;
+  }) => Promise<void> | void;
+  onPrefsSave?: (input: {
+    profileId: string;
+    orgId: string;
+    timezone?: string;
+    locale?: string | null;
+    languagesSpoken?: string[] | null;
+    themeKey?: string | null;
+  }) => Promise<void> | void;
+  onLocationSave?: (input: {
+    profileId: string;
+    orgId: string;
+    city: string;
+    region: string;
+    postalCode: string;
+    countryCode?: string | null;
+    countryName?: string | null;
+  }) => Promise<void> | void;
   onAvatarUpload?: (input: ProfileAvatarInput) => Promise<void> | void;
 };
 
@@ -94,56 +128,154 @@ export function UserSettingsDialog({
   forceAccountCompletion = false,
   onLogout,
   onProfileSave,
+  onAccountUpdate,
+  onPrefsSave,
+  onLocationSave,
   onAvatarUpload,
 }: UserSettingsDialogProps) {
-  const [profileCompletionOverride, setProfileCompletionOverride] =
-    React.useState(false);
+  const isProfileComplete = Boolean(
+    profile.profile.firstName?.trim() && profile.profile.lastName?.trim(),
+  );
+  const isAccountComplete = Boolean(
+    account?.contacts.phoneE164 && account?.contacts.phoneVerified,
+  );
+  const effectiveForceProfileCompletion = forceProfileCompletion && !isProfileComplete;
+  const effectiveForceAccountCompletion = forceAccountCompletion && !isAccountComplete;
+
+  const [onboardingStep, setOnboardingStep] = React.useState<OnboardingStep | null>(
+    effectiveForceProfileCompletion
+      ? 'profile'
+      : effectiveForceAccountCompletion
+        ? 'account-phone'
+        : null,
+  );
 
   React.useEffect(() => {
-    if (!forceProfileCompletion) {
-      setProfileCompletionOverride(false);
+    if (onboardingStep) {
+      return;
     }
-  }, [forceProfileCompletion]);
+    if (effectiveForceProfileCompletion) {
+      setOnboardingStep('profile');
+      return;
+    }
+    if (effectiveForceAccountCompletion) {
+      setOnboardingStep('account-phone');
+    }
+  }, [
+    effectiveForceAccountCompletion,
+    effectiveForceProfileCompletion,
+    onboardingStep,
+  ]);
+
+  const shouldLockDialog = Boolean(
+    onboardingStep || effectiveForceProfileCompletion || effectiveForceAccountCompletion,
+  );
+
+  const onboardingTab = onboardingStep
+    ? onboardingStep === 'profile'
+      ? 'profile'
+      : onboardingStep.startsWith('account')
+        ? 'account'
+        : onboardingStep === 'preferences-timezone'
+          ? 'preferences'
+          : onboardingStep === 'location'
+            ? 'location'
+            : onboardingStep === 'family'
+              ? 'family'
+              : activeTab
+    : null;
+
   const handleOpenChange = React.useCallback(
     (nextOpen: boolean) => {
-      if ((forceProfileCompletion || forceAccountCompletion) && !nextOpen) {
+      if (shouldLockDialog && !nextOpen) {
         return;
       }
       onOpenChange(nextOpen);
     },
-    [forceAccountCompletion, forceProfileCompletion, onOpenChange],
+    [onOpenChange, shouldLockDialog],
   );
 
   const content = (
     <UserSettingsTabs
-      value={activeTab}
+      value={onboardingTab ?? activeTab}
       onValueChange={(nextTab) => {
-        if (forceProfileCompletion && !profileCompletionOverride && nextTab !== 'profile') {
-          return;
-        }
-        if (forceAccountCompletion && nextTab !== 'account') {
+        if (onboardingStep && nextTab !== onboardingTab) {
           return;
         }
         onTabChange(nextTab);
       }}
       profile={profile}
       account={account}
-      expandProfileDetails={forceProfileCompletion}
-      lockTabs={(forceProfileCompletion && !profileCompletionOverride) || forceAccountCompletion}
-      lockedTab={
-        forceProfileCompletion && !profileCompletionOverride
-          ? 'profile'
-          : forceAccountCompletion
-            ? 'account'
-            : null
-      }
-      showLogout={forceProfileCompletion}
+      expandProfileDetails={onboardingStep === 'profile' || effectiveForceProfileCompletion}
+      lockTabs={Boolean(onboardingStep)}
+      lockedTab={onboardingTab}
+      onboardingStep={onboardingStep}
+      showLogout={Boolean(onboardingStep)}
       onLogout={onLogout}
       onProfileSave={onProfileSave}
       onAvatarUpload={onAvatarUpload}
       onProfileContinue={() => {
-        setProfileCompletionOverride(true);
+        setOnboardingStep('account-phone');
         onTabChange('account');
+      }}
+      onPhoneContinue={async (phone) => {
+        if (!account || !onAccountUpdate) {
+          setOnboardingStep('account-whatsapp');
+          return;
+        }
+        await onAccountUpdate({
+          accountId: account.ids.id,
+          orgId: account.ids.orgId,
+          phoneE164: phone,
+          phoneVerified: true,
+        });
+        setOnboardingStep('account-whatsapp');
+      }}
+      onWhatsappContinue={async (whatsapp) => {
+        if (!account || !onAccountUpdate) {
+          setOnboardingStep('preferences-timezone');
+          onTabChange('preferences');
+          return;
+        }
+        await onAccountUpdate({
+          accountId: account.ids.id,
+          orgId: account.ids.orgId,
+          whatsappE164: whatsapp,
+          whatsappVerified: true,
+        });
+        setOnboardingStep('preferences-timezone');
+        onTabChange('preferences');
+      }}
+      onTimezoneContinue={async (timezone, locale, languagesSpoken) => {
+        if (!onPrefsSave) {
+          setOnboardingStep('location');
+          onTabChange('location');
+          return;
+        }
+        await onPrefsSave({
+          profileId: profile.ids.id,
+          orgId: profile.ids.orgId,
+          timezone,
+          locale,
+          languagesSpoken,
+        });
+        setOnboardingStep('location');
+        onTabChange('location');
+      }}
+      onLocationContinue={async (locationInput) => {
+        if (onLocationSave) {
+          await onLocationSave({
+            profileId: profile.ids.id,
+            orgId: profile.ids.orgId,
+            ...locationInput,
+          });
+        }
+        if (profile.kind === 'guardian') {
+          setOnboardingStep('family');
+          onTabChange('family');
+        } else {
+          setOnboardingStep(null);
+        }
       }}
     />
   );
@@ -161,7 +293,7 @@ export function UserSettingsDialog({
       drawerHeaderClassName="items-start"
       containerClassName="h-full"
       bodyClassName={cn(isMobile ? 'px-4 pb-4' : 'px-6 pb-6')}
-      dialogShowCloseButton={!(forceProfileCompletion || forceAccountCompletion)}
+      dialogShowCloseButton={!shouldLockDialog}
     >
       {content}
     </ResponsiveDialog>
@@ -176,11 +308,26 @@ type UserSettingsTabsProps = {
   expandProfileDetails?: boolean;
   lockTabs?: boolean;
   lockedTab?: UserSettingsTab | null;
+  onboardingStep?: OnboardingStep | null;
   showLogout?: boolean;
   onLogout?: () => Promise<void> | void;
   onProfileSave?: (input: ProfileSaveInput) => Promise<void> | void;
   onAvatarUpload?: (input: ProfileAvatarInput) => Promise<void> | void;
   onProfileContinue?: () => void;
+  onPhoneContinue?: (phone: string) => Promise<void> | void;
+  onWhatsappContinue?: (whatsapp: string) => Promise<void> | void;
+  onTimezoneContinue?: (
+    timezone: string,
+    locale: string | null,
+    languagesSpoken: string[] | null,
+  ) => Promise<void> | void;
+  onLocationContinue?: (input: {
+    city: string;
+    region: string;
+    postalCode: string;
+    countryCode?: string | null;
+    countryName?: string | null;
+  }) => Promise<void> | void;
 };
 
 function UserSettingsTabs({
@@ -191,14 +338,25 @@ function UserSettingsTabs({
   expandProfileDetails = false,
   lockTabs = false,
   lockedTab = null,
+  onboardingStep = null,
   showLogout = false,
   onLogout,
   onProfileSave,
   onAvatarUpload,
   onProfileContinue,
+  onPhoneContinue,
+  onWhatsappContinue,
+  onTimezoneContinue,
+  onLocationContinue,
 }: UserSettingsTabsProps) {
   const { isMobile } = useSidebar();
   const activeValue = lockTabs ? lockedTab ?? 'profile' : value;
+  const showOnboardingToast = Boolean(onboardingStep);
+  const expandPhone = onboardingStep === 'account-phone';
+  const expandWhatsapp = onboardingStep === 'account-whatsapp';
+  const expandTimezone = onboardingStep === 'preferences-timezone';
+  const expandLocation = onboardingStep === 'location';
+  const showFamilyOnboardingToast = onboardingStep === 'family';
   const profileBlock = profile.profile;
   const prefs = profile.prefs;
   const contacts = account?.contacts;
@@ -373,6 +531,11 @@ function UserSettingsTabs({
               preferredChannelSelections={preferredChannelSelections}
               togglePreferredChannel={togglePreferredChannel}
               requirePhone={requiresPhone}
+              expandPhone={expandPhone}
+              expandWhatsapp={expandWhatsapp}
+              showOnboardingToast={showOnboardingToast}
+              onPhoneContinue={onPhoneContinue}
+              onWhatsappContinue={onWhatsappContinue}
             />
           </TabsContent>
 
@@ -384,11 +547,19 @@ function UserSettingsTabs({
               prefs={prefs}
               profileThemeOptions={PROFILE_THEME_OPTIONS}
               setProfileThemes={setProfileThemes}
+              showOnboardingToast={showOnboardingToast}
+              expandTimezone={expandTimezone}
+              onTimezoneContinue={onTimezoneContinue}
             />
           </TabsContent>
 
           <TabsContent value="location" className="mt-0 space-y-8 w-full px-1">
-            <LocationTab location={location} />
+            <LocationTab
+              location={location}
+              showOnboardingToast={showOnboardingToast}
+              expandLocation={expandLocation}
+              onLocationContinue={onLocationContinue}
+            />
           </TabsContent>
 
           <TabsContent value="family" className="mt-0 space-y-8 w-full px-1">
@@ -397,6 +568,7 @@ function UserSettingsTabs({
               profileThemes={profileThemes}
               profileThemeOptions={PROFILE_THEME_OPTIONS}
               setProfileThemes={setProfileThemes}
+              showOnboardingToast={showFamilyOnboardingToast}
             />
           </TabsContent>
 

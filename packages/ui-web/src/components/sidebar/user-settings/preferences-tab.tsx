@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { ChevronRight, Clock, Globe, Languages, Palette } from 'lucide-react';
+import { ChevronRight, Clock, Globe, Languages, Palette, X } from 'lucide-react';
 
 import type { ThemeKey, UserProfileVM } from '@iconicedu/shared-types';
+import { BorderBeam } from '../../../ui/border-beam';
 import { Button } from '../../../ui/button';
 import {
   Collapsible,
@@ -20,6 +21,13 @@ type PreferencesTabProps = {
   prefs: UserProfileVM['prefs'];
   profileThemeOptions: Array<{ value: string; label: string }>;
   setProfileThemes: React.Dispatch<React.SetStateAction<Record<string, ThemeKey>>>;
+  showOnboardingToast?: boolean;
+  expandTimezone?: boolean;
+  onTimezoneContinue?: (
+    timezone: string,
+    locale: string | null,
+    languagesSpoken: string[] | null,
+  ) => Promise<void> | void;
 };
 
 export function PreferencesTab({
@@ -29,9 +37,76 @@ export function PreferencesTab({
   prefs,
   profileThemeOptions,
   setProfileThemes,
+  showOnboardingToast = false,
+  expandTimezone = false,
+  onTimezoneContinue,
 }: PreferencesTabProps) {
+  const [timezoneValue, setTimezoneValue] = React.useState(prefs.timezone ?? '');
+  const [isTimezoneFocused, setIsTimezoneFocused] = React.useState(false);
+  const [isToastDismissed, setIsToastDismissed] = React.useState(false);
+  const [isSaving, setIsSaving] = React.useState(false);
+
+  React.useEffect(() => {
+    setTimezoneValue(prefs.timezone ?? '');
+  }, [prefs.timezone]);
+
+  const showToast = showOnboardingToast && !isToastDismissed;
+
+  const handleTimezoneContinue = React.useCallback(async () => {
+    if (!onTimezoneContinue) {
+      return;
+    }
+    const trimmed = timezoneValue.trim();
+    if (!trimmed) {
+      return;
+    }
+    setIsSaving(true);
+    try {
+      await onTimezoneContinue(
+        trimmed,
+        prefs.locale ?? null,
+        prefs.languagesSpoken ?? null,
+      );
+    } finally {
+      setIsSaving(false);
+    }
+  }, [onTimezoneContinue, prefs.languagesSpoken, prefs.locale, timezoneValue]);
+
   return (
     <div className="space-y-8 w-full">
+      {showToast ? (
+        <div className="rounded-2xl border border-primary/20 bg-primary/5 px-4 py-3 text-sm shadow-sm">
+          <div className="flex items-start justify-between gap-3">
+            <div className="space-y-1">
+              <div className="font-medium text-foreground">
+                Please fill out required details to continue.
+              </div>
+              <div className="text-muted-foreground">
+                Fields marked as{' '}
+                <span className="relative inline-flex items-center">
+                  <BorderBeam
+                    size={48}
+                    initialOffset={12}
+                    borderWidth={2}
+                    className="from-transparent via-pink-500 to-transparent"
+                    transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                  />
+                  <span className="relative z-10 text-destructive">*</span>
+                </span>{' '}
+                are required.
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsToastDismissed(true)}
+              className="inline-flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground"
+              aria-label="Dismiss"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      ) : null}
       <div className="space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="space-y-1">
@@ -88,7 +163,7 @@ export function PreferencesTab({
             </CollapsibleContent>
           </Collapsible>
           <Separator />
-          <Collapsible className="rounded-2xl w-full">
+          <Collapsible className="rounded-2xl w-full" open={expandTimezone || undefined}>
             <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
               <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
                 <Clock className="h-5 w-5" />
@@ -102,11 +177,42 @@ export function PreferencesTab({
             <CollapsibleContent className="py-4 w-full">
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2 sm:col-span-2">
-                  <Label htmlFor="settings-timezone">Timezone</Label>
-                  <Input id="settings-timezone" defaultValue={prefs.timezone} />
+                  <Label htmlFor="settings-timezone">
+                    Timezone {expandTimezone ? <span className="text-destructive">*</span> : null}
+                  </Label>
+                  <div className="relative rounded-full">
+                    {expandTimezone && !timezoneValue.trim() && !isTimezoneFocused ? (
+                      <BorderBeam
+                        size={60}
+                        initialOffset={20}
+                        borderWidth={2}
+                        className="from-transparent via-pink-500 to-transparent"
+                        transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                      />
+                    ) : null}
+                    <Input
+                      id="settings-timezone"
+                      value={timezoneValue}
+                      placeholder="America/New_York"
+                      required={expandTimezone}
+                      onFocus={() => setIsTimezoneFocused(true)}
+                      onBlur={() => setIsTimezoneFocused(false)}
+                      onChange={(event) => setTimezoneValue(event.target.value)}
+                    />
+                  </div>
                 </div>
                 <div className="sm:col-span-2 flex justify-end">
-                  <Button size="sm">Save</Button>
+                  {expandTimezone && onTimezoneContinue ? (
+                    <Button
+                      size="sm"
+                      onClick={handleTimezoneContinue}
+                      disabled={isSaving}
+                    >
+                      {isSaving ? 'Saving...' : 'Continue'}
+                    </Button>
+                  ) : (
+                    <Button size="sm">Save</Button>
+                  )}
                 </div>
               </div>
             </CollapsibleContent>

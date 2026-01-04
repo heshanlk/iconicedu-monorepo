@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { ChevronRight, Plus } from 'lucide-react';
+import { ChevronRight, Plus, X } from 'lucide-react';
 
 import type { ThemeKey, UserProfileVM } from '@iconicedu/shared-types';
+import { BorderBeam } from '../../../ui/border-beam';
 import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
 import { Badge } from '../../../ui/badge';
 import { Button } from '../../../ui/button';
@@ -30,6 +31,7 @@ type FamilyTabProps = {
   profileThemes: Record<string, ThemeKey>;
   profileThemeOptions: Array<{ value: string; label: string }>;
   setProfileThemes: React.Dispatch<React.SetStateAction<Record<string, ThemeKey>>>;
+  showOnboardingToast?: boolean;
 };
 
 export function FamilyTab({
@@ -37,9 +39,46 @@ export function FamilyTab({
   profileThemes,
   profileThemeOptions,
   setProfileThemes,
+  showOnboardingToast = false,
 }: FamilyTabProps) {
+  const [isToastDismissed, setIsToastDismissed] = React.useState(false);
+  const showToast = showOnboardingToast && !isToastDismissed;
+
   return (
     <div className="space-y-8 w-full">
+      {showToast ? (
+        <div className="rounded-2xl border border-primary/20 bg-primary/5 px-4 py-3 text-sm shadow-sm">
+          <div className="flex items-start justify-between gap-3">
+            <div className="space-y-1">
+              <div className="font-medium text-foreground">
+                Please fill out required details to continue.
+              </div>
+              <div className="text-muted-foreground">
+                Fields marked as{' '}
+                <span className="relative inline-flex items-center">
+                  <BorderBeam
+                    size={48}
+                    initialOffset={12}
+                    borderWidth={2}
+                    className="from-transparent via-pink-500 to-transparent"
+                    transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                  />
+                  <span className="relative z-10 text-destructive">*</span>
+                </span>{' '}
+                are required.
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsToastDismissed(true)}
+              className="inline-flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground"
+              aria-label="Dismiss"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      ) : null}
       <div className="space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="space-y-1">

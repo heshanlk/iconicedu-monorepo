@@ -98,8 +98,7 @@ export function ProfileTab({
   const [lastNameValue, setLastNameValue] = React.useState(profileBlock.lastName ?? '');
   const [isFirstFocused, setIsFirstFocused] = React.useState(false);
   const [isLastFocused, setIsLastFocused] = React.useState(false);
-  const showProfileTaskToast =
-    expandProfileDetails && (!firstNameValue.trim() || !lastNameValue.trim());
+  const showProfileTaskToast = expandProfileDetails;
   const [isProfileToastDismissed, setIsProfileToastDismissed] = React.useState(false);
   const [displayNameValue, setDisplayNameValue] = React.useState(
     profileBlock.displayName ?? '',
