@@ -30,16 +30,24 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '../../ui/sidebar';
-import { UserSettingsDialog, type UserSettingsTab } from './user-settings-dialog';
+import {
+  UserSettingsDialog,
+  type UserSettingsTab,
+} from './user-settings-dialog';
+import type { ProfileSaveInput } from './user-settings/profile-tab';
 
 export function NavUser({
   profile,
   account,
   onLogout,
+  forceProfileCompletion,
+  onProfileSave,
 }: {
   profile: UserProfileVM;
   account?: UserAccountVM | null;
   onLogout?: () => Promise<void> | void;
+  forceProfileCompletion?: boolean;
+  onProfileSave?: (input: ProfileSaveInput) => Promise<void> | void;
 }) {
   const { isMobile } = useSidebar();
   const secondaryLabel =
@@ -52,6 +60,13 @@ export function NavUser({
     setSettingsTab(tab);
     setSettingsOpen(true);
   }, []);
+
+  React.useEffect(() => {
+    if (forceProfileCompletion) {
+      setSettingsTab('profile');
+      setSettingsOpen(true);
+    }
+  }, [forceProfileCompletion]);
 
   const handleLogout = React.useCallback(async () => {
     if (!onLogout) {
@@ -158,6 +173,9 @@ export function NavUser({
           onTabChange={setSettingsTab}
           profile={profile}
           account={account}
+          forceProfileCompletion={forceProfileCompletion}
+          onLogout={onLogout}
+          onProfileSave={onProfileSave}
         />
       </SidebarMenuItem>
     </SidebarMenu>

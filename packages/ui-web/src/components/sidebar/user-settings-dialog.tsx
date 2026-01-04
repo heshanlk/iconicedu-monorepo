@@ -1,7 +1,15 @@
 'use client';
 
 import * as React from 'react';
-import { BadgeCheck, Bell, MapPin, SlidersHorizontal, User, Users } from 'lucide-react';
+import {
+  BadgeCheck,
+  Bell,
+  LogOut,
+  MapPin,
+  SlidersHorizontal,
+  User,
+  Users,
+} from 'lucide-react';
 
 import type { ThemeKey, UserAccountVM, UserProfileVM } from '@iconicedu/shared-types';
 import { ScrollArea } from '../../ui/scroll-area';
@@ -13,7 +21,7 @@ import { FamilyTab } from './user-settings/family-tab';
 import { LocationTab } from './user-settings/location-tab';
 import { NotificationsTab } from './user-settings/notifications-tab';
 import { PreferencesTab } from './user-settings/preferences-tab';
-import { ProfileTab } from './user-settings/profile-tab';
+import { ProfileTab, type ProfileSaveInput } from './user-settings/profile-tab';
 import { ResponsiveDialog } from '../shared/responsive-dialog';
 
 export type UserSettingsTab =
@@ -64,6 +72,9 @@ type UserSettingsDialogProps = {
   onTabChange: (tab: UserSettingsTab) => void;
   profile: UserProfileVM;
   account?: UserAccountVM | null;
+  forceProfileCompletion?: boolean;
+  onLogout?: () => Promise<void> | void;
+  onProfileSave?: (input: ProfileSaveInput) => Promise<void> | void;
 };
 
 export function UserSettingsDialog({
@@ -73,13 +84,36 @@ export function UserSettingsDialog({
   onTabChange,
   profile,
   account,
+  forceProfileCompletion = false,
+  onLogout,
+  onProfileSave,
 }: UserSettingsDialogProps) {
+  const handleOpenChange = React.useCallback(
+    (nextOpen: boolean) => {
+      if (forceProfileCompletion && !nextOpen) {
+        return;
+      }
+      onOpenChange(nextOpen);
+    },
+    [forceProfileCompletion, onOpenChange],
+  );
+
   const content = (
     <UserSettingsTabs
       value={activeTab}
-      onValueChange={onTabChange}
+      onValueChange={(nextTab) => {
+        if (forceProfileCompletion && nextTab !== 'profile') {
+          return;
+        }
+        onTabChange(nextTab);
+      }}
       profile={profile}
       account={account}
+      expandProfileDetails={forceProfileCompletion}
+      lockTabs={forceProfileCompletion}
+      showLogout={forceProfileCompletion}
+      onLogout={onLogout}
+      onProfileSave={onProfileSave}
     />
   );
   const { isMobile } = useSidebar();
@@ -87,7 +121,7 @@ export function UserSettingsDialog({
   return (
     <ResponsiveDialog
       open={open}
-      onOpenChange={onOpenChange}
+      onOpenChange={handleOpenChange}
       title="Settings"
       description="Manage account, billing, and notification preferences."
       dialogContentClassName="h-[85vh] max-w-[calc(100vw-32px)] p-0 sm:max-w-[680px]"
@@ -96,7 +130,7 @@ export function UserSettingsDialog({
       drawerHeaderClassName="items-start"
       containerClassName="h-full"
       bodyClassName={cn(isMobile ? 'px-4 pb-4' : 'px-6 pb-6')}
-      dialogShowCloseButton
+      dialogShowCloseButton={!forceProfileCompletion}
     >
       {content}
     </ResponsiveDialog>
@@ -108,6 +142,11 @@ type UserSettingsTabsProps = {
   onValueChange: (tab: UserSettingsTab) => void;
   profile: UserProfileVM;
   account?: UserAccountVM | null;
+  expandProfileDetails?: boolean;
+  lockTabs?: boolean;
+  showLogout?: boolean;
+  onLogout?: () => Promise<void> | void;
+  onProfileSave?: (input: ProfileSaveInput) => Promise<void> | void;
 };
 
 function UserSettingsTabs({
@@ -115,8 +154,14 @@ function UserSettingsTabs({
   onValueChange,
   profile,
   account,
+  expandProfileDetails = false,
+  lockTabs = false,
+  showLogout = false,
+  onLogout,
+  onProfileSave,
 }: UserSettingsTabsProps) {
   const { isMobile } = useSidebar();
+  const activeValue = lockTabs ? 'profile' : value;
   const profileBlock = profile.profile;
   const prefs = profile.prefs;
   const contacts = account?.contacts;
@@ -208,7 +253,7 @@ function UserSettingsTabs({
 
   return (
     <Tabs
-      value={value}
+      value={activeValue}
       onValueChange={(next) => onValueChange(next as UserSettingsTab)}
       orientation={isMobile ? 'horizontal' : 'vertical'}
       className="w-full h-full"
@@ -231,17 +276,35 @@ function UserSettingsTabs({
         >
           {SETTINGS_TABS.map((tab) => {
             const Icon = tab.icon;
+            const isLocked = lockTabs && tab.value !== 'profile';
             return (
               <TabsTrigger
                 key={tab.value}
                 value={tab.value}
-                className="gap-2 after:hidden data-[state=active]:bg-muted/50"
+                disabled={isLocked}
+                className={cn(
+                  'gap-2 after:hidden data-[state=active]:bg-muted/50',
+                  isLocked && 'opacity-50',
+                )}
               >
                 <Icon className="size-4" />
                 {tab.label}
               </TabsTrigger>
             );
           })}
+          {showLogout ? (
+            <div className="mt-2 flex w-full flex-col gap-2">
+              <div className="h-px w-full bg-border/70" />
+              <button
+                type="button"
+                onClick={onLogout}
+                className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-muted-foreground transition hover:bg-muted hover:text-foreground"
+              >
+                <LogOut className="h-4 w-4" />
+                Log out
+              </button>
+            </div>
+          ) : null}
         </TabsList>
 
         <ScrollArea className={cn('min-h-0 flex-1 w-full min-w-0', isMobile && 'flex-1')}>
@@ -254,6 +317,8 @@ function UserSettingsTabs({
               educatorProfile={educatorProfile}
               staffProfile={staffProfile}
               formatGradeLevel={formatGradeLevel}
+              expandProfileDetails={expandProfileDetails}
+              onProfileSave={onProfileSave}
             />
           </TabsContent>
 

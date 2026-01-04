@@ -14,8 +14,11 @@
   "aliases": {
     "components": "@iconicedu/ui-web/components",
     "utils": "@iconicedu/ui-web/lib/utils",
-    "hooks": "@iconicedu/ui-web/hooks",
+    "ui": "@iconicedu/ui-web/ui",
     "lib": "@iconicedu/ui-web/lib",
-    "ui": "@iconicedu/ui-web/ui"
+    "hooks": "@iconicedu/ui-web/hooks"
+  },
+  "registries": {
+    "@magicui": "https://magicui.design/r/{name}.json"
   }
 }
