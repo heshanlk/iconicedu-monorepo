@@ -17,7 +17,7 @@ import {
 import { NavLearningSpaces } from './nav-learning-spaces';
 import { NavSecondary } from './nav-secondary';
 import { NavUser } from './nav-user';
-import type { ProfileSaveInput } from './user-settings/profile-tab';
+import type { ProfileAvatarInput, ProfileSaveInput } from './user-settings/profile-tab';
 import {
   Sidebar,
   SidebarContent,
@@ -70,6 +70,7 @@ export function SidebarLeft({
   onLogout,
   forceProfileCompletion,
   onProfileSave,
+  onAvatarUpload,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
   data: SidebarLeftDataVM;
@@ -77,6 +78,7 @@ export function SidebarLeft({
   onLogout?: () => Promise<void> | void;
   forceProfileCompletion?: boolean;
   onProfileSave?: (input: ProfileSaveInput) => Promise<void> | void;
+  onAvatarUpload?: (input: ProfileAvatarInput) => Promise<void> | void;
 }) {
   const navMain: SidebarNavItem[] = data.navigation.navMain.map((item) => ({
     ...item,
@@ -233,6 +235,7 @@ export function SidebarLeft({
           onLogout={onLogout}
           forceProfileCompletion={forceProfileCompletion}
           onProfileSave={onProfileSave}
+          onAvatarUpload={onAvatarUpload}
         />
       </SidebarFooter>
     </Sidebar>

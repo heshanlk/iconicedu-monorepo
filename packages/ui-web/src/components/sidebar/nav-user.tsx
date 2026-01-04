@@ -34,7 +34,7 @@ import {
   UserSettingsDialog,
   type UserSettingsTab,
 } from './user-settings-dialog';
-import type { ProfileSaveInput } from './user-settings/profile-tab';
+import type { ProfileAvatarInput, ProfileSaveInput } from './user-settings/profile-tab';
 
 export function NavUser({
   profile,
@@ -42,12 +42,14 @@ export function NavUser({
   onLogout,
   forceProfileCompletion,
   onProfileSave,
+  onAvatarUpload,
 }: {
   profile: UserProfileVM;
   account?: UserAccountVM | null;
   onLogout?: () => Promise<void> | void;
   forceProfileCompletion?: boolean;
   onProfileSave?: (input: ProfileSaveInput) => Promise<void> | void;
+  onAvatarUpload?: (input: ProfileAvatarInput) => Promise<void> | void;
 }) {
   const { isMobile } = useSidebar();
   const secondaryLabel =
@@ -176,6 +178,7 @@ export function NavUser({
           forceProfileCompletion={forceProfileCompletion}
           onLogout={onLogout}
           onProfileSave={onProfileSave}
+          onAvatarUpload={onAvatarUpload}
         />
       </SidebarMenuItem>
     </SidebarMenu>

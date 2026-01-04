@@ -21,7 +21,11 @@ import { FamilyTab } from './user-settings/family-tab';
 import { LocationTab } from './user-settings/location-tab';
 import { NotificationsTab } from './user-settings/notifications-tab';
 import { PreferencesTab } from './user-settings/preferences-tab';
-import { ProfileTab, type ProfileSaveInput } from './user-settings/profile-tab';
+import {
+  ProfileTab,
+  type ProfileAvatarInput,
+  type ProfileSaveInput,
+} from './user-settings/profile-tab';
 import { ResponsiveDialog } from '../shared/responsive-dialog';
 
 export type UserSettingsTab =
@@ -75,6 +79,7 @@ type UserSettingsDialogProps = {
   forceProfileCompletion?: boolean;
   onLogout?: () => Promise<void> | void;
   onProfileSave?: (input: ProfileSaveInput) => Promise<void> | void;
+  onAvatarUpload?: (input: ProfileAvatarInput) => Promise<void> | void;
 };
 
 export function UserSettingsDialog({
@@ -87,6 +92,7 @@ export function UserSettingsDialog({
   forceProfileCompletion = false,
   onLogout,
   onProfileSave,
+  onAvatarUpload,
 }: UserSettingsDialogProps) {
   const handleOpenChange = React.useCallback(
     (nextOpen: boolean) => {
@@ -114,6 +120,7 @@ export function UserSettingsDialog({
       showLogout={forceProfileCompletion}
       onLogout={onLogout}
       onProfileSave={onProfileSave}
+      onAvatarUpload={onAvatarUpload}
     />
   );
   const { isMobile } = useSidebar();
@@ -147,6 +154,7 @@ type UserSettingsTabsProps = {
   showLogout?: boolean;
   onLogout?: () => Promise<void> | void;
   onProfileSave?: (input: ProfileSaveInput) => Promise<void> | void;
+  onAvatarUpload?: (input: ProfileAvatarInput) => Promise<void> | void;
 };
 
 function UserSettingsTabs({
@@ -159,6 +167,7 @@ function UserSettingsTabs({
   showLogout = false,
   onLogout,
   onProfileSave,
+  onAvatarUpload,
 }: UserSettingsTabsProps) {
   const { isMobile } = useSidebar();
   const activeValue = lockTabs ? 'profile' : value;
@@ -319,6 +328,7 @@ function UserSettingsTabs({
               formatGradeLevel={formatGradeLevel}
               expandProfileDetails={expandProfileDetails}
               onProfileSave={onProfileSave}
+              onAvatarUpload={onAvatarUpload}
             />
           </TabsContent>
 

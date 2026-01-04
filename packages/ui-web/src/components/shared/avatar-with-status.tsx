@@ -65,7 +65,7 @@ export function AvatarWithStatus({
   const derivedDisplayStatus =
     presence?.displayStatus ?? LIVE_STATUS_TO_DISPLAY[liveStatus];
   const shouldShowStatus = showStatus !== undefined ? showStatus : !!presence;
-  const avatarUrl = avatar?.url ?? '/placeholder.svg';
+  const avatarUrl = avatar?.url ?? null;
   const tooltipText = presence?.state?.text?.trim();
   const tooltipEmoji = presence?.state?.emoji?.trim();
   const shouldShowTooltip = Boolean(tooltipText || tooltipEmoji);
@@ -76,7 +76,7 @@ export function AvatarWithStatus({
       <Avatar
         className={cn(sizeClassName, themeClass, themeKey ? 'border theme-border' : '')}
       >
-        <AvatarImage src={avatarUrl} alt={name} />
+        {avatarUrl ? <AvatarImage src={avatarUrl} alt={name} /> : null}
         <AvatarFallback
           className={cn(fallbackClassName, themeKey ? 'theme-bg theme-fg' : '')}
         >

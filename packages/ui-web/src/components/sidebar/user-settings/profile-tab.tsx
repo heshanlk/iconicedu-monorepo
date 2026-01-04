@@ -49,6 +49,7 @@ type ProfileTabProps = {
   staffSpecialties?: string[];
   expandProfileDetails?: boolean;
   onProfileSave?: (input: ProfileSaveInput) => Promise<void> | void;
+  onAvatarUpload?: (input: ProfileAvatarInput) => Promise<void> | void;
 };
 
 export type ProfileSaveInput = {
@@ -58,6 +59,12 @@ export type ProfileSaveInput = {
   firstName: string;
   lastName: string;
   bio?: string | null;
+};
+
+export type ProfileAvatarInput = {
+  profileId: string;
+  orgId: string;
+  file: File;
 };
 
 export function ProfileTab({
@@ -76,6 +83,7 @@ export function ProfileTab({
   staffSpecialties = [],
   expandProfileDetails = false,
   onProfileSave,
+  onAvatarUpload,
 }: ProfileTabProps) {
   const [profileDetailsOpen, setProfileDetailsOpen] =
     React.useState(expandProfileDetails);
@@ -98,6 +106,12 @@ export function ProfileTab({
   const [saveError, setSaveError] = React.useState<string | null>(null);
   const [isSaving, setIsSaving] = React.useState(false);
   const [saveSuccess, setSaveSuccess] = React.useState(false);
+  const [avatarPreview, setAvatarPreview] = React.useState<string | null>(null);
+  const [avatarUploadError, setAvatarUploadError] = React.useState<string | null>(
+    null,
+  );
+  const [isUploadingAvatar, setIsUploadingAvatar] = React.useState(false);
+  const avatarInputRef = React.useRef<HTMLInputElement | null>(null);
 
   React.useEffect(() => {
     if (expandProfileDetails) {
@@ -110,6 +124,7 @@ export function ProfileTab({
     setLastNameValue(profileBlock.lastName ?? '');
     setDisplayNameValue(profileBlock.displayName ?? '');
     setBioValue(profileBlock.bio ?? '');
+    setAvatarPreview(null);
   }, [
     profileBlock.firstName,
     profileBlock.lastName,
@@ -163,6 +178,59 @@ export function ProfileTab({
     profile.ids.id,
     profile.ids.orgId,
   ]);
+
+  React.useEffect(() => {
+    return () => {
+      if (avatarPreview) {
+        URL.revokeObjectURL(avatarPreview);
+      }
+    };
+  }, [avatarPreview]);
+
+  const handleAvatarClick = () => {
+    avatarInputRef.current?.click();
+  };
+
+  const handleAvatarChange = React.useCallback(
+    async (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (!file) {
+        return;
+      }
+
+      setAvatarUploadError(null);
+
+      if (avatarPreview) {
+        URL.revokeObjectURL(avatarPreview);
+      }
+
+      const previewUrl = URL.createObjectURL(file);
+      setAvatarPreview(previewUrl);
+
+      if (!onAvatarUpload) {
+        return;
+      }
+
+      setIsUploadingAvatar(true);
+      try {
+        await onAvatarUpload({
+          profileId: profile.ids.id,
+          orgId: profile.ids.orgId,
+          file,
+        });
+      } catch (error) {
+        setAvatarUploadError(
+          error instanceof Error ? error.message : 'Unable to upload photo.',
+        );
+      } finally {
+        setIsUploadingAvatar(false);
+        event.target.value = '';
+      }
+    },
+    [avatarPreview, onAvatarUpload, profile.ids.id, profile.ids.orgId],
+  );
+
+  const avatarUrl = avatarPreview ?? profileBlock.avatar.url ?? null;
 
   return (
     <div className="space-y-8 w-full">
@@ -224,7 +292,7 @@ export function ProfileTab({
                   <Avatar
                     className={`size-12 border theme-border theme-${currentThemeKey}`}
                   >
-                    <AvatarImage src={profileBlock.avatar.url ?? undefined} />
+                    {avatarUrl ? <AvatarImage src={avatarUrl} /> : null}
                     <AvatarFallback className="theme-bg theme-fg">
                       {(profileBlock.displayName ?? 'U')
                         .split(' ')
@@ -240,10 +308,28 @@ export function ProfileTab({
                       JPG, PNG up to 5MB.
                     </div>
                   </div>
-                  <Button variant="outline" size="sm" className="ml-auto">
-                    Change
+                  <input
+                    ref={avatarInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleAvatarChange}
+                    className="hidden"
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="ml-auto"
+                    onClick={handleAvatarClick}
+                    disabled={isUploadingAvatar}
+                  >
+                    {isUploadingAvatar ? 'Uploading...' : 'Change'}
                   </Button>
                 </div>
+                {avatarUploadError ? (
+                  <div className="sm:col-span-2 text-xs text-destructive">
+                    {avatarUploadError}
+                  </div>
+                ) : null}
                 <div className="space-y-2 sm:col-span-2">
                   <Label htmlFor="settings-display-name">Display name</Label>
                   <Input

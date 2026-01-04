@@ -69,11 +69,7 @@ export default async function Layout({ children }: { children: ReactNode }) {
     account = inserted;
   }
 
-  const { accountVM, profileVM } = await buildSidebarUser(
-    supabase,
-    data.user,
-    account,
-  );
+  const { accountVM, profileVM } = await buildSidebarUser(supabase, data.user, account);
 
   const needsProfileCompletion =
     !profileVM.profile.firstName?.trim() || !profileVM.profile.lastName?.trim();
@@ -282,7 +278,17 @@ async function buildSidebarUser(
   );
   const presence = await loadPresence(supabase, profileRow.org_id, profileRow.id);
 
-  const baseProfile = buildBaseProfile(profileRow, notificationDefaults, presence);
+  const avatarUrl = await resolveAvatarUrl(
+    supabase,
+    profileRow.avatar_source,
+    profileRow.avatar_url,
+  );
+  const baseProfile = buildBaseProfile(
+    profileRow,
+    notificationDefaults,
+    presence,
+    avatarUrl,
+  );
 
   if (profileRow.kind === 'educator') {
     return {
@@ -339,7 +345,14 @@ function deriveDisplayName(user: {
 }
 
 function deriveProfileKind(userRoles: UserRoleVM[]): UserProfileVM['kind'] {
-  const rolePriority: RoleKey[] = ['guardian', 'educator', 'staff', 'child', 'admin', 'owner'];
+  const rolePriority: RoleKey[] = [
+    'guardian',
+    'educator',
+    'staff',
+    'child',
+    'admin',
+    'owner',
+  ];
   const roleKey =
     rolePriority.find((candidate) =>
       userRoles.some((role) => role.roleKey === candidate),
@@ -384,6 +397,8 @@ const THEME_KEYS: ThemeKey[] = [
   'yellow',
 ];
 const THEME_KEY_SET = new Set(THEME_KEYS);
+const AVATAR_BUCKET = 'public-avatars';
+const AVATAR_SIGNED_URL_TTL = 60 * 60;
 
 function resolveThemeKey(value: string | null): ThemeKey | null {
   if (value && THEME_KEY_SET.has(value as ThemeKey)) {
@@ -396,6 +411,7 @@ function buildBaseProfile(
   profileRow: ProfileRow,
   notificationDefaults: NotificationDefaultsVM | null,
   presence: PresenceVM | null,
+  avatarUrlOverride?: string | null,
 ): Omit<UserProfileVM, 'kind'> {
   return {
     ids: {
@@ -410,7 +426,7 @@ function buildBaseProfile(
       bio: profileRow.bio,
       avatar: {
         source: resolveAvatarSource(profileRow.avatar_source),
-        url: profileRow.avatar_url,
+        url: avatarUrlOverride ?? profileRow.avatar_url,
         seed: profileRow.avatar_seed,
         updatedAt: profileRow.avatar_updated_at,
       },
@@ -442,6 +458,30 @@ function buildBaseProfile(
       themeKey: resolveThemeKey(profileRow.ui_theme_key),
     },
   };
+}
+
+async function resolveAvatarUrl(
+  supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>,
+  avatarSource: string,
+  avatarUrl: string | null,
+): Promise<string | null> {
+  if (!avatarUrl) {
+    return null;
+  }
+
+  if (resolveAvatarSource(avatarSource) !== 'upload') {
+    return avatarUrl;
+  }
+
+  const { data, error } = await supabase.storage
+    .from(AVATAR_BUCKET)
+    .createSignedUrl(avatarUrl, AVATAR_SIGNED_URL_TTL);
+
+  if (error) {
+    return null;
+  }
+
+  return data?.signedUrl ?? null;
 }
 
 async function loadNotificationDefaults(
@@ -564,10 +604,11 @@ async function buildEducatorProfile(
     kind: 'educator',
     headline: educator?.headline ?? null,
     subjects: subjectRows?.map((row) => row.subject) ?? null,
-    gradesSupported: gradeRows?.map((row) => ({
-      id: row.grade_id,
-      label: row.grade_label ?? row.grade_id,
-    })) ?? null,
+    gradesSupported:
+      gradeRows?.map((row) => ({
+        id: row.grade_id,
+        label: row.grade_label ?? row.grade_id,
+      })) ?? null,
     education: educator?.education ?? null,
     experienceYears: educator?.experience_years ?? null,
     certifications: educator?.certifications ?? null,
@@ -630,7 +671,9 @@ async function buildStaffProfile(
 ): Promise<StaffProfileVM> {
   const { data: staff } = await supabase
     .from('staff_profiles')
-    .select('department, manager_staff_id, job_title, permissions_scope, working_hours_rules')
+    .select(
+      'department, manager_staff_id, job_title, permissions_scope, working_hours_rules',
+    )
     .eq('profile_id', profileRow.id)
     .is('deleted_at', null)
     .maybeSingle<StaffProfileRow>();
@@ -675,11 +718,7 @@ async function buildGuardianProfile(
     (familyLinks as FamilyLinkRow[] | null | undefined)?.map(
       (link) => link.child_account_id,
     ) ?? [];
-  const children = await loadChildProfiles(
-    supabase,
-    profileRow.org_id,
-    childAccountIds,
-  );
+  const children = await loadChildProfiles(supabase, profileRow.org_id, childAccountIds);
 
   const childrenConnection: ConnectionVM<ChildProfileVM> = {
     items: children,
@@ -748,7 +787,9 @@ async function loadChildProfiles(
   const profileIds = profileRows.map((row) => row.id);
   const { data: childRows } = await supabase
     .from('child_profiles')
-    .select('profile_id, birth_year, school_name, school_year, confidence_level, communication_style')
+    .select(
+      'profile_id, birth_year, school_name, school_year, confidence_level, communication_style',
+    )
     .in('profile_id', profileIds)
     .is('deleted_at', null);
   const { data: gradeRows } = await supabase
@@ -758,10 +799,7 @@ async function loadChildProfiles(
     .is('deleted_at', null);
 
   const childByProfileId = new Map(
-    ((childRows as ChildProfileRow[] | null) ?? []).map((row) => [
-      row.profile_id,
-      row,
-    ]),
+    ((childRows as ChildProfileRow[] | null) ?? []).map((row) => [row.profile_id, row]),
   );
   const gradeByProfileId = new Map(
     ((gradeRows as ChildProfileGradeLevelRow[] | null) ?? []).map((row) => [
@@ -770,12 +808,15 @@ async function loadChildProfiles(
     ]),
   );
 
-  return profileRows.map((row) => {
-    const baseProfile = buildBaseProfile(
-      row as ProfileRow,
-      null,
-      null,
-    );
+  const profilesWithAvatar = await Promise.all(
+    profileRows.map(async (row) => ({
+      row,
+      avatarUrl: await resolveAvatarUrl(supabase, row.avatar_source, row.avatar_url),
+    })),
+  );
+
+  return profilesWithAvatar.map(({ row, avatarUrl }) => {
+    const baseProfile = buildBaseProfile(row as ProfileRow, null, null, avatarUrl);
     const child = childByProfileId.get(row.id);
     const grade = gradeByProfileId.get(row.id);
     const gradeLevel: GradeLevelOption | null = grade
