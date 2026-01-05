@@ -44,5 +44,6 @@ export async function getAccountById(supabase: SupabaseClient, accountId: string
     .from('accounts')
     .select(ACCOUNT_SELECT)
     .eq('id', accountId)
+    .is('deleted_at', null)
     .maybeSingle<AccountRow>();
 }

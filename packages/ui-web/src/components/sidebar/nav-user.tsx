@@ -31,7 +31,11 @@ import {
   useSidebar,
 } from '../../ui/sidebar';
 import { UserSettingsDialog, type UserSettingsTab } from './user-settings-dialog';
-import type { ProfileAvatarInput, ProfileSaveInput } from './user-settings/profile-tab';
+import type {
+  ProfileAvatarInput,
+  ProfileAvatarRemoveInput,
+  ProfileSaveInput,
+} from './user-settings/profile-tab';
 
 export function NavUser({
   profile,
@@ -44,6 +48,7 @@ export function NavUser({
   onPrefsSave,
   onLocationSave,
   onAvatarUpload,
+  onAvatarRemove,
 }: {
   profile: UserProfileVM;
   account?: UserAccountVM | null;
@@ -78,6 +83,7 @@ export function NavUser({
     countryName?: string | null;
   }) => Promise<void> | void;
   onAvatarUpload?: (input: ProfileAvatarInput) => Promise<void> | void;
+  onAvatarRemove?: (input: ProfileAvatarRemoveInput) => Promise<void> | void;
 }) {
   const { isMobile } = useSidebar();
   const secondaryLabel =
@@ -216,6 +222,7 @@ export function NavUser({
           onPrefsSave={onPrefsSave}
           onLocationSave={onLocationSave}
           onAvatarUpload={onAvatarUpload}
+          onAvatarRemove={onAvatarRemove}
         />
       </SidebarMenuItem>
     </SidebarMenu>

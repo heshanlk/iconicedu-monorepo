@@ -5,6 +5,7 @@ import {
   ChevronRight,
   Lightbulb,
   SlidersHorizontal,
+  ArrowRight,
   User,
   Users,
   X,
@@ -15,11 +16,22 @@ import type {
   EducatorProfileVM,
   GradeLevelOption,
   StaffProfileVM,
-  ThemeKey,
   UserProfileVM,
 } from '@iconicedu/shared-types';
 import { BorderBeam } from '../../../ui/border-beam';
 import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '../../../ui/alert-dialog';
+import { cn } from '@iconicedu/ui-web/lib/utils';
 import { Button } from '../../../ui/button';
 import {
   Collapsible,
@@ -34,7 +46,6 @@ import { Textarea } from '../../../ui/textarea';
 type ProfileTabProps = {
   profile: UserProfileVM;
   profileBlock: UserProfileVM['profile'];
-  currentThemeKey: ThemeKey;
   childProfile: ChildProfileVM | null;
   educatorProfile: EducatorProfileVM | null;
   staffProfile: StaffProfileVM | null;
@@ -52,6 +63,7 @@ type ProfileTabProps = {
   onPrimaryActionComplete?: () => void;
   onProfileSave?: (input: ProfileSaveInput) => Promise<void> | void;
   onAvatarUpload?: (input: ProfileAvatarInput) => Promise<void> | void;
+  onAvatarRemove?: (input: ProfileAvatarRemoveInput) => Promise<void> | void;
 };
 
 export type ProfileSaveInput = {
@@ -69,10 +81,14 @@ export type ProfileAvatarInput = {
   file: File;
 };
 
+export type ProfileAvatarRemoveInput = {
+  profileId: string;
+  orgId: string;
+};
+
 export function ProfileTab({
   profile,
   profileBlock,
-  currentThemeKey,
   childProfile,
   educatorProfile,
   staffProfile,
@@ -88,6 +104,7 @@ export function ProfileTab({
   onPrimaryActionComplete,
   onProfileSave,
   onAvatarUpload,
+  onAvatarRemove,
 }: ProfileTabProps) {
   const [profileDetailsOpen, setProfileDetailsOpen] =
     React.useState(expandProfileDetails);
@@ -111,7 +128,13 @@ export function ProfileTab({
   const [avatarPreview, setAvatarPreview] = React.useState<string | null>(null);
   const [avatarUploadError, setAvatarUploadError] = React.useState<string | null>(null);
   const [isUploadingAvatar, setIsUploadingAvatar] = React.useState(false);
+  const [isRemovingAvatar, setIsRemovingAvatar] = React.useState(false);
+  const [isRemoveDialogOpen, setIsRemoveDialogOpen] = React.useState(false);
+  const [avatarRemoved, setAvatarRemoved] = React.useState(false);
   const avatarInputRef = React.useRef<HTMLInputElement | null>(null);
+  const isPrimaryDisabled =
+    primaryActionLabel === 'Continue' &&
+    (!firstNameValue.trim() || !lastNameValue.trim());
 
   React.useEffect(() => {
     if (expandProfileDetails) {
@@ -119,18 +142,30 @@ export function ProfileTab({
     }
   }, [expandProfileDetails]);
 
+
   React.useEffect(() => {
     setFirstNameValue(profileBlock.firstName ?? '');
     setLastNameValue(profileBlock.lastName ?? '');
     setDisplayNameValue(profileBlock.displayName ?? '');
     setBioValue(profileBlock.bio ?? '');
     setAvatarPreview(null);
+    setAvatarRemoved(false);
   }, [
     profileBlock.firstName,
     profileBlock.lastName,
     profileBlock.displayName,
     profileBlock.bio,
   ]);
+
+  React.useEffect(() => {
+    if (displayNameValue.trim()) {
+      return;
+    }
+    const derivedName = `${firstNameValue.trim()} ${lastNameValue.trim()}`.trim();
+    if (derivedName) {
+      setDisplayNameValue(derivedName);
+    }
+  }, [displayNameValue, firstNameValue, lastNameValue]);
 
   const handleProfileSave = React.useCallback(
     async (afterSave?: () => void) => {
@@ -192,6 +227,12 @@ export function ProfileTab({
     };
   }, [avatarPreview]);
 
+  React.useEffect(() => {
+    if (profileBlock.avatar.url) {
+      setAvatarRemoved(false);
+    }
+  }, [profileBlock.avatar.url]);
+
   const handleAvatarClick = () => {
     avatarInputRef.current?.click();
   };
@@ -211,6 +252,7 @@ export function ProfileTab({
 
       const previewUrl = URL.createObjectURL(file);
       setAvatarPreview(previewUrl);
+      setAvatarRemoved(false);
 
       if (!onAvatarUpload) {
         return;
@@ -235,7 +277,51 @@ export function ProfileTab({
     [avatarPreview, onAvatarUpload, profile.ids.id, profile.ids.orgId],
   );
 
-  const avatarUrl = avatarPreview ?? profileBlock.avatar.url ?? null;
+  const handleAvatarRemove = React.useCallback(async () => {
+    setAvatarUploadError(null);
+    setAvatarRemoved(true);
+    if (avatarPreview) {
+      URL.revokeObjectURL(avatarPreview);
+      setAvatarPreview(null);
+    }
+    if (!onAvatarRemove) {
+      return;
+    }
+    try {
+      setIsRemovingAvatar(true);
+      await onAvatarRemove({
+        profileId: profile.ids.id,
+        orgId: profile.ids.orgId,
+      });
+    } catch (error) {
+      setAvatarUploadError(
+        error instanceof Error ? error.message : 'Unable to remove avatar.',
+      );
+    } finally {
+      setIsRemovingAvatar(false);
+    }
+  }, [avatarPreview, onAvatarRemove, profile.ids.id, profile.ids.orgId]);
+
+  const handleConfirmAvatarRemove = React.useCallback(async () => {
+    await handleAvatarRemove();
+    setIsRemoveDialogOpen(false);
+  }, [handleAvatarRemove]);
+
+  const avatarUrl = avatarRemoved
+    ? null
+    : avatarPreview ?? profileBlock.avatar.url ?? null;
+  const hasAvatar = Boolean(profileBlock.avatar.url ?? avatarPreview) && !avatarRemoved;
+  const fallbackName =
+    profileBlock.displayName?.trim() ||
+    `${profileBlock.firstName ?? ''} ${profileBlock.lastName ?? ''}`.trim() ||
+    'User';
+  const avatarInitials = fallbackName
+    .split(' ')
+    .map((part) => part[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
+  const avatarThemeKey = profile.ui?.themeKey ?? 'teal';
 
   return (
     <div className="space-y-8 w-full">
@@ -305,16 +391,12 @@ export function ProfileTab({
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="sm:col-span-2 flex items-center gap-3">
                   <Avatar
-                    className={`size-12 border theme-border theme-${currentThemeKey}`}
+                    key={`${avatarUrl ?? 'fallback'}-${avatarRemoved ? 'removed' : 'active'}`}
+                    className={cn('size-12 border theme-border', `theme-${avatarThemeKey}`)}
                   >
                     {avatarUrl ? <AvatarImage src={avatarUrl} /> : null}
-                    <AvatarFallback className="theme-bg theme-fg">
-                      {(profileBlock.displayName ?? 'U')
-                        .split(' ')
-                        .map((part) => part[0])
-                        .join('')
-                        .slice(0, 2)
-                        .toUpperCase()}
+                    <AvatarFallback className="theme-bg theme-fg font-semibold">
+                      {avatarInitials}
                     </AvatarFallback>
                   </Avatar>
                   <div>
@@ -339,6 +421,43 @@ export function ProfileTab({
                   >
                     {isUploadingAvatar ? 'Uploading...' : 'Change'}
                   </Button>
+                  {hasAvatar ? (
+                    <AlertDialog
+                      open={isRemoveDialogOpen}
+                      onOpenChange={setIsRemoveDialogOpen}
+                    >
+                      <AlertDialogTrigger asChild>
+                        <Button variant="ghost" size="sm" disabled={isRemovingAvatar}>
+                          {isRemovingAvatar ? 'Removing...' : 'Remove'}
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Remove profile photo?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This will reset your avatar to the default initials.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel asChild>
+                            <Button type="button" variant="outline">
+                              Cancel
+                            </Button>
+                          </AlertDialogCancel>
+                          <AlertDialogAction asChild>
+                            <Button
+                              type="button"
+                              variant="destructive"
+                              onClick={handleConfirmAvatarRemove}
+                              disabled={isRemovingAvatar}
+                            >
+                              Remove
+                            </Button>
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  ) : null}
                 </div>
                 {avatarUploadError ? (
                   <div className="sm:col-span-2 text-xs text-destructive">
@@ -435,7 +554,10 @@ export function ProfileTab({
                   ) : null}
                 </div>
                 <div className="space-y-2 sm:col-span-2">
-                  <Label htmlFor="settings-bio">Bio</Label>
+                  <div className="flex items-center justify-between gap-2">
+                    <Label htmlFor="settings-bio">About me</Label>
+                    <span className="text-xs text-muted-foreground">Optional</span>
+                  </div>
                   <Textarea
                     id="settings-bio"
                     value={bioValue}
@@ -455,9 +577,18 @@ export function ProfileTab({
                   <Button
                     size="sm"
                     onClick={() => handleProfileSave(onPrimaryActionComplete)}
-                    disabled={isSaving}
+                    disabled={isSaving || isPrimaryDisabled}
                   >
-                    {isSaving ? 'Saving...' : primaryActionLabel}
+                    {isSaving ? (
+                      'Saving...'
+                    ) : primaryActionLabel === 'Continue' ? (
+                      <span className="inline-flex items-center gap-2">
+                        Continue
+                        <ArrowRight className="h-4 w-4" />
+                      </span>
+                    ) : (
+                      primaryActionLabel
+                    )}
                   </Button>
                 </div>
               </div>

@@ -362,6 +362,45 @@ export function SidebarShell({
     [supabase],
   );
 
+  const handleAvatarRemove = React.useCallback(
+    async (input: { profileId: string; orgId: string }) => {
+      const now = new Date().toISOString();
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          avatar_source: 'seed',
+          avatar_url: null,
+          avatar_updated_at: now,
+        })
+        .eq('id', input.profileId)
+        .eq('org_id', input.orgId);
+
+      if (error) {
+        throw error;
+      }
+
+      setSidebarData((prev) => ({
+        ...prev,
+        user: {
+          ...prev.user,
+          profile: {
+            ...prev.user.profile,
+            profile: {
+              ...prev.user.profile.profile,
+              avatar: {
+                ...prev.user.profile.profile.avatar,
+                source: 'seed',
+                url: null,
+                updatedAt: now,
+              },
+            },
+          },
+        },
+      }));
+    },
+    [supabase],
+  );
+
   return (
     <>
       <SidebarLeft
@@ -375,6 +414,7 @@ export function SidebarShell({
         onPrefsSave={handlePrefsUpdate}
         onLocationSave={handleLocationUpdate}
         onAvatarUpload={handleAvatarUpload}
+        onAvatarRemove={handleAvatarRemove}
       />
       <SidebarInset>{children}</SidebarInset>
     </>

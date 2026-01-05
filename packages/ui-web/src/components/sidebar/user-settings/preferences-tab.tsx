@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ChevronRight, Clock, Globe, Languages, Palette, X } from 'lucide-react';
+import { ArrowRight, ChevronRight, Clock, Globe, Languages, Palette, X } from 'lucide-react';
 
 import type { ThemeKey, UserProfileVM } from '@iconicedu/shared-types';
 import { BorderBeam } from '../../../ui/border-beam';
@@ -219,7 +219,14 @@ export function PreferencesTab({
                       onClick={handleTimezoneContinue}
                       disabled={isSaving}
                     >
-                      {isSaving ? 'Saving...' : 'Continue'}
+                      {isSaving ? (
+                        'Saving...'
+                      ) : (
+                        <span className="inline-flex items-center gap-2">
+                          Continue
+                          <ArrowRight className="h-4 w-4" />
+                        </span>
+                      )}
                     </Button>
                   ) : (
                     <Button size="sm">Save</Button>

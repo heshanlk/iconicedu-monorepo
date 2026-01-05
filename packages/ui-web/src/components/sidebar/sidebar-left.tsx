@@ -17,7 +17,11 @@ import {
 import { NavLearningSpaces } from './nav-learning-spaces';
 import { NavSecondary } from './nav-secondary';
 import { NavUser } from './nav-user';
-import type { ProfileAvatarInput, ProfileSaveInput } from './user-settings/profile-tab';
+import type {
+  ProfileAvatarInput,
+  ProfileAvatarRemoveInput,
+  ProfileSaveInput,
+} from './user-settings/profile-tab';
 import {
   Sidebar,
   SidebarContent,
@@ -75,6 +79,7 @@ export function SidebarLeft({
   onPrefsSave,
   onLocationSave,
   onAvatarUpload,
+  onAvatarRemove,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
   data: SidebarLeftDataVM;
@@ -110,6 +115,7 @@ export function SidebarLeft({
     countryName?: string | null;
   }) => Promise<void> | void;
   onAvatarUpload?: (input: ProfileAvatarInput) => Promise<void> | void;
+  onAvatarRemove?: (input: ProfileAvatarRemoveInput) => Promise<void> | void;
 }) {
   const navMain: SidebarNavItem[] = data.navigation.navMain.map((item) => ({
     ...item,
@@ -271,6 +277,7 @@ export function SidebarLeft({
           onPrefsSave={onPrefsSave}
           onLocationSave={onLocationSave}
           onAvatarUpload={onAvatarUpload}
+          onAvatarRemove={onAvatarRemove}
         />
       </SidebarFooter>
     </Sidebar>

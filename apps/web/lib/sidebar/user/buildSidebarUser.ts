@@ -111,7 +111,8 @@ export async function buildSidebarUser(
   if (
     externalAvatarUrl &&
     !profileRow.avatar_url &&
-    resolveAvatarSource(profileRow.avatar_source) === 'seed'
+    resolveAvatarSource(profileRow.avatar_source) === 'seed' &&
+    !profileRow.avatar_updated_at
   ) {
     const updated = await updateProfileAvatar(supabase, {
       profileId: profileRow.id,

@@ -39,11 +39,17 @@ export function mapAccountRowToVM(
       email: accountRow?.email ?? input.authEmail ?? null,
       phoneE164: accountRow?.phone_e164 ?? null,
       whatsappE164: accountRow?.whatsapp_e164 ?? null,
-      emailVerified: accountRow?.email_verified ?? null,
+      emailVerified:
+        accountRow?.email_verified ??
+        (accountRow?.email_verified_at ? true : null),
       emailVerifiedAt: accountRow?.email_verified_at ?? null,
-      phoneVerified: accountRow?.phone_verified ?? null,
+      phoneVerified:
+        accountRow?.phone_verified ??
+        (accountRow?.phone_verified_at ? true : null),
       phoneVerifiedAt: accountRow?.phone_verified_at ?? null,
-      whatsappVerified: accountRow?.whatsapp_verified ?? null,
+      whatsappVerified:
+        accountRow?.whatsapp_verified ??
+        (accountRow?.whatsapp_verified_at ? true : null),
       whatsappVerifiedAt: accountRow?.whatsapp_verified_at ?? null,
       preferredContactChannels:
         (accountRow?.preferred_contact_channels as Array<

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { AsYouType, parsePhoneNumberFromString } from 'libphonenumber-js';
-import { BadgeCheck, ChevronRight, Mail, MessageCircle, Phone, X } from 'lucide-react';
+import { ArrowRight, BadgeCheck, ChevronRight, Mail, MessageCircle, Phone, X } from 'lucide-react';
 
 import type { UserAccountVM } from '@iconicedu/shared-types';
 import { Badge } from '../../../ui/badge';
@@ -47,13 +47,17 @@ export function AccountTab({
   const [phoneValue, setPhoneValue] = React.useState(contacts?.phoneE164 ?? '');
   const [isPhoneFocused, setIsPhoneFocused] = React.useState(false);
   const [phoneError, setPhoneError] = React.useState<string | null>(null);
+  const [hasPhoneDraft, setHasPhoneDraft] = React.useState(false);
   const [whatsappValue, setWhatsappValue] = React.useState(contacts?.whatsappE164 ?? '');
   const [isWhatsappFocused, setIsWhatsappFocused] = React.useState(false);
   const [whatsappError, setWhatsappError] = React.useState<string | null>(null);
+  const [hasWhatsappDraft, setHasWhatsappDraft] = React.useState(false);
   const [isPhoneSaving, setIsPhoneSaving] = React.useState(false);
   const [isWhatsappSaving, setIsWhatsappSaving] = React.useState(false);
   const showToast = showOnboardingToast && !isAccountToastDismissed;
   const emailError = !email.trim() ? 'Email is required.' : null;
+  const parsedPhone = parsePhoneNumberFromString(phoneValue);
+  const isPhoneValid = Boolean(phoneValue.trim() && parsedPhone?.isValid());
 
   const formatPhoneInput = React.useCallback((value: string) => {
     return new AsYouType().input(value);
@@ -66,16 +70,16 @@ export function AccountTab({
   }, [expandWhatsapp, phoneValue, whatsappValue]);
 
   React.useEffect(() => {
-    if (!isPhoneFocused) {
+    if (!isPhoneFocused && !hasPhoneDraft) {
       setPhoneValue(formatPhoneInput(contacts?.phoneE164 ?? ''));
     }
-  }, [contacts?.phoneE164, formatPhoneInput, isPhoneFocused]);
+  }, [contacts?.phoneE164, formatPhoneInput, hasPhoneDraft, isPhoneFocused]);
 
   React.useEffect(() => {
-    if (!isWhatsappFocused) {
+    if (!isWhatsappFocused && !hasWhatsappDraft) {
       setWhatsappValue(formatPhoneInput(contacts?.whatsappE164 ?? ''));
     }
-  }, [contacts?.whatsappE164, formatPhoneInput, isWhatsappFocused]);
+  }, [contacts?.whatsappE164, formatPhoneInput, hasWhatsappDraft, isWhatsappFocused]);
 
   const handlePhoneContinue = React.useCallback(async () => {
     if (!onPhoneContinue) {
@@ -164,8 +168,11 @@ export function AccountTab({
           </div>
         </div>
         <div className="space-y-1 w-full">
-          <Collapsible className="rounded-2xl w-full">
-            <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
+          <Collapsible className="rounded-2xl w-full" open={false}>
+            <CollapsibleTrigger
+              className="group flex w-full items-center gap-3 py-3 text-left"
+              disabled
+            >
               <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
                 <Mail className="h-5 w-5" />
               </span>
@@ -191,7 +198,7 @@ export function AccountTab({
                   <span className="sr-only">Not verified</span>
                 </Badge>
               )}
-              <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
+              <ChevronRight className="size-4 text-muted-foreground opacity-40" />
             </CollapsibleTrigger>
             <CollapsibleContent className="py-4 w-full">
               <div className="grid gap-4 sm:grid-cols-2">
@@ -247,7 +254,9 @@ export function AccountTab({
                   />
                 </div>
                 <div className="sm:col-span-2 flex justify-end">
-                  <Button size="sm">Save</Button>
+                  <Button size="sm" disabled>
+                    Save
+                  </Button>
                 </div>
               </div>
             </CollapsibleContent>
@@ -321,6 +330,9 @@ export function AccountTab({
                         }}
                         onChange={(event) => {
                           setPhoneValue(formatPhoneInput(event.target.value));
+                          if (!hasPhoneDraft) {
+                            setHasPhoneDraft(true);
+                          }
                           if (phoneError) {
                             setPhoneError(null);
                           }
@@ -375,9 +387,16 @@ export function AccountTab({
                     <Button
                       size="sm"
                       onClick={handlePhoneContinue}
-                      disabled={isPhoneSaving}
+                      disabled={isPhoneSaving || !isPhoneValid}
                     >
-                      {isPhoneSaving ? 'Saving...' : 'Continue'}
+                      {isPhoneSaving ? (
+                        'Saving...'
+                      ) : (
+                        <span className="inline-flex items-center gap-2">
+                          Continue
+                          <ArrowRight className="h-4 w-4" />
+                        </span>
+                      )}
                     </Button>
                   ) : (
                     <Button size="sm">Save</Button>
@@ -389,8 +408,11 @@ export function AccountTab({
           <Separator />
         </div>
         <div className="space-y-1 w-full">
-          <Collapsible className="rounded-2xl w-full" open={expandWhatsapp || undefined}>
-            <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
+          <Collapsible className="rounded-2xl w-full" open={false}>
+            <CollapsibleTrigger
+              className="group flex w-full items-center gap-3 py-3 text-left"
+              disabled
+            >
               <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
                 <MessageCircle className="h-5 w-5" />
               </span>
@@ -416,7 +438,7 @@ export function AccountTab({
                   <span className="sr-only">Not verified</span>
                 </Badge>
               )}
-              <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
+              <ChevronRight className="size-4 text-muted-foreground opacity-40" />
             </CollapsibleTrigger>
             <CollapsibleContent className="py-4 w-full">
               <div className="grid gap-4 sm:grid-cols-2">
@@ -449,6 +471,9 @@ export function AccountTab({
                         }}
                         onChange={(event) => {
                           setWhatsappValue(formatPhoneInput(event.target.value));
+                          if (!hasWhatsappDraft) {
+                            setHasWhatsappDraft(true);
+                          }
                           if (whatsappError) {
                             setWhatsappError(null);
                           }
@@ -502,17 +527,9 @@ export function AccountTab({
                   </div>
                 ) : null}
                 <div className="sm:col-span-2 flex justify-end">
-                  {expandWhatsapp && onWhatsappContinue ? (
-                    <Button
-                      size="sm"
-                      onClick={handleWhatsappContinue}
-                      disabled={isWhatsappSaving}
-                    >
-                      {isWhatsappSaving ? 'Saving...' : 'Continue'}
-                    </Button>
-                  ) : (
-                    <Button size="sm">Save</Button>
-                  )}
+                  <Button size="sm" disabled>
+                    Save
+                  </Button>
                 </div>
               </div>
             </CollapsibleContent>

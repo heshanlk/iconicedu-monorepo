@@ -4,7 +4,11 @@ import * as React from 'react';
 import type { UserAccountVM, UserProfileVM } from '@iconicedu/shared-types';
 import { useSidebar } from '../../ui/sidebar';
 import { cn } from '@iconicedu/ui-web/lib/utils';
-import type { ProfileAvatarInput, ProfileSaveInput } from './user-settings/profile-tab';
+import type {
+  ProfileAvatarInput,
+  ProfileAvatarRemoveInput,
+  ProfileSaveInput,
+} from './user-settings/profile-tab';
 import { ResponsiveDialog } from '../shared/responsive-dialog';
 import { UserSettingsTabs } from './user-settings/user-settings-tabs';
 import { useOnboardingState } from './user-settings/use-onboarding';
@@ -50,6 +54,7 @@ type UserSettingsDialogProps = {
     countryName?: string | null;
   }) => Promise<void> | void;
   onAvatarUpload?: (input: ProfileAvatarInput) => Promise<void> | void;
+  onAvatarRemove?: (input: ProfileAvatarRemoveInput) => Promise<void> | void;
 };
 
 export function UserSettingsDialog({
@@ -67,6 +72,7 @@ export function UserSettingsDialog({
   onPrefsSave,
   onLocationSave,
   onAvatarUpload,
+  onAvatarRemove,
 }: UserSettingsDialogProps) {
   const {
     onboardingStep,
@@ -119,6 +125,7 @@ export function UserSettingsDialog({
       onLogout={onLogout}
       onProfileSave={onProfileSave}
       onAvatarUpload={onAvatarUpload}
+      onAvatarRemove={onAvatarRemove}
       onProfileContinue={handleProfileContinue}
       onPhoneContinue={handlePhoneContinue}
       onWhatsappContinue={handleWhatsappContinue}

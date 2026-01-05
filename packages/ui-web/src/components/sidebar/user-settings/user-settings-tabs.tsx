@@ -14,6 +14,7 @@ import { PreferencesTab } from './preferences-tab';
 import {
   ProfileTab,
   type ProfileAvatarInput,
+  type ProfileAvatarRemoveInput,
   type ProfileSaveInput,
 } from './profile-tab';
 import {
@@ -36,6 +37,7 @@ export type UserSettingsTabsProps = {
   onLogout?: () => Promise<void> | void;
   onProfileSave?: (input: ProfileSaveInput) => Promise<void> | void;
   onAvatarUpload?: (input: ProfileAvatarInput) => Promise<void> | void;
+  onAvatarRemove?: (input: ProfileAvatarRemoveInput) => Promise<void> | void;
   onProfileContinue?: () => void;
   onPhoneContinue?: (phone: string) => Promise<void> | void;
   onWhatsappContinue?: (whatsapp: string) => Promise<void> | void;
@@ -66,6 +68,7 @@ export function UserSettingsTabs({
   onLogout,
   onProfileSave,
   onAvatarUpload,
+  onAvatarRemove,
   onProfileContinue,
   onPhoneContinue,
   onWhatsappContinue,
@@ -235,7 +238,6 @@ export function UserSettingsTabs({
             <ProfileTab
               profile={profile}
               profileBlock={profileBlock}
-              currentThemeKey={currentThemeKey}
               childProfile={childProfile}
               educatorProfile={educatorProfile}
               staffProfile={staffProfile}
@@ -245,6 +247,7 @@ export function UserSettingsTabs({
               onPrimaryActionComplete={onProfileContinue}
               onProfileSave={onProfileSave}
               onAvatarUpload={onAvatarUpload}
+              onAvatarRemove={onAvatarRemove}
             />
           </TabsContent>
 

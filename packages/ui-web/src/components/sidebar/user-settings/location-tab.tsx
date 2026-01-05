@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ChevronRight, MapPin, X } from 'lucide-react';
+import { ArrowRight, ChevronRight, MapPin, X } from 'lucide-react';
 
 import type { UserProfileVM } from '@iconicedu/shared-types';
 import { BorderBeam } from '../../../ui/border-beam';
@@ -299,7 +299,14 @@ export function LocationTab({
                       onClick={handleLocationContinue}
                       disabled={isSaving}
                     >
-                      {isSaving ? 'Saving...' : 'Continue'}
+                      {isSaving ? (
+                        'Saving...'
+                      ) : (
+                        <span className="inline-flex items-center gap-2">
+                          Continue
+                          <ArrowRight className="h-4 w-4" />
+                        </span>
+                      )}
                     </Button>
                   ) : (
                     <Button size="sm">Save</Button>
