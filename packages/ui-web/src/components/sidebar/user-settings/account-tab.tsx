@@ -48,20 +48,35 @@ export function AccountTab({
   const [isPhoneFocused, setIsPhoneFocused] = React.useState(false);
   const [phoneError, setPhoneError] = React.useState<string | null>(null);
   const [hasPhoneDraft, setHasPhoneDraft] = React.useState(false);
+  const [syncedPhone, setSyncedPhone] = React.useState(contacts?.phoneE164 ?? '');
   const [whatsappValue, setWhatsappValue] = React.useState(contacts?.whatsappE164 ?? '');
   const [isWhatsappFocused, setIsWhatsappFocused] = React.useState(false);
   const [whatsappError, setWhatsappError] = React.useState<string | null>(null);
   const [hasWhatsappDraft, setHasWhatsappDraft] = React.useState(false);
+  const [syncedWhatsapp, setSyncedWhatsapp] = React.useState(
+    contacts?.whatsappE164 ?? '',
+  );
+  const formatPhoneInput = React.useCallback((value: string) => {
+    return new AsYouType().input(value);
+  }, []);
   const [isPhoneSaving, setIsPhoneSaving] = React.useState(false);
   const [isWhatsappSaving, setIsWhatsappSaving] = React.useState(false);
   const showToast = showOnboardingToast && !isAccountToastDismissed;
   const emailError = !email.trim() ? 'Email is required.' : null;
+  const emailVerified = Boolean(contacts?.emailVerified);
+  const emailVerifiedAt = contacts?.emailVerifiedAt ?? null;
+  const formattedPhoneFromContacts = contacts?.phoneE164
+    ? formatPhoneInput(contacts.phoneE164)
+    : '';
+  const formattedWhatsappFromContacts = contacts?.whatsappE164
+    ? formatPhoneInput(contacts.whatsappE164)
+    : '';
+  const phoneDisplay =
+    phoneValue.trim() || formattedPhoneFromContacts || 'Not provided';
+  const whatsappDisplay =
+    whatsappValue.trim() || formattedWhatsappFromContacts || 'Not provided';
   const parsedPhone = parsePhoneNumberFromString(phoneValue);
   const isPhoneValid = Boolean(phoneValue.trim() && parsedPhone?.isValid());
-
-  const formatPhoneInput = React.useCallback((value: string) => {
-    return new AsYouType().input(value);
-  }, []);
 
   React.useEffect(() => {
     if (expandWhatsapp && !whatsappValue.trim() && phoneValue.trim()) {
@@ -70,16 +85,44 @@ export function AccountTab({
   }, [expandWhatsapp, phoneValue, whatsappValue]);
 
   React.useEffect(() => {
+    if (contacts?.phoneE164 !== syncedPhone) {
+      setSyncedPhone(contacts?.phoneE164 ?? '');
+      if (!isPhoneFocused) {
+        setPhoneValue(formatPhoneInput(contacts?.phoneE164 ?? ''));
+        setHasPhoneDraft(false);
+      }
+      return;
+    }
     if (!isPhoneFocused && !hasPhoneDraft) {
       setPhoneValue(formatPhoneInput(contacts?.phoneE164 ?? ''));
     }
-  }, [contacts?.phoneE164, formatPhoneInput, hasPhoneDraft, isPhoneFocused]);
+  }, [
+    contacts?.phoneE164,
+    formatPhoneInput,
+    hasPhoneDraft,
+    isPhoneFocused,
+    syncedPhone,
+  ]);
 
   React.useEffect(() => {
+    if (contacts?.whatsappE164 !== syncedWhatsapp) {
+      setSyncedWhatsapp(contacts?.whatsappE164 ?? '');
+      if (!isWhatsappFocused) {
+        setWhatsappValue(formatPhoneInput(contacts?.whatsappE164 ?? ''));
+        setHasWhatsappDraft(false);
+      }
+      return;
+    }
     if (!isWhatsappFocused && !hasWhatsappDraft) {
       setWhatsappValue(formatPhoneInput(contacts?.whatsappE164 ?? ''));
     }
-  }, [contacts?.whatsappE164, formatPhoneInput, hasWhatsappDraft, isWhatsappFocused]);
+  }, [
+    contacts?.whatsappE164,
+    formatPhoneInput,
+    hasWhatsappDraft,
+    isWhatsappFocused,
+    syncedWhatsapp,
+  ]);
 
   const handlePhoneContinue = React.useCallback(async () => {
     if (!onPhoneContinue) {
@@ -182,7 +225,7 @@ export function AccountTab({
                   {contacts?.email ?? 'Not provided'}
                 </div>
               </div>
-              {contacts?.emailVerified ? (
+              {emailVerified ? (
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
@@ -190,7 +233,7 @@ export function AccountTab({
                       <span className="sr-only">Verified</span>
                     </Badge>
                   </TooltipTrigger>
-                  <TooltipContent>{contacts.emailVerifiedAt}</TooltipContent>
+                  <TooltipContent>{emailVerifiedAt ?? 'Verified'}</TooltipContent>
                 </Tooltip>
               ) : (
                 <Badge className="bg-muted text-muted-foreground">
@@ -214,7 +257,7 @@ export function AccountTab({
                       required
                     />
                     <InputGroupAddon align="inline-end">
-                      {contacts?.emailVerified ? (
+                      {emailVerified ? (
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
@@ -222,7 +265,7 @@ export function AccountTab({
                               <span className="sr-only">Verified</span>
                             </Badge>
                           </TooltipTrigger>
-                          <TooltipContent>{contacts.emailVerifiedAt}</TooltipContent>
+                          <TooltipContent>{emailVerifiedAt ?? 'Verified'}</TooltipContent>
                         </Tooltip>
                       ) : (
                         <Badge className="bg-muted text-muted-foreground">
@@ -271,7 +314,7 @@ export function AccountTab({
               <div className="flex-1">
                 <div className="text-sm font-medium">Phone</div>
                 <div className="text-xs text-muted-foreground">
-                  {contacts?.phoneE164 ?? 'Not provided'}
+                  {phoneDisplay}
                 </div>
               </div>
               {contacts?.phoneVerified ? (
@@ -419,7 +462,7 @@ export function AccountTab({
               <div className="flex-1">
                 <div className="text-sm font-medium">WhatsApp</div>
                 <div className="text-xs text-muted-foreground">
-                  {contacts?.whatsappE164 ?? 'Not provided'}
+                  {whatsappDisplay}
                 </div>
               </div>
               {contacts?.whatsappVerified ? (

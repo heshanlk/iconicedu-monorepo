@@ -132,6 +132,8 @@ export function ProfileTab({
   const [isRemoveDialogOpen, setIsRemoveDialogOpen] = React.useState(false);
   const [avatarRemoved, setAvatarRemoved] = React.useState(false);
   const avatarInputRef = React.useRef<HTMLInputElement | null>(null);
+  const firstNameRef = React.useRef<HTMLInputElement | null>(null);
+  const lastNameRef = React.useRef<HTMLInputElement | null>(null);
   const isPrimaryDisabled =
     primaryActionLabel === 'Continue' &&
     (!firstNameValue.trim() || !lastNameValue.trim());
@@ -141,6 +143,17 @@ export function ProfileTab({
       setProfileDetailsOpen(true);
     }
   }, [expandProfileDetails]);
+
+  React.useEffect(() => {
+    if (!expandProfileDetails) {
+      return;
+    }
+    const target =
+      !firstNameValue.trim() ? firstNameRef.current : lastNameRef.current;
+    if (target) {
+      requestAnimationFrame(() => target.focus());
+    }
+  }, [expandProfileDetails, firstNameValue, lastNameValue]);
 
 
   React.useEffect(() => {
@@ -495,6 +508,7 @@ export function ProfileTab({
                     ) : null}
                     <Input
                       id="settings-first-name"
+                      ref={firstNameRef}
                       value={firstNameValue}
                       required
                       className="relative"
@@ -535,6 +549,7 @@ export function ProfileTab({
                     ) : null}
                     <Input
                       id="settings-last-name"
+                      ref={lastNameRef}
                       value={lastNameValue}
                       required
                       className="relative"
