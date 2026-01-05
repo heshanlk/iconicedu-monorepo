@@ -45,6 +45,7 @@ export function PreferencesTab({
   const [isTimezoneFocused, setIsTimezoneFocused] = React.useState(false);
   const [isToastDismissed, setIsToastDismissed] = React.useState(false);
   const [isSaving, setIsSaving] = React.useState(false);
+  const [timezoneError, setTimezoneError] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     setTimezoneValue(prefs.timezone ?? '');
@@ -58,8 +59,10 @@ export function PreferencesTab({
     }
     const trimmed = timezoneValue.trim();
     if (!trimmed) {
+      setTimezoneError('Timezone is required.');
       return;
     }
+    setTimezoneError(null);
     setIsSaving(true);
     try {
       await onTimezoneContinue(
@@ -178,7 +181,7 @@ export function PreferencesTab({
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2 sm:col-span-2">
                   <Label htmlFor="settings-timezone">
-                    Timezone {expandTimezone ? <span className="text-destructive">*</span> : null}
+                    Timezone <span className="text-destructive">*</span>
                   </Label>
                   <div className="relative rounded-full">
                     {expandTimezone && !timezoneValue.trim() && !isTimezoneFocused ? (
@@ -194,12 +197,20 @@ export function PreferencesTab({
                       id="settings-timezone"
                       value={timezoneValue}
                       placeholder="America/New_York"
-                      required={expandTimezone}
+                      required
                       onFocus={() => setIsTimezoneFocused(true)}
                       onBlur={() => setIsTimezoneFocused(false)}
-                      onChange={(event) => setTimezoneValue(event.target.value)}
+                      onChange={(event) => {
+                        setTimezoneValue(event.target.value);
+                        if (event.target.value.trim()) {
+                          setTimezoneError(null);
+                        }
+                      }}
                     />
                   </div>
+                  {timezoneError ? (
+                    <p className="text-xs text-destructive">{timezoneError}</p>
+                  ) : null}
                 </div>
                 <div className="sm:col-span-2 flex justify-end">
                   {expandTimezone && onTimezoneContinue ? (

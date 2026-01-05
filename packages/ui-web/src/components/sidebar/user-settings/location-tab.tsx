@@ -43,6 +43,12 @@ export function LocationTab({
   const [isPostalFocused, setIsPostalFocused] = React.useState(false);
   const [isCountryFocused, setIsCountryFocused] = React.useState(false);
   const [isSaving, setIsSaving] = React.useState(false);
+  const [fieldErrors, setFieldErrors] = React.useState<{
+    city?: string | null;
+    region?: string | null;
+    postalCode?: string | null;
+    country?: string | null;
+  }>({});
   const showToast = showOnboardingToast && !isToastDismissed;
 
   React.useEffect(() => {
@@ -66,9 +72,18 @@ export function LocationTab({
     const region = regionValue.trim();
     const postalCode = postalValue.trim();
     const countryName = countryValue.trim();
-    if (!city || !region || !postalCode || !countryName) {
+    const nextErrors = {
+      city: city ? null : 'City is required.',
+      region: region ? null : 'State is required.',
+      postalCode: postalCode ? null : 'Zip is required.',
+      country: countryName ? null : 'Country is required.',
+    };
+    const hasErrors = Object.values(nextErrors).some((value) => value);
+    if (hasErrors) {
+      setFieldErrors(nextErrors);
       return;
     }
+    setFieldErrors({});
     setIsSaving(true);
     try {
       await onLocationContinue({
@@ -165,9 +180,17 @@ export function LocationTab({
                       placeholder="City"
                       onFocus={() => setIsCityFocused(true)}
                       onBlur={() => setIsCityFocused(false)}
-                      onChange={(event) => setCityValue(event.target.value)}
+                      onChange={(event) => {
+                        setCityValue(event.target.value);
+                        if (event.target.value.trim()) {
+                          setFieldErrors((prev) => ({ ...prev, city: null }));
+                        }
+                      }}
                     />
                   </div>
+                  {fieldErrors.city ? (
+                    <p className="text-xs text-destructive">{fieldErrors.city}</p>
+                  ) : null}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="settings-region">
@@ -190,9 +213,17 @@ export function LocationTab({
                       placeholder="State"
                       onFocus={() => setIsRegionFocused(true)}
                       onBlur={() => setIsRegionFocused(false)}
-                      onChange={(event) => setRegionValue(event.target.value)}
+                      onChange={(event) => {
+                        setRegionValue(event.target.value);
+                        if (event.target.value.trim()) {
+                          setFieldErrors((prev) => ({ ...prev, region: null }));
+                        }
+                      }}
                     />
                   </div>
+                  {fieldErrors.region ? (
+                    <p className="text-xs text-destructive">{fieldErrors.region}</p>
+                  ) : null}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="settings-postal">
@@ -215,9 +246,17 @@ export function LocationTab({
                       placeholder="Zip"
                       onFocus={() => setIsPostalFocused(true)}
                       onBlur={() => setIsPostalFocused(false)}
-                      onChange={(event) => setPostalValue(event.target.value)}
+                      onChange={(event) => {
+                        setPostalValue(event.target.value);
+                        if (event.target.value.trim()) {
+                          setFieldErrors((prev) => ({ ...prev, postalCode: null }));
+                        }
+                      }}
                     />
                   </div>
+                  {fieldErrors.postalCode ? (
+                    <p className="text-xs text-destructive">{fieldErrors.postalCode}</p>
+                  ) : null}
                 </div>
                 <div className="space-y-2 sm:col-span-2">
                   <Label htmlFor="settings-country">
@@ -241,9 +280,17 @@ export function LocationTab({
                       placeholder="Country"
                       onFocus={() => setIsCountryFocused(true)}
                       onBlur={() => setIsCountryFocused(false)}
-                      onChange={(event) => setCountryValue(event.target.value)}
+                      onChange={(event) => {
+                        setCountryValue(event.target.value);
+                        if (event.target.value.trim()) {
+                          setFieldErrors((prev) => ({ ...prev, country: null }));
+                        }
+                      }}
                     />
                   </div>
+                  {fieldErrors.country ? (
+                    <p className="text-xs text-destructive">{fieldErrors.country}</p>
+                  ) : null}
                 </div>
                 <div className="sm:col-span-2 flex justify-end">
                   {expandLocation && onLocationContinue ? (

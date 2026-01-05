@@ -105,6 +105,7 @@ export function ProfileTab({
   );
   const [bioValue, setBioValue] = React.useState(profileBlock.bio ?? '');
   const [saveError, setSaveError] = React.useState<string | null>(null);
+  const [showRequiredErrors, setShowRequiredErrors] = React.useState(false);
   const [isSaving, setIsSaving] = React.useState(false);
   const [saveSuccess, setSaveSuccess] = React.useState(false);
   const [avatarPreview, setAvatarPreview] = React.useState<string | null>(null);
@@ -142,10 +143,12 @@ export function ProfileTab({
       const trimmedBio = bioValue.trim();
 
       if (!trimmedFirstName || !trimmedLastName) {
+        setShowRequiredErrors(true);
         setSaveError('First and last name are required.');
         return;
       }
 
+      setShowRequiredErrors(false);
       if (!onProfileSave) {
         setSaveSuccess(true);
         afterSave?.();
@@ -379,9 +382,17 @@ export function ProfileTab({
                       placeholder="Enter your first name"
                       onFocus={() => setIsFirstFocused(true)}
                       onBlur={() => setIsFirstFocused(false)}
-                      onChange={(event) => setFirstNameValue(event.target.value)}
+                      onChange={(event) => {
+                        setFirstNameValue(event.target.value);
+                        if (showRequiredErrors && event.target.value.trim()) {
+                          setShowRequiredErrors(false);
+                        }
+                      }}
                     />
                   </div>
+                  {showRequiredErrors && !firstNameValue.trim() ? (
+                    <p className="text-xs text-destructive">First name is required.</p>
+                  ) : null}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="settings-last-name">
@@ -411,9 +422,17 @@ export function ProfileTab({
                       placeholder="Enter your last name"
                       onFocus={() => setIsLastFocused(true)}
                       onBlur={() => setIsLastFocused(false)}
-                      onChange={(event) => setLastNameValue(event.target.value)}
+                      onChange={(event) => {
+                        setLastNameValue(event.target.value);
+                        if (showRequiredErrors && event.target.value.trim()) {
+                          setShowRequiredErrors(false);
+                        }
+                      }}
                     />
                   </div>
+                  {showRequiredErrors && !lastNameValue.trim() ? (
+                    <p className="text-xs text-destructive">Last name is required.</p>
+                  ) : null}
                 </div>
                 <div className="space-y-2 sm:col-span-2">
                   <Label htmlFor="settings-bio">Bio</Label>

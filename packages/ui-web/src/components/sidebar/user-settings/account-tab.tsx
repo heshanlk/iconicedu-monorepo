@@ -53,6 +53,7 @@ export function AccountTab({
   const [isPhoneSaving, setIsPhoneSaving] = React.useState(false);
   const [isWhatsappSaving, setIsWhatsappSaving] = React.useState(false);
   const showToast = showOnboardingToast && !isAccountToastDismissed;
+  const emailError = !email.trim() ? 'Email is required.' : null;
 
   const formatPhoneInput = React.useCallback((value: string) => {
     return new AsYouType().input(value);
@@ -224,6 +225,9 @@ export function AccountTab({
                       )}
                     </InputGroupAddon>
                   </InputGroup>
+                  {emailError ? (
+                    <p className="text-xs text-destructive">{emailError}</p>
+                  ) : null}
                 </div>
                 <div className="sm:col-span-2 flex items-center justify-between rounded-xl border border-border/60 px-4 py-3">
                   <div>

@@ -1,81 +1,16 @@
 'use client';
 
 import * as React from 'react';
-import {
-  BadgeCheck,
-  Bell,
-  LogOut,
-  MapPin,
-  SlidersHorizontal,
-  User,
-  Users,
-} from 'lucide-react';
-
-import type { ThemeKey, UserAccountVM, UserProfileVM } from '@iconicedu/shared-types';
-import { ScrollArea } from '../../ui/scroll-area';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../ui/tabs';
+import type { UserAccountVM, UserProfileVM } from '@iconicedu/shared-types';
 import { useSidebar } from '../../ui/sidebar';
 import { cn } from '@iconicedu/ui-web/lib/utils';
-import { AccountTab } from './user-settings/account-tab';
-import { FamilyTab } from './user-settings/family-tab';
-import { LocationTab } from './user-settings/location-tab';
-import { NotificationsTab } from './user-settings/notifications-tab';
-import { PreferencesTab } from './user-settings/preferences-tab';
-import {
-  ProfileTab,
-  type ProfileAvatarInput,
-  type ProfileSaveInput,
-} from './user-settings/profile-tab';
+import type { ProfileAvatarInput, ProfileSaveInput } from './user-settings/profile-tab';
 import { ResponsiveDialog } from '../shared/responsive-dialog';
+import { UserSettingsTabs } from './user-settings/user-settings-tabs';
+import { useOnboardingState } from './user-settings/use-onboarding';
+import type { UserSettingsTab } from './user-settings/constants';
+export type { UserSettingsTab } from './user-settings/constants';
 
-export type UserSettingsTab =
-  | 'account'
-  | 'profile'
-  | 'preferences'
-  | 'location'
-  | 'family'
-  | 'notifications';
-
-type OnboardingStep =
-  | 'profile'
-  | 'account-phone'
-  | 'account-whatsapp'
-  | 'preferences-timezone'
-  | 'location'
-  | 'family';
-
-const SETTINGS_TABS: Array<{
-  value: UserSettingsTab;
-  label: string;
-  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-}> = [
-  { value: 'profile', label: 'Profile', icon: User },
-  { value: 'account', label: 'Account', icon: BadgeCheck },
-  { value: 'preferences', label: 'Preferences', icon: SlidersHorizontal },
-  { value: 'location', label: 'Location', icon: MapPin },
-  { value: 'family', label: 'Family', icon: Users },
-  { value: 'notifications', label: 'Notifications', icon: Bell },
-];
-
-const PROFILE_THEME_OPTIONS = [
-  { value: 'red', label: 'Red' },
-  { value: 'orange', label: 'Orange' },
-  { value: 'amber', label: 'Amber' },
-  { value: 'yellow', label: 'Yellow' },
-  { value: 'lime', label: 'Lime' },
-  { value: 'green', label: 'Green' },
-  { value: 'emerald', label: 'Emerald' },
-  { value: 'teal', label: 'Teal' },
-  { value: 'cyan', label: 'Cyan' },
-  { value: 'sky', label: 'Sky' },
-  { value: 'blue', label: 'Blue' },
-  { value: 'indigo', label: 'Indigo' },
-  { value: 'violet', label: 'Violet' },
-  { value: 'purple', label: 'Purple' },
-  { value: 'fuchsia', label: 'Fuchsia' },
-  { value: 'pink', label: 'Pink' },
-  { value: 'rose', label: 'Rose' },
-];
 
 type UserSettingsDialogProps = {
   open: boolean;
@@ -133,57 +68,27 @@ export function UserSettingsDialog({
   onLocationSave,
   onAvatarUpload,
 }: UserSettingsDialogProps) {
-  const isProfileComplete = Boolean(
-    profile.profile.firstName?.trim() && profile.profile.lastName?.trim(),
-  );
-  const isAccountComplete = Boolean(
-    account?.contacts.phoneE164 && account?.contacts.phoneVerified,
-  );
-  const effectiveForceProfileCompletion = forceProfileCompletion && !isProfileComplete;
-  const effectiveForceAccountCompletion = forceAccountCompletion && !isAccountComplete;
-
-  const [onboardingStep, setOnboardingStep] = React.useState<OnboardingStep | null>(
-    effectiveForceProfileCompletion
-      ? 'profile'
-      : effectiveForceAccountCompletion
-        ? 'account-phone'
-        : null,
-  );
-
-  React.useEffect(() => {
-    if (onboardingStep) {
-      return;
-    }
-    if (effectiveForceProfileCompletion) {
-      setOnboardingStep('profile');
-      return;
-    }
-    if (effectiveForceAccountCompletion) {
-      setOnboardingStep('account-phone');
-    }
-  }, [
-    effectiveForceAccountCompletion,
-    effectiveForceProfileCompletion,
+  const {
     onboardingStep,
-  ]);
-
-  const shouldLockDialog = Boolean(
-    onboardingStep || effectiveForceProfileCompletion || effectiveForceAccountCompletion,
-  );
-
-  const onboardingTab = onboardingStep
-    ? onboardingStep === 'profile'
-      ? 'profile'
-      : onboardingStep.startsWith('account')
-        ? 'account'
-        : onboardingStep === 'preferences-timezone'
-          ? 'preferences'
-          : onboardingStep === 'location'
-            ? 'location'
-            : onboardingStep === 'family'
-              ? 'family'
-              : activeTab
-    : null;
+    onboardingTab,
+    shouldLockDialog,
+    effectiveForceProfileCompletion,
+    handleProfileContinue,
+    handlePhoneContinue,
+    handleWhatsappContinue,
+    handleTimezoneContinue,
+    handleLocationContinue,
+  } = useOnboardingState({
+    forceProfileCompletion,
+    forceAccountCompletion,
+    profile,
+    account,
+    activeTab,
+    onTabChange,
+    onAccountUpdate,
+    onPrefsSave,
+    onLocationSave,
+  });
 
   const handleOpenChange = React.useCallback(
     (nextOpen: boolean) => {
@@ -214,69 +119,11 @@ export function UserSettingsDialog({
       onLogout={onLogout}
       onProfileSave={onProfileSave}
       onAvatarUpload={onAvatarUpload}
-      onProfileContinue={() => {
-        setOnboardingStep('account-phone');
-        onTabChange('account');
-      }}
-      onPhoneContinue={async (phone) => {
-        if (!account || !onAccountUpdate) {
-          setOnboardingStep('account-whatsapp');
-          return;
-        }
-        await onAccountUpdate({
-          accountId: account.ids.id,
-          orgId: account.ids.orgId,
-          phoneE164: phone,
-          phoneVerified: true,
-        });
-        setOnboardingStep('account-whatsapp');
-      }}
-      onWhatsappContinue={async (whatsapp) => {
-        if (!account || !onAccountUpdate) {
-          setOnboardingStep('preferences-timezone');
-          onTabChange('preferences');
-          return;
-        }
-        await onAccountUpdate({
-          accountId: account.ids.id,
-          orgId: account.ids.orgId,
-          whatsappE164: whatsapp,
-          whatsappVerified: true,
-        });
-        setOnboardingStep('preferences-timezone');
-        onTabChange('preferences');
-      }}
-      onTimezoneContinue={async (timezone, locale, languagesSpoken) => {
-        if (!onPrefsSave) {
-          setOnboardingStep('location');
-          onTabChange('location');
-          return;
-        }
-        await onPrefsSave({
-          profileId: profile.ids.id,
-          orgId: profile.ids.orgId,
-          timezone,
-          locale,
-          languagesSpoken,
-        });
-        setOnboardingStep('location');
-        onTabChange('location');
-      }}
-      onLocationContinue={async (locationInput) => {
-        if (onLocationSave) {
-          await onLocationSave({
-            profileId: profile.ids.id,
-            orgId: profile.ids.orgId,
-            ...locationInput,
-          });
-        }
-        if (profile.kind === 'guardian') {
-          setOnboardingStep('family');
-          onTabChange('family');
-        } else {
-          setOnboardingStep(null);
-        }
-      }}
+      onProfileContinue={handleProfileContinue}
+      onPhoneContinue={handlePhoneContinue}
+      onWhatsappContinue={handleWhatsappContinue}
+      onTimezoneContinue={handleTimezoneContinue}
+      onLocationContinue={handleLocationContinue}
     />
   );
   const { isMobile } = useSidebar();
@@ -297,291 +144,5 @@ export function UserSettingsDialog({
     >
       {content}
     </ResponsiveDialog>
-  );
-}
-
-type UserSettingsTabsProps = {
-  value: UserSettingsTab;
-  onValueChange: (tab: UserSettingsTab) => void;
-  profile: UserProfileVM;
-  account?: UserAccountVM | null;
-  expandProfileDetails?: boolean;
-  lockTabs?: boolean;
-  lockedTab?: UserSettingsTab | null;
-  onboardingStep?: OnboardingStep | null;
-  showLogout?: boolean;
-  onLogout?: () => Promise<void> | void;
-  onProfileSave?: (input: ProfileSaveInput) => Promise<void> | void;
-  onAvatarUpload?: (input: ProfileAvatarInput) => Promise<void> | void;
-  onProfileContinue?: () => void;
-  onPhoneContinue?: (phone: string) => Promise<void> | void;
-  onWhatsappContinue?: (whatsapp: string) => Promise<void> | void;
-  onTimezoneContinue?: (
-    timezone: string,
-    locale: string | null,
-    languagesSpoken: string[] | null,
-  ) => Promise<void> | void;
-  onLocationContinue?: (input: {
-    city: string;
-    region: string;
-    postalCode: string;
-    countryCode?: string | null;
-    countryName?: string | null;
-  }) => Promise<void> | void;
-};
-
-function UserSettingsTabs({
-  value,
-  onValueChange,
-  profile,
-  account,
-  expandProfileDetails = false,
-  lockTabs = false,
-  lockedTab = null,
-  onboardingStep = null,
-  showLogout = false,
-  onLogout,
-  onProfileSave,
-  onAvatarUpload,
-  onProfileContinue,
-  onPhoneContinue,
-  onWhatsappContinue,
-  onTimezoneContinue,
-  onLocationContinue,
-}: UserSettingsTabsProps) {
-  const { isMobile } = useSidebar();
-  const activeValue = lockTabs ? lockedTab ?? 'profile' : value;
-  const showOnboardingToast = Boolean(onboardingStep);
-  const profileBlock = profile.profile;
-  const prefs = profile.prefs;
-  const contacts = account?.contacts;
-  const hasPhone = Boolean(contacts?.phoneE164?.trim());
-  const expandPhone = onboardingStep === 'account-phone' && !hasPhone;
-  const expandWhatsapp = onboardingStep === 'account-whatsapp';
-  const expandTimezone = onboardingStep === 'preferences-timezone';
-  const expandLocation = onboardingStep === 'location';
-  const showFamilyOnboardingToast = onboardingStep === 'family';
-  const email = contacts?.email ?? '';
-  const preferredChannels =
-    contacts?.preferredContactChannels && contacts.preferredContactChannels.length > 0
-      ? contacts.preferredContactChannels
-      : ['email'];
-  const location = profile.location;
-  const roles = account?.access?.userRoles ?? [];
-  const [profileThemes, setProfileThemes] = React.useState<Record<string, ThemeKey>>({});
-  const [preferredChannelSelections, setPreferredChannelSelections] =
-    React.useState<string[]>(preferredChannels);
-  const currentThemeKey = profileThemes[profile.ids.id] ?? profile.ui?.themeKey ?? 'teal';
-  const currentThemeLabel =
-    PROFILE_THEME_OPTIONS.find((option) => option.value === currentThemeKey)?.label ??
-    'Accent color';
-  const isGuardianOrAdmin =
-    profile.kind === 'guardian' ||
-    roles.some((role) => role.roleKey === 'admin' || role.roleKey === 'owner');
-  const childProfile = profile.kind === 'child' ? profile : null;
-  const educatorProfile = profile.kind === 'educator' ? profile : null;
-  const staffProfile = profile.kind === 'staff' ? profile : null;
-  const requiresPhone = lockTabs && lockedTab === 'account';
-
-  const togglePreferredChannel = (channel: string, enabled: boolean) => {
-    setPreferredChannelSelections((prev) => {
-      if (enabled) {
-        return prev.includes(channel) ? prev : [...prev, channel];
-      }
-      return prev.filter((item) => item !== channel);
-    });
-  };
-  const formatGradeLevel = (gradeLevel?: { id: string | number; label: string } | null) =>
-    gradeLevel?.label ?? 'Not set';
-  const [notificationChannels, setNotificationChannels] = React.useState<
-    Record<string, string[]>
-  >(() => {
-    if (!prefs.notificationDefaults) {
-      return {};
-    }
-    return Object.fromEntries(
-      Object.entries(prefs.notificationDefaults).map(([key, value]) => [
-        key,
-        value?.channels ?? [],
-      ]),
-    );
-  });
-  const guardianChildren =
-    profile.kind === 'guardian' ? (profile.children?.items ?? []) : [];
-  const familyMembers = React.useMemo(() => {
-    const members: Array<{
-      id: string;
-      name: string;
-      email?: string;
-      avatar?: UserProfileVM['profile']['avatar'] | null;
-      roleLabel: string;
-      canRemove: boolean;
-      themeKey: ThemeKey;
-    }> = [];
-
-    members.push({
-      id: profile.ids.id,
-      name: profileBlock.displayName,
-      email: contacts?.email ?? undefined,
-      avatar: profileBlock.avatar,
-      roleLabel: 'Myself',
-      canRemove: false,
-      themeKey: profile.ui?.themeKey ?? 'teal',
-    });
-
-    guardianChildren.forEach((childProfile) => {
-      members.push({
-        id: childProfile.ids.id,
-        name: childProfile.profile.displayName ?? 'Child',
-        email: undefined,
-        avatar: childProfile.profile.avatar ?? null,
-        roleLabel: 'Child',
-        canRemove: true,
-        themeKey: childProfile.ui?.themeKey ?? 'teal',
-      });
-    });
-
-    return members;
-  }, [
-    profile.ids.id,
-    profileBlock.avatar,
-    profileBlock.displayName,
-    contacts?.email,
-    profile.ui?.themeKey,
-    guardianChildren,
-  ]);
-
-  return (
-    <Tabs
-      value={activeValue}
-      onValueChange={(next) => onValueChange(next as UserSettingsTab)}
-      orientation={isMobile ? 'horizontal' : 'vertical'}
-      className="w-full h-full"
-    >
-      <div
-        className={cn(
-          isMobile
-            ? 'flex min-h-0 flex-1 flex-col gap-4 w-full'
-            : 'grid min-h-0 h-full w-full grid-cols-[180px_1fr] gap-6',
-        )}
-      >
-        <TabsList
-          variant="line"
-          className={cn(
-            'bg-transparent p-0',
-            isMobile
-              ? 'w-full flex-nowrap justify-start gap-2 overflow-x-auto sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/70'
-              : 'w-full flex-col items-stretch',
-          )}
-        >
-          {SETTINGS_TABS.map((tab) => {
-            const Icon = tab.icon;
-            const isLocked = lockTabs && tab.value !== (lockedTab ?? 'profile');
-            return (
-              <TabsTrigger
-                key={tab.value}
-                value={tab.value}
-                disabled={isLocked}
-                className={cn(
-                  'gap-2 after:hidden data-[state=active]:bg-muted/50',
-                  isLocked && 'opacity-50',
-                )}
-              >
-                <Icon className="size-4" />
-                {tab.label}
-              </TabsTrigger>
-            );
-          })}
-          {showLogout ? (
-            <div className="mt-2 flex w-full flex-col gap-2">
-              <div className="h-px w-full bg-border/70" />
-              <button
-                type="button"
-                onClick={onLogout}
-                className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-muted-foreground transition hover:bg-muted hover:text-foreground"
-              >
-                <LogOut className="h-4 w-4" />
-                Log out
-              </button>
-            </div>
-          ) : null}
-        </TabsList>
-
-        <ScrollArea className={cn('min-h-0 flex-1 w-full min-w-0', isMobile && 'flex-1')}>
-          <TabsContent value="profile" className="mt-0 space-y-8 w-full px-1">
-          <ProfileTab
-            profile={profile}
-            profileBlock={profileBlock}
-            currentThemeKey={currentThemeKey}
-            childProfile={childProfile}
-            educatorProfile={educatorProfile}
-            staffProfile={staffProfile}
-            formatGradeLevel={formatGradeLevel}
-            expandProfileDetails={expandProfileDetails}
-            primaryActionLabel={lockTabs && lockedTab === 'profile' ? 'Continue' : 'Save'}
-            onPrimaryActionComplete={onProfileContinue}
-            onProfileSave={onProfileSave}
-            onAvatarUpload={onAvatarUpload}
-          />
-          </TabsContent>
-
-          <TabsContent value="account" className="mt-0 space-y-8 w-full px-1">
-            <AccountTab
-              contacts={contacts}
-              email={email}
-              preferredChannelSelections={preferredChannelSelections}
-              togglePreferredChannel={togglePreferredChannel}
-              requirePhone={requiresPhone}
-              expandPhone={expandPhone}
-              expandWhatsapp={expandWhatsapp}
-              showOnboardingToast={showOnboardingToast}
-              onPhoneContinue={onPhoneContinue}
-              onWhatsappContinue={onWhatsappContinue}
-            />
-          </TabsContent>
-
-          <TabsContent value="preferences" className="mt-0 space-y-8 w-full px-1">
-            <PreferencesTab
-              currentThemeKey={currentThemeKey}
-              currentThemeLabel={currentThemeLabel}
-              profileId={profile.ids.id}
-              prefs={prefs}
-              profileThemeOptions={PROFILE_THEME_OPTIONS}
-              setProfileThemes={setProfileThemes}
-              showOnboardingToast={showOnboardingToast}
-              expandTimezone={expandTimezone}
-              onTimezoneContinue={onTimezoneContinue}
-            />
-          </TabsContent>
-
-          <TabsContent value="location" className="mt-0 space-y-8 w-full px-1">
-            <LocationTab
-              location={location}
-              showOnboardingToast={showOnboardingToast}
-              expandLocation={expandLocation}
-              onLocationContinue={onLocationContinue}
-            />
-          </TabsContent>
-
-          <TabsContent value="family" className="mt-0 space-y-8 w-full px-1">
-            <FamilyTab
-              familyMembers={familyMembers}
-              profileThemes={profileThemes}
-              profileThemeOptions={PROFILE_THEME_OPTIONS}
-              setProfileThemes={setProfileThemes}
-              showOnboardingToast={showFamilyOnboardingToast}
-            />
-          </TabsContent>
-
-          <TabsContent value="notifications" className="mt-0 space-y-8 w-full px-1">
-            <NotificationsTab
-              isGuardianOrAdmin={isGuardianOrAdmin}
-              notificationChannels={notificationChannels}
-              onNotificationChannelsChange={setNotificationChannels}
-            />
-          </TabsContent>
-        </ScrollArea>
-      </div>
-    </Tabs>
   );
 }
