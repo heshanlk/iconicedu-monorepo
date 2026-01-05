@@ -26,6 +26,8 @@ type AccountTabProps = {
   requirePhone?: boolean;
   expandPhone?: boolean;
   expandWhatsapp?: boolean;
+  scrollToRequired?: boolean;
+  scrollToken?: number;
   showOnboardingToast?: boolean;
   onPhoneContinue?: (phone: string) => Promise<void> | void;
   onWhatsappContinue?: (whatsapp: string) => Promise<void> | void;
@@ -39,23 +41,20 @@ export function AccountTab({
   requirePhone = false,
   expandPhone = false,
   expandWhatsapp = false,
+  scrollToRequired = false,
+  scrollToken = 0,
   showOnboardingToast = false,
   onPhoneContinue,
   onWhatsappContinue,
 }: AccountTabProps) {
   const [isAccountToastDismissed, setIsAccountToastDismissed] = React.useState(false);
-  const [phoneValue, setPhoneValue] = React.useState(contacts?.phoneE164 ?? '');
+  const [phoneValue, setPhoneValue] = React.useState('');
   const [isPhoneFocused, setIsPhoneFocused] = React.useState(false);
   const [phoneError, setPhoneError] = React.useState<string | null>(null);
-  const [hasPhoneDraft, setHasPhoneDraft] = React.useState(false);
-  const [syncedPhone, setSyncedPhone] = React.useState(contacts?.phoneE164 ?? '');
-  const [whatsappValue, setWhatsappValue] = React.useState(contacts?.whatsappE164 ?? '');
+  const [whatsappValue, setWhatsappValue] = React.useState('');
   const [isWhatsappFocused, setIsWhatsappFocused] = React.useState(false);
   const [whatsappError, setWhatsappError] = React.useState<string | null>(null);
-  const [hasWhatsappDraft, setHasWhatsappDraft] = React.useState(false);
-  const [syncedWhatsapp, setSyncedWhatsapp] = React.useState(
-    contacts?.whatsappE164 ?? '',
-  );
+  const phoneInputRef = React.useRef<HTMLInputElement | null>(null);
   const formatPhoneInput = React.useCallback((value: string) => {
     return new AsYouType().input(value);
   }, []);
@@ -71,12 +70,15 @@ export function AccountTab({
   const formattedWhatsappFromContacts = contacts?.whatsappE164
     ? formatPhoneInput(contacts.whatsappE164)
     : '';
-  const phoneDisplay =
-    phoneValue.trim() || formattedPhoneFromContacts || 'Not provided';
-  const whatsappDisplay =
-    whatsappValue.trim() || formattedWhatsappFromContacts || 'Not provided';
-  const parsedPhone = parsePhoneNumberFromString(phoneValue);
-  const isPhoneValid = Boolean(phoneValue.trim() && parsedPhone?.isValid());
+  const phoneInputValue =
+    phoneValue.trim() || formattedPhoneFromContacts || '';
+  const whatsappInputValue =
+    whatsappValue.trim() || formattedWhatsappFromContacts || '';
+  const phoneDisplay = phoneInputValue || 'Not provided';
+  const whatsappDisplay = whatsappInputValue || 'Not provided';
+  const parsedPhone = parsePhoneNumberFromString(phoneInputValue);
+  const isPhoneValid = Boolean(phoneInputValue.trim() && parsedPhone?.isValid());
+  const shouldScrollToPhone = requirePhone || !phoneInputValue.trim();
 
   React.useEffect(() => {
     if (expandWhatsapp && !whatsappValue.trim() && phoneValue.trim()) {
@@ -85,51 +87,37 @@ export function AccountTab({
   }, [expandWhatsapp, phoneValue, whatsappValue]);
 
   React.useEffect(() => {
-    if (contacts?.phoneE164 !== syncedPhone) {
-      setSyncedPhone(contacts?.phoneE164 ?? '');
-      if (!isPhoneFocused) {
-        setPhoneValue(formatPhoneInput(contacts?.phoneE164 ?? ''));
-        setHasPhoneDraft(false);
-      }
-      return;
-    }
-    if (!isPhoneFocused && !hasPhoneDraft) {
+    if (!isPhoneFocused) {
       setPhoneValue(formatPhoneInput(contacts?.phoneE164 ?? ''));
     }
-  }, [
-    contacts?.phoneE164,
-    formatPhoneInput,
-    hasPhoneDraft,
-    isPhoneFocused,
-    syncedPhone,
-  ]);
+  }, [contacts?.phoneE164, formatPhoneInput, isPhoneFocused]);
 
   React.useEffect(() => {
-    if (contacts?.whatsappE164 !== syncedWhatsapp) {
-      setSyncedWhatsapp(contacts?.whatsappE164 ?? '');
-      if (!isWhatsappFocused) {
-        setWhatsappValue(formatPhoneInput(contacts?.whatsappE164 ?? ''));
-        setHasWhatsappDraft(false);
-      }
+    if (!scrollToRequired || !shouldScrollToPhone) {
       return;
     }
-    if (!isWhatsappFocused && !hasWhatsappDraft) {
+    if (phoneInputRef.current) {
+      requestAnimationFrame(() => {
+        phoneInputRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        });
+      });
+    }
+  }, [scrollToRequired, scrollToken, shouldScrollToPhone]);
+
+  React.useEffect(() => {
+    if (!isWhatsappFocused) {
       setWhatsappValue(formatPhoneInput(contacts?.whatsappE164 ?? ''));
     }
-  }, [
-    contacts?.whatsappE164,
-    formatPhoneInput,
-    hasWhatsappDraft,
-    isWhatsappFocused,
-    syncedWhatsapp,
-  ]);
+  }, [contacts?.whatsappE164, formatPhoneInput, isWhatsappFocused]);
 
   const handlePhoneContinue = React.useCallback(async () => {
     if (!onPhoneContinue) {
       return;
     }
-    const parsed = parsePhoneNumberFromString(phoneValue);
-    if (!phoneValue.trim()) {
+    const parsed = parsePhoneNumberFromString(phoneInputValue);
+    if (!phoneInputValue.trim()) {
       setPhoneError('Please enter your phone number.');
       return;
     }
@@ -143,14 +131,14 @@ export function AccountTab({
     } finally {
       setIsPhoneSaving(false);
     }
-  }, [onPhoneContinue, phoneValue]);
+  }, [onPhoneContinue, phoneInputValue]);
 
   const handleWhatsappContinue = React.useCallback(async () => {
     if (!onWhatsappContinue) {
       return;
     }
-    const parsed = parsePhoneNumberFromString(whatsappValue);
-    if (!whatsappValue.trim()) {
+    const parsed = parsePhoneNumberFromString(whatsappInputValue);
+    if (!whatsappInputValue.trim()) {
       setWhatsappError('Please enter your WhatsApp number.');
       return;
     }
@@ -164,7 +152,7 @@ export function AccountTab({
     } finally {
       setIsWhatsappSaving(false);
     }
-  }, [onWhatsappContinue, whatsappValue]);
+  }, [onWhatsappContinue, whatsappInputValue]);
 
   return (
     <div className="space-y-8 w-full">
@@ -359,23 +347,21 @@ export function AccountTab({
                     <InputGroup>
                       <InputGroupInput
                         id="settings-account-phone"
-                        value={phoneValue}
+                        value={phoneInputValue}
+                        ref={phoneInputRef}
                         aria-label="Phone"
                         required={expandPhone || requirePhone}
                         placeholder="+1 415 555 0100"
                         onFocus={() => setIsPhoneFocused(true)}
                         onBlur={() => {
                           setIsPhoneFocused(false);
-                          const formatted = formatPhoneInput(phoneValue);
+                          const formatted = formatPhoneInput(phoneInputValue);
                           if (formatted) {
                             setPhoneValue(formatted);
                           }
                         }}
                         onChange={(event) => {
                           setPhoneValue(formatPhoneInput(event.target.value));
-                          if (!hasPhoneDraft) {
-                            setHasPhoneDraft(true);
-                          }
                           if (phoneError) {
                             setPhoneError(null);
                           }
@@ -500,23 +486,20 @@ export function AccountTab({
                     <InputGroup>
                       <InputGroupInput
                         id="settings-account-whatsapp"
-                        value={whatsappValue}
+                        value={whatsappInputValue}
                         aria-label="WhatsApp"
                         required={expandWhatsapp}
                         placeholder="+1 415 555 0100"
                         onFocus={() => setIsWhatsappFocused(true)}
                         onBlur={() => {
                           setIsWhatsappFocused(false);
-                          const formatted = formatPhoneInput(whatsappValue);
+                          const formatted = formatPhoneInput(whatsappInputValue);
                           if (formatted) {
                             setWhatsappValue(formatted);
                           }
                         }}
                         onChange={(event) => {
                           setWhatsappValue(formatPhoneInput(event.target.value));
-                          if (!hasWhatsappDraft) {
-                            setHasWhatsappDraft(true);
-                          }
                           if (whatsappError) {
                             setWhatsappError(null);
                           }

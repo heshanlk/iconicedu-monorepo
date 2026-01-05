@@ -59,6 +59,8 @@ type ProfileTabProps = {
   educatorBadges?: string[];
   staffSpecialties?: string[];
   expandProfileDetails?: boolean;
+  scrollToRequired?: boolean;
+  scrollToken?: number;
   primaryActionLabel?: string;
   onPrimaryActionComplete?: () => void;
   onProfileSave?: (input: ProfileSaveInput) => Promise<void> | void;
@@ -100,6 +102,8 @@ export function ProfileTab({
   educatorBadges = [],
   staffSpecialties = [],
   expandProfileDetails = false,
+  scrollToRequired = false,
+  scrollToken = 0,
   primaryActionLabel = 'Save',
   onPrimaryActionComplete,
   onProfileSave,
@@ -155,6 +159,21 @@ export function ProfileTab({
     }
   }, [expandProfileDetails, firstNameValue, lastNameValue]);
 
+  React.useEffect(() => {
+    if (!scrollToRequired) {
+      return;
+    }
+    const target = !firstNameValue.trim()
+      ? firstNameRef.current
+      : !lastNameValue.trim()
+        ? lastNameRef.current
+        : firstNameRef.current;
+    if (target) {
+      requestAnimationFrame(() => {
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    }
+  }, [firstNameValue, lastNameValue, scrollToRequired, scrollToken]);
 
   React.useEffect(() => {
     setFirstNameValue(profileBlock.firstName ?? '');

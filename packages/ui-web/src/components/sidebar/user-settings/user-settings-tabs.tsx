@@ -77,6 +77,7 @@ export function UserSettingsTabs({
 }: UserSettingsTabsProps) {
   const { isMobile } = useSidebar();
   const activeValue = lockTabs ? lockedTab ?? 'profile' : value;
+  const [scrollToken, setScrollToken] = React.useState(0);
   const showOnboardingToast = Boolean(onboardingStep);
   const profileBlock = profile.profile;
   const prefs = profile.prefs;
@@ -108,6 +109,10 @@ export function UserSettingsTabs({
   const educatorProfile = profile.kind === 'educator' ? profile : null;
   const staffProfile = profile.kind === 'staff' ? profile : null;
   const requiresPhone = lockTabs && lockedTab === 'account';
+
+  React.useEffect(() => {
+    setScrollToken((prev) => prev + 1);
+  }, [activeValue]);
 
   const togglePreferredChannel = (channel: string, enabled: boolean) => {
     setPreferredChannelSelections((prev) => {
@@ -243,6 +248,8 @@ export function UserSettingsTabs({
               staffProfile={staffProfile}
               formatGradeLevel={formatGradeLevel}
               expandProfileDetails={expandProfileDetails}
+              scrollToRequired={activeValue === 'profile'}
+              scrollToken={scrollToken}
               primaryActionLabel={lockTabs && lockedTab === 'profile' ? 'Continue' : 'Save'}
               onPrimaryActionComplete={onProfileContinue}
               onProfileSave={onProfileSave}
@@ -260,6 +267,8 @@ export function UserSettingsTabs({
               requirePhone={requiresPhone}
               expandPhone={expandPhone}
               expandWhatsapp={expandWhatsapp}
+              scrollToRequired={activeValue === 'account'}
+              scrollToken={scrollToken}
               showOnboardingToast={showOnboardingToast}
               onPhoneContinue={onPhoneContinue}
               onWhatsappContinue={onWhatsappContinue}
@@ -276,6 +285,8 @@ export function UserSettingsTabs({
               setProfileThemes={setProfileThemes}
               showOnboardingToast={showOnboardingToast}
               expandTimezone={expandTimezone}
+              scrollToRequired={activeValue === 'preferences'}
+              scrollToken={scrollToken}
               onTimezoneContinue={onTimezoneContinue}
             />
           </TabsContent>
@@ -285,6 +296,8 @@ export function UserSettingsTabs({
               location={location}
               showOnboardingToast={showOnboardingToast}
               expandLocation={expandLocation}
+              scrollToRequired={activeValue === 'location'}
+              scrollToken={scrollToken}
               onLocationContinue={onLocationContinue}
             />
           </TabsContent>

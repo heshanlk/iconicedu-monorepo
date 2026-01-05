@@ -23,6 +23,8 @@ type PreferencesTabProps = {
   setProfileThemes: React.Dispatch<React.SetStateAction<Record<string, ThemeKey>>>;
   showOnboardingToast?: boolean;
   expandTimezone?: boolean;
+  scrollToRequired?: boolean;
+  scrollToken?: number;
   onTimezoneContinue?: (
     timezone: string,
     locale: string | null,
@@ -39,6 +41,8 @@ export function PreferencesTab({
   setProfileThemes,
   showOnboardingToast = false,
   expandTimezone = false,
+  scrollToRequired = false,
+  scrollToken = 0,
   onTimezoneContinue,
 }: PreferencesTabProps) {
   const [timezoneValue, setTimezoneValue] = React.useState(prefs.timezone ?? '');
@@ -46,10 +50,25 @@ export function PreferencesTab({
   const [isToastDismissed, setIsToastDismissed] = React.useState(false);
   const [isSaving, setIsSaving] = React.useState(false);
   const [timezoneError, setTimezoneError] = React.useState<string | null>(null);
+  const timezoneInputRef = React.useRef<HTMLInputElement | null>(null);
 
   React.useEffect(() => {
     setTimezoneValue(prefs.timezone ?? '');
   }, [prefs.timezone]);
+
+  React.useEffect(() => {
+    if (!scrollToRequired || timezoneValue.trim()) {
+      return;
+    }
+    if (timezoneInputRef.current) {
+      requestAnimationFrame(() => {
+        timezoneInputRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        });
+      });
+    }
+  }, [scrollToRequired, scrollToken, timezoneValue]);
 
   const showToast = showOnboardingToast && !isToastDismissed;
 
@@ -193,11 +212,12 @@ export function PreferencesTab({
                         transition={{ type: 'spring', stiffness: 60, damping: 20 }}
                       />
                     ) : null}
-                    <Input
-                      id="settings-timezone"
-                      value={timezoneValue}
-                      placeholder="America/New_York"
-                      required
+                  <Input
+                    id="settings-timezone"
+                    value={timezoneValue}
+                    ref={timezoneInputRef}
+                    placeholder="America/New_York"
+                    required
                       onFocus={() => setIsTimezoneFocused(true)}
                       onBlur={() => setIsTimezoneFocused(false)}
                       onChange={(event) => {

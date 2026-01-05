@@ -16,6 +16,8 @@ type LocationTabProps = {
   location?: UserProfileVM['location'] | null;
   showOnboardingToast?: boolean;
   expandLocation?: boolean;
+  scrollToRequired?: boolean;
+  scrollToken?: number;
   onLocationContinue?: (input: {
     city: string;
     region: string;
@@ -29,6 +31,8 @@ export function LocationTab({
   location,
   showOnboardingToast = false,
   expandLocation = false,
+  scrollToRequired = false,
+  scrollToken = 0,
   onLocationContinue,
 }: LocationTabProps) {
   const [isToastDismissed, setIsToastDismissed] = React.useState(false);
@@ -49,6 +53,10 @@ export function LocationTab({
     postalCode?: string | null;
     country?: string | null;
   }>({});
+  const cityInputRef = React.useRef<HTMLInputElement | null>(null);
+  const regionInputRef = React.useRef<HTMLInputElement | null>(null);
+  const postalInputRef = React.useRef<HTMLInputElement | null>(null);
+  const countryInputRef = React.useRef<HTMLInputElement | null>(null);
   const showToast = showOnboardingToast && !isToastDismissed;
 
   React.useEffect(() => {
@@ -62,6 +70,33 @@ export function LocationTab({
     location?.countryName,
     location?.postalCode,
     location?.region,
+  ]);
+
+  React.useEffect(() => {
+    if (!scrollToRequired) {
+      return;
+    }
+    const target = !cityValue.trim()
+      ? cityInputRef.current
+      : !regionValue.trim()
+        ? regionInputRef.current
+        : !postalValue.trim()
+          ? postalInputRef.current
+          : !countryValue.trim()
+            ? countryInputRef.current
+            : cityInputRef.current;
+    if (target) {
+      requestAnimationFrame(() => {
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    }
+  }, [
+    cityValue,
+    regionValue,
+    postalValue,
+    countryValue,
+    scrollToRequired,
+    scrollToken,
   ]);
 
   const handleLocationContinue = React.useCallback(async () => {
@@ -176,6 +211,7 @@ export function LocationTab({
                     <Input
                       id="settings-city"
                       value={cityValue}
+                      ref={cityInputRef}
                       required={expandLocation}
                       placeholder="City"
                       onFocus={() => setIsCityFocused(true)}
@@ -209,6 +245,7 @@ export function LocationTab({
                     <Input
                       id="settings-region"
                       value={regionValue}
+                      ref={regionInputRef}
                       required={expandLocation}
                       placeholder="State"
                       onFocus={() => setIsRegionFocused(true)}
@@ -242,6 +279,7 @@ export function LocationTab({
                     <Input
                       id="settings-postal"
                       value={postalValue}
+                      ref={postalInputRef}
                       required={expandLocation}
                       placeholder="Zip"
                       onFocus={() => setIsPostalFocused(true)}
@@ -276,6 +314,7 @@ export function LocationTab({
                     <Input
                       id="settings-country"
                       value={countryValue}
+                      ref={countryInputRef}
                       required={expandLocation}
                       placeholder="Country"
                       onFocus={() => setIsCountryFocused(true)}
