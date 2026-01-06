@@ -135,7 +135,7 @@ export function useOnboardingState(input: {
   );
 
   const handleTimezoneContinue = React.useCallback(
-    async (timezone: string, locale: string | null, languagesSpoken: string[] | null) => {
+    async (timezone: string | undefined, locale?: string | null, languagesSpoken?: string[] | null) => {
       if (!input.onPrefsSave) {
         setOnboardingStep('location');
         input.onTabChange('location');

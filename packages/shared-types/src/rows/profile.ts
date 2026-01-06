@@ -15,7 +15,7 @@ export interface ProfileRow {
   avatar_url?: string | null;
   avatar_seed?: string | null;
   avatar_updated_at?: ISODateTime | null;
-  timezone: string;
+  timezone?: string | null;
   locale?: string | null;
   languages_spoken?: string[] | null;
   status?: AccountStatus | null;

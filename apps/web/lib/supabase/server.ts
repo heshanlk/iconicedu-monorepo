@@ -6,8 +6,8 @@ type CreateSupabaseServerClientOptions = {
   allowCookieModification?: boolean;
 };
 
-export const createSupabaseServerClient = ({
-  cookieStore = cookies(),
+export const createSupabaseServerClient = async ({
+  cookieStore,
   allowCookieModification = false,
 }: CreateSupabaseServerClientOptions = {}) => {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -19,22 +19,24 @@ export const createSupabaseServerClient = ({
     throw new Error('Missing Supabase environment variables.');
   }
 
+  const resolvedCookieStore = cookieStore ?? (await cookies());
+
   return createServerClient(url, anonKey, {
     cookies: {
       get(name) {
-        return cookieStore.get(name)?.value;
+        return resolvedCookieStore.get(name)?.value;
       },
       set(name, value, options) {
         if (!allowCookieModification) {
           return;
         }
-        cookieStore.set({ name, value, ...options });
+        resolvedCookieStore.set({ name, value, ...options });
       },
       remove(name, options) {
         if (!allowCookieModification) {
           return;
         }
-        cookieStore.set({ name, value: '', ...options, maxAge: 0 });
+        resolvedCookieStore.set({ name, value: '', ...options, maxAge: 0 });
       },
     },
   });

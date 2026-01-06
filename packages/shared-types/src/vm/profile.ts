@@ -49,7 +49,7 @@ export interface UserProfileBlockVM {
 }
 
 export interface UserPrefsVM {
-  timezone: string;
+  timezone?: string | null;
   locale?: string | null;
   languagesSpoken?: string[] | null;
   notificationDefaults?: NotificationDefaultsVM | null;

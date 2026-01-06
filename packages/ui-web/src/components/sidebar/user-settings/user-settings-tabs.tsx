@@ -42,9 +42,9 @@ export type UserSettingsTabsProps = {
   onPhoneContinue?: (phone: string) => Promise<void> | void;
   onWhatsappContinue?: (whatsapp: string) => Promise<void> | void;
   onTimezoneContinue?: (
-    timezone: string,
-    locale: string | null,
-    languagesSpoken: string[] | null,
+    timezone?: string,
+    locale?: string | null,
+    languagesSpoken?: string[] | null,
   ) => Promise<void> | void;
   onLocationContinue?: (input: {
     city: string;

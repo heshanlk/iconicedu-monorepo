@@ -1,27 +1,26 @@
 {
   "version": "0.2.0",
-  "compounds": [
-    {
-      "name": "Next: Server + Client",
-      "configurations": ["Next: Server", "Next: Client"]
-    }
-  ],
   "configurations": [
     {
-      "name": "Next: Server",
       "type": "node",
-      "request": "attach",
-      "port": 9229,
-      "restart": true,
-      "skipFiles": ["<node_internals>/**"]
-    },
-    {
-      "name": "Next: Client",
-      "type": "chrome",
       "request": "launch",
-      "url": "http://localhost:3000",
-      "webRoot": "${workspaceFolder}",
-      "sourceMaps": true
+      "name": "Web: (Next + Turbopack)",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["--inspect=9201"],
+      "program": "${workspaceFolder}/apps/web/node_modules/next/dist/bin/next",
+      "args": ["dev", "--turbopack", "-p", "3001"],
+      "cwd": "${workspaceFolder}/apps/web",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "presentation": { "hidden": true },
+      "skipFiles": ["<node_internals>/**"]
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Dev: all apps",
+      "configurations": ["Web: (Next + Turbopack)"],
+      "stopAll": true
     }
   ]
 }
