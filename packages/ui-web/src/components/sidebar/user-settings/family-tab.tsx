@@ -1,15 +1,33 @@
+'use client';
+
 import * as React from 'react';
-import { ChevronRight, Plus, X } from 'lucide-react';
+import { ChevronRight, Plus, UserPlus, X } from 'lucide-react';
 
 import type { ThemeKey, UserProfileVM } from '@iconicedu/shared-types';
 import { BorderBeam } from '../../../ui/border-beam';
 import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
 import { Badge } from '../../../ui/badge';
 import { Button } from '../../../ui/button';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '../../../ui/dialog';
 import { UserSettingsTabSection } from './components/user-settings-tab-section';
 import { Input } from '../../../ui/input';
 import { Label } from '../../../ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../../../ui/select';
 import { Separator } from '../../../ui/separator';
 
 type FamilyMemberItem = {
@@ -20,6 +38,12 @@ type FamilyMemberItem = {
   roleLabel: string;
   canRemove: boolean;
   themeKey: ThemeKey;
+};
+
+type InviteEntry = {
+  id: string;
+  email: string;
+  role: 'guardian' | 'child';
 };
 
 type FamilyTabProps = {
@@ -38,7 +62,37 @@ export function FamilyTab({
   showOnboardingToast = false,
 }: FamilyTabProps) {
   const [isToastDismissed, setIsToastDismissed] = React.useState(false);
+  const [isInviteOpen, setIsInviteOpen] = React.useState(false);
+  const [inviteRole, setInviteRole] = React.useState<'guardian' | 'child'>('guardian');
+  const [inviteEmail, setInviteEmail] = React.useState('');
+  const [inviteError, setInviteError] = React.useState<string | null>(null);
+  const [invites, setInvites] = React.useState<InviteEntry[]>([]);
   const showToast = showOnboardingToast && !isToastDismissed;
+
+  const handleInviteSave = React.useCallback(() => {
+    const trimmedEmail = inviteEmail.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!trimmedEmail || !emailRegex.test(trimmedEmail)) {
+      setInviteError('Enter a valid email address.');
+      return;
+    }
+    const nextInvite: InviteEntry = {
+      id: `invite-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`,
+      email: trimmedEmail,
+      role: inviteRole,
+    };
+    setInvites((prev) => [...prev, nextInvite]);
+    setInviteEmail('');
+    setInviteRole('guardian');
+    setInviteError(null);
+    setIsInviteOpen(false);
+  }, [inviteEmail, inviteRole]);
+
+  const handleRemoveInvite = React.useCallback((id: string) => {
+    setInvites((prev) => prev.filter((invite) => invite.id !== id));
+  }, []);
+
+  const inviteRoles: Array<InviteEntry['role']> = ['guardian', 'child'];
 
   return (
     <div className="space-y-8 w-full">
@@ -90,10 +144,82 @@ export function FamilyTab({
       <div className="space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h3 className="text-base font-semibold">Family members</h3>
-          <Button variant="outline" size="sm">
-            <Plus className="size-4" />
-            Add child
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="sm">
+              <Plus className="size-4" />
+              Add
+            </Button>
+            <Dialog open={isInviteOpen} onOpenChange={setIsInviteOpen}>
+              <DialogTrigger asChild>
+                <Button size="sm" variant="outline">
+                  <UserPlus className="size-4" />
+                  Invite
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Invite a family member</DialogTitle>
+                  <DialogDescription>
+                    Select whether the invite is for a guardian or child, then provide
+                    their email address. Invitations can be revoked afterwards.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>Who are you inviting?</Label>
+                    <div className="flex flex-col gap-2">
+                      {inviteRoles.map((option) => (
+                        <label
+                          key={option}
+                          className="flex cursor-pointer items-center gap-3 rounded-3xl border px-4 py-2 transition hover:border-foreground"
+                        >
+                          <input
+                            type="radio"
+                            name="family-invite-role"
+                            value={option}
+                            checked={inviteRole === option}
+                            onChange={() => setInviteRole(option as 'guardian' | 'child')}
+                            className="h-4 w-4 accent-primary"
+                          />
+                          <span className="text-sm font-medium">
+                            {option === 'guardian' ? 'Guardian' : 'Child'}
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="invite-email">Email</Label>
+                    <Input
+                      id="invite-email"
+                      type="email"
+                      value={inviteEmail}
+                      onChange={(event) => {
+                        setInviteEmail(event.target.value);
+                        if (inviteError) {
+                          setInviteError(null);
+                        }
+                      }}
+                      placeholder="guardian@example.com"
+                    />
+                    {inviteError ? (
+                      <p className="text-xs text-destructive">{inviteError}</p>
+                    ) : null}
+                  </div>
+                </div>
+                <DialogFooter className="mt-4 flex justify-end gap-2">
+                  <DialogClose asChild>
+                    <Button type="button" size="sm" variant="ghost">
+                      Cancel
+                    </Button>
+                  </DialogClose>
+                  <Button size="sm" onClick={handleInviteSave}>
+                    Send invite
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
         <Separator />
         <div className="space-y-1">
@@ -123,7 +249,9 @@ export function FamilyTab({
                   title={member.name}
                   subtitle={member.email ?? 'Invitation sent'}
                   badgeIcon={<Badge variant="secondary">{member.roleLabel}</Badge>}
-                  showSeparator={index < familyMembers.length - 1}
+                  showSeparator={
+                    index < familyMembers.length - 1 || Boolean(invites.length)
+                  }
                 >
                   {isSelf ? (
                     <div className="flex justify-end">
@@ -154,7 +282,9 @@ export function FamilyTab({
                           <SelectContent>
                             {profileThemeOptions.map((option) => (
                               <SelectItem key={option.value} value={option.value}>
-                                <span className={`flex items-center gap-2 theme-${option.value}`}>
+                                <span
+                                  className={`flex items-center gap-2 theme-${option.value}`}
+                                >
                                   <span className="theme-swatch h-3.5 w-3.5 rounded-full" />
                                   {option.label}
                                 </span>
@@ -176,6 +306,36 @@ export function FamilyTab({
           ) : (
             <p className="text-sm text-muted-foreground">No family members added yet.</p>
           )}
+          {invites.length ? (
+            <>
+              <Separator />
+              {invites.map((invite, index) => (
+                <UserSettingsTabSection
+                  key={invite.id}
+                  icon={
+                    <Avatar className="size-10 border theme-border theme-slate">
+                      <AvatarFallback>
+                        {invite.role === 'child' ? 'CH' : 'GD'}
+                      </AvatarFallback>
+                    </Avatar>
+                  }
+                  title={invite.role === 'child' ? 'Invited child' : 'Invited guardian'}
+                  subtitle={`${invite.email} · Invitation sent`}
+                  showSeparator={index < invites.length - 1}
+                >
+                  <div className="flex justify-end">
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => handleRemoveInvite(invite.id)}
+                    >
+                      Remove from family
+                    </Button>
+                  </div>
+                </UserSettingsTabSection>
+              ))}
+            </>
+          ) : null}
         </div>
       </div>
     </div>
