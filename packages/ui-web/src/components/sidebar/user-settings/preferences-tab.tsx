@@ -1,19 +1,28 @@
 import * as React from 'react';
-import { ArrowRight, ChevronRight, Clock, Globe, Languages, Palette, X } from 'lucide-react';
+import {
+  ArrowRight,
+  ChevronRight,
+  Clock,
+  Globe,
+  Languages,
+  Palette,
+  X,
+} from 'lucide-react';
 
 import { getAllTimezones } from 'countries-and-timezones';
 import type { ThemeKey, UserProfileVM } from '@iconicedu/shared-types';
 import { BorderBeam } from '../../../ui/border-beam';
 import { Button } from '../../../ui/button';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '../../../ui/collapsible';
 import { Input } from '../../../ui/input';
 import { Label } from '../../../ui/label';
-import { Separator } from '../../../ui/separator';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../../../ui/select';
+import { UserSettingsTabSection } from './components/user-settings-tab-section';
 
 type PreferencesTabProps = {
   currentThemeKey: ThemeKey;
@@ -50,9 +59,7 @@ export function PreferencesTab({
     const values = Object.values(getAllTimezones())
       .map((timezone) => timezone.name)
       .filter(Boolean);
-    return values.sort((a, b) =>
-      a.localeCompare(b, undefined, { sensitivity: 'base' }),
-    );
+    return values.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
   }, []);
 
   const browserTimezone = React.useMemo(() => {
@@ -160,180 +167,156 @@ export function PreferencesTab({
           </div>
         </div>
         <div className="space-y-1 w-full">
-          <Collapsible className="rounded-2xl w-full">
-            <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
-              <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
-                <Palette className="h-5 w-5" />
-              </span>
-              <div className="flex-1">
-                <div className="text-sm font-medium">Accent color</div>
-                <div className="text-xs text-muted-foreground">{currentThemeLabel}</div>
+          <UserSettingsTabSection
+            icon={<Palette className="h-5 w-5" />}
+            title="Accent color"
+            subtitle={currentThemeLabel}
+          >
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-2 sm:col-span-2">
+                <Label>Accent color</Label>
+                <Select
+                  value={currentThemeKey}
+                  onValueChange={(value) =>
+                    setProfileThemes((prev) => ({
+                      ...prev,
+                      [profileId]: value as ThemeKey,
+                    }))
+                  }
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select color" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {profileThemeOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        <span className={`flex items-center gap-2 theme-${option.value}`}>
+                          <span className="theme-swatch h-3.5 w-3.5 rounded-full" />
+                          {option.label}
+                        </span>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-              <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
-            </CollapsibleTrigger>
-            <CollapsibleContent className="py-4 w-full">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2 sm:col-span-2">
-                  <Label>Accent color</Label>
+              <div className="sm:col-span-2 flex justify-end">
+                <Button size="sm">Save</Button>
+              </div>
+            </div>
+          </UserSettingsTabSection>
+        </div>
+        <div className="space-y-1 w-full">
+          <UserSettingsTabSection
+            icon={<Clock className="h-5 w-5" />}
+            title="Timezone"
+            subtitle={prefs.timezone}
+            open={expandTimezone || undefined}
+          >
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-2 sm:col-span-2">
+                <Label htmlFor="settings-timezone">Timezone</Label>
+                <div className="relative rounded-full" ref={timezoneInputRef}>
+                  {expandTimezone && !timezoneValue.trim() && !isTimezoneFocused ? (
+                    <BorderBeam
+                      size={60}
+                      initialOffset={20}
+                      borderWidth={2}
+                      className="from-transparent via-pink-500 to-transparent"
+                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                    />
+                  ) : null}
                   <Select
-                    value={currentThemeKey}
-                    onValueChange={(value) =>
-                      setProfileThemes((prev) => ({
-                        ...prev,
-                        [profileId]: value as ThemeKey,
-                      }))
-                    }
+                    value={timezoneValue}
+                    onValueChange={(value) => setTimezoneValue(value)}
                   >
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select color" />
+                    <SelectTrigger
+                      id="settings-timezone"
+                      className="w-full"
+                      onFocus={() => setIsTimezoneFocused(true)}
+                      onBlur={() => setIsTimezoneFocused(false)}
+                    >
+                      <SelectValue placeholder="Select timezone" />
                     </SelectTrigger>
-                    <SelectContent>
-                      {profileThemeOptions.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          <span className={`flex items-center gap-2 theme-${option.value}`}>
-                            <span className="theme-swatch h-3.5 w-3.5 rounded-full" />
-                            {option.label}
-                          </span>
+                    <SelectContent className="max-h-72 overflow-y-auto">
+                      {timezoneOptions.map((timezone) => (
+                        <SelectItem key={timezone} value={timezone}>
+                          <div className="break-words">{timezone}</div>
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="sm:col-span-2 flex justify-end">
+              </div>
+              <div className="sm:col-span-2 flex items-center justify-between">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    if (browserTimezone) {
+                      setTimezoneValue(browserTimezone);
+                    }
+                  }}
+                  disabled={!browserTimezone}
+                >
+                  Pick timezone for me
+                </Button>
+                {expandTimezone && onTimezoneContinue ? (
+                  <Button size="sm" onClick={handleTimezoneContinue} disabled={isSaving}>
+                    {isSaving ? (
+                      'Saving...'
+                    ) : (
+                      <span className="inline-flex items-center gap-2">
+                        Continue
+                        <ArrowRight className="h-4 w-4" />
+                      </span>
+                    )}
+                  </Button>
+                ) : (
                   <Button size="sm">Save</Button>
-                </div>
+                )}
               </div>
-            </CollapsibleContent>
-          </Collapsible>
-          <Separator />
-          <Collapsible className="rounded-2xl w-full" open={expandTimezone || undefined}>
-            <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
-              <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
-                <Clock className="h-5 w-5" />
-              </span>
-              <div className="flex-1">
-                <div className="text-sm font-medium">Timezone</div>
-                <div className="text-xs text-muted-foreground">{prefs.timezone}</div>
+            </div>
+          </UserSettingsTabSection>
+        </div>
+        <div className="space-y-1 w-full">
+          <UserSettingsTabSection
+            icon={<Globe className="h-5 w-5" />}
+            title="Locale"
+            subtitle={prefs.locale ?? 'Auto'}
+          >
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-2 sm:col-span-2">
+                <Label htmlFor="settings-locale">Locale</Label>
+                <Input id="settings-locale" defaultValue={prefs.locale ?? ''} />
               </div>
-              <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
-            </CollapsibleTrigger>
-            <CollapsibleContent className="py-4 w-full">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2 sm:col-span-2">
-                  <Label htmlFor="settings-timezone">Timezone</Label>
-                  <div className="relative rounded-full" ref={timezoneInputRef}>
-                    {expandTimezone && !timezoneValue.trim() && !isTimezoneFocused ? (
-                      <BorderBeam
-                        size={60}
-                        initialOffset={20}
-                        borderWidth={2}
-                        className="from-transparent via-pink-500 to-transparent"
-                        transition={{ type: 'spring', stiffness: 60, damping: 20 }}
-                      />
-                    ) : null}
-                    <Select
-                      value={timezoneValue}
-                      onValueChange={(value) => setTimezoneValue(value)}
-                    >
-                      <SelectTrigger
-                        id="settings-timezone"
-                        className="w-full"
-                        onFocus={() => setIsTimezoneFocused(true)}
-                        onBlur={() => setIsTimezoneFocused(false)}
-                      >
-                        <SelectValue placeholder="Select timezone" />
-                      </SelectTrigger>
-                      <SelectContent className="max-h-72 overflow-y-auto">
-                        {timezoneOptions.map((timezone) => (
-                          <SelectItem key={timezone} value={timezone}>
-                            <div className="break-words">{timezone}</div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                <div className="sm:col-span-2 flex justify-end">
-                  {expandTimezone && onTimezoneContinue ? (
-                    <Button
-                      size="sm"
-                      onClick={handleTimezoneContinue}
-                      disabled={isSaving}
-                    >
-                      {isSaving ? (
-                        'Saving...'
-                      ) : (
-                        <span className="inline-flex items-center gap-2">
-                          Continue
-                          <ArrowRight className="h-4 w-4" />
-                        </span>
-                      )}
-                    </Button>
-                  ) : (
-                    <Button size="sm">Save</Button>
-                  )}
-                </div>
+              <div className="sm:col-span-2 flex justify-end">
+                <Button size="sm">Save</Button>
               </div>
-            </CollapsibleContent>
-          </Collapsible>
-          <Separator />
-          <Collapsible className="rounded-2xl w-full">
-            <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
-              <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
-                <Globe className="h-5 w-5" />
-              </span>
-              <div className="flex-1">
-                <div className="text-sm font-medium">Locale</div>
-                <div className="text-xs text-muted-foreground">
-                  {prefs.locale ?? 'Auto'}
-                </div>
+            </div>
+          </UserSettingsTabSection>
+        </div>
+        <div className="space-y-1 w-full">
+          <UserSettingsTabSection
+            icon={<Languages className="h-5 w-5" />}
+            title="Languages spoken"
+            subtitle={
+              prefs.languagesSpoken?.length ? prefs.languagesSpoken.join(', ') : 'Not set'
+            }
+          >
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-2 sm:col-span-2">
+                <Label htmlFor="settings-languages">Languages spoken</Label>
+                <Input
+                  id="settings-languages"
+                  defaultValue={prefs.languagesSpoken?.join(', ') ?? ''}
+                  placeholder="English, Spanish"
+                />
               </div>
-              <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
-            </CollapsibleTrigger>
-            <CollapsibleContent className="py-4 w-full">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2 sm:col-span-2">
-                  <Label htmlFor="settings-locale">Locale</Label>
-                  <Input id="settings-locale" defaultValue={prefs.locale ?? ''} />
-                </div>
-                <div className="sm:col-span-2 flex justify-end">
-                  <Button size="sm">Save</Button>
-                </div>
+              <div className="sm:col-span-2 flex justify-end">
+                <Button size="sm">Save</Button>
               </div>
-            </CollapsibleContent>
-          </Collapsible>
-          <Separator />
-          <Collapsible className="rounded-2xl w-full">
-            <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
-              <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
-                <Languages className="h-5 w-5" />
-              </span>
-              <div className="flex-1">
-                <div className="text-sm font-medium">Languages spoken</div>
-                <div className="text-xs text-muted-foreground">
-                  {prefs.languagesSpoken?.length
-                    ? prefs.languagesSpoken.join(', ')
-                    : 'Not set'}
-                </div>
-              </div>
-              <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
-            </CollapsibleTrigger>
-            <CollapsibleContent className="py-4 w-full">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2 sm:col-span-2">
-                  <Label htmlFor="settings-languages">Languages spoken</Label>
-                  <Input
-                    id="settings-languages"
-                    defaultValue={prefs.languagesSpoken?.join(', ') ?? ''}
-                    placeholder="English, Spanish"
-                  />
-                </div>
-                <div className="sm:col-span-2 flex justify-end">
-                  <Button size="sm">Save</Button>
-                </div>
-              </div>
-            </CollapsibleContent>
-          </Collapsible>
+            </div>
+          </UserSettingsTabSection>
         </div>
       </div>
     </div>

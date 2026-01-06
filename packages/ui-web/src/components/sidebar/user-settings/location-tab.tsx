@@ -1,16 +1,12 @@
 import * as React from 'react';
-import { ArrowRight, ChevronRight, MapPin, X } from 'lucide-react';
+import { ArrowRight, MapPin, X } from 'lucide-react';
 
 import type { UserProfileVM } from '@iconicedu/shared-types';
 import { BorderBeam } from '../../../ui/border-beam';
 import { Button } from '../../../ui/button';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '../../../ui/collapsible';
 import { Input } from '../../../ui/input';
 import { Label } from '../../../ui/label';
+import { UserSettingsTabSection } from './components/user-settings-tab-section';
 
 type LocationTabProps = {
   location?: UserProfileVM['location'] | null;
@@ -177,27 +173,19 @@ export function LocationTab({
           </div>
         </div>
         <div className="space-y-1 w-full">
-          <Collapsible className="rounded-2xl w-full" open={expandLocation || undefined}>
-            <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
-              <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
-                <MapPin className="h-5 w-5" />
-              </span>
-              <div className="flex-1">
-                <div className="text-sm font-medium">Address</div>
-                <div className="text-xs text-muted-foreground">
-                  {location?.city ?? 'City'}, {location?.region ?? 'State'}{' '}
-                  {location?.postalCode ?? 'Zip'} •{' '}
-                  {location?.countryName ?? location?.countryCode ?? 'Country'}
-                </div>
-              </div>
-              <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
-            </CollapsibleTrigger>
-            <CollapsibleContent className="py-4 w-full">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2 sm:col-span-2">
-                  <Label htmlFor="settings-city">
-                    City {expandLocation ? <span className="text-destructive">*</span> : null}
-                  </Label>
+          <UserSettingsTabSection
+            icon={<MapPin className="h-5 w-5" />}
+            title="Address"
+            subtitle={
+              `${location?.city ?? 'City'}, ${location?.region ?? 'State'} ${location?.postalCode ?? 'Zip'} • ${location?.countryName ?? location?.countryCode ?? 'Country'}`
+            }
+            open={expandLocation || undefined}
+          >
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-2 sm:col-span-2">
+                <Label htmlFor="settings-city">
+                  City {expandLocation ? <span className="text-destructive">*</span> : null}
+                </Label>
                   <div className="relative rounded-full">
                     {expandLocation && !cityValue.trim() && !isCityFocused ? (
                       <BorderBeam
@@ -352,8 +340,7 @@ export function LocationTab({
                   )}
                 </div>
               </div>
-            </CollapsibleContent>
-          </Collapsible>
+            </UserSettingsTabSection>
         </div>
       </div>
     </div>

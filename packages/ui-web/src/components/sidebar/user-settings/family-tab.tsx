@@ -6,11 +6,7 @@ import { BorderBeam } from '../../../ui/border-beam';
 import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
 import { Badge } from '../../../ui/badge';
 import { Button } from '../../../ui/button';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '../../../ui/collapsible';
+import { UserSettingsTabSection } from './components/user-settings-tab-section';
 import { Input } from '../../../ui/input';
 import { Label } from '../../../ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../ui/select';
@@ -112,77 +108,69 @@ export function FamilyTab({
               const isSelf = !member.canRemove;
               const themeValue = profileThemes[member.id] ?? member.themeKey ?? 'teal';
               const themeClass = `theme-${themeValue}`;
+              const avatarIcon = (
+                <Avatar className={`size-10 border theme-border ${themeClass}`}>
+                  <AvatarImage src={member.avatar?.url ?? undefined} />
+                  <AvatarFallback className="theme-bg theme-fg">
+                    {initials}
+                  </AvatarFallback>
+                </Avatar>
+              );
               return (
-                <Collapsible key={member.id} className="rounded-2xl">
-                  <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
-                    <Avatar className={`size-10 border theme-border ${themeClass}`}>
-                      <AvatarImage src={member.avatar?.url ?? undefined} />
-                      <AvatarFallback className="theme-bg theme-fg">
-                        {initials}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium">{member.name}</span>
-                        <Badge variant="secondary">{member.roleLabel}</Badge>
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {member.email ?? 'Invitation sent'}
-                      </div>
+                <UserSettingsTabSection
+                  key={member.id}
+                  icon={avatarIcon}
+                  title={member.name}
+                  subtitle={member.email ?? 'Invitation sent'}
+                  badgeIcon={<Badge variant="secondary">{member.roleLabel}</Badge>}
+                  showSeparator={index < familyMembers.length - 1}
+                >
+                  {isSelf ? (
+                    <div className="flex justify-end">
+                      <Button variant="destructive" size="sm">
+                        Remove from family
+                      </Button>
                     </div>
-                    <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
-                  </CollapsibleTrigger>
-                  <CollapsibleContent className="py-4">
-                    {isSelf ? (
+                  ) : (
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label>Display name</Label>
+                        <Input defaultValue={member.name} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Accent color</Label>
+                        <Select
+                          value={themeValue}
+                          onValueChange={(value) =>
+                            setProfileThemes((prev) => ({
+                              ...prev,
+                              [member.id]: value as ThemeKey,
+                            }))
+                          }
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select color" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {profileThemeOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                <span className={`flex items-center gap-2 theme-${option.value}`}>
+                                  <span className="theme-swatch h-3.5 w-3.5 rounded-full" />
+                                  {option.label}
+                                </span>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
                       <div className="flex justify-end">
                         <Button variant="destructive" size="sm">
                           Remove from family
                         </Button>
                       </div>
-                    ) : (
-                      <div className="space-y-4">
-                        <div className="space-y-2">
-                          <Label>Display name</Label>
-                          <Input defaultValue={member.name} />
-                        </div>
-                        <div className="space-y-2">
-                          <Label>Accent color</Label>
-                          <Select
-                            value={themeValue}
-                            onValueChange={(value) =>
-                              setProfileThemes((prev) => ({
-                                ...prev,
-                                [member.id]: value as ThemeKey,
-                              }))
-                            }
-                          >
-                            <SelectTrigger className="w-full">
-                              <SelectValue placeholder="Select color" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {profileThemeOptions.map((option) => (
-                                <SelectItem key={option.value} value={option.value}>
-                                  <span
-                                    className={`flex items-center gap-2 theme-${option.value}`}
-                                  >
-                                    <span className="theme-swatch h-3.5 w-3.5 rounded-full" />
-                                    {option.label}
-                                  </span>
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div className="flex justify-end">
-                          <Button variant="destructive" size="sm">
-                            Remove from family
-                          </Button>
-                        </div>
-                      </div>
-                    )}
-                  </CollapsibleContent>
-                  {index < familyMembers.length - 1 ? <Separator /> : null}
-                </Collapsible>
+                    </div>
+                  )}
+                </UserSettingsTabSection>
               );
             })
           ) : (

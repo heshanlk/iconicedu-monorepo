@@ -76,7 +76,7 @@ export function UserSettingsTabs({
   onLocationContinue,
 }: UserSettingsTabsProps) {
   const { isMobile } = useSidebar();
-  const activeValue = lockTabs ? lockedTab ?? 'profile' : value;
+  const activeValue = lockTabs ? (lockedTab ?? 'profile') : value;
   const [scrollToken, setScrollToken] = React.useState(0);
   const showOnboardingToast = Boolean(onboardingStep);
   const profileBlock = profile.profile;
@@ -250,7 +250,9 @@ export function UserSettingsTabs({
               expandProfileDetails={expandProfileDetails}
               scrollToRequired={activeValue === 'profile'}
               scrollToken={scrollToken}
-              primaryActionLabel={lockTabs && lockedTab === 'profile' ? 'Continue' : 'Save'}
+              primaryActionLabel={
+                lockTabs && lockedTab === 'profile' ? 'Continue' : 'Save'
+              }
               onPrimaryActionComplete={onProfileContinue}
               onProfileSave={onProfileSave}
               onAvatarUpload={onAvatarUpload}

@@ -1,0 +1,95 @@
+import * as React from 'react';
+
+import { BorderBeam } from '../../../../ui/border-beam';
+import { Input } from '../../../../ui/input';
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from '../../../../ui/input-group';
+import { Label } from '../../../../ui/label';
+
+type ContactFieldProps = {
+  id: string;
+  label: string;
+  value: string;
+  helperText?: string | null;
+  error?: string | null;
+  placeholder?: string;
+  required?: boolean;
+  highlight?: boolean;
+  addon?: React.ReactNode;
+  disabled?: boolean;
+  ariaLabel?: string;
+  onFocus?: () => void;
+  onBlur?: () => void;
+  onChange: (value: string) => void;
+};
+
+export const ContactField = React.forwardRef<HTMLInputElement, ContactFieldProps>(
+  (
+    {
+      id,
+      label,
+      value,
+      helperText,
+      error,
+      placeholder,
+      required = false,
+      highlight = false,
+      addon,
+      disabled,
+      ariaLabel,
+      onFocus,
+      onBlur,
+      onChange,
+    },
+    ref,
+  ) => {
+    return (
+      <div className="space-y-2">
+        <Label htmlFor={id}>
+          {label}
+          {required ? <span className="text-destructive"> *</span> : null}
+        </Label>
+        <div className="relative rounded-full">
+          {highlight ? (
+            <BorderBeam
+              size={60}
+              initialOffset={20}
+              borderWidth={2}
+              className="from-transparent via-pink-500 to-transparent"
+              transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+            />
+          ) : null}
+          <InputGroup>
+            <InputGroupInput
+              id={id}
+              ref={ref}
+              value={value}
+              placeholder={placeholder}
+              aria-label={ariaLabel ?? label}
+              disabled={disabled}
+              onFocus={onFocus}
+              onBlur={onBlur}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                onChange(event.target.value)
+              }
+            />
+            {addon ? (
+              <InputGroupAddon align="inline-end">{addon}</InputGroupAddon>
+            ) : null}
+          </InputGroup>
+        </div>
+        {helperText ? (
+          <p className="text-xs text-muted-foreground">{helperText}</p>
+        ) : null}
+        {error ? (
+          <p className="text-xs text-destructive">{error}</p>
+        ) : null}
+      </div>
+    );
+  },
+);
+
+ContactField.displayName = 'ContactField';

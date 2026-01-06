@@ -12,11 +12,16 @@ import {
   CollapsibleTrigger,
 } from '../../../ui/collapsible';
 import { Input } from '../../../ui/input';
-import { InputGroup, InputGroupAddon, InputGroupInput } from '../../../ui/input-group';
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from '../../../ui/input-group';
 import { Label } from '../../../ui/label';
-import { Separator } from '../../../ui/separator';
 import { Switch } from '../../../ui/switch';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../../../ui/tooltip';
+import { ContactField } from './components/contact-field';
+import { UserSettingsTabSection } from './components/user-settings-tab-section';
 
 type AccountTabProps = {
   contacts?: UserAccountVM['contacts'] | null;
@@ -70,6 +75,26 @@ export function AccountTab({
   const formattedWhatsappFromContacts = contacts?.whatsappE164
     ? formatPhoneInput(contacts.whatsappE164)
     : '';
+  const renderVerificationBadge = (
+    isVerified: boolean,
+    verifiedAt?: string | null,
+  ) =>
+    isVerified ? (
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
+            <BadgeCheck className="h-3 w-3" />
+            <span className="sr-only">Verified</span>
+          </Badge>
+        </TooltipTrigger>
+        <TooltipContent>{verifiedAt ?? 'Verified'}</TooltipContent>
+      </Tooltip>
+    ) : (
+      <Badge className="bg-muted text-muted-foreground">
+        <BadgeCheck className="h-3 w-3 text-muted-foreground" />
+        <span className="sr-only">Not verified</span>
+      </Badge>
+    );
   const phoneInputValue =
     phoneValue.trim() || formattedPhoneFromContacts || '';
   const whatsappInputValue =
@@ -79,6 +104,13 @@ export function AccountTab({
   const parsedPhone = parsePhoneNumberFromString(phoneInputValue);
   const isPhoneValid = Boolean(phoneInputValue.trim() && parsedPhone?.isValid());
   const shouldScrollToPhone = requirePhone || !phoneInputValue.trim();
+  const [emailOpen, setEmailOpen] = React.useState(false);
+  const [whatsappOpen, setWhatsappOpen] = React.useState(expandWhatsapp);
+  const [emailInputValue, setEmailInputValue] = React.useState(email);
+  const [isEmailFocused, setIsEmailFocused] = React.useState(false);
+  React.useEffect(() => {
+    setEmailInputValue(email);
+  }, [email]);
 
   React.useEffect(() => {
     if (expandWhatsapp && !whatsappValue.trim() && phoneValue.trim()) {
@@ -199,367 +231,263 @@ export function AccountTab({
           </div>
         </div>
         <div className="space-y-1 w-full">
-          <Collapsible className="rounded-2xl w-full" open={false}>
-            <CollapsibleTrigger
-              className="group flex w-full items-center gap-3 py-3 text-left"
-              disabled
-            >
-              <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
-                <Mail className="h-5 w-5" />
-              </span>
-              <div className="flex-1">
-                <div className="text-sm font-medium">Email</div>
-                <div className="text-xs text-muted-foreground">
-                  {contacts?.email ?? 'Not provided'}
-                </div>
+          <UserSettingsTabSection
+            icon={<Mail className="h-5 w-5" />}
+            title="Email"
+            subtitle={contacts?.email ?? 'Not provided'}
+            open={emailOpen}
+            onOpenChange={(open) => setEmailOpen(open)}
+            badgeIcon={renderVerificationBadge(emailVerified, emailVerifiedAt)}
+          >
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-2 sm:col-span-2">
+                <Label htmlFor="settings-account-email">
+                  Email <span className="text-destructive">*</span>
+                </Label>
+                <InputGroup>
+                  <InputGroupInput
+                    id="settings-account-email"
+                    value={emailInputValue}
+                    aria-label="Email"
+                    required
+                    onFocus={() => setIsEmailFocused(true)}
+                    onBlur={() => setIsEmailFocused(false)}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                      setEmailInputValue(event.target.value);
+                    }}
+                  />
+                  <InputGroupAddon align="inline-end">
+                    {renderVerificationBadge(emailVerified, emailVerifiedAt)}
+                  </InputGroupAddon>
+                </InputGroup>
+                {emailError ? (
+                  <p className="text-xs text-destructive">{emailError}</p>
+                ) : null}
               </div>
-              {emailVerified ? (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
-                      <BadgeCheck className="h-3 w-3" />
-                      <span className="sr-only">Verified</span>
-                    </Badge>
-                  </TooltipTrigger>
-                  <TooltipContent>{emailVerifiedAt ?? 'Verified'}</TooltipContent>
-                </Tooltip>
-              ) : (
-                <Badge className="bg-muted text-muted-foreground">
-                  <BadgeCheck className="h-3 w-3 text-muted-foreground" />
-                  <span className="sr-only">Not verified</span>
-                </Badge>
-              )}
-              <ChevronRight className="size-4 text-muted-foreground opacity-40" />
-            </CollapsibleTrigger>
-            <CollapsibleContent className="py-4 w-full">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2 sm:col-span-2">
-                  <Label htmlFor="settings-account-email">
-                    Email <span className="text-destructive">*</span>
-                  </Label>
+              <div className="sm:col-span-2 flex items-center justify-between rounded-xl border border-border/60 px-4 py-3">
+                <div>
+                  <div className="text-sm font-medium">
+                    Receive notifications by email
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    Use this email for account alerts and reminders.
+                  </div>
+                </div>
+                <Switch
+                  checked={preferredChannelSelections.includes('email')}
+                  onCheckedChange={(checked) =>
+                    togglePreferredChannel('email', checked)
+                  }
+                  aria-label="Receive notifications by email"
+                />
+              </div>
+              <div className="sm:col-span-2 flex justify-end">
+                <Button size="sm" disabled>
+                  Save
+                </Button>
+              </div>
+            </div>
+          </UserSettingsTabSection>
+        </div>
+        <div className="space-y-1 w-full">
+          <UserSettingsTabSection
+            icon={<Phone className="h-5 w-5" />}
+            title="Phone"
+            subtitle={phoneDisplay}
+            open={expandPhone || undefined}
+            badgeIcon={renderVerificationBadge(
+              Boolean(contacts?.phoneVerified),
+              contacts?.phoneVerifiedAt,
+            )}
+          >
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-2 sm:col-span-2">
+                <Label htmlFor="settings-account-phone">
+                  Phone{' '}
+                  {expandPhone || requirePhone ? (
+                    <span className="text-destructive">*</span>
+                  ) : null}
+                </Label>
+                <div className="relative rounded-full">
+                  {(expandPhone || requirePhone) &&
+                  !phoneValue.trim() &&
+                  !isPhoneFocused ? (
+                    <BorderBeam
+                      size={60}
+                      initialOffset={20}
+                      borderWidth={2}
+                      className="from-transparent via-pink-500 to-transparent"
+                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                    />
+                  ) : null}
                   <InputGroup>
                     <InputGroupInput
-                      id="settings-account-email"
-                      defaultValue={email}
-                      aria-label="Email"
-                      required
+                      id="settings-account-phone"
+                      value={phoneInputValue}
+                      ref={phoneInputRef}
+                      aria-label="Phone"
+                      required={expandPhone || requirePhone}
+                      placeholder="+1 415 555 0100"
+                      onFocus={() => setIsPhoneFocused(true)}
+                      onBlur={() => {
+                        setIsPhoneFocused(false);
+                        const formatted = formatPhoneInput(phoneInputValue);
+                        if (formatted) {
+                          setPhoneValue(formatted);
+                        }
+                      }}
+                      onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                        setPhoneValue(formatPhoneInput(event.target.value));
+                        if (phoneError) {
+                          setPhoneError(null);
+                        }
+                      }}
                     />
                     <InputGroupAddon align="inline-end">
-                      {emailVerified ? (
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
-                              <BadgeCheck className="h-3 w-3" />
-                              <span className="sr-only">Verified</span>
-                            </Badge>
-                          </TooltipTrigger>
-                          <TooltipContent>{emailVerifiedAt ?? 'Verified'}</TooltipContent>
-                        </Tooltip>
-                      ) : (
-                        <Badge className="bg-muted text-muted-foreground">
-                          <BadgeCheck className="h-3 w-3 text-muted-foreground" />
-                          <span className="sr-only">Not verified</span>
-                        </Badge>
+                      {renderVerificationBadge(
+                        Boolean(contacts?.phoneVerified),
+                        contacts?.phoneVerifiedAt,
                       )}
                     </InputGroupAddon>
                   </InputGroup>
-                  {emailError ? (
-                    <p className="text-xs text-destructive">{emailError}</p>
-                  ) : null}
                 </div>
-                <div className="sm:col-span-2 flex items-center justify-between rounded-xl border border-border/60 px-4 py-3">
-                  <div>
-                    <div className="text-sm font-medium">
-                      Receive notifications by email
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      Use this email for account alerts and reminders.
-                    </div>
-                  </div>
-                  <Switch
-                    checked={preferredChannelSelections.includes('email')}
-                    onCheckedChange={(checked) =>
-                      togglePreferredChannel('email', checked)
-                    }
-                    aria-label="Receive notifications by email"
-                  />
-                </div>
-                <div className="sm:col-span-2 flex justify-end">
-                  <Button size="sm" disabled>
-                    Save
-                  </Button>
-                </div>
-              </div>
-            </CollapsibleContent>
-          </Collapsible>
-        </div>
-        <div className="space-y-1 w-full">
-          <Collapsible className="rounded-2xl w-full" open={expandPhone || undefined}>
-            <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
-              <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
-                <Phone className="h-5 w-5" />
-              </span>
-              <div className="flex-1">
-                <div className="text-sm font-medium">Phone</div>
                 <div className="text-xs text-muted-foreground">
-                  {phoneDisplay}
+                  We’ll send a verification code by text. Include your country code
+                  (e.g. +1, +44, +61).
                 </div>
               </div>
               {contacts?.phoneVerified ? (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
-                      <BadgeCheck className="h-3 w-3" />
-                      <span className="sr-only">Verified</span>
-                    </Badge>
-                  </TooltipTrigger>
-                  <TooltipContent>{contacts.phoneVerifiedAt}</TooltipContent>
-                </Tooltip>
-              ) : (
-                <Badge className="bg-muted text-muted-foreground">
-                  <BadgeCheck className="h-3 w-3 text-muted-foreground" />
-                  <span className="sr-only">Not verified</span>
-                </Badge>
-              )}
-              <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
-            </CollapsibleTrigger>
-            <CollapsibleContent className="py-4 w-full">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2 sm:col-span-2">
-                  <Label htmlFor="settings-account-phone">
-                    Phone{' '}
-                    {expandPhone || requirePhone ? (
-                      <span className="text-destructive">*</span>
-                    ) : null}
-                  </Label>
-                  <div className="relative rounded-full">
-                    {(expandPhone || requirePhone) &&
-                    !phoneValue.trim() &&
-                    !isPhoneFocused ? (
-                      <BorderBeam
-                        size={60}
-                        initialOffset={20}
-                        borderWidth={2}
-                        className="from-transparent via-pink-500 to-transparent"
-                        transition={{ type: 'spring', stiffness: 60, damping: 20 }}
-                      />
-                    ) : null}
-                    <InputGroup>
-                      <InputGroupInput
-                        id="settings-account-phone"
-                        value={phoneInputValue}
-                        ref={phoneInputRef}
-                        aria-label="Phone"
-                        required={expandPhone || requirePhone}
-                        placeholder="+1 415 555 0100"
-                        onFocus={() => setIsPhoneFocused(true)}
-                        onBlur={() => {
-                          setIsPhoneFocused(false);
-                          const formatted = formatPhoneInput(phoneInputValue);
-                          if (formatted) {
-                            setPhoneValue(formatted);
-                          }
-                        }}
-                        onChange={(event) => {
-                          setPhoneValue(formatPhoneInput(event.target.value));
-                          if (phoneError) {
-                            setPhoneError(null);
-                          }
-                        }}
-                      />
-                      <InputGroupAddon align="inline-end">
-                        {contacts?.phoneVerified ? (
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
-                                <BadgeCheck className="h-3 w-3" />
-                                <span className="sr-only">Verified</span>
-                              </Badge>
-                            </TooltipTrigger>
-                            <TooltipContent>{contacts.phoneVerifiedAt}</TooltipContent>
-                          </Tooltip>
-                        ) : (
-                          <Badge className="bg-muted text-muted-foreground">
-                            <BadgeCheck className="h-3 w-3 text-muted-foreground" />
-                            <span className="sr-only">Not verified</span>
-                          </Badge>
-                        )}
-                      </InputGroupAddon>
-                    </InputGroup>
+                <div className="sm:col-span-2 flex items-center justify-between rounded-xl border border-border/60 px-4 py-3">
+                  <div>
+                    <div className="text-sm font-medium">
+                      Receive notifications by phone
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      Use SMS for alerts and reminders.
+                    </div>
                   </div>
+                  <Switch
+                    checked={preferredChannelSelections.includes('sms')}
+                    onCheckedChange={(checked) =>
+                      togglePreferredChannel('sms', checked)
+                    }
+                    aria-label="Receive notifications by phone"
+                  />
+                </div>
+              ) : null}
+              <div className="sm:col-span-2 flex justify-end">
+                {expandPhone && onPhoneContinue ? (
+                  <Button
+                    size="sm"
+                    onClick={handlePhoneContinue}
+                    disabled={isPhoneSaving || !isPhoneValid}
+                  >
+                    {isPhoneSaving ? (
+                      'Saving...'
+                    ) : (
+                      <span className="inline-flex items-center gap-2">
+                        Continue
+                        <ArrowRight className="h-4 w-4" />
+                      </span>
+                    )}
+                  </Button>
+                ) : (
+                  <Button size="sm">Save</Button>
+                )}
+              </div>
+            </div>
+          </UserSettingsTabSection>
+        </div>
+        <div className="space-y-1 w-full">
+          <UserSettingsTabSection
+            icon={<MessageCircle className="h-5 w-5" />}
+            title="WhatsApp"
+            subtitle={whatsappDisplay}
+            open={whatsappOpen}
+            onOpenChange={(open) => setWhatsappOpen(open)}
+            badgeIcon={renderVerificationBadge(
+              Boolean(contacts?.whatsappVerified),
+              contacts?.whatsappVerifiedAt,
+            )}
+            showSeparator={false}
+          >
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-2 sm:col-span-2">
+                <Label htmlFor="settings-account-whatsapp">WhatsApp</Label>
+                <div className="relative rounded-full">
+                  {whatsappOpen && !whatsappInputValue.trim() && !isWhatsappFocused ? (
+                    <BorderBeam
+                      size={60}
+                      initialOffset={20}
+                      borderWidth={2}
+                      className="from-transparent via-pink-500 to-transparent"
+                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                    />
+                  ) : null}
+                  <InputGroup>
+                    <InputGroupInput
+                      id="settings-account-whatsapp"
+                      value={whatsappInputValue}
+                      aria-label="WhatsApp"
+                      required={expandWhatsapp}
+                      placeholder="+1 415 555 0100"
+                      onFocus={() => setIsWhatsappFocused(true)}
+                      onBlur={() => {
+                        setIsWhatsappFocused(false);
+                        const formatted = formatPhoneInput(whatsappInputValue);
+                        if (formatted) {
+                          setWhatsappValue(formatted);
+                        }
+                      }}
+                      onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                        setWhatsappValue(formatPhoneInput(event.target.value));
+                        if (whatsappError) {
+                          setWhatsappError(null);
+                        }
+                      }}
+                    />
+                    <InputGroupAddon align="inline-end">
+                      {renderVerificationBadge(
+                        Boolean(contacts?.whatsappVerified),
+                        contacts?.whatsappVerifiedAt,
+                      )}
+                    </InputGroupAddon>
+                  </InputGroup>
                   <div className="text-xs text-muted-foreground">
                     We’ll send a verification code by text. Include your country code
                     (e.g. +1, +44, +61).
                   </div>
-                </div>
-                {contacts?.phoneVerified ? (
-                  <div className="sm:col-span-2 flex items-center justify-between rounded-xl border border-border/60 px-4 py-3">
-                    <div>
-                      <div className="text-sm font-medium">
-                        Receive notifications by phone
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        Use SMS for alerts and reminders.
-                      </div>
-                    </div>
-                    <Switch
-                      checked={preferredChannelSelections.includes('sms')}
-                      onCheckedChange={(checked) =>
-                        togglePreferredChannel('sms', checked)
-                      }
-                      aria-label="Receive notifications by phone"
-                    />
-                  </div>
-                ) : null}
-                <div className="sm:col-span-2 flex justify-end">
-                  {expandPhone && onPhoneContinue ? (
-                    <Button
-                      size="sm"
-                      onClick={handlePhoneContinue}
-                      disabled={isPhoneSaving || !isPhoneValid}
-                    >
-                      {isPhoneSaving ? (
-                        'Saving...'
-                      ) : (
-                        <span className="inline-flex items-center gap-2">
-                          Continue
-                          <ArrowRight className="h-4 w-4" />
-                        </span>
-                      )}
-                    </Button>
-                  ) : (
-                    <Button size="sm">Save</Button>
-                  )}
-                </div>
-              </div>
-            </CollapsibleContent>
-          </Collapsible>
-          <Separator />
-        </div>
-        <div className="space-y-1 w-full">
-          <Collapsible className="rounded-2xl w-full" open={false}>
-            <CollapsibleTrigger
-              className="group flex w-full items-center gap-3 py-3 text-left"
-              disabled
-            >
-              <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
-                <MessageCircle className="h-5 w-5" />
-              </span>
-              <div className="flex-1">
-                <div className="text-sm font-medium">WhatsApp</div>
-                <div className="text-xs text-muted-foreground">
-                  {whatsappDisplay}
+                  {whatsappError ? (
+                    <div className="text-xs text-destructive">{whatsappError}</div>
+                  ) : null}
                 </div>
               </div>
               {contacts?.whatsappVerified ? (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
-                      <BadgeCheck className="h-3 w-3" />
-                      <span className="sr-only">Verified</span>
-                    </Badge>
-                  </TooltipTrigger>
-                  <TooltipContent>{contacts.whatsappVerifiedAt}</TooltipContent>
-                </Tooltip>
-              ) : (
-                <Badge className="bg-muted text-muted-foreground">
-                  <BadgeCheck className="h-3 w-3 text-muted-foreground" />
-                  <span className="sr-only">Not verified</span>
-                </Badge>
-              )}
-              <ChevronRight className="size-4 text-muted-foreground opacity-40" />
-            </CollapsibleTrigger>
-            <CollapsibleContent className="py-4 w-full">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2 sm:col-span-2">
-                  <Label htmlFor="settings-account-whatsapp">WhatsApp</Label>
-                  <div className="relative rounded-full">
-                    {expandWhatsapp && !whatsappValue.trim() && !isWhatsappFocused ? (
-                      <BorderBeam
-                        size={60}
-                        initialOffset={20}
-                        borderWidth={2}
-                        className="from-transparent via-pink-500 to-transparent"
-                        transition={{ type: 'spring', stiffness: 60, damping: 20 }}
-                      />
-                    ) : null}
-                    <InputGroup>
-                      <InputGroupInput
-                        id="settings-account-whatsapp"
-                        value={whatsappInputValue}
-                        aria-label="WhatsApp"
-                        required={expandWhatsapp}
-                        placeholder="+1 415 555 0100"
-                        onFocus={() => setIsWhatsappFocused(true)}
-                        onBlur={() => {
-                          setIsWhatsappFocused(false);
-                          const formatted = formatPhoneInput(whatsappInputValue);
-                          if (formatted) {
-                            setWhatsappValue(formatted);
-                          }
-                        }}
-                        onChange={(event) => {
-                          setWhatsappValue(formatPhoneInput(event.target.value));
-                          if (whatsappError) {
-                            setWhatsappError(null);
-                          }
-                        }}
-                      />
-                      <InputGroupAddon align="inline-end">
-                        {contacts?.whatsappVerified ? (
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
-                                <BadgeCheck className="h-3 w-3" />
-                                <span className="sr-only">Verified</span>
-                              </Badge>
-                            </TooltipTrigger>
-                            <TooltipContent>{contacts.whatsappVerifiedAt}</TooltipContent>
-                          </Tooltip>
-                        ) : (
-                          <Badge className="bg-muted text-muted-foreground">
-                            <BadgeCheck className="h-3 w-3 text-muted-foreground" />
-                            <span className="sr-only">Not verified</span>
-                          </Badge>
-                        )}
-                      </InputGroupAddon>
-                    </InputGroup>
+                <div className="sm:col-span-2 flex items-center justify-between rounded-xl border border-border/60 px-4 py-3">
+                  <div>
+                    <div className="text-sm font-medium">
+                      Receive notifications by WhatsApp
+                    </div>
                     <div className="text-xs text-muted-foreground">
-                      We’ll send a verification code by text. Include your country code
-                      (e.g. +1, +44, +61).
+                      Use WhatsApp for alerts and reminders.
                     </div>
-                    {whatsappError ? (
-                      <div className="text-xs text-destructive">{whatsappError}</div>
-                    ) : null}
                   </div>
+                  <Switch
+                    checked={preferredChannelSelections.includes('whatsapp')}
+                    onCheckedChange={(checked) =>
+                      togglePreferredChannel('whatsapp', checked)
+                    }
+                    aria-label="Receive notifications by WhatsApp"
+                  />
                 </div>
-                {contacts?.whatsappVerified ? (
-                  <div className="sm:col-span-2 flex items-center justify-between rounded-xl border border-border/60 px-4 py-3">
-                    <div>
-                      <div className="text-sm font-medium">
-                        Receive notifications by WhatsApp
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        Use WhatsApp for alerts and reminders.
-                      </div>
-                    </div>
-                    <Switch
-                      checked={preferredChannelSelections.includes('whatsapp')}
-                      onCheckedChange={(checked) =>
-                        togglePreferredChannel('whatsapp', checked)
-                      }
-                      aria-label="Receive notifications by WhatsApp"
-                    />
-                  </div>
-                ) : null}
-                <div className="sm:col-span-2 flex justify-end">
-                  <Button size="sm" disabled>
-                    Save
-                  </Button>
-                </div>
+              ) : null}
+              <div className="sm:col-span-2 flex justify-end">
+                <Button size="sm" disabled>
+                  Save
+                </Button>
               </div>
-            </CollapsibleContent>
-          </Collapsible>
+            </div>
+          </UserSettingsTabSection>
         </div>
       </div>
     </div>

@@ -42,6 +42,7 @@ import { Input } from '../../../ui/input';
 import { Label } from '../../../ui/label';
 import { Separator } from '../../../ui/separator';
 import { Textarea } from '../../../ui/textarea';
+import { UserSettingsTabSection } from './components/user-settings-tab-section';
 
 type ProfileTabProps = {
   profile: UserProfileVM;
@@ -152,8 +153,7 @@ export function ProfileTab({
     if (!expandProfileDetails) {
       return;
     }
-    const target =
-      !firstNameValue.trim() ? firstNameRef.current : lastNameRef.current;
+    const target = !firstNameValue.trim() ? firstNameRef.current : lastNameRef.current;
     if (target) {
       requestAnimationFrame(() => target.focus());
     }
@@ -341,7 +341,7 @@ export function ProfileTab({
 
   const avatarUrl = avatarRemoved
     ? null
-    : avatarPreview ?? profileBlock.avatar.url ?? null;
+    : (avatarPreview ?? profileBlock.avatar.url ?? null);
   const hasAvatar = Boolean(profileBlock.avatar.url ?? avatarPreview) && !avatarRemoved;
   const fallbackName =
     profileBlock.displayName?.trim() ||
@@ -399,235 +399,220 @@ export function ProfileTab({
           </div>
         </div>
         <div className="space-y-1 w-full">
-          <Collapsible
-            className="rounded-2xl w-full"
+          <UserSettingsTabSection
+            icon={<User className="h-5 w-5" />}
+            title="Profile details"
+            subtitle={profileBlock.displayName}
             open={expandProfileDetails ? true : profileDetailsOpen}
             onOpenChange={(nextOpen) => {
               if (expandProfileDetails) return;
               setProfileDetailsOpen(nextOpen);
             }}
+            showSeparator={false}
           >
-            <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
-              <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
-                <User className="h-5 w-5" />
-              </span>
-              <div className="flex-1">
-                <div className="text-sm font-medium">Profile details</div>
-                <div className="text-xs text-muted-foreground">
-                  {profileBlock.displayName}
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="sm:col-span-2 flex items-center gap-3">
+                <Avatar
+                  key={`${avatarUrl ?? 'fallback'}-${avatarRemoved ? 'removed' : 'active'}`}
+                  className={cn('size-12 border theme-border', `theme-${avatarThemeKey}`)}
+                >
+                  {avatarUrl ? <AvatarImage src={avatarUrl} /> : null}
+                  <AvatarFallback className="theme-bg theme-fg font-semibold">
+                    {avatarInitials}
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <div className="text-sm font-medium">Profile photo</div>
+                  <div className="text-xs text-muted-foreground">JPG, PNG up to 5MB.</div>
                 </div>
-              </div>
-              <ChevronIcon />
-            </CollapsibleTrigger>
-            <CollapsibleContent className="py-4 w-full">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="sm:col-span-2 flex items-center gap-3">
-                  <Avatar
-                    key={`${avatarUrl ?? 'fallback'}-${avatarRemoved ? 'removed' : 'active'}`}
-                    className={cn('size-12 border theme-border', `theme-${avatarThemeKey}`)}
+                <input
+                  ref={avatarInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleAvatarChange}
+                  className="hidden"
+                />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="ml-auto"
+                  onClick={handleAvatarClick}
+                  disabled={isUploadingAvatar}
+                >
+                  {isUploadingAvatar ? 'Uploading...' : 'Change'}
+                </Button>
+                {hasAvatar ? (
+                  <AlertDialog
+                    open={isRemoveDialogOpen}
+                    onOpenChange={setIsRemoveDialogOpen}
                   >
-                    {avatarUrl ? <AvatarImage src={avatarUrl} /> : null}
-                    <AvatarFallback className="theme-bg theme-fg font-semibold">
-                      {avatarInitials}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <div className="text-sm font-medium">Profile photo</div>
-                    <div className="text-xs text-muted-foreground">
-                      JPG, PNG up to 5MB.
-                    </div>
-                  </div>
-                  <input
-                    ref={avatarInputRef}
-                    type="file"
-                    accept="image/*"
-                    onChange={handleAvatarChange}
-                    className="hidden"
-                  />
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="ml-auto"
-                    onClick={handleAvatarClick}
-                    disabled={isUploadingAvatar}
-                  >
-                    {isUploadingAvatar ? 'Uploading...' : 'Change'}
-                  </Button>
-                  {hasAvatar ? (
-                    <AlertDialog
-                      open={isRemoveDialogOpen}
-                      onOpenChange={setIsRemoveDialogOpen}
-                    >
-                      <AlertDialogTrigger asChild>
-                        <Button variant="ghost" size="sm" disabled={isRemovingAvatar}>
-                          {isRemovingAvatar ? 'Removing...' : 'Remove'}
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Remove profile photo?</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            This will reset your avatar to the default initials.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel asChild>
-                            <Button type="button" variant="outline">
-                              Cancel
-                            </Button>
-                          </AlertDialogCancel>
-                          <AlertDialogAction asChild>
-                            <Button
-                              type="button"
-                              variant="destructive"
-                              onClick={handleConfirmAvatarRemove}
-                              disabled={isRemovingAvatar}
-                            >
-                              Remove
-                            </Button>
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  ) : null}
-                </div>
-                {avatarUploadError ? (
-                  <div className="sm:col-span-2 text-xs text-destructive">
-                    {avatarUploadError}
-                  </div>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="ghost" size="sm" disabled={isRemovingAvatar}>
+                        {isRemovingAvatar ? 'Removing...' : 'Remove'}
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Remove profile photo?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This will reset your avatar to the default initials.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel asChild>
+                          <Button type="button" variant="outline">
+                            Cancel
+                          </Button>
+                        </AlertDialogCancel>
+                        <AlertDialogAction asChild>
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            onClick={handleConfirmAvatarRemove}
+                            disabled={isRemovingAvatar}
+                          >
+                            Remove
+                          </Button>
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 ) : null}
-                <div className="space-y-2 sm:col-span-2">
-                  <Label htmlFor="settings-display-name">Display name</Label>
-                  <Input
-                    id="settings-display-name"
-                    value={displayNameValue}
-                    onChange={(event) => setDisplayNameValue(event.target.value)}
-                    placeholder="Enter a display name"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="settings-first-name">
-                    First name <span className="text-destructive">*</span>
-                  </Label>
-                  <div className="relative rounded-full">
-                    {shouldHighlightRequired &&
-                    !firstNameValue.trim() &&
-                    !isFirstFocused ? (
-                      <BorderBeam
-                        size={60}
-                        initialOffset={20}
-                        borderWidth={2}
-                        className="from-transparent via-pink-500 to-transparent"
-                        transition={{
-                          type: 'spring',
-                          stiffness: 60,
-                          damping: 20,
-                        }}
-                      />
-                    ) : null}
-                    <Input
-                      id="settings-first-name"
-                      ref={firstNameRef}
-                      value={firstNameValue}
-                      required
-                      className="relative"
-                      placeholder="Enter your first name"
-                      onFocus={() => setIsFirstFocused(true)}
-                      onBlur={() => setIsFirstFocused(false)}
-                      onChange={(event) => {
-                        setFirstNameValue(event.target.value);
-                        if (showRequiredErrors && event.target.value.trim()) {
-                          setShowRequiredErrors(false);
-                        }
-                      }}
-                    />
-                  </div>
-                  {showRequiredErrors && !firstNameValue.trim() ? (
-                    <p className="text-xs text-destructive">First name is required.</p>
-                  ) : null}
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="settings-last-name">
-                    Last name <span className="text-destructive">*</span>
-                  </Label>
-                  <div className="relative rounded-full">
-                    {shouldHighlightRequired &&
-                    !lastNameValue.trim() &&
-                    !isLastFocused ? (
-                      <BorderBeam
-                        size={60}
-                        initialOffset={20}
-                        borderWidth={2}
-                        className="from-transparent via-pink-500 to-transparent"
-                        transition={{
-                          type: 'spring',
-                          stiffness: 60,
-                          damping: 20,
-                        }}
-                      />
-                    ) : null}
-                    <Input
-                      id="settings-last-name"
-                      ref={lastNameRef}
-                      value={lastNameValue}
-                      required
-                      className="relative"
-                      placeholder="Enter your last name"
-                      onFocus={() => setIsLastFocused(true)}
-                      onBlur={() => setIsLastFocused(false)}
-                      onChange={(event) => {
-                        setLastNameValue(event.target.value);
-                        if (showRequiredErrors && event.target.value.trim()) {
-                          setShowRequiredErrors(false);
-                        }
-                      }}
-                    />
-                  </div>
-                  {showRequiredErrors && !lastNameValue.trim() ? (
-                    <p className="text-xs text-destructive">Last name is required.</p>
-                  ) : null}
-                </div>
-                <div className="space-y-2 sm:col-span-2">
-                  <div className="flex items-center justify-between gap-2">
-                    <Label htmlFor="settings-bio">About me</Label>
-                    <span className="text-xs text-muted-foreground">Optional</span>
-                  </div>
-                  <Textarea
-                    id="settings-bio"
-                    value={bioValue}
-                    onChange={(event) => setBioValue(event.target.value)}
-                    rows={4}
-                    placeholder="Share a short bio to help others know you."
-                  />
-                </div>
-                <div className="sm:col-span-2 flex flex-wrap items-center justify-between gap-3">
-                  <div className="text-xs text-muted-foreground">
-                    {saveError ? (
-                      <span className="text-destructive">{saveError}</span>
-                    ) : saveSuccess ? (
-                      <span className="text-primary">Profile saved.</span>
-                    ) : null}
-                  </div>
-                  <Button
-                    size="sm"
-                    onClick={() => handleProfileSave(onPrimaryActionComplete)}
-                    disabled={isSaving || isPrimaryDisabled}
-                  >
-                    {isSaving ? (
-                      'Saving...'
-                    ) : primaryActionLabel === 'Continue' ? (
-                      <span className="inline-flex items-center gap-2">
-                        Continue
-                        <ArrowRight className="h-4 w-4" />
-                      </span>
-                    ) : (
-                      primaryActionLabel
-                    )}
-                  </Button>
-                </div>
               </div>
-            </CollapsibleContent>
-          </Collapsible>
+              {avatarUploadError ? (
+                <div className="sm:col-span-2 text-xs text-destructive">
+                  {avatarUploadError}
+                </div>
+              ) : null}
+              <div className="space-y-2 sm:col-span-2">
+                <Label htmlFor="settings-display-name">Display name</Label>
+                <Input
+                  id="settings-display-name"
+                  value={displayNameValue}
+                  onChange={(event) => setDisplayNameValue(event.target.value)}
+                  placeholder="Enter a display name"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="settings-first-name">
+                  First name <span className="text-destructive">*</span>
+                </Label>
+                <div className="relative rounded-full">
+                  {shouldHighlightRequired &&
+                  !firstNameValue.trim() &&
+                  !isFirstFocused ? (
+                    <BorderBeam
+                      size={60}
+                      initialOffset={20}
+                      borderWidth={2}
+                      className="from-transparent via-pink-500 to-transparent"
+                      transition={{
+                        type: 'spring',
+                        stiffness: 60,
+                        damping: 20,
+                      }}
+                    />
+                  ) : null}
+                  <Input
+                    id="settings-first-name"
+                    ref={firstNameRef}
+                    value={firstNameValue}
+                    required
+                    className="relative"
+                    placeholder="Enter your first name"
+                    onFocus={() => setIsFirstFocused(true)}
+                    onBlur={() => setIsFirstFocused(false)}
+                    onChange={(event) => {
+                      setFirstNameValue(event.target.value);
+                      if (showRequiredErrors && event.target.value.trim()) {
+                        setShowRequiredErrors(false);
+                      }
+                    }}
+                  />
+                </div>
+                {showRequiredErrors && !firstNameValue.trim() ? (
+                  <p className="text-xs text-destructive">First name is required.</p>
+                ) : null}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="settings-last-name">
+                  Last name <span className="text-destructive">*</span>
+                </Label>
+                <div className="relative rounded-full">
+                  {shouldHighlightRequired && !lastNameValue.trim() && !isLastFocused ? (
+                    <BorderBeam
+                      size={60}
+                      initialOffset={20}
+                      borderWidth={2}
+                      className="from-transparent via-pink-500 to-transparent"
+                      transition={{
+                        type: 'spring',
+                        stiffness: 60,
+                        damping: 20,
+                      }}
+                    />
+                  ) : null}
+                  <Input
+                    id="settings-last-name"
+                    ref={lastNameRef}
+                    value={lastNameValue}
+                    required
+                    className="relative"
+                    placeholder="Enter your last name"
+                    onFocus={() => setIsLastFocused(true)}
+                    onBlur={() => setIsLastFocused(false)}
+                    onChange={(event) => {
+                      setLastNameValue(event.target.value);
+                      if (showRequiredErrors && event.target.value.trim()) {
+                        setShowRequiredErrors(false);
+                      }
+                    }}
+                  />
+                </div>
+                {showRequiredErrors && !lastNameValue.trim() ? (
+                  <p className="text-xs text-destructive">Last name is required.</p>
+                ) : null}
+              </div>
+              <div className="space-y-2 sm:col-span-2">
+                <div className="flex items-center justify-between gap-2">
+                  <Label htmlFor="settings-bio">About me</Label>
+                  <span className="text-xs text-muted-foreground">Optional</span>
+                </div>
+                <Textarea
+                  id="settings-bio"
+                  value={bioValue}
+                  onChange={(event) => setBioValue(event.target.value)}
+                  rows={4}
+                  placeholder="Share a short bio to help others know you."
+                />
+              </div>
+              <div className="sm:col-span-2 flex flex-wrap items-center justify-between gap-3">
+                <div className="text-xs text-muted-foreground">
+                  {saveError ? (
+                    <span className="text-destructive">{saveError}</span>
+                  ) : saveSuccess ? (
+                    <span className="text-primary">Profile saved.</span>
+                  ) : null}
+                </div>
+                <Button
+                  size="sm"
+                  onClick={() => handleProfileSave(onPrimaryActionComplete)}
+                  disabled={isSaving || isPrimaryDisabled}
+                >
+                  {isSaving ? (
+                    'Saving...'
+                  ) : primaryActionLabel === 'Continue' ? (
+                    <span className="inline-flex items-center gap-2">
+                      Continue
+                      <ArrowRight className="h-4 w-4" />
+                    </span>
+                  ) : (
+                    primaryActionLabel
+                  )}
+                </Button>
+              </div>
+            </div>
+          </UserSettingsTabSection>
         </div>
       </div>
 

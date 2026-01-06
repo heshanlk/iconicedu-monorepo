@@ -14,18 +14,13 @@ import {
 } from 'lucide-react';
 
 import { Button } from '../../../ui/button';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '../../../ui/collapsible';
+import { UserSettingsTabSection } from './components/user-settings-tab-section';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../../../ui/dropdown-menu';
-import { Separator } from '../../../ui/separator';
 import { Switch } from '../../../ui/switch';
 
 type NotificationSectionItem = {
@@ -230,64 +225,54 @@ export function NotificationsTab({
           {sections.map((section, index) => {
             const Icon = section.icon;
             return (
-              <Collapsible key={section.key} className="rounded-2xl w-full">
-                <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
-                    <Icon className="h-5 w-5" />
-                  </span>
-                  <div className="flex-1">
-                    <div className="text-sm font-medium">{section.title}</div>
-                    <div className="text-xs text-muted-foreground">
-                      {section.items.length} options
+              <UserSettingsTabSection
+                key={section.key}
+                icon={<Icon className="h-5 w-5" />}
+                title={section.title}
+                subtitle={`${section.items.length} options`}
+                showSeparator={index < sections.length - 1}
+              >
+                <div className="space-y-3">
+                  {section.items.map((item) => (
+                    <div
+                      key={item.key}
+                      className="flex items-start justify-between gap-4 text-sm"
+                    >
+                      <span className="leading-5">{item.label}</span>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="outline" size="sm" className="h-8 gap-1 px-2 text-xs">
+                            {formatNotificationChannels(item.key)}
+                            <ChevronDown className="h-3 w-3" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          {notificationChannelOptions.map((option) => {
+                            const isChecked =
+                              scopedChannels[item.key]?.includes(option.key) ?? false;
+                            return (
+                              <DropdownMenuItem
+                                key={option.key}
+                                onSelect={(event) => event.preventDefault()}
+                                className="flex items-center justify-between gap-3"
+                              >
+                                <span>{option.label}</span>
+                                <Switch
+                                  checked={isChecked}
+                                  onCheckedChange={(checked) =>
+                                    toggleNotificationChannel(item.key, option.key, checked)
+                                  }
+                                  aria-label={`${option.label} notifications for ${item.label}`}
+                                />
+                              </DropdownMenuItem>
+                            );
+                          })}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
-                  </div>
-                  <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
-                </CollapsibleTrigger>
-                <CollapsibleContent className="py-4 w-full">
-                  <div className="space-y-3">
-                    {section.items.map((item) => (
-                      <div
-                        key={item.key}
-                        className="flex items-start justify-between gap-4 text-sm"
-                      >
-                        <span className="leading-5">{item.label}</span>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="outline" size="sm" className="h-8 gap-1 px-2 text-xs">
-                              {formatNotificationChannels(item.key)}
-                              <ChevronDown className="h-3 w-3" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                                  {notificationChannelOptions.map((option) => {
-                                    const isChecked =
-                                      scopedChannels[item.key]?.includes(option.key) ??
-                                      false;
-                              return (
-                                <DropdownMenuItem
-                                  key={option.key}
-                                  onSelect={(event) => event.preventDefault()}
-                                  className="flex items-center justify-between gap-3"
-                                >
-                                  <span>{option.label}</span>
-                                  <Switch
-                                    checked={isChecked}
-                                    onCheckedChange={(checked) =>
-                                      toggleNotificationChannel(item.key, option.key, checked)
-                                    }
-                                    aria-label={`${option.label} notifications for ${item.label}`}
-                                  />
-                                </DropdownMenuItem>
-                              );
-                            })}
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </div>
-                    ))}
-                  </div>
-                </CollapsibleContent>
-                {index < sections.length - 1 ? <Separator /> : null}
-              </Collapsible>
+                  ))}
+                </div>
+              </UserSettingsTabSection>
             );
           })}
         </div>
