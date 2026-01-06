@@ -355,6 +355,9 @@ importers:
       countries-and-timezones:
         specifier: ^3.6.0
         version: 3.8.0
+      country-state-city:
+        specifier: ^3.2.1
+        version: 3.2.1
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
@@ -3935,6 +3938,9 @@ packages:
   countries-and-timezones@3.8.0:
     resolution: {integrity: sha512-+Ze9h5f4dQpUwbzTm0DEkiPiZyim9VHV4/mSnT4zNYJnrnfwsKjAZPtnp7J5VzejCDgySs+2SSc6MDdCnD43GA==}
     engines: {node: '>=8.x', npm: '>=5.x'}
+
+  country-state-city@3.2.1:
+    resolution: {integrity: sha512-kxbanqMc6izjhc/EHkGPCTabSPZ2G6eG4/97akAYHJUN4stzzFEvQPZoF8oXDQ+10gM/O/yUmISCR1ZVxyb6EA==}
 
   create-require@1.1.1:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
@@ -11439,6 +11445,8 @@ snapshots:
       typescript: 5.9.3
 
   countries-and-timezones@3.8.0: {}
+
+  country-state-city@3.2.1: {}
 
   create-require@1.1.1: {}
 

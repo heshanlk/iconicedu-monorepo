@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {
   ArrowRight,
+  Check,
   ChevronRight,
   Clock,
   Globe,
@@ -23,6 +24,32 @@ import {
   SelectValue,
 } from '../../../ui/select';
 import { UserSettingsTabSection } from './components/user-settings-tab-section';
+const localeOptions = [
+  { value: 'en-US', label: 'English (United States)' },
+  { value: 'en-GB', label: 'English (United Kingdom)' },
+  { value: 'es-419', label: 'Spanish (Latin America)' },
+  { value: 'fr-CA', label: 'French (Canada)' },
+  { value: 'fr-FR', label: 'French (France)' },
+  { value: 'de-DE', label: 'German (Germany)' },
+  { value: 'pt-BR', label: 'Portuguese (Brazil)' },
+  { value: 'hi-IN', label: 'Hindi (India)' },
+  { value: 'zh-CN', label: 'Chinese (Simplified)' },
+  { value: 'ar-EG', label: 'Arabic (Egypt)' },
+  { value: 'ja-JP', label: 'Japanese (Japan)' },
+];
+const languageOptions = [
+  { value: 'en', label: 'English' },
+  { value: 'es', label: 'Spanish' },
+  { value: 'fr', label: 'French' },
+  { value: 'pt', label: 'Portuguese' },
+  { value: 'de', label: 'German' },
+  { value: 'hi', label: 'Hindi' },
+  { value: 'zh', label: 'Chinese' },
+  { value: 'ja', label: 'Japanese' },
+  { value: 'ar', label: 'Arabic' },
+  { value: 'ru', label: 'Russian' },
+  { value: 'si', label: 'Sinhala' },
+];
 
 type PreferencesTabProps = {
   currentThemeKey: ThemeKey;
@@ -76,6 +103,10 @@ export function PreferencesTab({
   const [isToastDismissed, setIsToastDismissed] = React.useState(false);
   const [isSaving, setIsSaving] = React.useState(false);
   const timezoneInputRef = React.useRef<HTMLDivElement | null>(null);
+  const [localeValue, setLocaleValue] = React.useState(prefs.locale ?? '');
+  const [languageValue, setLanguageValue] = React.useState<string[]>(
+    prefs.languagesSpoken ?? [],
+  );
 
   React.useEffect(() => {
     if (prefs.timezone?.trim()) {
@@ -88,6 +119,11 @@ export function PreferencesTab({
     }
     setTimezoneValue('');
   }, [browserTimezone, prefs.timezone, timezoneOptions]);
+
+  React.useEffect(() => {
+    setLocaleValue(prefs.locale ?? '');
+    setLanguageValue(prefs.languagesSpoken ?? []);
+  }, [prefs.locale, prefs.languagesSpoken]);
 
   React.useEffect(() => {
     if (!scrollToRequired || timezoneValue.trim()) {
@@ -114,8 +150,8 @@ export function PreferencesTab({
     try {
       await onTimezoneContinue(
         trimmed || undefined,
-        prefs.locale ?? null,
-        prefs.languagesSpoken ?? null,
+        localeValue?.trim() || null,
+        languageValue.length ? languageValue : null,
       );
     } finally {
       setIsSaving(false);
@@ -287,7 +323,21 @@ export function PreferencesTab({
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2 sm:col-span-2">
                 <Label htmlFor="settings-locale">Locale</Label>
-                <Input id="settings-locale" defaultValue={prefs.locale ?? ''} />
+                <Select
+                  value={localeValue}
+                  onValueChange={(value) => setLocaleValue(value)}
+                >
+                  <SelectTrigger id="settings-locale" className="w-full">
+                    <SelectValue placeholder="Select locale" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {localeOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div className="sm:col-span-2 flex justify-end">
                 <Button size="sm">Save</Button>
@@ -299,18 +349,60 @@ export function PreferencesTab({
           <UserSettingsTabSection
             icon={<Languages className="h-5 w-5" />}
             title="Languages spoken"
-            subtitle={
-              prefs.languagesSpoken?.length ? prefs.languagesSpoken.join(', ') : 'Not set'
-            }
+            subtitle={languageValue.length ? languageValue.join(', ') : 'Not set'}
           >
             <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-2 sm:col-span-2">
+              <div className="space-y-3 sm:col-span-2">
                 <Label htmlFor="settings-languages">Languages spoken</Label>
-                <Input
-                  id="settings-languages"
-                  defaultValue={prefs.languagesSpoken?.join(', ') ?? ''}
-                  placeholder="English, Spanish"
-                />
+                <div className="flex flex-wrap gap-2">
+                  {languageValue.map((value) => {
+                    const option = languageOptions.find((entry) => entry.value === value);
+                    return (
+                      <span
+                        key={value}
+                        className="inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-medium"
+                      >
+                        {option?.label ?? value}
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setLanguageValue((prev) => prev.filter((entry) => entry !== value))
+                          }
+                          aria-label={`Remove ${option?.label ?? value}`}
+                          className="text-muted-foreground hover:text-destructive"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </span>
+                    );
+                  })}
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  {languageOptions.map((option) => {
+                    const isSelected = languageValue.includes(option.value);
+                    return (
+                      <button
+                        type="button"
+                        key={option.value}
+                        onClick={() => {
+                          setLanguageValue((prev) =>
+                            prev.includes(option.value)
+                              ? prev.filter((entry) => entry !== option.value)
+                              : [...prev, option.value],
+                          );
+                        }}
+                        className={`flex items-center justify-between rounded-xl border px-3 py-2 text-sm transition ${
+                          isSelected
+                            ? 'border-primary bg-primary/5 text-primary'
+                            : 'border-border hover:border-foreground/60'
+                        }`}
+                      >
+                        <span>{option.label}</span>
+                        {isSelected ? <Check className="h-4 w-4" /> : null}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
               <div className="sm:col-span-2 flex justify-end">
                 <Button size="sm">Save</Button>

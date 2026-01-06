@@ -67,6 +67,7 @@ export type NotificationDefaultsVM = Record<string, NotificationPreferenceVM>;
 export interface UserLocationVM {
   countryCode?: string | null;
   countryName?: string | null;
+  streetAddress?: string | null;
   region?: string | null;
   city?: string | null;
   postalCode?: string | null;
