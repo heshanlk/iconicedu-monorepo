@@ -22,6 +22,7 @@ import { Switch } from '../../../ui/switch';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../../../ui/tooltip';
 import { ContactField } from './components/contact-field';
 import { UserSettingsTabSection } from './components/user-settings-tab-section';
+import { Checkbox } from '../../../ui/checkbox';
 
 type AccountTabProps = {
   contacts?: UserAccountVM['contacts'] | null;
@@ -65,6 +66,7 @@ export function AccountTab({
   }, []);
   const [isPhoneSaving, setIsPhoneSaving] = React.useState(false);
   const [isWhatsappSaving, setIsWhatsappSaving] = React.useState(false);
+  const [usePhoneForWhatsapp, setUsePhoneForWhatsapp] = React.useState(true);
   const showToast = showOnboardingToast && !isAccountToastDismissed;
   const emailError = !email.trim() ? 'Email is required.' : null;
   const emailVerified = Boolean(contacts?.emailVerified);
@@ -105,6 +107,12 @@ export function AccountTab({
   const isPhoneValid = Boolean(phoneInputValue.trim() && parsedPhone?.isValid());
   const shouldScrollToPhone = requirePhone || !phoneInputValue.trim();
   const [emailOpen, setEmailOpen] = React.useState(false);
+  React.useEffect(() => {
+    if (!usePhoneForWhatsapp || !phoneInputValue.trim()) {
+      return;
+    }
+    setWhatsappValue(phoneInputValue);
+  }, [phoneInputValue, usePhoneForWhatsapp]);
   const [whatsappOpen, setWhatsappOpen] = React.useState(expandWhatsapp);
   const [emailInputValue, setEmailInputValue] = React.useState(email);
   const [isEmailFocused, setIsEmailFocused] = React.useState(false);
@@ -139,10 +147,19 @@ export function AccountTab({
   }, [scrollToRequired, scrollToken, shouldScrollToPhone]);
 
   React.useEffect(() => {
-    if (!isWhatsappFocused) {
-      setWhatsappValue(formatPhoneInput(contacts?.whatsappE164 ?? ''));
+    const contactWhatsapp = contacts?.whatsappE164 ?? '';
+    const contactPhone = contacts?.phoneE164 ?? '';
+    const shouldUsePhone =
+      !contactWhatsapp || contactWhatsapp === contactPhone;
+    setUsePhoneForWhatsapp((prev) => (prev === shouldUsePhone ? prev : shouldUsePhone));
+
+    if (isWhatsappFocused) {
+      return;
     }
-  }, [contacts?.whatsappE164, formatPhoneInput, isWhatsappFocused]);
+
+    const nextValue = shouldUsePhone ? contactPhone : contactWhatsapp;
+    setWhatsappValue(formatPhoneInput(nextValue));
+  }, [contacts?.phoneE164, contacts?.whatsappE164, formatPhoneInput, isWhatsappFocused]);
 
   const handlePhoneContinue = React.useCallback(async () => {
     if (!onPhoneContinue) {
@@ -280,11 +297,6 @@ export function AccountTab({
                   }
                   aria-label="Receive notifications by email"
                 />
-              </div>
-              <div className="sm:col-span-2 flex justify-end">
-                <Button size="sm" disabled>
-                  Save
-                </Button>
               </div>
             </div>
           </UserSettingsTabSection>
@@ -431,6 +443,7 @@ export function AccountTab({
                       aria-label="WhatsApp"
                       required={expandWhatsapp}
                       placeholder="+1 415 555 0100"
+                      disabled={usePhoneForWhatsapp}
                       onFocus={() => setIsWhatsappFocused(true)}
                       onBlur={() => {
                         setIsWhatsappFocused(false);
@@ -440,6 +453,9 @@ export function AccountTab({
                         }
                       }}
                       onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                        if (usePhoneForWhatsapp) {
+                          return;
+                        }
                         setWhatsappValue(formatPhoneInput(event.target.value));
                         if (whatsappError) {
                           setWhatsappError(null);
@@ -481,9 +497,26 @@ export function AccountTab({
                   />
                 </div>
               ) : null}
-              <div className="sm:col-span-2 flex justify-end">
-                <Button size="sm" disabled>
-                  Save
+              <div className="sm:col-span-2 flex items-center justify-between gap-2">
+                <label
+                  className="flex items-center gap-2 text-sm text-muted-foreground"
+                  htmlFor="use-phone-for-whatsapp"
+                >
+                  <Checkbox
+                    id="use-phone-for-whatsapp"
+                    checked={usePhoneForWhatsapp}
+                    onCheckedChange={(checked) => setUsePhoneForWhatsapp(Boolean(checked))}
+                  />
+                  Use phone number
+                </label>
+                <Button
+                  size="sm"
+                  onClick={handleWhatsappContinue}
+                  disabled={
+                    isWhatsappSaving || !whatsappInputValue.trim() || !onWhatsappContinue
+                  }
+                >
+                  {isWhatsappSaving ? 'Saving...' : 'Save'}
                 </Button>
               </div>
             </div>

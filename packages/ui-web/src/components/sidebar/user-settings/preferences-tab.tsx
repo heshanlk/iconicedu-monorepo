@@ -118,6 +118,9 @@ export function PreferencesTab({
   const [languageValue, setLanguageValue] = React.useState<string[]>(
     prefs.languagesSpoken ?? [],
   );
+  const [isThemeSaving, setIsThemeSaving] = React.useState(false);
+  const [isLocaleSaving, setIsLocaleSaving] = React.useState(false);
+  const [isLanguagesSaving, setIsLanguagesSaving] = React.useState(false);
 
   React.useEffect(() => {
     if (prefs.timezone?.trim()) {
@@ -152,6 +155,8 @@ export function PreferencesTab({
 
   const showToast = showOnboardingToast && !isToastDismissed;
 
+  const isTimezoneRequiredMissing = expandTimezone && !timezoneValue.trim();
+
   const handleTimezoneContinue = React.useCallback(async () => {
     if (!onTimezoneContinue) {
       return;
@@ -173,11 +178,16 @@ export function PreferencesTab({
     if (!onPrefsSave) {
       return;
     }
-    await onPrefsSave({
-      profileId,
-      orgId,
-      themeKey: currentThemeKey,
-    });
+    setIsThemeSaving(true);
+    try {
+      await onPrefsSave({
+        profileId,
+        orgId,
+        themeKey: currentThemeKey,
+      });
+    } finally {
+      setIsThemeSaving(false);
+    }
   }, [currentThemeKey, onPrefsSave, profileId, orgId]);
 
   const handleTimezoneSave = React.useCallback(async () => {
@@ -185,34 +195,49 @@ export function PreferencesTab({
       return;
     }
     const trimmed = timezoneValue.trim();
-    await onPrefsSave({
-      profileId,
-      orgId,
-      timezone: trimmed || undefined,
-    });
+    setIsSaving(true);
+    try {
+      await onPrefsSave({
+        profileId,
+        orgId,
+        timezone: trimmed || undefined,
+      });
+    } finally {
+      setIsSaving(false);
+    }
   }, [onPrefsSave, profileId, orgId, timezoneValue]);
 
   const handleLocaleSave = React.useCallback(async () => {
     if (!onPrefsSave) {
       return;
     }
-    const trimmed = localeValue.trim();
-    await onPrefsSave({
-      profileId,
-      orgId,
-      locale: trimmed || null,
-    });
+    setIsLocaleSaving(true);
+    try {
+      const trimmed = localeValue.trim();
+      await onPrefsSave({
+        profileId,
+        orgId,
+        locale: trimmed || null,
+      });
+    } finally {
+      setIsLocaleSaving(false);
+    }
   }, [localeValue, onPrefsSave, profileId, orgId]);
 
   const handleLanguagesSave = React.useCallback(async () => {
     if (!onPrefsSave) {
       return;
     }
-    await onPrefsSave({
-      profileId,
-      orgId,
-      languagesSpoken: languageValue.length ? languageValue : null,
-    });
+    setIsLanguagesSaving(true);
+    try {
+      await onPrefsSave({
+        profileId,
+        orgId,
+        languagesSpoken: languageValue.length ? languageValue : null,
+      });
+    } finally {
+      setIsLanguagesSaving(false);
+    }
   }, [languageValue, onPrefsSave, profileId, orgId]);
 
   return (
@@ -293,8 +318,12 @@ export function PreferencesTab({
                 </Select>
               </div>
               <div className="sm:col-span-2 flex justify-end">
-                <Button size="sm" onClick={handleThemeSave}>
-                  Save
+                <Button
+                  size="sm"
+                  onClick={handleThemeSave}
+                  disabled={!onPrefsSave || isThemeSaving}
+                >
+                  {isThemeSaving ? 'Saving...' : 'Save'}
                 </Button>
               </div>
             </div>
@@ -356,7 +385,11 @@ export function PreferencesTab({
                   Pick timezone for me
                 </Button>
                 {expandTimezone && onTimezoneContinue ? (
-                  <Button size="sm" onClick={handleTimezoneContinue} disabled={isSaving}>
+                  <Button
+                    size="sm"
+                    onClick={handleTimezoneContinue}
+                    disabled={isSaving || isTimezoneRequiredMissing}
+                  >
                     {isSaving ? (
                       'Saving...'
                     ) : (
@@ -367,8 +400,12 @@ export function PreferencesTab({
                     )}
                   </Button>
                 ) : (
-                  <Button size="sm" onClick={handleTimezoneSave}>
-                    Save
+                  <Button
+                    size="sm"
+                    onClick={handleTimezoneSave}
+                    disabled={isSaving || isTimezoneRequiredMissing}
+                  >
+                    {isSaving ? 'Saving...' : 'Save'}
                   </Button>
                 )}
               </div>
@@ -401,8 +438,12 @@ export function PreferencesTab({
                 </Select>
               </div>
               <div className="sm:col-span-2 flex justify-end">
-                <Button size="sm" onClick={handleLocaleSave}>
-                  Save
+                <Button
+                  size="sm"
+                  onClick={handleLocaleSave}
+                  disabled={!onPrefsSave || isLocaleSaving}
+                >
+                  {isLocaleSaving ? 'Saving...' : 'Save'}
                 </Button>
               </div>
             </div>
@@ -470,8 +511,12 @@ export function PreferencesTab({
                 </div>
               </div>
               <div className="sm:col-span-2 flex justify-end">
-                <Button size="sm" onClick={handleLanguagesSave}>
-                  Save
+                <Button
+                  size="sm"
+                  onClick={handleLanguagesSave}
+                  disabled={!onPrefsSave || isLanguagesSaving}
+                >
+                  {isLanguagesSaving ? 'Saving...' : 'Save'}
                 </Button>
               </div>
             </div>

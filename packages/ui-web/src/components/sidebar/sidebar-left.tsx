@@ -80,6 +80,7 @@ export function SidebarLeft({
   onLocationSave,
   onAvatarUpload,
   onAvatarRemove,
+  onNotificationPreferenceSave,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
   data: SidebarLeftDataVM;
@@ -116,6 +117,13 @@ export function SidebarLeft({
   }) => Promise<void> | void;
   onAvatarUpload?: (input: ProfileAvatarInput) => Promise<void> | void;
   onAvatarRemove?: (input: ProfileAvatarRemoveInput) => Promise<void> | void;
+  onNotificationPreferenceSave?: (input: {
+    profileId: string;
+    orgId: string;
+    prefKey: string;
+    channels: string[];
+    muted?: boolean | null;
+  }) => Promise<void> | void;
 }) {
   const navMain: SidebarNavItem[] = data.navigation.navMain.map((item) => ({
     ...item,
@@ -278,6 +286,7 @@ export function SidebarLeft({
           onLocationSave={onLocationSave}
           onAvatarUpload={onAvatarUpload}
           onAvatarRemove={onAvatarRemove}
+          onNotificationPreferenceSave={onNotificationPreferenceSave}
         />
       </SidebarFooter>
     </Sidebar>

@@ -100,6 +100,9 @@ export function LocationTab({
   }, [countryValue]);
   const postalPlaceholder =
     postalExamples[selectedCountry?.isoCode ?? ''] ?? 'Postal code';
+  const isLocationRequiredMissing =
+    expandLocation &&
+    (!countryValue || !cityValue.trim() || !regionValue.trim() || !postalValue.trim());
 
   React.useEffect(() => {
     setCityValue(location?.city ?? '');
@@ -488,7 +491,7 @@ export function LocationTab({
                     <Button
                       size="sm"
                       onClick={handleLocationContinue}
-                      disabled={isSaving}
+                      disabled={isSaving || isLocationRequiredMissing}
                     >
                       {isSaving ? (
                         'Saving...'
@@ -500,7 +503,13 @@ export function LocationTab({
                       )}
                     </Button>
                   ) : (
-                    <Button size="sm">Save</Button>
+                    <Button
+                      size="sm"
+                      onClick={handleLocationContinue}
+                      disabled={isSaving || isLocationRequiredMissing}
+                    >
+                      {isSaving ? 'Saving...' : 'Save'}
+                    </Button>
                   )}
                 </div>
               </div>

@@ -44,6 +44,13 @@ type UserSettingsDialogProps = {
     languagesSpoken?: string[] | null;
     themeKey?: string | null;
   }) => Promise<void> | void;
+  onNotificationPreferenceSave?: (input: {
+    profileId: string;
+    orgId: string;
+    prefKey: string;
+    channels: string[];
+    muted?: boolean | null;
+  }) => Promise<void> | void;
   onLocationSave?: (input: {
     profileId: string;
     orgId: string;
@@ -70,6 +77,7 @@ export function UserSettingsDialog({
   onProfileSave,
   onAccountUpdate,
   onPrefsSave,
+  onNotificationPreferenceSave,
   onLocationSave,
   onAvatarUpload,
   onAvatarRemove,
@@ -131,6 +139,7 @@ export function UserSettingsDialog({
       onWhatsappContinue={handleWhatsappContinue}
       onTimezoneContinue={handleTimezoneContinue}
       onPrefsSave={onPrefsSave}
+      onNotificationPreferenceSave={onNotificationPreferenceSave}
       onLocationContinue={handleLocationContinue}
     />
   );

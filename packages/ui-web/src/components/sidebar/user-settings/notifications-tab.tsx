@@ -34,12 +34,24 @@ type NotificationsTabProps = {
   onNotificationChannelsChange: React.Dispatch<
     React.SetStateAction<Record<string, string[]>>
   >;
+  profileId: string;
+  orgId: string;
+  onNotificationPreferenceSave?: (input: {
+    profileId: string;
+    orgId: string;
+    prefKey: string;
+    channels: string[];
+    muted?: boolean | null;
+  }) => Promise<void> | void;
 };
 
 export function NotificationsTab({
   isGuardianOrAdmin,
   notificationChannels,
   onNotificationChannelsChange,
+  profileId,
+  orgId,
+  onNotificationPreferenceSave,
 }: NotificationsTabProps) {
   const notificationChannelOptions = [
     { key: 'push', label: 'Push' },
@@ -185,17 +197,45 @@ export function NotificationsTab({
     return Object.fromEntries(entries);
   }, [notificationChannels, notificationKeys]);
 
-  const toggleNotificationChannel = (itemKey: string, channel: string, enabled: boolean) => {
-    onNotificationChannelsChange((prev) => {
-      const current = prev[itemKey] ?? [];
-      if (enabled) {
-        return current.includes(channel)
-          ? prev
-          : { ...prev, [itemKey]: [...current, channel] };
+  const toggleNotificationChannel = React.useCallback(
+    (itemKey: string, channel: string, enabled: boolean) => {
+      const current = notificationChannels[itemKey] ?? [];
+      const hasChannel = current.includes(channel);
+      if (enabled && hasChannel) {
+        return;
       }
-      return { ...prev, [itemKey]: current.filter((entry) => entry !== channel) };
-    });
-  };
+      if (!enabled && !hasChannel) {
+        return;
+      }
+      const nextChannels = enabled
+        ? [...current, channel]
+        : current.filter((entry) => entry !== channel);
+      onNotificationChannelsChange((prev) => ({
+        ...prev,
+        [itemKey]: nextChannels,
+      }));
+      if (onNotificationPreferenceSave) {
+        const promise = onNotificationPreferenceSave({
+          profileId,
+          orgId,
+          prefKey: itemKey,
+          channels: nextChannels,
+        });
+        if (promise) {
+          void promise.catch((error: unknown) => {
+            console.error(error);
+          });
+        }
+      }
+    },
+    [
+      notificationChannels,
+      onNotificationChannelsChange,
+      onNotificationPreferenceSave,
+      profileId,
+      orgId,
+    ],
+  );
 
   const formatNotificationChannels = (itemKey: string) => {
     const selected = scopedChannels[itemKey] ?? [];

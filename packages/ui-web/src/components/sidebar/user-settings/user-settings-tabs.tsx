@@ -54,6 +54,13 @@ export type UserSettingsTabsProps = {
     languagesSpoken?: string[] | null;
     themeKey?: string | null;
   }) => Promise<void> | void;
+  onNotificationPreferenceSave?: (input: {
+    profileId: string;
+    orgId: string;
+    prefKey: string;
+    channels: string[];
+    muted?: boolean | null;
+  }) => Promise<void> | void;
   onLocationContinue?: (input: {
     city: string;
     region: string;
@@ -82,6 +89,7 @@ export function UserSettingsTabs({
   onWhatsappContinue,
   onTimezoneContinue,
   onPrefsSave,
+  onNotificationPreferenceSave,
   onLocationContinue,
 }: UserSettingsTabsProps) {
   const { isMobile } = useSidebar();
@@ -330,6 +338,9 @@ export function UserSettingsTabs({
               isGuardianOrAdmin={isGuardianOrAdmin}
               notificationChannels={notificationChannels}
               onNotificationChannelsChange={setNotificationChannels}
+              profileId={profile.ids.id}
+              orgId={profile.ids.orgId}
+              onNotificationPreferenceSave={onNotificationPreferenceSave}
             />
           </TabsContent>
         </ScrollArea>

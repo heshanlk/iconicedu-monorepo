@@ -238,6 +238,57 @@ export function SidebarShell({
     [supabase],
   );
 
+  const handleNotificationPreferenceSave = React.useCallback(
+    async (input: {
+      profileId: string;
+      orgId: string;
+      prefKey: string;
+      channels: string[];
+    }) => {
+      const { error } = await supabase
+        .from('notification_preferences')
+        .upsert(
+          {
+            org_id: input.orgId,
+            profile_id: input.profileId,
+            pref_key: input.prefKey,
+            channels: input.channels,
+            muted: null,
+          },
+          { onConflict: 'org_id,profile_id,pref_key' },
+        );
+
+      if (error) {
+        throw error;
+      }
+
+      setSidebarData((prev) => {
+        const currentDefaults = prev.user.profile.prefs.notificationDefaults ?? {};
+        const existing = currentDefaults[input.prefKey];
+        return {
+          ...prev,
+          user: {
+            ...prev.user,
+            profile: {
+              ...prev.user.profile,
+              prefs: {
+                ...prev.user.profile.prefs,
+                notificationDefaults: {
+                  ...currentDefaults,
+                  [input.prefKey]: {
+                    channels: input.channels,
+                    muted: existing?.muted ?? null,
+                  },
+                },
+              },
+            },
+          },
+        };
+      });
+    },
+    [supabase],
+  );
+
   const handleLocationUpdate = React.useCallback(
     async (input: {
       profileId: string;
@@ -415,6 +466,7 @@ export function SidebarShell({
         onLocationSave={handleLocationUpdate}
         onAvatarUpload={handleAvatarUpload}
         onAvatarRemove={handleAvatarRemove}
+        onNotificationPreferenceSave={handleNotificationPreferenceSave}
       />
       <SidebarInset>{children}</SidebarInset>
     </>

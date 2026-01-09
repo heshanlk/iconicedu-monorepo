@@ -49,6 +49,7 @@ export function NavUser({
   onLocationSave,
   onAvatarUpload,
   onAvatarRemove,
+  onNotificationPreferenceSave,
 }: {
   profile: UserProfileVM;
   account?: UserAccountVM | null;
@@ -84,6 +85,13 @@ export function NavUser({
   }) => Promise<void> | void;
   onAvatarUpload?: (input: ProfileAvatarInput) => Promise<void> | void;
   onAvatarRemove?: (input: ProfileAvatarRemoveInput) => Promise<void> | void;
+  onNotificationPreferenceSave?: (input: {
+    profileId: string;
+    orgId: string;
+    prefKey: string;
+    channels: string[];
+    muted?: boolean | null;
+  }) => Promise<void> | void;
 }) {
   const { isMobile } = useSidebar();
   const secondaryLabel =
@@ -223,6 +231,7 @@ export function NavUser({
           onLocationSave={onLocationSave}
           onAvatarUpload={onAvatarUpload}
           onAvatarRemove={onAvatarRemove}
+          onNotificationPreferenceSave={onNotificationPreferenceSave}
         />
       </SidebarMenuItem>
     </SidebarMenu>
