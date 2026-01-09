@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { AsYouType, parsePhoneNumberFromString } from 'libphonenumber-js';
-import { ArrowRight, BadgeCheck, ChevronRight, Mail, MessageCircle, Phone, X } from 'lucide-react';
+import { BadgeCheck, ChevronRight, Info, Mail, MessageCircle, Phone, X } from 'lucide-react';
 
 import type { UserAccountVM } from '@iconicedu/shared-types';
 import { Badge } from '../../../ui/badge';
@@ -29,14 +29,16 @@ type AccountTabProps = {
   email: string;
   preferredChannelSelections: string[];
   togglePreferredChannel: (channel: string, enabled: boolean) => void;
-  requirePhone?: boolean;
-  expandPhone?: boolean;
-  expandWhatsapp?: boolean;
   scrollToRequired?: boolean;
   scrollToken?: number;
-  showOnboardingToast?: boolean;
-  onPhoneContinue?: (phone: string) => Promise<void> | void;
-  onWhatsappContinue?: (whatsapp: string) => Promise<void> | void;
+  accountId?: string;
+  orgId?: string;
+  onAccountUpdate?: (input: {
+    accountId: string;
+    orgId: string;
+    phoneE164?: string | null;
+    whatsappE164?: string | null;
+  }) => Promise<void> | void;
 };
 
 export function AccountTab({
@@ -44,16 +46,12 @@ export function AccountTab({
   email,
   preferredChannelSelections,
   togglePreferredChannel,
-  requirePhone = false,
-  expandPhone = false,
-  expandWhatsapp = false,
   scrollToRequired = false,
   scrollToken = 0,
-  showOnboardingToast = false,
-  onPhoneContinue,
-  onWhatsappContinue,
+  accountId,
+  orgId,
+  onAccountUpdate,
 }: AccountTabProps) {
-  const [isAccountToastDismissed, setIsAccountToastDismissed] = React.useState(false);
   const [phoneValue, setPhoneValue] = React.useState('');
   const [isPhoneFocused, setIsPhoneFocused] = React.useState(false);
   const [phoneError, setPhoneError] = React.useState<string | null>(null);
@@ -67,7 +65,6 @@ export function AccountTab({
   const [isPhoneSaving, setIsPhoneSaving] = React.useState(false);
   const [isWhatsappSaving, setIsWhatsappSaving] = React.useState(false);
   const [usePhoneForWhatsapp, setUsePhoneForWhatsapp] = React.useState(true);
-  const showToast = showOnboardingToast && !isAccountToastDismissed;
   const emailError = !email.trim() ? 'Email is required.' : null;
   const emailVerified = Boolean(contacts?.emailVerified);
   const emailVerifiedAt = contacts?.emailVerifiedAt ?? null;
@@ -105,7 +102,7 @@ export function AccountTab({
   const whatsappDisplay = whatsappInputValue || 'Not provided';
   const parsedPhone = parsePhoneNumberFromString(phoneInputValue);
   const isPhoneValid = Boolean(phoneInputValue.trim() && parsedPhone?.isValid());
-  const shouldScrollToPhone = requirePhone || !phoneInputValue.trim();
+  const shouldScrollToPhone = !phoneInputValue.trim();
   const [emailOpen, setEmailOpen] = React.useState(false);
   React.useEffect(() => {
     if (!usePhoneForWhatsapp || !phoneInputValue.trim()) {
@@ -113,18 +110,12 @@ export function AccountTab({
     }
     setWhatsappValue(phoneInputValue);
   }, [phoneInputValue, usePhoneForWhatsapp]);
-  const [whatsappOpen, setWhatsappOpen] = React.useState(expandWhatsapp);
+  const [whatsappOpen, setWhatsappOpen] = React.useState(false);
   const [emailInputValue, setEmailInputValue] = React.useState(email);
   const [isEmailFocused, setIsEmailFocused] = React.useState(false);
   React.useEffect(() => {
     setEmailInputValue(email);
   }, [email]);
-
-  React.useEffect(() => {
-    if (expandWhatsapp && !whatsappValue.trim() && phoneValue.trim()) {
-      setWhatsappValue(phoneValue.trim());
-    }
-  }, [expandWhatsapp, phoneValue, whatsappValue]);
 
   React.useEffect(() => {
     if (!isPhoneFocused) {
@@ -161,8 +152,8 @@ export function AccountTab({
     setWhatsappValue(formatPhoneInput(nextValue));
   }, [contacts?.phoneE164, contacts?.whatsappE164, formatPhoneInput, isWhatsappFocused]);
 
-  const handlePhoneContinue = React.useCallback(async () => {
-    if (!onPhoneContinue) {
+  const handlePhoneSave = React.useCallback(async () => {
+    if (!onAccountUpdate || !accountId || !orgId) {
       return;
     }
     const parsed = parsePhoneNumberFromString(phoneInputValue);
@@ -176,14 +167,18 @@ export function AccountTab({
     }
     setIsPhoneSaving(true);
     try {
-      await onPhoneContinue(parsed.number);
+      await onAccountUpdate({
+        accountId,
+        orgId,
+        phoneE164: parsed.number,
+      });
     } finally {
       setIsPhoneSaving(false);
     }
-  }, [onPhoneContinue, phoneInputValue]);
+  }, [accountId, orgId, onAccountUpdate, phoneInputValue]);
 
-  const handleWhatsappContinue = React.useCallback(async () => {
-    if (!onWhatsappContinue) {
+  const handleWhatsappSave = React.useCallback(async () => {
+    if (!onAccountUpdate || !accountId || !orgId) {
       return;
     }
     const parsed = parsePhoneNumberFromString(whatsappInputValue);
@@ -197,47 +192,18 @@ export function AccountTab({
     }
     setIsWhatsappSaving(true);
     try {
-      await onWhatsappContinue(parsed.number);
+      await onAccountUpdate({
+        accountId,
+        orgId,
+        whatsappE164: parsed.number,
+      });
     } finally {
       setIsWhatsappSaving(false);
     }
-  }, [onWhatsappContinue, whatsappInputValue]);
+  }, [accountId, orgId, onAccountUpdate, whatsappInputValue]);
 
   return (
     <div className="space-y-8 w-full">
-      {showToast ? (
-        <div className="rounded-2xl border border-primary/20 bg-primary/5 px-4 py-3 text-sm shadow-sm">
-          <div className="flex items-start justify-between gap-3">
-            <div className="space-y-1">
-              <div className="font-medium text-foreground">
-                Please fill out required details to continue.
-              </div>
-              <div className="text-muted-foreground">
-                Fields marked as{' '}
-                <span className="relative inline-flex items-center">
-                  <BorderBeam
-                    size={48}
-                    initialOffset={12}
-                    borderWidth={2}
-                    className="from-transparent via-pink-500 to-transparent"
-                    transition={{ type: 'spring', stiffness: 60, damping: 20 }}
-                  />
-                  <span className="relative z-10 text-destructive">*</span>
-                </span>{' '}
-                are required.
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => setIsAccountToastDismissed(true)}
-              className="inline-flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground"
-              aria-label="Dismiss"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
-      ) : null}
       <div className="space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="space-y-1">
@@ -259,7 +225,19 @@ export function AccountTab({
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2 sm:col-span-2">
                 <Label htmlFor="settings-account-email">
-                  Email <span className="text-destructive">*</span>
+                  <div className="flex items-center gap-1">
+                    <span>
+                      Email <span className="text-destructive">*</span>
+                    </span>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span className="text-muted-foreground transition hover:text-foreground">
+                          <Info className="h-3 w-3" />
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent>Contact support to change your email.</TooltipContent>
+                    </Tooltip>
+                  </div>
                 </Label>
                 <InputGroup>
                   <InputGroupInput
@@ -267,6 +245,7 @@ export function AccountTab({
                     value={emailInputValue}
                     aria-label="Email"
                     required
+                    readOnly
                     onFocus={() => setIsEmailFocused(true)}
                     onBlur={() => setIsEmailFocused(false)}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
@@ -306,39 +285,22 @@ export function AccountTab({
             icon={<Phone className="h-5 w-5" />}
             title="Phone"
             subtitle={phoneDisplay}
-            open={expandPhone || undefined}
-            badgeIcon={renderVerificationBadge(
-              Boolean(contacts?.phoneVerified),
-              contacts?.phoneVerifiedAt,
-            )}
-          >
+          badgeIcon={renderVerificationBadge(
+            Boolean(contacts?.phoneVerified),
+            contacts?.phoneVerifiedAt,
+          )}
+        >
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2 sm:col-span-2">
-                <Label htmlFor="settings-account-phone">
-                  Phone{' '}
-                  {expandPhone || requirePhone ? (
-                    <span className="text-destructive">*</span>
-                  ) : null}
-                </Label>
+                <Label htmlFor="settings-account-phone">Phone</Label>
                 <div className="relative rounded-full">
-                  {(expandPhone || requirePhone) &&
-                  !phoneValue.trim() &&
-                  !isPhoneFocused ? (
-                    <BorderBeam
-                      size={60}
-                      initialOffset={20}
-                      borderWidth={2}
-                      className="from-transparent via-pink-500 to-transparent"
-                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
-                    />
-                  ) : null}
                   <InputGroup>
                     <InputGroupInput
                       id="settings-account-phone"
                       value={phoneInputValue}
                       ref={phoneInputRef}
                       aria-label="Phone"
-                      required={expandPhone || requirePhone}
+                      required={false}
                       placeholder="+1 415 555 0100"
                       onFocus={() => setIsPhoneFocused(true)}
                       onBlur={() => {
@@ -388,24 +350,19 @@ export function AccountTab({
                 </div>
               ) : null}
               <div className="sm:col-span-2 flex justify-end">
-                {expandPhone && onPhoneContinue ? (
-                  <Button
-                    size="sm"
-                    onClick={handlePhoneContinue}
-                    disabled={isPhoneSaving || !isPhoneValid}
-                  >
-                    {isPhoneSaving ? (
-                      'Saving...'
-                    ) : (
-                      <span className="inline-flex items-center gap-2">
-                        Continue
-                        <ArrowRight className="h-4 w-4" />
-                      </span>
-                    )}
-                  </Button>
-                ) : (
-                  <Button size="sm">Save</Button>
-                )}
+                <Button
+                  size="sm"
+                  onClick={handlePhoneSave}
+                  disabled={
+                    isPhoneSaving ||
+                    !isPhoneValid ||
+                    !onAccountUpdate ||
+                    !accountId ||
+                    !orgId
+                  }
+                >
+                  {isPhoneSaving ? 'Saving...' : 'Save'}
+                </Button>
               </div>
             </div>
           </UserSettingsTabSection>
@@ -441,7 +398,7 @@ export function AccountTab({
                       id="settings-account-whatsapp"
                       value={whatsappInputValue}
                       aria-label="WhatsApp"
-                      required={expandWhatsapp}
+                      required={false}
                       placeholder="+1 415 555 0100"
                       disabled={usePhoneForWhatsapp}
                       onFocus={() => setIsWhatsappFocused(true)}
@@ -511,9 +468,13 @@ export function AccountTab({
                 </label>
                 <Button
                   size="sm"
-                  onClick={handleWhatsappContinue}
+                  onClick={handleWhatsappSave}
                   disabled={
-                    isWhatsappSaving || !whatsappInputValue.trim() || !onWhatsappContinue
+                    isWhatsappSaving ||
+                    !whatsappInputValue.trim() ||
+                    !onAccountUpdate ||
+                    !accountId ||
+                    !orgId
                   }
                 >
                   {isWhatsappSaving ? 'Saving...' : 'Save'}

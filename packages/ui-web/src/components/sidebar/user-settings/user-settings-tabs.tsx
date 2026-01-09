@@ -20,7 +20,6 @@ import {
 import {
   PROFILE_THEME_OPTIONS,
   SETTINGS_TABS,
-  type OnboardingStep,
   type UserSettingsTab,
 } from './constants';
 
@@ -29,23 +28,10 @@ export type UserSettingsTabsProps = {
   onValueChange: (tab: UserSettingsTab) => void;
   profile: UserProfileVM;
   account?: UserAccountVM | null;
-  expandProfileDetails?: boolean;
-  lockTabs?: boolean;
-  lockedTab?: UserSettingsTab | null;
-  onboardingStep?: OnboardingStep | null;
-  showLogout?: boolean;
   onLogout?: () => Promise<void> | void;
   onProfileSave?: (input: ProfileSaveInput) => Promise<void> | void;
   onAvatarUpload?: (input: ProfileAvatarInput) => Promise<void> | void;
   onAvatarRemove?: (input: ProfileAvatarRemoveInput) => Promise<void> | void;
-  onProfileContinue?: () => void;
-  onPhoneContinue?: (phone: string) => Promise<void> | void;
-  onWhatsappContinue?: (whatsapp: string) => Promise<void> | void;
-  onTimezoneContinue?: (
-    timezone?: string,
-    locale?: string | null,
-    languagesSpoken?: string[] | null,
-  ) => Promise<void> | void;
   onPrefsSave?: (input: {
     profileId: string;
     orgId: string;
@@ -68,6 +54,12 @@ export type UserSettingsTabsProps = {
     countryCode?: string | null;
     countryName?: string | null;
   }) => Promise<void> | void;
+  onAccountUpdate?: (input: {
+    accountId: string;
+    orgId: string;
+    phoneE164?: string | null;
+    whatsappE164?: string | null;
+  }) => Promise<void> | void;
 };
 
 export function UserSettingsTabs({
@@ -75,36 +67,20 @@ export function UserSettingsTabs({
   onValueChange,
   profile,
   account,
-  expandProfileDetails = false,
-  lockTabs = false,
-  lockedTab = null,
-  onboardingStep = null,
-  showLogout = false,
   onLogout,
   onProfileSave,
   onAvatarUpload,
   onAvatarRemove,
-  onProfileContinue,
-  onPhoneContinue,
-  onWhatsappContinue,
-  onTimezoneContinue,
   onPrefsSave,
   onNotificationPreferenceSave,
   onLocationContinue,
+  onAccountUpdate,
 }: UserSettingsTabsProps) {
   const { isMobile } = useSidebar();
-  const activeValue = lockTabs ? (lockedTab ?? 'profile') : value;
   const [scrollToken, setScrollToken] = React.useState(0);
-  const showOnboardingToast = Boolean(onboardingStep);
   const profileBlock = profile.profile;
   const prefs = profile.prefs;
   const contacts = account?.contacts;
-  const hasPhone = Boolean(contacts?.phoneE164?.trim());
-  const expandPhone = onboardingStep === 'account-phone' && !hasPhone;
-  const expandWhatsapp = onboardingStep === 'account-whatsapp';
-  const expandTimezone = onboardingStep === 'preferences-timezone';
-  const expandLocation = onboardingStep === 'location';
-  const showFamilyOnboardingToast = onboardingStep === 'family';
   const email = contacts?.email ?? '';
   const preferredChannels =
     contacts?.preferredContactChannels && contacts.preferredContactChannels.length > 0
@@ -125,11 +101,9 @@ export function UserSettingsTabs({
   const childProfile = profile.kind === 'child' ? profile : null;
   const educatorProfile = profile.kind === 'educator' ? profile : null;
   const staffProfile = profile.kind === 'staff' ? profile : null;
-  const requiresPhone = lockTabs && lockedTab === 'account';
-
   React.useEffect(() => {
     setScrollToken((prev) => prev + 1);
-  }, [activeValue]);
+  }, [value]);
 
   const togglePreferredChannel = (channel: string, enabled: boolean) => {
     setPreferredChannelSelections((prev) => {
@@ -201,7 +175,7 @@ export function UserSettingsTabs({
 
   return (
     <Tabs
-      value={activeValue}
+      value={value}
       onValueChange={(next: string) => onValueChange(next as UserSettingsTab)}
       orientation={isMobile ? 'horizontal' : 'vertical'}
       className="w-full h-full"
@@ -224,35 +198,17 @@ export function UserSettingsTabs({
         >
           {SETTINGS_TABS.map((tab) => {
             const Icon = tab.icon;
-            const isLocked = lockTabs && tab.value !== (lockedTab ?? 'profile');
             return (
               <TabsTrigger
                 key={tab.value}
                 value={tab.value}
-                disabled={isLocked}
-                className={cn(
-                  'gap-2 after:hidden data-[state=active]:bg-muted/50',
-                  isLocked && 'opacity-50',
-                )}
+                className="gap-2 after:hidden data-[state=active]:bg-muted/50"
               >
                 <Icon className="size-4" />
                 {tab.label}
               </TabsTrigger>
             );
           })}
-          {showLogout ? (
-            <div className="mt-2 flex w-full flex-col gap-2">
-              <div className="h-px w-full bg-border/70" />
-              <button
-                type="button"
-                onClick={onLogout}
-                className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-muted-foreground transition hover:bg-muted hover:text-foreground"
-              >
-                <LogOut className="h-4 w-4" />
-                Log out
-              </button>
-            </div>
-          ) : null}
         </TabsList>
 
         <ScrollArea className={cn('min-h-0 flex-1 w-full min-w-0', isMobile && 'flex-1')}>
@@ -264,13 +220,8 @@ export function UserSettingsTabs({
               educatorProfile={educatorProfile}
               staffProfile={staffProfile}
               formatGradeLevel={formatGradeLevel}
-              expandProfileDetails={expandProfileDetails}
-              scrollToRequired={activeValue === 'profile'}
+              scrollToRequired={value === 'profile'}
               scrollToken={scrollToken}
-              primaryActionLabel={
-                lockTabs && lockedTab === 'profile' ? 'Continue' : 'Save'
-              }
-              onPrimaryActionComplete={onProfileContinue}
               onProfileSave={onProfileSave}
               onAvatarUpload={onAvatarUpload}
               onAvatarRemove={onAvatarRemove}
@@ -283,14 +234,9 @@ export function UserSettingsTabs({
               email={email}
               preferredChannelSelections={preferredChannelSelections}
               togglePreferredChannel={togglePreferredChannel}
-              requirePhone={requiresPhone}
-              expandPhone={expandPhone}
-              expandWhatsapp={expandWhatsapp}
-              scrollToRequired={activeValue === 'account'}
+              scrollToRequired={value === 'account'}
               scrollToken={scrollToken}
-              showOnboardingToast={showOnboardingToast}
-              onPhoneContinue={onPhoneContinue}
-              onWhatsappContinue={onWhatsappContinue}
+              onAccountUpdate={onAccountUpdate}
             />
           </TabsContent>
 
@@ -303,11 +249,8 @@ export function UserSettingsTabs({
               prefs={prefs}
               profileThemeOptions={PROFILE_THEME_OPTIONS}
               setProfileThemes={setProfileThemes}
-              showOnboardingToast={showOnboardingToast}
-              expandTimezone={expandTimezone}
-              scrollToRequired={activeValue === 'preferences'}
+              scrollToRequired={value === 'preferences'}
               scrollToken={scrollToken}
-              onTimezoneContinue={onTimezoneContinue}
               onPrefsSave={onPrefsSave}
             />
           </TabsContent>
@@ -315,9 +258,7 @@ export function UserSettingsTabs({
           <TabsContent value="location" className="mt-0 space-y-8 w-full px-1">
             <LocationTab
               location={location}
-              showOnboardingToast={showOnboardingToast}
-              expandLocation={expandLocation}
-              scrollToRequired={activeValue === 'location'}
+              scrollToRequired={value === 'location'}
               scrollToken={scrollToken}
               onLocationContinue={onLocationContinue}
             />
@@ -329,7 +270,6 @@ export function UserSettingsTabs({
               profileThemes={profileThemes}
               profileThemeOptions={PROFILE_THEME_OPTIONS}
               setProfileThemes={setProfileThemes}
-              showOnboardingToast={showFamilyOnboardingToast}
             />
           </TabsContent>
 

@@ -222,8 +222,6 @@ export function NavUser({
           onTabChange={setSettingsTab}
           profile={profile}
           account={account}
-          forceProfileCompletion={forceProfileCompletion}
-          forceAccountCompletion={forceAccountCompletion}
           onLogout={onLogout}
           onProfileSave={onProfileSave}
           onAccountUpdate={onAccountUpdate}

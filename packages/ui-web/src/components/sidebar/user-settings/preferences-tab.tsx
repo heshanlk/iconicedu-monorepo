@@ -60,14 +60,8 @@ type PreferencesTabProps = {
   profileThemeOptions: Array<{ value: string; label: string }>;
   setProfileThemes: React.Dispatch<React.SetStateAction<Record<string, ThemeKey>>>;
   showOnboardingToast?: boolean;
-  expandTimezone?: boolean;
   scrollToRequired?: boolean;
   scrollToken?: number;
-  onTimezoneContinue?: (
-    timezone?: string,
-    locale?: string | null,
-    languagesSpoken?: string[] | null,
-  ) => Promise<void> | void;
   onPrefsSave?: (input: {
     profileId: string;
     orgId: string;
@@ -87,10 +81,8 @@ export function PreferencesTab({
   profileThemeOptions,
   setProfileThemes,
   showOnboardingToast = false,
-  expandTimezone = false,
   scrollToRequired = false,
   scrollToken = 0,
-  onTimezoneContinue,
   onPrefsSave,
 }: PreferencesTabProps) {
   const timezoneOptions = React.useMemo(() => {
@@ -155,25 +147,7 @@ export function PreferencesTab({
 
   const showToast = showOnboardingToast && !isToastDismissed;
 
-  const isTimezoneRequiredMissing = expandTimezone && !timezoneValue.trim();
-
-  const handleTimezoneContinue = React.useCallback(async () => {
-    if (!onTimezoneContinue) {
-      return;
-    }
-    const trimmed = timezoneValue.trim();
-    setIsSaving(true);
-    try {
-      await onTimezoneContinue(
-        trimmed || undefined,
-        localeValue?.trim() || null,
-        languageValue.length ? languageValue : null,
-      );
-    } finally {
-      setIsSaving(false);
-    }
-  }, [onTimezoneContinue, localeValue, languageValue, timezoneValue]);
-
+  const isTimezoneRequiredMissing = !timezoneValue.trim();
   const handleThemeSave = React.useCallback(async () => {
     if (!onPrefsSave) {
       return;
@@ -334,21 +308,11 @@ export function PreferencesTab({
             icon={<Clock className="h-5 w-5" />}
             title="Timezone"
             subtitle={prefs.timezone}
-            open={expandTimezone || undefined}
           >
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2 sm:col-span-2">
                 <Label htmlFor="settings-timezone">Timezone</Label>
                 <div className="relative rounded-full" ref={timezoneInputRef}>
-                  {expandTimezone && !timezoneValue.trim() && !isTimezoneFocused ? (
-                    <BorderBeam
-                      size={60}
-                      initialOffset={20}
-                      borderWidth={2}
-                      className="from-transparent via-pink-500 to-transparent"
-                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
-                    />
-                  ) : null}
                   <Select
                     value={timezoneValue}
                     onValueChange={(value) => setTimezoneValue(value)}
@@ -384,30 +348,13 @@ export function PreferencesTab({
                 >
                   Pick timezone for me
                 </Button>
-                {expandTimezone && onTimezoneContinue ? (
-                  <Button
-                    size="sm"
-                    onClick={handleTimezoneContinue}
-                    disabled={isSaving || isTimezoneRequiredMissing}
-                  >
-                    {isSaving ? (
-                      'Saving...'
-                    ) : (
-                      <span className="inline-flex items-center gap-2">
-                        Continue
-                        <ArrowRight className="h-4 w-4" />
-                      </span>
-                    )}
-                  </Button>
-                ) : (
-                  <Button
-                    size="sm"
-                    onClick={handleTimezoneSave}
-                    disabled={isSaving || isTimezoneRequiredMissing}
-                  >
-                    {isSaving ? 'Saving...' : 'Save'}
-                  </Button>
-                )}
+                <Button
+                  size="sm"
+                  onClick={handleTimezoneSave}
+                  disabled={isSaving || isTimezoneRequiredMissing}
+                >
+                  {isSaving ? 'Saving...' : 'Save'}
+                </Button>
               </div>
             </div>
           </UserSettingsTabSection>

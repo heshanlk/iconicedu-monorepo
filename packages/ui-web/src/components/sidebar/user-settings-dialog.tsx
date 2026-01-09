@@ -11,7 +11,6 @@ import type {
 } from './user-settings/profile-tab';
 import { ResponsiveDialog } from '../shared/responsive-dialog';
 import { UserSettingsTabs } from './user-settings/user-settings-tabs';
-import { useOnboardingState } from './user-settings/use-onboarding';
 import type { UserSettingsTab } from './user-settings/constants';
 export type { UserSettingsTab } from './user-settings/constants';
 
@@ -23,8 +22,6 @@ type UserSettingsDialogProps = {
   onTabChange: (tab: UserSettingsTab) => void;
   profile: UserProfileVM;
   account?: UserAccountVM | null;
-  forceProfileCompletion?: boolean;
-  forceAccountCompletion?: boolean;
   onLogout?: () => Promise<void> | void;
   onProfileSave?: (input: ProfileSaveInput) => Promise<void> | void;
   onAccountUpdate?: (input: {
@@ -71,8 +68,6 @@ export function UserSettingsDialog({
   onTabChange,
   profile,
   account,
-  forceProfileCompletion = false,
-  forceAccountCompletion = false,
   onLogout,
   onProfileSave,
   onAccountUpdate,
@@ -82,66 +77,47 @@ export function UserSettingsDialog({
   onAvatarUpload,
   onAvatarRemove,
 }: UserSettingsDialogProps) {
-  const {
-    onboardingStep,
-    onboardingTab,
-    shouldLockDialog,
-    effectiveForceProfileCompletion,
-    handleProfileContinue,
-    handlePhoneContinue,
-    handleWhatsappContinue,
-    handleTimezoneContinue,
-    handleLocationContinue,
-  } = useOnboardingState({
-    forceProfileCompletion,
-    forceAccountCompletion,
-    profile,
-    account,
-    activeTab,
-    onTabChange,
-    onAccountUpdate,
-    onPrefsSave,
-    onLocationSave,
-  });
-
-  const handleOpenChange = React.useCallback(
-    (nextOpen: boolean) => {
-      if (shouldLockDialog && !nextOpen) {
+  const handleLocationContinue = React.useCallback(
+    (input: {
+      city: string;
+      region: string;
+      postalCode: string;
+      countryCode?: string | null;
+      countryName?: string | null;
+    }) => {
+      if (!onLocationSave) {
         return;
       }
+      return onLocationSave({
+        profileId: profile.ids.id,
+        orgId: profile.ids.orgId,
+        ...input,
+      });
+    },
+    [onLocationSave, profile.ids.id, profile.ids.orgId],
+  );
+  const handleOpenChange = React.useCallback(
+    (nextOpen: boolean) => {
       onOpenChange(nextOpen);
     },
-    [onOpenChange, shouldLockDialog],
+    [onOpenChange],
   );
 
   const content = (
-    <UserSettingsTabs
-      value={onboardingTab ?? activeTab}
-      onValueChange={(nextTab) => {
-        if (onboardingStep && nextTab !== onboardingTab) {
-          return;
-        }
-        onTabChange(nextTab);
-      }}
-      profile={profile}
-      account={account}
-      expandProfileDetails={onboardingStep === 'profile' || effectiveForceProfileCompletion}
-      lockTabs={Boolean(onboardingStep)}
-      lockedTab={onboardingTab}
-      onboardingStep={onboardingStep}
-      showLogout={Boolean(onboardingStep)}
-      onLogout={onLogout}
-      onProfileSave={onProfileSave}
-      onAvatarUpload={onAvatarUpload}
-      onAvatarRemove={onAvatarRemove}
-      onProfileContinue={handleProfileContinue}
-      onPhoneContinue={handlePhoneContinue}
-      onWhatsappContinue={handleWhatsappContinue}
-      onTimezoneContinue={handleTimezoneContinue}
-      onPrefsSave={onPrefsSave}
-      onNotificationPreferenceSave={onNotificationPreferenceSave}
-      onLocationContinue={handleLocationContinue}
-    />
+      <UserSettingsTabs
+        value={activeTab}
+        onValueChange={onTabChange}
+        profile={profile}
+        account={account}
+        onLogout={onLogout}
+        onProfileSave={onProfileSave}
+        onAvatarUpload={onAvatarUpload}
+        onAvatarRemove={onAvatarRemove}
+        onPrefsSave={onPrefsSave}
+        onNotificationPreferenceSave={onNotificationPreferenceSave}
+        onLocationContinue={handleLocationContinue}
+        onAccountUpdate={onAccountUpdate}
+      />
   );
   const { isMobile } = useSidebar();
 
@@ -157,7 +133,6 @@ export function UserSettingsDialog({
       drawerHeaderClassName="items-start"
       containerClassName="h-full"
       bodyClassName={cn(isMobile ? 'px-4 pb-4' : 'px-6 pb-6')}
-      dialogShowCloseButton={!shouldLockDialog}
     >
       {content}
     </ResponsiveDialog>
