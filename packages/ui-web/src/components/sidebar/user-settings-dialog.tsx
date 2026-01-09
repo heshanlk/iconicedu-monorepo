@@ -130,6 +130,7 @@ export function UserSettingsDialog({
       onPhoneContinue={handlePhoneContinue}
       onWhatsappContinue={handleWhatsappContinue}
       onTimezoneContinue={handleTimezoneContinue}
+      onPrefsSave={onPrefsSave}
       onLocationContinue={handleLocationContinue}
     />
   );

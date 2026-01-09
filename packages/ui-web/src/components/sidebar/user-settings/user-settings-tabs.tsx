@@ -46,6 +46,14 @@ export type UserSettingsTabsProps = {
     locale?: string | null,
     languagesSpoken?: string[] | null,
   ) => Promise<void> | void;
+  onPrefsSave?: (input: {
+    profileId: string;
+    orgId: string;
+    timezone?: string;
+    locale?: string | null;
+    languagesSpoken?: string[] | null;
+    themeKey?: string | null;
+  }) => Promise<void> | void;
   onLocationContinue?: (input: {
     city: string;
     region: string;
@@ -73,6 +81,7 @@ export function UserSettingsTabs({
   onPhoneContinue,
   onWhatsappContinue,
   onTimezoneContinue,
+  onPrefsSave,
   onLocationContinue,
 }: UserSettingsTabsProps) {
   const { isMobile } = useSidebar();
@@ -282,6 +291,7 @@ export function UserSettingsTabs({
               currentThemeKey={currentThemeKey}
               currentThemeLabel={currentThemeLabel}
               profileId={profile.ids.id}
+              orgId={profile.ids.orgId}
               prefs={prefs}
               profileThemeOptions={PROFILE_THEME_OPTIONS}
               setProfileThemes={setProfileThemes}
@@ -290,6 +300,7 @@ export function UserSettingsTabs({
               scrollToRequired={activeValue === 'preferences'}
               scrollToken={scrollToken}
               onTimezoneContinue={onTimezoneContinue}
+              onPrefsSave={onPrefsSave}
             />
           </TabsContent>
 

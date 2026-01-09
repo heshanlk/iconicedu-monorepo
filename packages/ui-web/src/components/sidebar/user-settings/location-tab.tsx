@@ -319,12 +319,12 @@ export function LocationTab({
                     </SelectTrigger>
                     <SelectContent className="max-h-72 overflow-y-auto">
                       {countries.map((country) => (
-                        <SelectItem key={country.isoCode} value={country.isoCode}>
-                          <span className="flex items-center gap-2">
-                            <span>{country.flag}</span>
-                            <span>{country.name}</span>
-                          </span>
-                        </SelectItem>
+                      <SelectItem key={country.isoCode} value={country.isoCode}>
+                        <span className="flex items-center justify-between gap-2">
+                          <span className="truncate">{country.name}</span>
+                          <span>{country.flag}</span>
+                        </span>
+                      </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>

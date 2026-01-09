@@ -55,6 +55,7 @@ type PreferencesTabProps = {
   currentThemeKey: ThemeKey;
   currentThemeLabel: string;
   profileId: string;
+  orgId: string;
   prefs: UserProfileVM['prefs'];
   profileThemeOptions: Array<{ value: string; label: string }>;
   setProfileThemes: React.Dispatch<React.SetStateAction<Record<string, ThemeKey>>>;
@@ -67,12 +68,21 @@ type PreferencesTabProps = {
     locale?: string | null,
     languagesSpoken?: string[] | null,
   ) => Promise<void> | void;
+  onPrefsSave?: (input: {
+    profileId: string;
+    orgId: string;
+    timezone?: string;
+    locale?: string | null;
+    languagesSpoken?: string[] | null;
+    themeKey?: string | null;
+  }) => Promise<void> | void;
 };
 
 export function PreferencesTab({
   currentThemeKey,
   currentThemeLabel,
   profileId,
+  orgId,
   prefs,
   profileThemeOptions,
   setProfileThemes,
@@ -81,6 +91,7 @@ export function PreferencesTab({
   scrollToRequired = false,
   scrollToken = 0,
   onTimezoneContinue,
+  onPrefsSave,
 }: PreferencesTabProps) {
   const timezoneOptions = React.useMemo(() => {
     const values = Object.values(getAllTimezones())
@@ -156,7 +167,53 @@ export function PreferencesTab({
     } finally {
       setIsSaving(false);
     }
-  }, [onTimezoneContinue, prefs.languagesSpoken, prefs.locale, timezoneValue]);
+  }, [onTimezoneContinue, localeValue, languageValue, timezoneValue]);
+
+  const handleThemeSave = React.useCallback(async () => {
+    if (!onPrefsSave) {
+      return;
+    }
+    await onPrefsSave({
+      profileId,
+      orgId,
+      themeKey: currentThemeKey,
+    });
+  }, [currentThemeKey, onPrefsSave, profileId, orgId]);
+
+  const handleTimezoneSave = React.useCallback(async () => {
+    if (!onPrefsSave) {
+      return;
+    }
+    const trimmed = timezoneValue.trim();
+    await onPrefsSave({
+      profileId,
+      orgId,
+      timezone: trimmed || undefined,
+    });
+  }, [onPrefsSave, profileId, orgId, timezoneValue]);
+
+  const handleLocaleSave = React.useCallback(async () => {
+    if (!onPrefsSave) {
+      return;
+    }
+    const trimmed = localeValue.trim();
+    await onPrefsSave({
+      profileId,
+      orgId,
+      locale: trimmed || null,
+    });
+  }, [localeValue, onPrefsSave, profileId, orgId]);
+
+  const handleLanguagesSave = React.useCallback(async () => {
+    if (!onPrefsSave) {
+      return;
+    }
+    await onPrefsSave({
+      profileId,
+      orgId,
+      languagesSpoken: languageValue.length ? languageValue : null,
+    });
+  }, [languageValue, onPrefsSave, profileId, orgId]);
 
   return (
     <div className="space-y-8 w-full">
@@ -236,7 +293,9 @@ export function PreferencesTab({
                 </Select>
               </div>
               <div className="sm:col-span-2 flex justify-end">
-                <Button size="sm">Save</Button>
+                <Button size="sm" onClick={handleThemeSave}>
+                  Save
+                </Button>
               </div>
             </div>
           </UserSettingsTabSection>
@@ -308,7 +367,9 @@ export function PreferencesTab({
                     )}
                   </Button>
                 ) : (
-                  <Button size="sm">Save</Button>
+                  <Button size="sm" onClick={handleTimezoneSave}>
+                    Save
+                  </Button>
                 )}
               </div>
             </div>
@@ -340,7 +401,9 @@ export function PreferencesTab({
                 </Select>
               </div>
               <div className="sm:col-span-2 flex justify-end">
-                <Button size="sm">Save</Button>
+                <Button size="sm" onClick={handleLocaleSave}>
+                  Save
+                </Button>
               </div>
             </div>
           </UserSettingsTabSection>
@@ -366,7 +429,9 @@ export function PreferencesTab({
                         <button
                           type="button"
                           onClick={() =>
-                            setLanguageValue((prev) => prev.filter((entry) => entry !== value))
+                            setLanguageValue((prev) =>
+                              prev.filter((entry) => entry !== value),
+                            )
                           }
                           aria-label={`Remove ${option?.label ?? value}`}
                           className="text-muted-foreground hover:text-destructive"
@@ -405,7 +470,9 @@ export function PreferencesTab({
                 </div>
               </div>
               <div className="sm:col-span-2 flex justify-end">
-                <Button size="sm">Save</Button>
+                <Button size="sm" onClick={handleLanguagesSave}>
+                  Save
+                </Button>
               </div>
             </div>
           </UserSettingsTabSection>
