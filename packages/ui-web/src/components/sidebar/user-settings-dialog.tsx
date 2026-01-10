@@ -5,6 +5,7 @@ import type {
   ChildProfileSaveInput,
   FamilyLinkInviteRole,
   FamilyLinkInviteVM,
+  ThemeKey,
   UserAccountVM,
   UserProfileVM,
 } from '@iconicedu/shared-types';
@@ -48,6 +49,11 @@ type UserSettingsDialogProps = {
     languagesSpoken?: string[] | null;
     themeKey?: string | null;
   }) => Promise<void> | void;
+  onChildThemeSave?: (input: {
+    profileId: string;
+    orgId: string;
+    themeKey: ThemeKey;
+  }) => Promise<void> | void;
   onNotificationPreferenceSave?: (input: {
     profileId: string;
     orgId: string;
@@ -85,6 +91,7 @@ export function UserSettingsDialog({
   onChildProfileSave,
   onAccountUpdate,
   onPrefsSave,
+  onChildThemeSave,
   onNotificationPreferenceSave,
   onLocationSave,
   onAvatarUpload,
@@ -130,6 +137,7 @@ export function UserSettingsDialog({
         onAvatarUpload={onAvatarUpload}
         onAvatarRemove={onAvatarRemove}
         onPrefsSave={onPrefsSave}
+        onChildThemeSave={onChildThemeSave}
         onNotificationPreferenceSave={onNotificationPreferenceSave}
         onLocationContinue={handleLocationContinue}
         onAccountUpdate={onAccountUpdate}

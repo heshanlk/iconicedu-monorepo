@@ -18,6 +18,7 @@ import type {
   ChildProfileSaveInput,
   FamilyLinkInviteRole,
   FamilyLinkInviteVM,
+  ThemeKey,
   UserAccountVM,
   UserProfileVM,
 } from '@iconicedu/shared-types';
@@ -59,6 +60,7 @@ export function NavUser({
   onNotificationPreferenceSave,
   onFamilyInviteCreate,
   onFamilyInviteRemove,
+  onChildThemeSave,
 }: {
   profile: UserProfileVM;
   account?: UserAccountVM | null;
@@ -101,6 +103,11 @@ export function NavUser({
     prefKey: string;
     channels: string[];
     muted?: boolean | null;
+  }) => Promise<void> | void;
+  onChildThemeSave?: (input: {
+    profileId: string;
+    orgId: string;
+    themeKey: ThemeKey;
   }) => Promise<void> | void;
   onFamilyInviteCreate?: (input: {
     invitedRole: FamilyLinkInviteRole;
@@ -242,13 +249,14 @@ export function NavUser({
           onChildProfileSave={onChildProfileSave}
           onAccountUpdate={onAccountUpdate}
           onPrefsSave={onPrefsSave}
+          onChildThemeSave={onChildThemeSave}
           onLocationSave={onLocationSave}
           onAvatarUpload={onAvatarUpload}
           onAvatarRemove={onAvatarRemove}
           onNotificationPreferenceSave={onNotificationPreferenceSave}
           onFamilyInviteCreate={onFamilyInviteCreate}
           onFamilyInviteRemove={onFamilyInviteRemove}
-        />
+          />
       </SidebarMenuItem>
     </SidebarMenu>
   );

@@ -7,6 +7,7 @@ import type {
   ChildProfileSaveInput,
   FamilyLinkInviteRole,
   SidebarLeftDataVM,
+  ThemeKey,
 } from '@iconicedu/shared-types';
 import { SidebarLeft, SidebarInset } from '@iconicedu/ui-web';
 import { toast } from 'sonner';
@@ -73,6 +74,8 @@ export function SidebarShell({
     window.location.assign('/login');
   }, [supabase]);
 
+  const primaryProfileId = data.user.profile.ids.id;
+
   const handleProfileSave = React.useCallback(
     async (input: {
       profileId: string;
@@ -98,26 +101,117 @@ export function SidebarShell({
           throw error;
         }
 
-        setSidebarData((prev) => ({
-          ...prev,
-          user: {
-            ...prev.user,
-            profile: {
-              ...prev.user.profile,
-              profile: {
-                ...prev.user.profile.profile,
-                displayName: input.displayName,
-                firstName: input.firstName,
-                lastName: input.lastName,
-                bio: input.bio ?? null,
+        setSidebarData((prev) => {
+          const profile = prev.user.profile;
+          if (profile.ids.id === input.profileId) {
+            return {
+              ...prev,
+              user: {
+                ...prev.user,
+                profile: {
+                  ...profile,
+                  profile: {
+                    ...profile.profile,
+                    displayName: input.displayName,
+                    firstName: input.firstName,
+                    lastName: input.lastName,
+                    bio: input.bio ?? null,
+                  },
+                },
               },
-            },
-          },
-        }));
+            };
+          }
 
-        showSuccessToast('Profile saved');
+          if (profile.kind === 'guardian' && profile.children?.items) {
+            const updatedChildren = profile.children.items.map((child) =>
+              child.ids.id === input.profileId
+                ? {
+                    ...child,
+                    profile: {
+                      ...child.profile,
+                      displayName: input.displayName,
+                      firstName: input.firstName,
+                      lastName: input.lastName,
+                    },
+                  }
+                : child,
+            );
+
+            return {
+              ...prev,
+              user: {
+                ...prev.user,
+                profile: {
+                  ...profile,
+                  children: {
+                    ...profile.children,
+                    items: updatedChildren,
+                  },
+                },
+              },
+            };
+          }
+
+          return prev;
+        });
+
+        if (input.profileId === primaryProfileId) {
+          showSuccessToast('Profile saved');
+        }
       } catch (error) {
         showErrorToast('Unable to save profile', error);
+        throw error;
+      }
+    },
+    [primaryProfileId, supabase],
+  );
+
+  const handleChildThemeSave = React.useCallback(
+    async (input: { profileId: string; orgId: string; themeKey: ThemeKey }) => {
+      try {
+        const { error } = await supabase
+          .from('profiles')
+          .update({
+            ui_theme_key: input.themeKey,
+          })
+          .eq('id', input.profileId)
+          .eq('org_id', input.orgId);
+
+        if (error) {
+          throw error;
+        }
+
+        setSidebarData((prev) => {
+          const profile = prev.user.profile;
+          if (profile.kind !== 'guardian' || !profile.children?.items) {
+            return prev;
+          }
+
+          return {
+            ...prev,
+            user: {
+              ...prev.user,
+              profile: {
+                ...profile,
+                children: {
+                  ...profile.children,
+                  items: profile.children.items.map((child) =>
+                    child.ids.id === input.profileId
+                      ? {
+                          ...child,
+                          ui: {
+                            ...child.ui,
+                            themeKey: input.themeKey,
+                          },
+                        }
+                      : child,
+                  ),
+                },
+              },
+            },
+          };
+        });
+      } catch (error) {
         throw error;
       }
     },
@@ -699,6 +793,7 @@ export function SidebarShell({
         onNotificationPreferenceSave={handleNotificationPreferenceSave}
         onFamilyInviteCreate={handleFamilyInviteCreate}
         onFamilyInviteRemove={handleFamilyInviteRemove}
+        onChildThemeSave={handleChildThemeSave}
       />
       <SidebarInset>{children}</SidebarInset>
     </>

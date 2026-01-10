@@ -57,6 +57,7 @@ import type {
   SidebarLeftDataVM,
   SidebarNavItem,
   SidebarSecondaryItem,
+  ThemeKey,
 } from '@iconicedu/shared-types';
 
 const ICONS = {
@@ -87,6 +88,7 @@ export function SidebarLeft({
   onNotificationPreferenceSave,
   onFamilyInviteCreate,
   onFamilyInviteRemove,
+  onChildThemeSave,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
   data: SidebarLeftDataVM;
@@ -112,6 +114,11 @@ export function SidebarLeft({
     locale?: string | null;
     languagesSpoken?: string[] | null;
     themeKey?: string | null;
+  }) => Promise<void> | void;
+  onChildThemeSave?: (input: {
+    profileId: string;
+    orgId: string;
+    themeKey: ThemeKey;
   }) => Promise<void> | void;
   onLocationSave?: (input: {
     profileId: string;
@@ -302,6 +309,7 @@ export function SidebarLeft({
           onNotificationPreferenceSave={onNotificationPreferenceSave}
           onFamilyInviteCreate={onFamilyInviteCreate}
           onFamilyInviteRemove={onFamilyInviteRemove}
+          onChildThemeSave={onChildThemeSave}
         />
       </SidebarFooter>
     </Sidebar>

@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { ChevronRight, Plus, UserPlus, X } from 'lucide-react';
+import { Plus, UserPlus, X } from 'lucide-react';
 
 import type { ThemeKey, UserProfileVM } from '@iconicedu/shared-types';
 import { BorderBeam } from '../../../ui/border-beam';
@@ -31,19 +31,29 @@ import {
 import { Separator } from '../../../ui/separator';
 import { toast } from 'sonner';
 
-import type { FamilyLinkInviteRole, FamilyLinkInviteVM } from '@iconicedu/shared-types';
+import type {
+  FamilyLinkInviteRole,
+  FamilyLinkInviteVM,
+} from '@iconicedu/shared-types';
+import type { ProfileSaveInput } from './profile-tab';
 
 type FamilyMemberItem = {
   id: string;
+  profileId: string;
+  orgId: string;
   name: string;
   firstName?: string | null;
   lastName?: string | null;
+  bio?: string | null;
   email?: string;
   avatar?: UserProfileVM['profile']['avatar'] | null;
   roleLabel: string;
   canRemove: boolean;
+  isChild?: boolean;
   themeKey: ThemeKey;
 };
+
+type EditableChildData = Record<string, { displayName: string; themeKey: ThemeKey }>;
 
 type FamilyTabProps = {
   familyMembers: FamilyMemberItem[];
@@ -57,6 +67,12 @@ type FamilyTabProps = {
     invitedEmail: string;
   }) => Promise<FamilyLinkInviteVM> | void;
   onInviteRemove?: (input: { inviteId: string }) => Promise<void> | void;
+  onProfileSave?: (input: ProfileSaveInput) => Promise<void> | void;
+  onChildThemeSave?: (input: {
+    profileId: string;
+    orgId: string;
+    themeKey: ThemeKey;
+  }) => Promise<void> | void;
 };
 
 export function FamilyTab({
@@ -68,6 +84,8 @@ export function FamilyTab({
   initialInvites = [],
   onInviteCreate,
   onInviteRemove,
+  onProfileSave,
+  onChildThemeSave,
 }: FamilyTabProps) {
   const [isToastDismissed, setIsToastDismissed] = React.useState(false);
   const [isInviteOpen, setIsInviteOpen] = React.useState(false);
@@ -153,6 +171,78 @@ export function FamilyTab({
   );
 
   const inviteRoles: FamilyLinkInviteRole[] = ['guardian', 'child'];
+  const [editableChildData, setEditableChildData] = React.useState<EditableChildData>(
+    () =>
+      Object.fromEntries(
+        familyMembers.map((member) => {
+          const theme = profileThemes[member.id] ?? member.themeKey ?? 'teal';
+          return [member.id, { displayName: member.name, themeKey: theme }];
+        }),
+      ),
+  );
+
+  React.useEffect(() => {
+    setEditableChildData(
+      Object.fromEntries(
+        familyMembers.map((member) => {
+          const theme = profileThemes[member.id] ?? member.themeKey ?? 'teal';
+          return [member.id, { displayName: member.name, themeKey: theme }];
+        }),
+      ),
+    );
+  }, [familyMembers, profileThemes]);
+
+  const handleDisplayNameSave = React.useCallback(
+    async (member: FamilyMemberItem) => {
+      if (!onProfileSave || !member.isChild) {
+        return;
+      }
+      const childData = editableChildData[member.id];
+      const nextValue = childData?.displayName.trim() ?? '';
+      if (!nextValue || nextValue === member.name) {
+        return;
+      }
+
+      const promise = Promise.resolve(
+        onProfileSave({
+          profileId: member.profileId,
+          orgId: member.orgId,
+          displayName: nextValue,
+          firstName: member.firstName ?? '',
+          lastName: member.lastName ?? '',
+          bio: member.bio ?? undefined,
+        }),
+      );
+
+      toast.promise(promise, {
+        loading: 'Saving display name...',
+        success: 'Display name saved',
+        error: 'Unable to save display name',
+      });
+    },
+    [editableChildData, onProfileSave],
+  );
+
+  const handleAccentChange = React.useCallback(
+    (member: FamilyMemberItem, theme: string) => {
+      if (!onChildThemeSave || !member.isChild) {
+        return;
+      }
+      const promise = Promise.resolve(
+        onChildThemeSave({
+          profileId: member.profileId,
+          orgId: member.orgId,
+          themeKey: theme as ThemeKey,
+        }),
+      );
+      toast.promise(promise, {
+        loading: 'Saving accent color...',
+        success: 'Accent color saved',
+        error: 'Unable to save accent color',
+      });
+    },
+    [onChildThemeSave],
+  );
 
   return (
     <div className="space-y-8 w-full">
@@ -282,100 +372,135 @@ export function FamilyTab({
           </div>
         </div>
         <div className="space-y-1">
-          {familyMembers.length ? (
-            familyMembers.map((member, index) => {
-              const initials = member.name
-                .split(' ')
-                .map((part) => part[0])
-                .join('')
-                .slice(0, 2)
-                .toUpperCase();
-              const isSelf = !member.canRemove;
-              const themeValue = profileThemes[member.id] ?? member.themeKey ?? 'teal';
-              const themeClass = `theme-${themeValue}`;
-              const avatarIcon = (
-                <Avatar className={`size-10 border theme-border ${themeClass}`}>
-                  <AvatarImage src={member.avatar?.url ?? undefined} />
-                  <AvatarFallback className="theme-bg theme-fg">
-                    {initials}
-                  </AvatarFallback>
-                </Avatar>
-              );
-              const memberNameParts = [member.firstName, member.lastName]
-                .filter(Boolean)
-                .map((part) => part?.trim())
-                .filter(Boolean);
-              const memberDescriptionParts = [
-                memberNameParts.length ? memberNameParts.join(' ') : undefined,
-                member.email,
-              ].filter(Boolean);
-              const subtitle = memberDescriptionParts.length
-                ? memberDescriptionParts.join(' · ')
-                : 'Invitation sent';
-              return (
-                <UserSettingsTabSection
-                  key={member.id}
-                  icon={avatarIcon}
-                  title={member.name}
-                  subtitle={subtitle}
-                  badgeIcon={<Badge variant="secondary">{member.roleLabel}</Badge>}
-                  showSeparator={
-                    index < familyMembers.length - 1 || Boolean(invites.length)
-                  }
-                >
-                  {isSelf ? (
-                    <div className="flex justify-end">
-                      <Button variant="destructive" size="sm">
-                        Remove from family
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      <div className="space-y-2">
-                        <Label>Display name</Label>
-                        <Input defaultValue={member.name} />
-                      </div>
-                      <div className="space-y-2">
-                        <Label>Accent color</Label>
-                        <Select
-                          value={themeValue}
-                          onValueChange={(value) =>
-                            setProfileThemes((prev) => ({
-                              ...prev,
-                              [member.id]: value as ThemeKey,
-                            }))
-                          }
-                        >
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select color" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {profileThemeOptions.map((option) => (
-                              <SelectItem key={option.value} value={option.value}>
-                                <span
-                                  className={`flex items-center gap-2 theme-${option.value}`}
+              {familyMembers.length ? (
+                familyMembers.map((member, index) => {
+                  const initials = member.name
+                    .split(' ')
+                    .map((part) => part[0])
+                    .join('')
+                    .slice(0, 2)
+                    .toUpperCase();
+                  const isSelf = !member.canRemove;
+                  const editable = editableChildData[member.id];
+                  const themeValue = editable?.themeKey ?? profileThemes[member.id] ?? member.themeKey ?? 'teal';
+                  const themeClass = `theme-${themeValue}`;
+                  const avatarIcon = (
+                    <Avatar className={`size-10 border theme-border ${themeClass}`}>
+                      <AvatarImage src={member.avatar?.url ?? undefined} />
+                      <AvatarFallback className="theme-bg theme-fg">
+                        {initials}
+                      </AvatarFallback>
+                    </Avatar>
+                  );
+                  const memberNameParts = [member.firstName, member.lastName]
+                    .filter(Boolean)
+                    .map((part) => part?.trim())
+                    .filter(Boolean);
+                  const memberDescriptionParts = [
+                    memberNameParts.length ? memberNameParts.join(' ') : undefined,
+                    member.email,
+                  ].filter(Boolean);
+                  const subtitle = memberDescriptionParts.length
+                    ? memberDescriptionParts.join(' · ')
+                    : 'Invitation sent';
+                  const displayNameValue = editable?.displayName ?? member.name;
+                  const isChildMember = Boolean(member.isChild);
+                  return (
+                    <UserSettingsTabSection
+                      key={member.id}
+                      icon={avatarIcon}
+                      title={member.name}
+                      subtitle={subtitle}
+                      badgeIcon={<Badge variant="secondary">{member.roleLabel}</Badge>}
+                      showSeparator={
+                        index < familyMembers.length - 1 || Boolean(invites.length)
+                      }
+                    >
+                      {isSelf ? (
+                        <div className="flex justify-end">
+                          <Button variant="destructive" size="sm">
+                            Remove from family
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="space-y-4">
+                          {isChildMember ? (
+                            <>
+                              <div className="space-y-2">
+                                <Label>Display name</Label>
+                                <Input
+                                  value={displayNameValue}
+                                  onChange={(event) => {
+                                    const next = event.target.value;
+                                    setEditableChildData((prev) => ({
+                                      ...prev,
+                                      [member.id]: {
+                                        displayName: next,
+                                        themeKey: prev[member.id]?.themeKey ?? themeValue,
+                                      },
+                                    }));
+                                  }}
+                                  onBlur={() => {
+                                    void handleDisplayNameSave(member);
+                                  }}
+                                  onKeyDown={(event) => {
+                                    if (event.key === 'Enter') {
+                                      (event.target as HTMLInputElement).blur();
+                                    }
+                                  }}
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <Label>Accent color</Label>
+                                <Select
+                                  value={themeValue}
+                                  onValueChange={(value) => {
+                                    setProfileThemes((prev) => ({
+                                      ...prev,
+                                      [member.id]: value as ThemeKey,
+                                    }));
+                                    setEditableChildData((prev) => ({
+                                      ...prev,
+                                      [member.id]: {
+                                        displayName: prev[member.id]?.displayName ?? displayNameValue,
+                                        themeKey: value as ThemeKey,
+                                      },
+                                    }));
+                                    handleAccentChange(member, value);
+                                  }}
                                 >
-                                  <span className="theme-swatch h-3.5 w-3.5 rounded-full" />
-                                  {option.label}
-                                </span>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                                  <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Select color" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {profileThemeOptions.map((option) => (
+                                      <SelectItem key={option.value} value={option.value}>
+                                        <span
+                                          className={`flex items-center gap-2 theme-${option.value}`}
+                                        >
+                                          <span className="theme-swatch h-3.5 w-3.5 rounded-full" />
+                                          {option.label}
+                                        </span>
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                          </>
+                        ) : null}
+                        <div className="flex justify-end">
+                          <Button variant="destructive" size="sm">
+                            Remove from family
+                          </Button>
+                        </div>
                       </div>
-                      <div className="flex justify-end">
-                        <Button variant="destructive" size="sm">
-                          Remove from family
-                        </Button>
-                      </div>
-                    </div>
-                  )}
-                </UserSettingsTabSection>
-              );
-            })
-          ) : (
-            <p className="text-sm text-muted-foreground">No family members added yet.</p>
-          )}
+                    )}
+                  </UserSettingsTabSection>
+                );
+              })
+            ) : (
+              <p className="text-sm text-muted-foreground">No family members added yet.</p>
+            )}
           {invites.length ? (
             <>
               {invites.map((invite, index) => {

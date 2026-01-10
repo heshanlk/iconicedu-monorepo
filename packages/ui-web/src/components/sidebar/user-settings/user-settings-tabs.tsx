@@ -49,6 +49,11 @@ export type UserSettingsTabsProps = {
     languagesSpoken?: string[] | null;
     themeKey?: string | null;
   }) => Promise<void> | void;
+  onChildThemeSave?: (input: {
+    profileId: string;
+    orgId: string;
+    themeKey: ThemeKey;
+  }) => Promise<void> | void;
   onNotificationPreferenceSave?: (input: {
     profileId: string;
     orgId: string;
@@ -93,6 +98,7 @@ export function UserSettingsTabs({
   onAccountUpdate,
   onFamilyInviteCreate,
   onFamilyInviteRemove,
+  onChildThemeSave,
 }: UserSettingsTabsProps) {
   const { isMobile } = useSidebar();
   const [scrollToken, setScrollToken] = React.useState(0);
@@ -159,38 +165,50 @@ export function UserSettingsTabs({
   const familyMembers = React.useMemo(() => {
     const members: Array<{
       id: string;
+      profileId: string;
+      orgId: string;
       name: string;
       firstName?: string | null;
       lastName?: string | null;
+      bio?: string | null;
       email?: string;
       avatar?: UserProfileVM['profile']['avatar'] | null;
       roleLabel: string;
       canRemove: boolean;
+      isChild?: boolean;
       themeKey: ThemeKey;
     }> = [];
 
-    members.push({
-      id: profile.ids.id,
-      name: profileBlock.displayName,
-      firstName: profileBlock.firstName ?? undefined,
-      lastName: profileBlock.lastName ?? undefined,
-      email: contacts?.email ?? undefined,
-      avatar: profileBlock.avatar,
-      roleLabel: 'Myself',
-      canRemove: false,
-      themeKey: profile.ui?.themeKey ?? 'teal',
-    });
+      members.push({
+        id: profile.ids.id,
+        profileId: profile.ids.id,
+        orgId: profile.ids.orgId,
+        name: profileBlock.displayName,
+        firstName: profileBlock.firstName ?? undefined,
+        lastName: profileBlock.lastName ?? undefined,
+        bio: profileBlock.bio ?? undefined,
+        email: contacts?.email ?? undefined,
+        avatar: profileBlock.avatar,
+        roleLabel: 'Myself',
+        canRemove: false,
+        isChild: false,
+        themeKey: profile.ui?.themeKey ?? 'teal',
+      });
 
     guardianChildren.forEach((childProfile) => {
       members.push({
         id: childProfile.ids.id,
+        profileId: childProfile.ids.id,
+        orgId: childProfile.ids.orgId,
         name: childProfile.profile.displayName ?? 'Child',
         firstName: childProfile.profile.firstName ?? undefined,
         lastName: childProfile.profile.lastName ?? undefined,
+        bio: childProfile.profile.bio ?? undefined,
         email: undefined,
         avatar: childProfile.profile.avatar ?? null,
         roleLabel: 'Child',
         canRemove: true,
+        isChild: true,
         themeKey: childProfile.ui?.themeKey ?? 'teal',
       });
     });
@@ -204,9 +222,15 @@ export function UserSettingsTabs({
     profile.ui?.themeKey,
     guardianChildren,
   ]);
-  const availableTabs = SETTINGS_TABS.filter((tab) =>
-    tab.value === 'student-profile' ? profile.kind === 'child' : true,
-  );
+  const availableTabs = SETTINGS_TABS.filter((tab) => {
+    if (tab.value === 'student-profile') {
+      return profile.kind === 'child';
+    }
+    if (tab.value === 'family') {
+      return profile.kind === 'guardian';
+    }
+    return true;
+  });
 
   return (
     <Tabs
@@ -308,17 +332,19 @@ export function UserSettingsTabs({
           </TabsContent>
 
           <TabsContent value="family" className="mt-0 space-y-8 w-full px-1">
-          <FamilyTab
-            familyMembers={familyMembers}
-            profileThemes={profileThemes}
-            profileThemeOptions={PROFILE_THEME_OPTIONS}
-            setProfileThemes={setProfileThemes}
-            initialInvites={
-              profile.kind === 'guardian' ? profile.familyInvites ?? [] : []
-            }
-            onInviteCreate={onFamilyInviteCreate}
-            onInviteRemove={onFamilyInviteRemove}
-          />
+            <FamilyTab
+              familyMembers={familyMembers}
+              profileThemes={profileThemes}
+              profileThemeOptions={PROFILE_THEME_OPTIONS}
+              setProfileThemes={setProfileThemes}
+              initialInvites={
+                profile.kind === 'guardian' ? profile.familyInvites ?? [] : []
+              }
+              onInviteCreate={onFamilyInviteCreate}
+              onInviteRemove={onFamilyInviteRemove}
+              onProfileSave={onProfileSave}
+              onChildThemeSave={onChildThemeSave}
+            />
           </TabsContent>
 
           <TabsContent value="notifications" className="mt-0 space-y-8 w-full px-1">
