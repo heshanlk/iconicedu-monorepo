@@ -11,6 +11,8 @@ import {
   X,
 } from 'lucide-react';
 
+import { toast } from 'sonner';
+
 import type {
   ChildProfileVM,
   EducatorProfileVM,
@@ -129,7 +131,6 @@ export function ProfileTab({
   const [saveError, setSaveError] = React.useState<string | null>(null);
   const [showRequiredErrors, setShowRequiredErrors] = React.useState(false);
   const [isSaving, setIsSaving] = React.useState(false);
-  const [saveSuccess, setSaveSuccess] = React.useState(false);
   const [avatarPreview, setAvatarPreview] = React.useState<string | null>(null);
   const [avatarUploadError, setAvatarUploadError] = React.useState<string | null>(null);
   const [isUploadingAvatar, setIsUploadingAvatar] = React.useState(false);
@@ -202,7 +203,6 @@ export function ProfileTab({
   const handleProfileSave = React.useCallback(
     async (afterSave?: () => void) => {
       setSaveError(null);
-      setSaveSuccess(false);
 
       const trimmedFirstName = firstNameValue.trim();
       const trimmedLastName = lastNameValue.trim();
@@ -216,8 +216,9 @@ export function ProfileTab({
       }
 
       setShowRequiredErrors(false);
+
       if (!onProfileSave) {
-        setSaveSuccess(true);
+        toast.success('Profile saved');
         afterSave?.();
         return;
       }
@@ -232,10 +233,14 @@ export function ProfileTab({
           lastName: trimmedLastName,
           bio: trimmedBio || null,
         });
-        setSaveSuccess(true);
+        toast.success('Profile saved');
         afterSave?.();
       } catch (error) {
-        setSaveError(error instanceof Error ? error.message : 'Unable to save profile.');
+        const message =
+          error instanceof Error ? error.message : 'Unable to save profile.';
+        setSaveError(message);
+        toast.error(message);
+        throw error;
       } finally {
         setIsSaving(false);
       }
@@ -588,11 +593,7 @@ export function ProfileTab({
               </div>
               <div className="sm:col-span-2 flex flex-wrap items-center justify-between gap-3">
                 <div className="text-xs text-muted-foreground">
-                  {saveError ? (
-                    <span className="text-destructive">{saveError}</span>
-                  ) : saveSuccess ? (
-                    <span className="text-primary">Profile saved.</span>
-                  ) : null}
+                  {saveError ? <span className="text-destructive">{saveError}</span> : null}
                 </div>
                 <Button
                   size="sm"

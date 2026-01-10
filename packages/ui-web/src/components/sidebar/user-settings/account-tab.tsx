@@ -38,6 +38,7 @@ type AccountTabProps = {
     orgId: string;
     phoneE164?: string | null;
     whatsappE164?: string | null;
+    preferredContactChannels?: string[] | null;
   }) => Promise<void> | void;
 };
 
@@ -292,7 +293,13 @@ export function AccountTab({
         >
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2 sm:col-span-2">
-                <Label htmlFor="settings-account-phone">Phone</Label>
+                <Label htmlFor="settings-account-phone">
+                  <div className="flex items-center gap-1">
+                    <span>
+                      Phone <span className="text-destructive">*</span>
+                    </span>
+                  </div>
+                </Label>
                 <div className="relative rounded-full">
                   <InputGroup>
                     <InputGroupInput
@@ -300,7 +307,7 @@ export function AccountTab({
                       value={phoneInputValue}
                       ref={phoneInputRef}
                       aria-label="Phone"
-                      required={false}
+                      required
                       placeholder="+1 415 555 0100"
                       onFocus={() => setIsPhoneFocused(true)}
                       onBlur={() => {

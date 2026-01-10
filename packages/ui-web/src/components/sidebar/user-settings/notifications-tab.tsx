@@ -22,6 +22,7 @@ import {
   DropdownMenuTrigger,
 } from '../../../ui/dropdown-menu';
 import { Switch } from '../../../ui/switch';
+import { toast } from 'sonner';
 
 type NotificationSectionItem = {
   key: string;
@@ -197,6 +198,11 @@ export function NotificationsTab({
     return Object.fromEntries(entries);
   }, [notificationChannels, notificationKeys]);
 
+  const [pendingPreferenceToasts, setPendingPreferenceToasts] = React.useState<
+    Record<string, boolean>
+  >({});
+  const pendingToastTimers = React.useRef<Record<string, number>>({});
+
   const toggleNotificationChannel = React.useCallback(
     (itemKey: string, channel: string, enabled: boolean) => {
       const current = notificationChannels[itemKey] ?? [];
@@ -222,9 +228,16 @@ export function NotificationsTab({
           channels: nextChannels,
         });
         if (promise) {
-          void promise.catch((error: unknown) => {
-            console.error(error);
-          });
+          void promise
+            .then(() => {
+              setPendingPreferenceToasts((prev) => ({
+                ...prev,
+                [itemKey]: true,
+              }));
+            })
+            .catch((error: unknown) => {
+              console.error(error);
+            });
         }
       }
     },
@@ -235,6 +248,29 @@ export function NotificationsTab({
       profileId,
       orgId,
     ],
+  );
+
+  const handleMenuOpenChange = React.useCallback(
+    (itemKey: string, open: boolean) => {
+      if (open) {
+        return;
+      }
+      setPendingPreferenceToasts((prev) => {
+        if (!prev[itemKey]) {
+          return prev;
+        }
+        const now = Date.now();
+        const lastToast = pendingToastTimers.current[itemKey] ?? 0;
+        if (now - lastToast > 2000) {
+          toast.success('Notification preferences saved');
+          pendingToastTimers.current[itemKey] = now;
+        }
+        const next = { ...prev };
+        delete next[itemKey];
+        return next;
+      });
+    },
+    [],
   );
 
   const formatNotificationChannels = (itemKey: string) => {
@@ -279,7 +315,7 @@ export function NotificationsTab({
                       className="flex items-start justify-between gap-4 text-sm"
                     >
                       <span className="leading-5">{item.label}</span>
-                      <DropdownMenu>
+                      <DropdownMenu onOpenChange={(open) => handleMenuOpenChange(item.key, open)}>
                         <DropdownMenuTrigger asChild>
                           <Button variant="outline" size="sm" className="h-8 gap-1 px-2 text-xs">
                             {formatNotificationChannels(item.key)}

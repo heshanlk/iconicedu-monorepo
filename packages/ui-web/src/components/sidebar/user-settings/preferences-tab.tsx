@@ -51,6 +51,22 @@ const languageOptions = [
   { value: 'si', label: 'Sinhala' },
 ];
 
+type TimezoneOption = {
+  name: string;
+  countryCode: string | null;
+};
+
+const countryCodeToEmoji = (code?: string | null) => {
+  if (!code) {
+    return null;
+  }
+  return code
+    .toUpperCase()
+    .split('')
+    .map((char) => String.fromCodePoint(char.charCodeAt(0) + 127397))
+    .join('');
+};
+
 type PreferencesTabProps = {
   currentThemeKey: ThemeKey;
   currentThemeLabel: string;
@@ -85,11 +101,20 @@ export function PreferencesTab({
   scrollToken = 0,
   onPrefsSave,
 }: PreferencesTabProps) {
-  const timezoneOptions = React.useMemo(() => {
-    const values = Object.values(getAllTimezones())
-      .map((timezone) => timezone.name)
-      .filter(Boolean);
-    return values.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+  const timezoneOptions = React.useMemo<TimezoneOption[]>(() => {
+    const options = Object.values(getAllTimezones()).reduce<TimezoneOption[]>((acc, timezone) => {
+      if (!timezone.name) {
+        return acc;
+      }
+      acc.push({
+        name: timezone.name,
+        countryCode: timezone.countries?.[0] ?? null,
+      });
+      return acc;
+    }, []);
+    return options.sort((a, b) =>
+      a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }),
+    );
   }, []);
 
   const browserTimezone = React.useMemo(() => {
@@ -119,7 +144,7 @@ export function PreferencesTab({
       setTimezoneValue(prefs.timezone);
       return;
     }
-    if (browserTimezone && timezoneOptions.includes(browserTimezone)) {
+    if (browserTimezone && timezoneOptions.some((option) => option.name === browserTimezone)) {
       setTimezoneValue(browserTimezone);
       return;
     }
@@ -311,7 +336,13 @@ export function PreferencesTab({
           >
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2 sm:col-span-2">
-                <Label htmlFor="settings-timezone">Timezone</Label>
+                <Label htmlFor="settings-timezone">
+                  <div className="flex items-center gap-1">
+                    <span>
+                      Timezone <span className="text-destructive">*</span>
+                    </span>
+                  </div>
+                </Label>
                 <div className="relative rounded-full" ref={timezoneInputRef}>
                   <Select
                     value={timezoneValue}
@@ -326,14 +357,25 @@ export function PreferencesTab({
                       <SelectValue placeholder="Select timezone" />
                     </SelectTrigger>
                     <SelectContent className="max-h-72 overflow-y-auto">
-                      {timezoneOptions.map((timezone) => (
-                        <SelectItem key={timezone} value={timezone}>
-                          <div className="break-words">{timezone}</div>
+                    {timezoneOptions.map((timezone) => {
+                      const flag = countryCodeToEmoji(timezone.countryCode);
+                      return (
+                        <SelectItem key={timezone.name} value={timezone.name}>
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="break-words">{timezone.name}</span>
+                            {flag ? (
+                              <span className="text-sm opacity-80">{flag}</span>
+                            ) : null}
+                          </div>
                         </SelectItem>
-                      ))}
+                      );
+                    })}
                     </SelectContent>
                   </Select>
                 </div>
+                {isTimezoneRequiredMissing ? (
+                  <p className="text-xs text-destructive">Timezone is required.</p>
+                ) : null}
               </div>
               <div className="sm:col-span-2 flex items-center justify-between">
                 <Button

@@ -59,6 +59,7 @@ export type UserSettingsTabsProps = {
     orgId: string;
     phoneE164?: string | null;
     whatsappE164?: string | null;
+    preferredContactChannels?: string[] | null;
   }) => Promise<void> | void;
 };
 
@@ -82,10 +83,7 @@ export function UserSettingsTabs({
   const prefs = profile.prefs;
   const contacts = account?.contacts;
   const email = contacts?.email ?? '';
-  const preferredChannels =
-    contacts?.preferredContactChannels && contacts.preferredContactChannels.length > 0
-      ? contacts.preferredContactChannels
-      : ['email'];
+  const preferredChannels = contacts?.preferredContactChannels ?? ['email'];
   const location = profile.location;
   const roles = account?.access?.userRoles ?? [];
   const [profileThemes, setProfileThemes] = React.useState<Record<string, ThemeKey>>({});
@@ -105,14 +103,27 @@ export function UserSettingsTabs({
     setScrollToken((prev) => prev + 1);
   }, [value]);
 
-  const togglePreferredChannel = (channel: string, enabled: boolean) => {
-    setPreferredChannelSelections((prev) => {
-      if (enabled) {
-        return prev.includes(channel) ? prev : [...prev, channel];
+  const togglePreferredChannel = React.useCallback(
+    (channel: string, enabled: boolean) => {
+      const nextChannels = enabled
+        ? preferredChannelSelections.includes(channel)
+          ? preferredChannelSelections
+          : [...preferredChannelSelections, channel]
+        : preferredChannelSelections.filter((item) => item !== channel);
+
+      setPreferredChannelSelections(nextChannels);
+      if (account?.contacts && onAccountUpdate) {
+        const accountId = account.ids.id;
+        const orgId = account.ids.orgId;
+        void onAccountUpdate({
+          accountId,
+          orgId,
+          preferredContactChannels: nextChannels,
+        });
       }
-      return prev.filter((item) => item !== channel);
-    });
-  };
+    },
+    [account, onAccountUpdate, preferredChannelSelections],
+  );
   const formatGradeLevel = (gradeLevel?: { id: string | number; label: string } | null) =>
     gradeLevel?.label ?? 'Not set';
   const [notificationChannels, setNotificationChannels] = React.useState<

@@ -101,8 +101,7 @@ export function LocationTab({
   const postalPlaceholder =
     postalExamples[selectedCountry?.isoCode ?? ''] ?? 'Postal code';
   const isLocationRequiredMissing =
-    expandLocation &&
-    (!countryValue || !cityValue.trim() || !regionValue.trim() || !postalValue.trim());
+    !countryValue || !cityValue.trim() || !regionValue.trim() || !postalValue.trim();
 
   React.useEffect(() => {
     setCityValue(location?.city ?? '');
@@ -299,11 +298,10 @@ export function LocationTab({
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2 sm:col-span-2" ref={countryFieldRef}>
                 <Label htmlFor="settings-country">
-                  Country{' '}
-                  {expandLocation ? <span className="text-destructive">*</span> : null}
+                  Country <span className="text-destructive">*</span>
                 </Label>
                 <div className="relative rounded-full">
-                  {expandLocation && !countryValue && !isCountryFocused ? (
+                  {!countryValue && !isCountryFocused ? (
                     <BorderBeam
                       size={60}
                       initialOffset={20}
@@ -322,12 +320,12 @@ export function LocationTab({
                     </SelectTrigger>
                     <SelectContent className="max-h-72 overflow-y-auto">
                       {countries.map((country) => (
-                      <SelectItem key={country.isoCode} value={country.isoCode}>
-                        <span className="flex items-center justify-between gap-2">
-                          <span className="truncate">{country.name}</span>
-                          <span>{country.flag}</span>
-                        </span>
-                      </SelectItem>
+                        <SelectItem key={country.isoCode} value={country.isoCode}>
+                          <span className="flex items-center justify-between gap-2">
+                            <span className="truncate">{country.name}</span>
+                            <span>{country.flag}</span>
+                          </span>
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -350,11 +348,10 @@ export function LocationTab({
               </div>
               <div className="space-y-2 sm:col-span-2">
                 <Label htmlFor="settings-city">
-                  City{' '}
-                  {expandLocation ? <span className="text-destructive">*</span> : null}
+                  City <span className="text-destructive">*</span>
                 </Label>
                 <div className="relative rounded-full">
-                  {expandLocation && !cityValue.trim() && !isCityFocused ? (
+                  {!cityValue.trim() && !isCityFocused ? (
                     <BorderBeam
                       size={60}
                       initialOffset={20}
@@ -367,7 +364,7 @@ export function LocationTab({
                     id="settings-city"
                     value={cityValue}
                     ref={cityInputRef}
-                    required={expandLocation}
+                    required
                     placeholder="City"
                     onFocus={() => setIsCityFocused(true)}
                     onBlur={() => setIsCityFocused(false)}
@@ -385,11 +382,10 @@ export function LocationTab({
               </div>
               <div className="space-y-2 sm:col-span-1">
                 <Label htmlFor="settings-region">
-                  State{' '}
-                  {expandLocation ? <span className="text-destructive">*</span> : null}
+                  State <span className="text-destructive">*</span>
                 </Label>
                 <div className="relative rounded-full">
-                  {expandLocation && !regionValue.trim() && !isRegionFocused ? (
+                  {!regionValue.trim() && !isRegionFocused ? (
                     <BorderBeam
                       size={60}
                       initialOffset={20}
@@ -425,7 +421,7 @@ export function LocationTab({
                       id="settings-region"
                       value={regionValue}
                       ref={regionInputRef}
-                      required={expandLocation}
+                      required
                       placeholder="State"
                       onFocus={() => setIsRegionFocused(true)}
                       onBlur={() => setIsRegionFocused(false)}
@@ -444,11 +440,10 @@ export function LocationTab({
               </div>
               <div className="space-y-2 sm:col-span-1">
                 <Label htmlFor="settings-postal">
-                  Zip{' '}
-                  {expandLocation ? <span className="text-destructive">*</span> : null}
+                  Zip <span className="text-destructive">*</span>
                 </Label>
                 <div className="relative rounded-full">
-                  {expandLocation && !postalValue.trim() && !isPostalFocused ? (
+                  {!postalValue.trim() && !isPostalFocused ? (
                     <BorderBeam
                       size={60}
                       initialOffset={20}
@@ -461,7 +456,7 @@ export function LocationTab({
                     id="settings-postal"
                     value={postalValue}
                     ref={postalInputRef}
-                    required={expandLocation}
+                    required
                     placeholder={postalPlaceholder}
                     onFocus={() => setIsPostalFocused(true)}
                     onBlur={() => setIsPostalFocused(false)}

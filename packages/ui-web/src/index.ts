@@ -31,3 +31,4 @@ export * from './components/class-schedule/class-schedule-header';
 export * from './components/class-schedule/class-schedule-container';
 export * from './components/class-schedule/week-view';
 export * from './components/class-schedule/day-view';
+export { Toaster } from './ui/sonner';
