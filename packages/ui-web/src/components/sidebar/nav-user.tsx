@@ -221,10 +221,12 @@ export function NavUser({
                 <SlidersHorizontal />
                 Preferences
               </DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => openSettings('family')}>
-                <Users />
-                Family
-              </DropdownMenuItem>
+              {profile.kind === 'guardian' ? (
+                <DropdownMenuItem onSelect={() => openSettings('family')}>
+                  <Users />
+                  Family
+                </DropdownMenuItem>
+              ) : null}
               <DropdownMenuItem onSelect={() => openSettings('notifications')}>
                 <Bell />
                 Notifications
