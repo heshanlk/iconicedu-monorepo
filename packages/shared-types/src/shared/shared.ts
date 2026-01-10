@@ -55,3 +55,6 @@ export type EntityRefVM =
   | { kind: 'guardian'; id: UUID }
   | { kind: 'child'; id: UUID }
   | { kind: 'staff'; id: UUID };
+
+export type FamilyLinkInviteRole = 'guardian' | 'child';
+export type FamilyLinkInviteStatus = 'pending' | 'accepted' | 'revoked' | 'expired';

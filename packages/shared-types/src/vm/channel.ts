@@ -5,7 +5,7 @@ import type {
   ThemeKey,
   UUID,
   IdsBaseVM,
-} from './shared';
+} from '../shared/shared';
 import type { UserProfileVM } from './profile';
 import type { ChannelReadStateVM, MessageVM } from './message';
 import type { MessagesRightPanelIntentKey } from './message';

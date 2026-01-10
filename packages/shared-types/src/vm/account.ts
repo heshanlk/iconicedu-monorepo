@@ -1,5 +1,5 @@
 import type { AccountRoleContextVM, UserRoleVM } from './roles';
-import type { AccountStatus, ISODateTime, IdsBaseVM } from './shared';
+import type { AccountStatus, ISODateTime, IdsBaseVM } from '../shared/shared';
 
 export type ContactChannelVM = 'email' | 'sms' | 'whatsapp';
 

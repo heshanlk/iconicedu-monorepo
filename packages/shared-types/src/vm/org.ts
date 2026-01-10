@@ -1,4 +1,4 @@
-import { UUID } from './shared';
+import { UUID } from '../shared/shared';
 
 export interface OrgVM {
   id: UUID;

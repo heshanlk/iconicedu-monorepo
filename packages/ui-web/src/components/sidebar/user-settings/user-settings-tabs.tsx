@@ -283,6 +283,9 @@ export function UserSettingsTabs({
               profileThemes={profileThemes}
               profileThemeOptions={PROFILE_THEME_OPTIONS}
               setProfileThemes={setProfileThemes}
+              initialInvites={
+                profile.kind === 'guardian' ? profile.familyInvites ?? [] : []
+              }
             />
           </TabsContent>
 

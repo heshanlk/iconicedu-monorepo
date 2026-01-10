@@ -1,4 +1,4 @@
-import type { IdsBaseVM, ISODateTime, UUID } from './shared';
+import type { IdsBaseVM, ISODateTime, UUID } from '../shared/shared';
 import type { ChannelVM } from './channel';
 import type { ClassScheduleVM } from './class-schedule';
 import type { UserProfileVM } from './profile';

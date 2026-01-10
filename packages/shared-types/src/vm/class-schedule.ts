@@ -1,4 +1,10 @@
-import type { IANATimezone, IdsBaseVM, ISODateTime, ThemeKey, UUID } from './shared';
+import type {
+  IANATimezone,
+  IdsBaseVM,
+  ISODateTime,
+  ThemeKey,
+  UUID,
+} from '../shared/shared';
 
 export type WeekdayVM = 'MO' | 'TU' | 'WE' | 'TH' | 'FR' | 'SA' | 'SU';
 export type ClassScheduleViewVM = 'week' | 'day' | 'month' | 'agenda';

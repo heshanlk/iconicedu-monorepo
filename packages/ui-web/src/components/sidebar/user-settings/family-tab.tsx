@@ -29,6 +29,9 @@ import {
   SelectValue,
 } from '../../../ui/select';
 import { Separator } from '../../../ui/separator';
+import { toast } from 'sonner';
+
+import type { FamilyLinkInviteRole, FamilyLinkInviteVM } from '@iconicedu/shared-types';
 
 type FamilyMemberItem = {
   id: string;
@@ -40,18 +43,13 @@ type FamilyMemberItem = {
   themeKey: ThemeKey;
 };
 
-type InviteEntry = {
-  id: string;
-  email: string;
-  role: 'guardian' | 'child';
-};
-
 type FamilyTabProps = {
   familyMembers: FamilyMemberItem[];
   profileThemes: Record<string, ThemeKey>;
   profileThemeOptions: Array<{ value: string; label: string }>;
   setProfileThemes: React.Dispatch<React.SetStateAction<Record<string, ThemeKey>>>;
   showOnboardingToast?: boolean;
+  initialInvites?: FamilyLinkInviteVM[];
 };
 
 export function FamilyTab({
@@ -60,39 +58,134 @@ export function FamilyTab({
   profileThemeOptions,
   setProfileThemes,
   showOnboardingToast = false,
+  initialInvites = [],
 }: FamilyTabProps) {
   const [isToastDismissed, setIsToastDismissed] = React.useState(false);
   const [isInviteOpen, setIsInviteOpen] = React.useState(false);
-  const [inviteRole, setInviteRole] = React.useState<'guardian' | 'child'>('guardian');
+  const [inviteRole, setInviteRole] = React.useState<FamilyLinkInviteRole>('guardian');
   const [inviteEmail, setInviteEmail] = React.useState('');
   const [inviteError, setInviteError] = React.useState<string | null>(null);
-  const [invites, setInvites] = React.useState<InviteEntry[]>([]);
+  const [invites, setInvites] = React.useState<FamilyLinkInviteVM[]>(initialInvites);
+  const [isInviteSaving, setIsInviteSaving] = React.useState(false);
+  const [isInvitesLoading, setIsInvitesLoading] = React.useState(
+    initialInvites.length === 0,
+  );
+  const [removingInviteIds, setRemovingInviteIds] = React.useState<
+    Record<string, boolean>
+  >({});
   const showToast = showOnboardingToast && !isToastDismissed;
 
-  const handleInviteSave = React.useCallback(() => {
+  React.useEffect(() => {
+    const controller = new AbortController();
+    const loadInvites = async () => {
+      setIsInvitesLoading(true);
+      try {
+        const response = await fetch('/api/family/invite', {
+          signal: controller.signal,
+        });
+        if (!response.ok) {
+          return;
+        }
+        const payload = await response
+          .json()
+          .catch(() => ({}) as { invites?: FamilyLinkInviteVM[] });
+        const fetchedInvites = payload.invites ?? [];
+        setInvites(fetchedInvites);
+      } catch (error) {
+        if (error instanceof DOMException && error.name === 'AbortError') {
+          return;
+        }
+      } finally {
+        setIsInvitesLoading(false);
+      }
+    };
+    loadInvites();
+    return () => controller.abort();
+  }, []);
+
+  const handleInviteSave = React.useCallback(async () => {
+    if (isInviteSaving) {
+      return;
+    }
     const trimmedEmail = inviteEmail.trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!trimmedEmail || !emailRegex.test(trimmedEmail)) {
       setInviteError('Enter a valid email address.');
+      toast.error('Enter a valid email address.');
       return;
     }
-    const nextInvite: InviteEntry = {
-      id: `invite-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`,
-      email: trimmedEmail,
-      role: inviteRole,
-    };
-    setInvites((prev) => [...prev, nextInvite]);
-    setInviteEmail('');
-    setInviteRole('guardian');
-    setInviteError(null);
-    setIsInviteOpen(false);
-  }, [inviteEmail, inviteRole]);
+    setIsInviteSaving(true);
+    try {
+      const response = await fetch('/api/family/invite', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          invitedRole: inviteRole,
+          invitedEmail: trimmedEmail,
+        }),
+      });
+      const payload = await response
+        .json()
+        .catch(() => ({}) as { message?: string; invite?: FamilyLinkInviteVM });
+      if (!response.ok || !payload.invite) {
+        const message = payload.message ?? 'Unable to send invite.';
+        setInviteError(message);
+        toast.error(message);
+        return;
+      }
+      setInvites((prev) => [...prev, payload.invite]);
+      setInviteEmail('');
+      setInviteRole('guardian');
+      setInviteError(null);
+      setIsInviteOpen(false);
+      toast.success('Invitation sent');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unable to send invite.';
+      setInviteError(message);
+      toast.error(message);
+    } finally {
+      setIsInviteSaving(false);
+    }
+  }, [inviteEmail, inviteRole, isInviteSaving]);
 
-  const handleRemoveInvite = React.useCallback((id: string) => {
-    setInvites((prev) => prev.filter((invite) => invite.id !== id));
-  }, []);
+  const handleRemoveInvite = React.useCallback(
+    async (id: string) => {
+      if (removingInviteIds[id]) {
+        return;
+      }
+      setRemovingInviteIds((prev) => ({ ...prev, [id]: true }));
+      try {
+        const response = await fetch('/api/family/invite', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ inviteId: id }),
+        });
+        if (!response.ok) {
+          const payload = await response
+            .json()
+            .catch(() => ({ message: 'Unable to delete invite.' }));
+          const message = payload?.message ?? 'Unable to delete invite.';
+          toast.error(message);
+          return;
+        }
+        setInvites((prev) => prev.filter((invite) => invite.id !== id));
+        toast.success('Invite removed');
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : 'Unable to delete invite.';
+        toast.error(message);
+      } finally {
+        setRemovingInviteIds((prev) => {
+          const next = { ...prev };
+          delete next[id];
+          return next;
+        });
+      }
+    },
+    [removingInviteIds],
+  );
 
-  const inviteRoles: Array<InviteEntry['role']> = ['guardian', 'child'];
+  const inviteRoles: FamilyLinkInviteRole[] = ['guardian', 'child'];
 
   return (
     <div className="space-y-8 w-full">
@@ -213,15 +306,14 @@ export function FamilyTab({
                       Cancel
                     </Button>
                   </DialogClose>
-                  <Button size="sm" onClick={handleInviteSave}>
-                    Send invite
+                  <Button size="sm" onClick={handleInviteSave} disabled={isInviteSaving}>
+                    {isInviteSaving ? 'Sending...' : 'Send invite'}
                   </Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
           </div>
         </div>
-        <Separator />
         <div className="space-y-1">
           {familyMembers.length ? (
             familyMembers.map((member, index) => {
@@ -306,34 +398,67 @@ export function FamilyTab({
           ) : (
             <p className="text-sm text-muted-foreground">No family members added yet.</p>
           )}
-          {invites.length ? (
-            <>
-              <Separator />
-              {invites.map((invite, index) => (
-                <UserSettingsTabSection
-                  key={invite.id}
-                  icon={
-                    <Avatar className="size-10 border theme-border theme-slate">
-                      <AvatarFallback>
-                        {invite.role === 'child' ? 'CH' : 'GD'}
-                      </AvatarFallback>
-                    </Avatar>
-                  }
-                  title={invite.role === 'child' ? 'Invited child' : 'Invited guardian'}
-                  subtitle={`${invite.email} · Invitation sent`}
-                  showSeparator={index < invites.length - 1}
+          {isInvitesLoading ? (
+            <div className="space-y-3">
+              {Array.from({ length: 2 }).map((_, index) => (
+                <div
+                  key={`skeleton-${index}`}
+                  className="flex items-center justify-between gap-4 rounded-xl border border-border/60 bg-muted/10 px-4 py-3 animate-pulse"
                 >
-                  <div className="flex justify-end">
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => handleRemoveInvite(invite.id)}
-                    >
-                      Remove from family
-                    </Button>
+                  <div className="flex items-center gap-3">
+                    <span className="h-10 w-10 rounded-full bg-border/40" />
+                    <div className="space-y-2">
+                      <span className="h-3.5 w-32 rounded-full bg-border/40" />
+                      <span className="h-2 w-24 rounded-full bg-border/40" />
+                    </div>
                   </div>
-                </UserSettingsTabSection>
+                  <div className="h-6 w-16 rounded-full bg-border/40" />
+                </div>
               ))}
+            </div>
+          ) : invites.length ? (
+            <>
+              {invites.map((invite, index) => {
+                const statusLabel =
+                  invite.status.charAt(0).toUpperCase() + invite.status.slice(1);
+                const subtitleParts = [
+                  invite.invitedEmail ?? 'Invitation sent',
+                  invite.invitedPhoneE164,
+                  statusLabel,
+                ].filter(Boolean);
+                const isRemoving = Boolean(removingInviteIds[invite.id]);
+                return (
+                  <UserSettingsTabSection
+                    key={invite.id}
+                    icon={
+                      <Avatar className="size-10 border theme-border theme-slate">
+                        <AvatarFallback>
+                          {invite.invitedRole === 'child' ? 'CH' : 'GD'}
+                        </AvatarFallback>
+                      </Avatar>
+                    }
+                    title={
+                      invite.invitedRole === 'child'
+                        ? 'Invited child'
+                        : 'Invited guardian'
+                    }
+                    subtitle={subtitleParts.join(' · ')}
+                    badgeIcon={<Badge variant="secondary">{statusLabel}</Badge>}
+                    showSeparator={index < invites.length - 1}
+                  >
+                    <div className="flex justify-end">
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleRemoveInvite(invite.id)}
+                        disabled={isRemoving}
+                      >
+                        {isRemoving ? 'Removing...' : 'Remove from family'}
+                      </Button>
+                    </div>
+                  </UserSettingsTabSection>
+                );
+              })}
             </>
           ) : null}
         </div>

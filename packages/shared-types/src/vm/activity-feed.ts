@@ -6,7 +6,7 @@ import type {
   ISODateTime,
   ThemeKey,
   UUID,
-} from './shared';
+} from '../shared/shared';
 
 export type ActivityGroupKeyVM =
   | 'homework'

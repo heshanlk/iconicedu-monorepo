@@ -1,4 +1,4 @@
-import type { AccountStatus, ISODateTime, UUID } from '../vm/shared';
+import type { AccountStatus, ISODateTime, UUID } from '../shared/shared';
 
 export type ProfileKindRow = 'educator' | 'guardian' | 'child' | 'staff' | 'system';
 

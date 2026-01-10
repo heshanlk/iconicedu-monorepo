@@ -1,4 +1,4 @@
-import type { ConnectionVM, IdsBaseVM, ISODateTime, UUID } from './shared';
+import type { ConnectionVM, IdsBaseVM, ISODateTime, UUID } from '../shared/shared';
 import type { UserProfileVM } from './profile';
 
 export interface ReactionVM {

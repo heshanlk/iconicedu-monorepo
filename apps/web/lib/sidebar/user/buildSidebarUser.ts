@@ -31,6 +31,8 @@ import { buildChildProfile } from './builders/child.builder';
 import { buildEducatorProfile } from './builders/educator.builder';
 import { buildGuardianProfile } from './builders/guardian.builder';
 import { buildStaffProfile } from './builders/staff.builder';
+import { getGuardianFamilyInvites } from './queries/family-link-invites.query';
+import { mapFamilyLinkInviteRowToVM } from '../../family/invite';
 
 export async function buildSidebarUser(
   supabase: SupabaseClient,
@@ -164,9 +166,20 @@ export async function buildSidebarUser(
   }
 
   if (profileRow.kind === 'guardian') {
+    const invitesResponse = await getGuardianFamilyInvites(
+      supabase,
+      profileRow.org_id,
+      profileRow.account_id,
+    );
+    const invites =
+      invitesResponse.data?.map((row) => mapFamilyLinkInviteRowToVM(row)) ?? [];
+    const guardianProfile = await buildGuardianProfile(supabase, baseProfile, profileRow);
     return {
       accountVM,
-      profileVM: await buildGuardianProfile(supabase, baseProfile, profileRow),
+      profileVM: {
+        ...guardianProfile,
+        familyInvites: invites,
+      },
     };
   }
 

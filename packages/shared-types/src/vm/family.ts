@@ -1,4 +1,4 @@
-import type { IdsBaseVM, UUID } from './shared';
+import type { IdsBaseVM, UUID } from '../shared/shared';
 
 export type FamilyRelationVM =
   | 'guardian'

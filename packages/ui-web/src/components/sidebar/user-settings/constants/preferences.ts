@@ -24,4 +24,5 @@ export const languageOptions = [
   { value: 'ar', label: 'Arabic' },
   { value: 'ru', label: 'Russian' },
   { value: 'si', label: 'Sinhala' },
+  { value: 'other', label: 'Other' },
 ];

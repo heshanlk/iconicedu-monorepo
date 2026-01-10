@@ -1,6 +1,6 @@
 export * from './vm/message';
 export * from './vm/sidebar';
-export * from './vm/shared';
+export * from './shared/shared';
 export * from './vm/class-schedule';
 export * from './vm/channel';
 export * from './vm/activity-feed';
@@ -8,6 +8,7 @@ export * from './vm/roles';
 export * from './vm/family';
 export * from './vm/account';
 export * from './vm/profile';
+export * from './vm/family-link-invite';
 export * from './vm/learning-space';
 export * from './vm/org';
 export * from './rows';

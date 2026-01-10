@@ -7,7 +7,8 @@ import type {
   ISODateTime,
   ThemeKey,
   UUID,
-} from './shared';
+} from '../shared/shared';
+import type { FamilyLinkInviteVM } from './family-link-invite';
 
 export interface AvatarVM {
   source: AvatarSource;
@@ -162,6 +163,8 @@ export interface GuardianProfileVM extends BaseUserProfileVM {
   joinedDate: ISODateTime;
 
   sessionNotesVisibility?: 'private' | 'shared' | null;
+
+  familyInvites?: FamilyLinkInviteVM[] | null;
 }
 
 export interface StaffProfileVM extends BaseUserProfileVM {

@@ -1,4 +1,4 @@
-import type { ISODateTime, UUID } from '../vm/shared';
+import type { ISODateTime, UUID } from '../shared/shared';
 import type { RoleKey } from '../vm/roles';
 
 export interface UserRoleRow {
