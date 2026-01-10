@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import type {
+  ChildProfileSaveInput,
   FamilyLinkInviteRole,
   FamilyLinkInviteVM,
   UserAccountVM,
@@ -29,6 +30,7 @@ type UserSettingsDialogProps = {
   account?: UserAccountVM | null;
   onLogout?: () => Promise<void> | void;
   onProfileSave?: (input: ProfileSaveInput) => Promise<void> | void;
+  onChildProfileSave?: (input: ChildProfileSaveInput) => Promise<void> | void;
   onAccountUpdate?: (input: {
     accountId: string;
     orgId: string;
@@ -80,6 +82,7 @@ export function UserSettingsDialog({
   account,
   onLogout,
   onProfileSave,
+  onChildProfileSave,
   onAccountUpdate,
   onPrefsSave,
   onNotificationPreferenceSave,
@@ -123,6 +126,7 @@ export function UserSettingsDialog({
         account={account}
         onLogout={onLogout}
         onProfileSave={onProfileSave}
+        onChildProfileSave={onChildProfileSave}
         onAvatarUpload={onAvatarUpload}
         onAvatarRemove={onAvatarRemove}
         onPrefsSave={onPrefsSave}

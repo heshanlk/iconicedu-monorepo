@@ -91,12 +91,13 @@ export async function loadChildProfiles(
       birthYear: child?.birth_year ?? null,
       schoolName: child?.school_name ?? null,
       schoolYear: child?.school_year ?? null,
-      interests: null,
-      strengths: null,
-      learningPreferences: null,
-      motivationStyles: null,
+      interests: child?.interests ?? null,
+      strengths: child?.strengths ?? null,
+      learningPreferences: child?.learning_preferences ?? null,
+      motivationStyles: child?.motivation_styles ?? null,
       confidenceLevel: child?.confidence_level ?? null,
-      communicationStyle: child?.communication_style ?? null,
+      communicationStyles:
+        child?.communication_styles ?? (child?.communication_style ? [child.communication_style] : null),
     };
   });
 }

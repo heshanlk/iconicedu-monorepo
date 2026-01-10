@@ -15,6 +15,7 @@ import {
 
 import { AvatarWithStatus } from '../shared/avatar-with-status';
 import type {
+  ChildProfileSaveInput,
   FamilyLinkInviteRole,
   FamilyLinkInviteVM,
   UserAccountVM,
@@ -49,6 +50,7 @@ export function NavUser({
   forceProfileCompletion,
   forceAccountCompletion,
   onProfileSave,
+  onChildProfileSave,
   onAccountUpdate,
   onPrefsSave,
   onLocationSave,
@@ -64,6 +66,7 @@ export function NavUser({
   forceProfileCompletion?: boolean;
   forceAccountCompletion?: boolean;
   onProfileSave?: (input: ProfileSaveInput) => Promise<void> | void;
+  onChildProfileSave?: (input: ChildProfileSaveInput) => Promise<void> | void;
   onAccountUpdate?: (input: {
     accountId: string;
     orgId: string;
@@ -236,6 +239,7 @@ export function NavUser({
           account={account}
           onLogout={onLogout}
           onProfileSave={onProfileSave}
+          onChildProfileSave={onChildProfileSave}
           onAccountUpdate={onAccountUpdate}
           onPrefsSave={onPrefsSave}
           onLocationSave={onLocationSave}

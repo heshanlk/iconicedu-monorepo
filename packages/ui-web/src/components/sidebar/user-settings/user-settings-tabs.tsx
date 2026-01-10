@@ -2,6 +2,7 @@ import * as React from 'react';
 import { LogOut } from 'lucide-react';
 
 import type {
+  ChildProfileSaveInput,
   FamilyLinkInviteRole,
   FamilyLinkInviteVM,
   ThemeKey,
@@ -23,6 +24,7 @@ import {
   type ProfileAvatarRemoveInput,
   type ProfileSaveInput,
 } from './profile-tab';
+import { StudentProfileTab } from './student-profile-tab';
 import {
   PROFILE_THEME_OPTIONS,
   SETTINGS_TABS,
@@ -36,6 +38,7 @@ export type UserSettingsTabsProps = {
   account?: UserAccountVM | null;
   onLogout?: () => Promise<void> | void;
   onProfileSave?: (input: ProfileSaveInput) => Promise<void> | void;
+  onChildProfileSave?: (input: ChildProfileSaveInput) => Promise<void> | void;
   onAvatarUpload?: (input: ProfileAvatarInput) => Promise<void> | void;
   onAvatarRemove?: (input: ProfileAvatarRemoveInput) => Promise<void> | void;
   onPrefsSave?: (input: {
@@ -81,6 +84,7 @@ export function UserSettingsTabs({
   account,
   onLogout,
   onProfileSave,
+  onChildProfileSave,
   onAvatarUpload,
   onAvatarRemove,
   onPrefsSave,
@@ -137,8 +141,6 @@ export function UserSettingsTabs({
     },
     [account, onAccountUpdate, preferredChannelSelections],
   );
-  const formatGradeLevel = (gradeLevel?: { id: string | number; label: string } | null) =>
-    gradeLevel?.label ?? 'Not set';
   const [notificationChannels, setNotificationChannels] = React.useState<
     Record<string, string[]>
   >(() => {
@@ -202,6 +204,9 @@ export function UserSettingsTabs({
     profile.ui?.themeKey,
     guardianChildren,
   ]);
+  const availableTabs = SETTINGS_TABS.filter((tab) =>
+    tab.value === 'student-profile' ? profile.kind === 'child' : true,
+  );
 
   return (
     <Tabs
@@ -226,7 +231,7 @@ export function UserSettingsTabs({
               : 'w-full flex-col items-stretch',
           )}
         >
-          {SETTINGS_TABS.map((tab) => {
+          {availableTabs.map((tab) => {
             const Icon = tab.icon;
             return (
               <TabsTrigger
@@ -242,21 +247,27 @@ export function UserSettingsTabs({
         </TabsList>
 
         <ScrollArea className={cn('min-h-0 flex-1 w-full min-w-0', isMobile && 'flex-1')}>
-          <TabsContent value="profile" className="mt-0 space-y-8 w-full px-1">
-            <ProfileTab
-              profile={profile}
-              profileBlock={profileBlock}
-              childProfile={childProfile}
-              educatorProfile={educatorProfile}
+        <TabsContent value="profile" className="mt-0 space-y-8 w-full px-1">
+          <ProfileTab
+            profile={profile}
+            profileBlock={profileBlock}
+            educatorProfile={educatorProfile}
               staffProfile={staffProfile}
-              formatGradeLevel={formatGradeLevel}
               scrollToRequired={value === 'profile'}
               scrollToken={scrollToken}
-              onProfileSave={onProfileSave}
-              onAvatarUpload={onAvatarUpload}
-              onAvatarRemove={onAvatarRemove}
+            onProfileSave={onProfileSave}
+            onAvatarUpload={onAvatarUpload}
+            onAvatarRemove={onAvatarRemove}
+          />
+        </TabsContent>
+        {childProfile ? (
+          <TabsContent value="student-profile" className="mt-0 space-y-8 w-full px-1">
+            <StudentProfileTab
+              childProfile={childProfile}
+              onChildProfileSave={onChildProfileSave}
             />
           </TabsContent>
+        ) : null}
 
           <TabsContent value="account" className="mt-0 space-y-8 w-full px-1">
             <AccountTab

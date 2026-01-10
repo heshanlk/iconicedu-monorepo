@@ -28,11 +28,13 @@ export async function buildChildProfile(
     birthYear: child.data?.birth_year ?? null,
     schoolName: child.data?.school_name ?? null,
     schoolYear: child.data?.school_year ?? null,
-    interests: null,
-    strengths: null,
-    learningPreferences: null,
-    motivationStyles: null,
+    interests: child.data?.interests ?? null,
+    strengths: child.data?.strengths ?? null,
+    learningPreferences: child.data?.learning_preferences ?? null,
+    motivationStyles: child.data?.motivation_styles ?? null,
     confidenceLevel: child.data?.confidence_level ?? null,
-    communicationStyle: child.data?.communication_style ?? null,
+    communicationStyles:
+      child.data?.communication_styles ??
+      (child.data?.communication_style ? [child.data.communication_style] : null),
   };
 }

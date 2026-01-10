@@ -58,6 +58,11 @@ export interface ChildProfileRow {
   school_year?: string | null;
   confidence_level?: string | null;
   communication_style?: string | null;
+  interests?: string[] | null;
+  strengths?: string[] | null;
+  learning_preferences?: string[] | null;
+  motivation_styles?: string[] | null;
+  communication_styles?: string[] | null;
   created_at?: ISODateTime | null;
   updated_at?: ISODateTime | null;
   deleted_at?: ISODateTime | null;

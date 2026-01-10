@@ -3,7 +3,11 @@
 import * as React from 'react';
 import type { ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
-import type { FamilyLinkInviteRole, SidebarLeftDataVM } from '@iconicedu/shared-types';
+import type {
+  ChildProfileSaveInput,
+  FamilyLinkInviteRole,
+  SidebarLeftDataVM,
+} from '@iconicedu/shared-types';
 import { SidebarLeft, SidebarInset } from '@iconicedu/ui-web';
 import { toast } from 'sonner';
 import { createSupabaseBrowserClient } from '../../../lib/supabase/client';
@@ -114,6 +118,94 @@ export function SidebarShell({
         showSuccessToast('Profile saved');
       } catch (error) {
         showErrorToast('Unable to save profile', error);
+        throw error;
+      }
+    },
+    [supabase],
+  );
+
+  const handleChildProfileSave = React.useCallback(
+    async (input: ChildProfileSaveInput) => {
+      try {
+        const childPayload = {
+          profile_id: input.profileId,
+          org_id: input.orgId,
+          birth_year: input.birthYear ?? null,
+          school_name: input.schoolName ?? null,
+          school_year: input.schoolYear ?? null,
+          confidence_level: input.confidenceLevel ?? null,
+          communication_style:
+            input.communicationStyles && input.communicationStyles.length
+              ? input.communicationStyles[0]
+              : null,
+          interests: input.interests ?? [],
+          strengths: input.strengths ?? [],
+          learning_preferences: input.learningPreferences ?? [],
+          motivation_styles: input.motivationStyles ?? [],
+          communication_styles: input.communicationStyles ?? [],
+        };
+
+        const { error: childError } = await supabase
+          .from('child_profiles')
+          .upsert(childPayload, { onConflict: 'profile_id' });
+
+        if (childError) {
+          throw childError;
+        }
+
+        const gradeId = input.gradeId ?? input.gradeLabel;
+        if (!gradeId) {
+          throw new Error('Grade level is required.');
+        }
+
+        const gradePayload = {
+          profile_id: input.profileId,
+          org_id: input.orgId,
+          grade_id: gradeId,
+          grade_label: input.gradeLabel ?? gradeId,
+        };
+
+        const { error: gradeError } = await supabase
+          .from('child_profile_grade_level')
+          .upsert(gradePayload, { onConflict: 'org_id,profile_id' });
+
+        if (gradeError) {
+          throw gradeError;
+        }
+
+        setSidebarData((prev) => {
+          const profile = prev.user.profile;
+          if (profile.kind !== 'child') {
+            return prev;
+          }
+
+          return {
+            ...prev,
+            user: {
+              ...prev.user,
+              profile: {
+                ...profile,
+                gradeLevel: {
+                  id: gradeId,
+                  label: input.gradeLabel ?? gradeId,
+                },
+                birthYear: input.birthYear ?? null,
+                schoolName: input.schoolName ?? null,
+                schoolYear: input.schoolYear ?? null,
+                interests: input.interests ?? [],
+                strengths: input.strengths ?? [],
+                learningPreferences: input.learningPreferences ?? [],
+                motivationStyles: input.motivationStyles ?? [],
+                confidenceLevel: input.confidenceLevel ?? null,
+                communicationStyles: input.communicationStyles ?? [],
+              },
+            },
+          };
+        });
+
+        showSuccessToast('Student profile saved');
+      } catch (error) {
+        showErrorToast('Unable to save student profile', error);
         throw error;
       }
     },
@@ -598,6 +690,7 @@ export function SidebarShell({
         forceProfileCompletion={forceProfileCompletion}
         forceAccountCompletion={forceAccountCompletion}
         onProfileSave={handleProfileSave}
+        onChildProfileSave={handleChildProfileSave}
         onAccountUpdate={handleAccountUpdate}
         onPrefsSave={handlePrefsUpdate}
         onLocationSave={handleLocationUpdate}

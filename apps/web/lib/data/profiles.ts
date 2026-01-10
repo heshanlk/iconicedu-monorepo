@@ -111,9 +111,9 @@ export const CHILD_TEVIN_PROFILE: UserProfileVM = {
   interests: ['Robotics', 'Chess', 'Math puzzles'],
   strengths: ['Pattern recognition', 'Focus'],
   learningPreferences: ['Visual aids', 'Hands-on practice'],
-  motivationStyles: ['Challenges', 'Gamified goals'],
-  confidenceLevel: 'medium',
-  communicationStyle: 'chatty',
+  motivationStyles: ['Goal-oriented', 'Friendly competition'],
+  confidenceLevel: 'Medium',
+  communicationStyles: ['Chatty'],
 };
 
 export const CHILD_TEHARA_PROFILE: UserProfileVM = {
@@ -177,9 +177,9 @@ export const CHILD_TEHARA_PROFILE: UserProfileVM = {
   interests: ['Writing', 'Science experiments'],
   strengths: ['Imagination', 'Reading comprehension'],
   learningPreferences: ['Discussion', 'Examples'],
-  motivationStyles: ['Positive feedback', 'Storytelling'],
-  confidenceLevel: 'high',
-  communicationStyle: 'shy',
+  motivationStyles: ['Positive reinforcement', 'Storyteller'],
+  confidenceLevel: 'High',
+  communicationStyles: ['Reflective'],
 };
 
 export const CHILD_MAYA_PROFILE: UserProfileVM = {
@@ -243,9 +243,9 @@ export const CHILD_MAYA_PROFILE: UserProfileVM = {
   interests: ['Nature', 'Crafts'],
   strengths: ['Curiosity', 'Creativity'],
   learningPreferences: ['Hands-on practice', 'Visual aids'],
-  motivationStyles: ['Encouragement', 'Small wins'],
-  confidenceLevel: 'low',
-  communicationStyle: 'shy',
+  motivationStyles: ['Positive reinforcement', 'Personal mastery'],
+  confidenceLevel: 'Low',
+  communicationStyles: ['Storyteller'],
 };
 
 export const GUARDIAN_RILEY_PROFILE: UserProfileVM = {

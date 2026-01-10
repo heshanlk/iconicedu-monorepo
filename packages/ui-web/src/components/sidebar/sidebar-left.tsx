@@ -51,6 +51,7 @@ import { SiteLogoWithName } from '../site-logo-wt-name';
 import { Empty } from '../../ui/empty';
 import { EmptyContent } from '../../ui/empty';
 import type {
+  ChildProfileSaveInput,
   FamilyLinkInviteRole,
   FamilyLinkInviteVM,
   SidebarLeftDataVM,
@@ -77,6 +78,7 @@ export function SidebarLeft({
   forceProfileCompletion,
   forceAccountCompletion,
   onProfileSave,
+  onChildProfileSave,
   onAccountUpdate,
   onPrefsSave,
   onLocationSave,
@@ -93,6 +95,7 @@ export function SidebarLeft({
   forceProfileCompletion?: boolean;
   forceAccountCompletion?: boolean;
   onProfileSave?: (input: ProfileSaveInput) => Promise<void> | void;
+  onChildProfileSave?: (input: ChildProfileSaveInput) => Promise<void> | void;
   onAccountUpdate?: (input: {
     accountId: string;
     orgId: string;
@@ -290,6 +293,7 @@ export function SidebarLeft({
           forceProfileCompletion={forceProfileCompletion}
           forceAccountCompletion={forceAccountCompletion}
           onProfileSave={onProfileSave}
+          onChildProfileSave={onChildProfileSave}
           onAccountUpdate={onAccountUpdate}
           onPrefsSave={onPrefsSave}
           onLocationSave={onLocationSave}

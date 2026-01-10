@@ -2,7 +2,6 @@ import * as React from 'react';
 import {
   BookOpen,
   Briefcase,
-  ChevronRight,
   Lightbulb,
   SlidersHorizontal,
   ArrowRight,
@@ -12,7 +11,6 @@ import {
 } from 'lucide-react';
 
 import type {
-  ChildProfileVM,
   EducatorProfileVM,
   GradeLevelOption,
   StaffProfileVM,
@@ -43,17 +41,20 @@ import { Label } from '../../../ui/label';
 import { Separator } from '../../../ui/separator';
 import { Textarea } from '../../../ui/textarea';
 import { UserSettingsTabSection } from './components/user-settings-tab-section';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../../../ui/select';
+import { ChevronIcon } from './components/chevron-icon';
 
 type ProfileTabProps = {
   profile: UserProfileVM;
   profileBlock: UserProfileVM['profile'];
-  childProfile: ChildProfileVM | null;
   educatorProfile: EducatorProfileVM | null;
   staffProfile: StaffProfileVM | null;
-  formatGradeLevel: (
-    gradeLevel?: { id: string | number; label: string } | null,
-  ) => string;
-  childGradeLevel?: { id: string | number; label: string } | null;
   educatorSubjects?: string[];
   educatorGradesSupported?: GradeLevelOption[];
   educatorCurriculumTags?: string[];
@@ -92,11 +93,8 @@ export type ProfileAvatarRemoveInput = {
 export function ProfileTab({
   profile,
   profileBlock,
-  childProfile,
   educatorProfile,
   staffProfile,
-  formatGradeLevel,
-  childGradeLevel,
   educatorSubjects = [],
   educatorGradesSupported = [],
   educatorCurriculumTags = [],
@@ -137,6 +135,14 @@ export function ProfileTab({
   const [isRemoveDialogOpen, setIsRemoveDialogOpen] = React.useState(false);
   const [avatarRemoved, setAvatarRemoved] = React.useState(false);
   const avatarInputRef = React.useRef<HTMLInputElement | null>(null);
+  const toggleSelection = React.useCallback(
+    (value: string, setter: React.Dispatch<React.SetStateAction<string[]>>) => {
+      setter((prev) =>
+        prev.includes(value) ? prev.filter((item) => item !== value) : [...prev, value],
+      );
+    },
+    [],
+  );
   const firstNameRef = React.useRef<HTMLInputElement | null>(null);
   const lastNameRef = React.useRef<HTMLInputElement | null>(null);
   const isPrimaryDisabled =
@@ -198,12 +204,7 @@ export function ProfileTab({
     if (derivedName) {
       setDisplayNameValue(derivedName);
     }
-  }, [
-    displayNameValue,
-    firstNameValue,
-    lastNameValue,
-    hasDisplayNameBeenEdited,
-  ]);
+  }, [displayNameValue, firstNameValue, lastNameValue, hasDisplayNameBeenEdited]);
 
   React.useEffect(() => {
     fillDisplayNameFromNames();
@@ -605,7 +606,9 @@ export function ProfileTab({
               </div>
               <div className="sm:col-span-2 flex flex-wrap items-center justify-between gap-3">
                 <div className="text-xs text-muted-foreground">
-                  {saveError ? <span className="text-destructive">{saveError}</span> : null}
+                  {saveError ? (
+                    <span className="text-destructive">{saveError}</span>
+                  ) : null}
                 </div>
                 <Button
                   size="sm"
@@ -628,219 +631,6 @@ export function ProfileTab({
           </UserSettingsTabSection>
         </div>
       </div>
-
-      {profile.kind === 'child' ? (
-        <div className="space-y-3">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="space-y-1">
-              <h3 className="text-base font-semibold">Student profile</h3>
-              <p className="text-sm text-muted-foreground">
-                Learning preferences and school details.
-              </p>
-            </div>
-          </div>
-          <Separator />
-          <div className="space-y-1 w-full">
-            <Collapsible className="rounded-2xl w-full">
-              <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
-                <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
-                  <User className="h-5 w-5" />
-                </span>
-                <div className="flex-1">
-                  <div className="text-sm font-medium">Basic student info</div>
-                  <div className="text-xs text-muted-foreground">
-                    {formatGradeLevel(childGradeLevel ?? childProfile?.gradeLevel)}
-                  </div>
-                </div>
-                <ChevronIcon />
-              </CollapsibleTrigger>
-              <CollapsibleContent className="py-4 w-full">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="settings-grade">Grade level</Label>
-                    <Input
-                      id="settings-grade"
-                      defaultValue={childGradeLevel?.label ?? ''}
-                      placeholder="Grade level"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="settings-birth-year">Birth year</Label>
-                    <Input
-                      id="settings-birth-year"
-                      defaultValue={childProfile?.birthYear ?? ''}
-                      placeholder="e.g. 2012"
-                    />
-                  </div>
-                  <div className="sm:col-span-2 flex justify-end">
-                    <Button size="sm">Save</Button>
-                  </div>
-                </div>
-              </CollapsibleContent>
-            </Collapsible>
-            <Separator />
-            <Collapsible className="rounded-2xl w-full">
-              <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
-                <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
-                  <BookOpen className="h-5 w-5" />
-                </span>
-                <div className="flex-1">
-                  <div className="text-sm font-medium">School details</div>
-                  <div className="text-xs text-muted-foreground">
-                    {childProfile?.schoolName ?? 'School not set'}
-                  </div>
-                </div>
-                <ChevronIcon />
-              </CollapsibleTrigger>
-              <CollapsibleContent className="py-4 w-full">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="space-y-2 sm:col-span-2">
-                    <Label htmlFor="settings-school">School name</Label>
-                    <Input
-                      id="settings-school"
-                      defaultValue={childProfile?.schoolName ?? ''}
-                      placeholder="School name"
-                    />
-                  </div>
-                  <div className="space-y-2 sm:col-span-2">
-                    <Label htmlFor="settings-school-year">Academic year</Label>
-                    <Input
-                      id="settings-school-year"
-                      defaultValue={childProfile?.schoolYear ?? ''}
-                      placeholder="e.g. 2025-2026"
-                    />
-                  </div>
-                  <div className="sm:col-span-2 flex justify-end">
-                    <Button size="sm">Save</Button>
-                  </div>
-                </div>
-              </CollapsibleContent>
-            </Collapsible>
-            <Separator />
-            <Collapsible className="rounded-2xl w-full">
-              <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
-                <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
-                  <Lightbulb className="h-5 w-5" />
-                </span>
-                <div className="flex-1">
-                  <div className="text-sm font-medium">Learner profile</div>
-                  <div className="text-xs text-muted-foreground">
-                    {childProfile?.interests?.length
-                      ? childProfile.interests.join(', ')
-                      : 'Not set'}
-                  </div>
-                </div>
-                <ChevronIcon />
-              </CollapsibleTrigger>
-              <CollapsibleContent className="py-4 w-full">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="space-y-2 sm:col-span-2">
-                    <Label htmlFor="settings-interests">Interests</Label>
-                    <Input
-                      id="settings-interests"
-                      defaultValue={childProfile?.interests?.join(', ') ?? ''}
-                      placeholder="Interests (comma-separated)"
-                    />
-                  </div>
-                  <div className="space-y-2 sm:col-span-2">
-                    <Label htmlFor="settings-strengths">Strengths</Label>
-                    <Input
-                      id="settings-strengths"
-                      defaultValue={childProfile?.strengths?.join(', ') ?? ''}
-                      placeholder="Strengths (comma-separated)"
-                    />
-                  </div>
-                  <div className="sm:col-span-2 flex justify-end">
-                    <Button size="sm">Save</Button>
-                  </div>
-                </div>
-              </CollapsibleContent>
-            </Collapsible>
-            <Separator />
-            <Collapsible className="rounded-2xl w-full">
-              <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
-                <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
-                  <SlidersHorizontal className="h-5 w-5" />
-                </span>
-                <div className="flex-1">
-                  <div className="text-sm font-medium">
-                    Learning & motivation preferences
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    {childProfile?.learningPreferences?.length
-                      ? childProfile.learningPreferences.join(', ')
-                      : 'Not set'}
-                  </div>
-                </div>
-                <ChevronIcon />
-              </CollapsibleTrigger>
-              <CollapsibleContent className="py-4 w-full">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="space-y-2 sm:col-span-2">
-                    <Label htmlFor="settings-learning-preferences">
-                      Learning preferences
-                    </Label>
-                    <Input
-                      id="settings-learning-preferences"
-                      defaultValue={childProfile?.learningPreferences?.join(', ') ?? ''}
-                      placeholder="Learning preferences (comma-separated)"
-                    />
-                  </div>
-                  <div className="space-y-2 sm:col-span-2">
-                    <Label htmlFor="settings-motivation">Motivation styles</Label>
-                    <Input
-                      id="settings-motivation"
-                      defaultValue={childProfile?.motivationStyles?.join(', ') ?? ''}
-                      placeholder="Motivation styles (comma-separated)"
-                    />
-                  </div>
-                  <div className="sm:col-span-2 flex justify-end">
-                    <Button size="sm">Save</Button>
-                  </div>
-                </div>
-              </CollapsibleContent>
-            </Collapsible>
-            <Separator />
-            <Collapsible className="rounded-2xl w-full">
-              <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
-                <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
-                  <Users className="h-5 w-5" />
-                </span>
-                <div className="flex-1">
-                  <div className="text-sm font-medium">Communication & confidence</div>
-                  <div className="text-xs text-muted-foreground">
-                    {childProfile?.confidenceLevel ?? 'Not set'}
-                  </div>
-                </div>
-                <ChevronIcon />
-              </CollapsibleTrigger>
-              <CollapsibleContent className="py-4 w-full">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="settings-confidence">Confidence level</Label>
-                    <Input
-                      id="settings-confidence"
-                      defaultValue={childProfile?.confidenceLevel ?? ''}
-                      placeholder="low, medium, or high"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="settings-communication">Communication style</Label>
-                    <Input
-                      id="settings-communication"
-                      defaultValue={childProfile?.communicationStyle ?? ''}
-                      placeholder="chatty or shy"
-                    />
-                  </div>
-                  <div className="sm:col-span-2 flex justify-end">
-                    <Button size="sm">Save</Button>
-                  </div>
-                </div>
-              </CollapsibleContent>
-            </Collapsible>
-          </div>
-        </div>
-      ) : null}
 
       {profile.kind === 'educator' ? (
         <div className="space-y-3">
@@ -1069,11 +859,5 @@ export function ProfileTab({
         </div>
       ) : null}
     </div>
-  );
-}
-
-function ChevronIcon() {
-  return (
-    <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
   );
 }

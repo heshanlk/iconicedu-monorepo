@@ -78,8 +78,18 @@ export const EDUCATOR_GRADE_LEVELS_SELECT = 'grade_id, grade_label';
 export const EDUCATOR_CURRICULUM_TAGS_SELECT = 'tag';
 export const EDUCATOR_BADGES_SELECT = 'badge';
 
-export const CHILD_PROFILE_SELECT =
-  'birth_year, school_name, school_year, confidence_level, communication_style';
+export const CHILD_PROFILE_SELECT = [
+  'birth_year',
+  'school_name',
+  'school_year',
+  'confidence_level',
+  'communication_style',
+  'interests',
+  'strengths',
+  'learning_preferences',
+  'motivation_styles',
+  'communication_styles',
+].join(',');
 export const CHILD_GRADE_LEVEL_SELECT = 'grade_id, grade_label';
 
 export const STAFF_PROFILE_SELECT =
@@ -90,7 +100,18 @@ export const GUARDIAN_PROFILE_SELECT = 'joined_date, session_notes_visibility';
 export const FAMILY_LINKS_SELECT = 'child_account_id';
 
 export const CHILD_PROFILES_SELECT = PROFILE_SELECT;
-export const CHILD_PROFILE_ROWS_SELECT =
-  'profile_id, birth_year, school_name, school_year, confidence_level, communication_style';
+export const CHILD_PROFILE_ROWS_SELECT = [
+  'profile_id',
+  'birth_year',
+  'school_name',
+  'school_year',
+  'confidence_level',
+  'communication_style',
+  'interests',
+  'strengths',
+  'learning_preferences',
+  'motivation_styles',
+  'communication_styles',
+].join(',');
 export const CHILD_GRADE_LEVEL_ROWS_SELECT =
   'profile_id, grade_id, grade_label';

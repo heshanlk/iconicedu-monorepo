@@ -151,9 +151,25 @@ export interface ChildProfileVM extends BaseUserProfileVM {
   learningPreferences?: string[] | null;
   motivationStyles?: string[] | null;
 
-  confidenceLevel?: 'low' | 'medium' | 'high' | null;
-  communicationStyle?: 'chatty' | 'shy' | null;
+  confidenceLevel?: string | null;
+  communicationStyles?: string[] | null;
 }
+
+export type ChildProfileSaveInput = {
+  profileId: string;
+  orgId: string;
+  gradeId?: string | null;
+  gradeLabel?: string | null;
+  birthYear?: number | null;
+  schoolName?: string | null;
+  schoolYear?: string | null;
+  interests?: string[] | null;
+  strengths?: string[] | null;
+  learningPreferences?: string[] | null;
+  motivationStyles?: string[] | null;
+  confidenceLevel?: string | null;
+  communicationStyles?: string[] | null;
+};
 
 export interface GuardianProfileVM extends BaseUserProfileVM {
   kind: 'guardian';
