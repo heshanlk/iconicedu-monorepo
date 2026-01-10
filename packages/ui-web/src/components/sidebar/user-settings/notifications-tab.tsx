@@ -23,6 +23,7 @@ import {
 } from '../../../ui/dropdown-menu';
 import { Switch } from '../../../ui/switch';
 import { toast } from 'sonner';
+import { notificationChannelOptions } from './constants';
 
 type NotificationSectionItem = {
   key: string;
@@ -54,13 +55,6 @@ export function NotificationsTab({
   orgId,
   onNotificationPreferenceSave,
 }: NotificationsTabProps) {
-  const notificationChannelOptions = [
-    { key: 'push', label: 'Push' },
-    { key: 'email', label: 'Email' },
-    { key: 'sms', label: 'SMS' },
-    { key: 'whatsapp', label: 'WhatsApp' },
-  ];
-
   const sections = [
     {
       key: 'defaults',

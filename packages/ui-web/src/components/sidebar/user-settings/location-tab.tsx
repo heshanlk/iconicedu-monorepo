@@ -17,14 +17,7 @@ import {
   SelectValue,
 } from '../../../ui/select';
 import { UserSettingsTabSection } from './components/user-settings-tab-section';
-
-const postalExamples: Record<string, string> = {
-  US: '94105',
-  CA: 'M5V 2T6',
-  LK: '00200',
-  GB: 'SW1A 1AA',
-  AU: '2000',
-};
+import { postalExamples } from './constants';
 
 type LocationTabProps = {
   location?: UserProfileVM['location'] | null;
