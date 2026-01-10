@@ -34,6 +34,7 @@ import { getGuardianFamilyInvites } from './queries/family-link-invites.query';
 import {
   findFamilyInviteForAccount,
   mapFamilyLinkInviteRowToVM,
+  type FamilyLinkInviteRow,
 } from '../../family/invite';
 
 export async function buildSidebarUser(
@@ -45,6 +46,7 @@ export async function buildSidebarUser(
     app_metadata?: Record<string, unknown>;
   },
   account: { id: string; org_id: string },
+  familyInvite?: FamilyLinkInviteRow | null,
 ): Promise<{ accountVM: UserAccountVM; profileVM: UserProfileVM }> {
   const [accountRow, roleRows, profileResponse] = await Promise.all([
     getAccountById(supabase, account.id),
@@ -62,12 +64,14 @@ export async function buildSidebarUser(
 
   let profileRow = profileResponse.data as ProfileRow | null;
   const externalAvatarUrl = resolveExternalAvatarUrl(user);
-  const inviteRow = await findFamilyInviteForAccount({
-    supabase,
-    orgId: account.org_id,
-    accountId: account.id,
-    email: user.email ?? null,
-  });
+  const inviteRow =
+    familyInvite ??
+    (await findFamilyInviteForAccount({
+      supabase,
+      orgId: account.org_id,
+      accountId: account.id,
+      email: user.email ?? null,
+    }));
   const derivedKind = inviteRow?.invited_role ?? deriveProfileKind(userRoles);
 
   if (!profileRow) {

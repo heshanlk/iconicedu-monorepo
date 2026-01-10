@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 import type { SupabaseClient } from '@supabase/supabase-js';
+import type { AccountRow } from '@iconicedu/shared-types';
 
 import {
   getAccountByAuthUserId,
@@ -8,21 +9,29 @@ import {
   updateAccountAuthUserId,
   getAccountById,
 } from '../sidebar/user/queries/accounts.query';
+import { findFamilyInviteForAccount, type FamilyLinkInviteRow } from '../family/invite';
 
 export async function getOrCreateAccount(
   supabase: SupabaseClient,
   input: { orgId: string; authUserId: string; authEmail?: string | null },
-) {
+): Promise<{ account: AccountRow; invite: FamilyLinkInviteRow | null }> {
   const { data: account } = await getAccountByAuthUserId(
     supabase,
     input.authUserId,
   );
 
+  const normalizedEmail = input.authEmail?.trim().toLowerCase();
+
   if (account) {
-    return account;
+    const invite = await findFamilyInviteForAccount({
+      supabase,
+      orgId: input.orgId,
+      accountId: account.id,
+      email: normalizedEmail,
+    });
+    return { account, invite };
   }
 
-  const normalizedEmail = input.authEmail?.trim().toLowerCase();
   if (normalizedEmail) {
     const invitedAccount = await getAccountByEmail(
       supabase,
@@ -39,15 +48,26 @@ export async function getOrCreateAccount(
         throw updateError;
       }
       if (updatedAccount) {
-        return updatedAccount;
+        const invite = await findFamilyInviteForAccount({
+          supabase,
+          orgId: input.orgId,
+          accountId: updatedAccount.id,
+          email: normalizedEmail,
+        });
+        return { account: updatedAccount, invite };
       }
 
       const refreshed = await getAccountById(supabase, invitedAccount.id);
       if (refreshed.data) {
-        return refreshed.data;
+        const invite = await findFamilyInviteForAccount({
+          supabase,
+          orgId: input.orgId,
+          accountId: refreshed.data.id,
+          email: normalizedEmail,
+        });
+        return { account: refreshed.data, invite };
       }
 
-      throw new Error('Unable to load account after linking auth user.');
     }
   }
 
@@ -61,5 +81,12 @@ export async function getOrCreateAccount(
     redirect('/login');
   }
 
-  return inserted;
+  const invite = await findFamilyInviteForAccount({
+    supabase,
+    orgId: input.orgId,
+    accountId: inserted.id,
+    email: normalizedEmail,
+  });
+
+  return { account: inserted, invite };
 }

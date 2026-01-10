@@ -424,20 +424,10 @@ export function FamilyTab({
                         </div>
                       ) : (
                         <div className="space-y-4">
-                          {member.email ? (
-                            <p className="text-xs text-muted-foreground">Email: {member.email}</p>
-                          ) : null}
                           {isChildMember ? (
                             <>
                             <div className="space-y-2">
-                              <Label>
-                                Display name
-                                {member.email ? (
-                                  <span className="text-xs text-muted-foreground ml-2">
-                                    ({member.email})
-                                  </span>
-                                ) : null}
-                              </Label>
+                              <Label>Display name</Label>
                               <Input
                                 value={displayNameValue}
                                 onChange={(event) => {

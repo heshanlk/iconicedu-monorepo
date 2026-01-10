@@ -6,6 +6,7 @@ import type {
   UserAccountVM,
   UserProfileVM,
 } from '@iconicedu/shared-types';
+import type { FamilyLinkInviteRow } from '@iconicedu/shared-types';
 
 import { acceptFamilyInvite } from '../family/invite';
 import { buildSidebarUser } from './user/buildSidebarUser';
@@ -22,6 +23,7 @@ export async function loadSidebarContext(
     };
     account: { id: string; org_id: string };
     baseSidebarData: SidebarLeftDataVM;
+    familyInvite?: FamilyLinkInviteRow | null;
   },
 ): Promise<{
   sidebarData: SidebarLeftDataVM;
@@ -36,6 +38,7 @@ export async function loadSidebarContext(
     supabase,
     input.authUser,
     input.account,
+    input.familyInvite ?? null,
   );
 
   const needsNameCompletion =

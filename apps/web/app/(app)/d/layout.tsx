@@ -13,7 +13,7 @@ export default async function Layout({ children }: { children: ReactNode }) {
   const supabase = await createSupabaseServerClient();
   const authUser = await requireAuthedUser(supabase);
 
-  const account = await getOrCreateAccount(supabase, {
+  const { account, invite } = await getOrCreateAccount(supabase, {
     orgId: ORG.id,
     authUserId: authUser.id,
     authEmail: authUser.email ?? null,
@@ -23,6 +23,7 @@ export default async function Layout({ children }: { children: ReactNode }) {
     await loadSidebarContext(supabase, {
       authUser,
       account,
+      familyInvite: invite,
       baseSidebarData: SIDEBAR_LEFT_DATA,
     });
 
