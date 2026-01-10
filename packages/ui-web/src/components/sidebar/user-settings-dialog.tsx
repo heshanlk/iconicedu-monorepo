@@ -77,6 +77,19 @@ type UserSettingsDialogProps = {
   }) => Promise<void> | void;
   onAvatarUpload?: (input: ProfileAvatarInput) => Promise<void> | void;
   onAvatarRemove?: (input: ProfileAvatarRemoveInput) => Promise<void> | void;
+  onChildProfileCreate?: (input: {
+    orgId: string;
+    displayName: string;
+    firstName: string;
+    lastName: string;
+    gradeLevel: string;
+    birthYear: number;
+    timezone?: string | null;
+    city?: string | null;
+    region?: string | null;
+    countryCode?: string | null;
+    countryName?: string | null;
+  }) => Promise<void> | void;
 };
 
 export function UserSettingsDialog({
@@ -98,6 +111,7 @@ export function UserSettingsDialog({
   onAvatarRemove,
   onFamilyInviteCreate,
   onFamilyInviteRemove,
+  onChildProfileCreate,
 }: UserSettingsDialogProps) {
   const handleLocationContinue = React.useCallback(
     (input: {
@@ -143,6 +157,7 @@ export function UserSettingsDialog({
         onAccountUpdate={onAccountUpdate}
         onFamilyInviteCreate={onFamilyInviteCreate}
         onFamilyInviteRemove={onFamilyInviteRemove}
+        onChildProfileCreate={onChildProfileCreate}
       />
   );
   const { isMobile } = useSidebar();

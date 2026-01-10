@@ -61,6 +61,7 @@ export function NavUser({
   onFamilyInviteCreate,
   onFamilyInviteRemove,
   onChildThemeSave,
+  onChildProfileCreate,
 }: {
   profile: UserProfileVM;
   account?: UserAccountVM | null;
@@ -114,6 +115,19 @@ export function NavUser({
     invitedEmail: string;
   }) => Promise<FamilyLinkInviteVM> | void;
   onFamilyInviteRemove?: (input: { inviteId: string }) => Promise<void> | void;
+  onChildProfileCreate?: (input: {
+    orgId: string;
+    displayName: string;
+    firstName: string;
+    lastName: string;
+    gradeLevel: string;
+    birthYear: number;
+    timezone?: string | null;
+    city?: string | null;
+    region?: string | null;
+    countryCode?: string | null;
+    countryName?: string | null;
+  }) => Promise<void> | void;
 }) {
   const { isMobile } = useSidebar();
   const secondaryLabel =
@@ -258,7 +272,8 @@ export function NavUser({
           onNotificationPreferenceSave={onNotificationPreferenceSave}
           onFamilyInviteCreate={onFamilyInviteCreate}
           onFamilyInviteRemove={onFamilyInviteRemove}
-          />
+          onChildProfileCreate={onChildProfileCreate}
+        />
       </SidebarMenuItem>
     </SidebarMenu>
   );

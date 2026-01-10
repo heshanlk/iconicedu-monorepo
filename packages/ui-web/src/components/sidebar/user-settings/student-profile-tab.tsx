@@ -18,8 +18,8 @@ import { Separator } from '../../../ui/separator';
 import { Checkbox } from '../../../ui/checkbox';
 import { ChevronIcon } from './components/chevron-icon';
 
-const GRADE_LEVEL_OPTIONS = ['3K', 'Pre-K', 'K', ...Array.from({ length: 12 }, (_, index) => `${index + 1}`)];
-const BIRTH_YEAR_OPTIONS = (() => {
+export const GRADE_LEVEL_OPTIONS = ['3K', 'Pre-K', 'K', ...Array.from({ length: 12 }, (_, index) => `${index + 1}`)];
+export const BIRTH_YEAR_OPTIONS = (() => {
   const currentYear = new Date().getFullYear();
   const startYear = currentYear - 3;
   const endYear = startYear - 25;

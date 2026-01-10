@@ -36,6 +36,10 @@ import type {
   FamilyLinkInviteVM,
 } from '@iconicedu/shared-types';
 import type { ProfileSaveInput } from './profile-tab';
+import {
+  BIRTH_YEAR_OPTIONS,
+  GRADE_LEVEL_OPTIONS,
+} from './student-profile-tab';
 
 type FamilyMemberItem = {
   id: string;
@@ -56,6 +60,14 @@ type FamilyMemberItem = {
 type EditableChildData = Record<string, { displayName: string; themeKey: ThemeKey }>;
 
 type FamilyTabProps = {
+  timezone?: string | null;
+  location?: {
+    city?: string | null;
+    region?: string | null;
+    postalCode?: string | null;
+    countryCode?: string | null;
+    countryName?: string | null;
+  } | null;
   familyMembers: FamilyMemberItem[];
   profileThemes: Record<string, ThemeKey>;
   profileThemeOptions: Array<{ value: string; label: string }>;
@@ -73,6 +85,19 @@ type FamilyTabProps = {
     orgId: string;
     themeKey: ThemeKey;
   }) => Promise<void> | void;
+  onChildProfileCreate?: (input: {
+    orgId: string;
+    displayName: string;
+    firstName: string;
+    lastName: string;
+    gradeLevel: string;
+    birthYear: number;
+    timezone?: string | null;
+    city?: string | null;
+    region?: string | null;
+    countryCode?: string | null;
+    countryName?: string | null;
+  }) => Promise<void> | void;
 };
 
 export function FamilyTab({
@@ -86,6 +111,9 @@ export function FamilyTab({
   onInviteRemove,
   onProfileSave,
   onChildThemeSave,
+  onChildProfileCreate,
+  timezone,
+  location,
 }: FamilyTabProps) {
   const [isToastDismissed, setIsToastDismissed] = React.useState(false);
   const [isInviteOpen, setIsInviteOpen] = React.useState(false);
@@ -97,6 +125,13 @@ export function FamilyTab({
   const [removingInviteIds, setRemovingInviteIds] = React.useState<
     Record<string, boolean>
   >({});
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  const [newChildDisplayName, setNewChildDisplayName] = React.useState('');
+  const [newChildFirstName, setNewChildFirstName] = React.useState('');
+  const [newChildLastName, setNewChildLastName] = React.useState('');
+  const [newChildGrade, setNewChildGrade] = React.useState('');
+  const [newChildBirthYear, setNewChildBirthYear] = React.useState('');
+  const [isCreatingChild, setIsCreatingChild] = React.useState(false);
   const showToast = showOnboardingToast && !isToastDismissed;
   const INVITE_SAVE_ERROR = 'Unable to send invite right now. Please try again.';
   const INVITE_REMOVE_ERROR = 'Unable to remove invite right now. Please try again.';
@@ -191,6 +226,71 @@ export function FamilyTab({
       ),
     );
   }, [familyMembers, profileThemes]);
+
+  const handleDialogReset = React.useCallback(() => {
+    setNewChildDisplayName('');
+    setNewChildFirstName('');
+    setNewChildLastName('');
+    setNewChildGrade('');
+    setNewChildBirthYear('');
+  }, []);
+
+  const canSubmitChild =
+    newChildDisplayName.trim() &&
+    newChildFirstName.trim() &&
+    newChildLastName.trim() &&
+    newChildGrade &&
+    newChildBirthYear;
+
+  const handleChildCreate = React.useCallback(async () => {
+    if (!onChildProfileCreate) {
+      toast.error('Child creation is not configured.');
+      return;
+    }
+    if (!canSubmitChild) {
+      toast.error('Please fill all required child fields.');
+      return;
+    }
+    setIsCreatingChild(true);
+    try {
+      await onChildProfileCreate({
+        orgId: familyMembers[0]?.orgId ?? '',
+        displayName: newChildDisplayName.trim(),
+        firstName: newChildFirstName.trim(),
+        lastName: newChildLastName.trim(),
+        gradeLevel: newChildGrade,
+        birthYear: Number(newChildBirthYear),
+        timezone,
+        city: location?.city ?? null,
+        region: location?.region ?? null,
+        countryCode: location?.countryCode ?? null,
+        countryName: location?.countryName ?? null,
+      });
+      toast.success('Child profile submitted');
+      handleDialogReset();
+      setIsDialogOpen(false);
+    } catch (error) {
+      console.error(error);
+      toast.error('Unable to create child profile');
+    } finally {
+      setIsCreatingChild(false);
+    }
+  }, [
+    canSubmitChild,
+    familyMembers,
+    handleDialogReset,
+    location?.city,
+    location?.countryCode,
+    location?.countryName,
+    location?.region,
+    newChildBirthYear,
+    newChildDisplayName,
+    newChildFirstName,
+    newChildGrade,
+    newChildLastName,
+    onChildProfileCreate,
+    timezone,
+  ]);
 
   const handleDisplayNameSave = React.useCallback(
     async (member: FamilyMemberItem) => {
@@ -295,11 +395,120 @@ export function FamilyTab({
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h3 className="text-base font-semibold">Family members</h3>
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm">
-              <Plus className="size-4" />
-              Add
-            </Button>
-            <Dialog open={isInviteOpen} onOpenChange={setIsInviteOpen}>
+            <Dialog
+              open={isDialogOpen}
+              onOpenChange={(nextOpen) => {
+                setIsDialogOpen(nextOpen);
+                if (!nextOpen) {
+                  handleDialogReset();
+                }
+              }}
+            >
+              <DialogTrigger asChild>
+                <Button variant="ghost" size="sm">
+                  <Plus className="size-4" />
+                  Add
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Add a student profile</DialogTitle>
+                  <DialogDescription>
+                    Required fields are marked with an asterisk. Timezone and location are
+                    inherited from your profile.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="new-display-name">Display name *</Label>
+                    <Input
+                      id="new-display-name"
+                      value={newChildDisplayName}
+                      onChange={(event) => setNewChildDisplayName(event.target.value)}
+                    />
+                  </div>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="new-first-name">First name *</Label>
+                      <Input
+                        id="new-first-name"
+                        value={newChildFirstName}
+                        onChange={(event) => setNewChildFirstName(event.target.value)}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="new-last-name">Last name *</Label>
+                      <Input
+                        id="new-last-name"
+                        value={newChildLastName}
+                        onChange={(event) => setNewChildLastName(event.target.value)}
+                      />
+                    </div>
+                  </div>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="new-grade">Grade level *</Label>
+                      <Select
+                        value={newChildGrade}
+                        onValueChange={(value) => setNewChildGrade(value)}
+                        required
+                      >
+                        <SelectTrigger id="new-grade" className="w-full">
+                          <SelectValue placeholder="Select grade" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {GRADE_LEVEL_OPTIONS.map((option: string) => (
+                            <SelectItem key={option} value={option}>
+                              {option}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="new-birth-year">Birth year *</Label>
+                      <Select
+                        value={newChildBirthYear}
+                        onValueChange={(value) => setNewChildBirthYear(value)}
+                        required
+                      >
+                        <SelectTrigger id="new-birth-year" className="w-full">
+                          <SelectValue placeholder="Select year" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {BIRTH_YEAR_OPTIONS.map((year: number) => (
+                            <SelectItem key={year} value={String(year)}>
+                              {year}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    Timezone: {timezone ?? 'inherited'}, Location: {location?.city ?? '—'}
+                    {location?.region ? `, ${location.region}` : ''} {location?.countryName
+                      ? `(${location.countryName})`
+                      : ''}
+                  </div>
+                </div>
+                <DialogFooter className="mt-4 flex justify-end gap-2">
+                  <DialogClose asChild>
+                    <Button size="sm" variant="ghost">
+                      Cancel
+                    </Button>
+                  </DialogClose>
+                  <Button
+                    size="sm"
+                    onClick={handleChildCreate}
+                    disabled={isCreatingChild}
+                  >
+                    {isCreatingChild ? 'Creating…' : 'Create student'}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          <Dialog open={isInviteOpen} onOpenChange={setIsInviteOpen}>
               <DialogTrigger asChild>
                 <Button size="sm" variant="outline">
                   <UserPlus className="size-4" />

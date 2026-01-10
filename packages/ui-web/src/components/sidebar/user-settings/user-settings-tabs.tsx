@@ -80,6 +80,19 @@ export type UserSettingsTabsProps = {
     invitedEmail: string;
   }) => Promise<FamilyLinkInviteVM> | void;
   onFamilyInviteRemove?: (input: { inviteId: string }) => Promise<void> | void;
+  onChildProfileCreate?: (input: {
+    orgId: string;
+    displayName: string;
+    firstName: string;
+    lastName: string;
+    gradeLevel: string;
+    birthYear: number;
+    timezone?: string | null;
+    city?: string | null;
+    region?: string | null;
+    countryCode?: string | null;
+    countryName?: string | null;
+  }) => Promise<void> | void;
 };
 
 export function UserSettingsTabs({
@@ -99,6 +112,7 @@ export function UserSettingsTabs({
   onFamilyInviteCreate,
   onFamilyInviteRemove,
   onChildThemeSave,
+  onChildProfileCreate,
 }: UserSettingsTabsProps) {
   const { isMobile } = useSidebar();
   const [scrollToken, setScrollToken] = React.useState(0);
@@ -344,6 +358,9 @@ export function UserSettingsTabs({
               onInviteRemove={onFamilyInviteRemove}
               onProfileSave={onProfileSave}
               onChildThemeSave={onChildThemeSave}
+              timezone={prefs.timezone ?? undefined}
+              location={profile.location ?? null}
+              onChildProfileCreate={onChildProfileCreate}
             />
           </TabsContent>
 
