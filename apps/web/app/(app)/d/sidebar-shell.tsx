@@ -16,6 +16,7 @@ import {
   revokeFamilyInviteAction,
   sendFamilyInviteAction,
 } from '../../actions/family-invite';
+import { createChildProfileAction } from '../../actions/create-child-profile';
 
 const AVATAR_BUCKET = 'public-avatars';
 const AVATAR_SIGNED_URL_TTL = 60 * 60;
@@ -297,13 +298,62 @@ export function SidebarShell({
           };
         });
 
-        showSuccessToast('Student profile saved');
+      showSuccessToast('Student profile saved');
+    } catch (error) {
+      showErrorToast('Unable to save student profile', error);
+      throw error;
+    }
+  },
+  [supabase],
+);
+
+  const handleChildProfileCreate = React.useCallback(
+    async (input: {
+      orgId: string;
+      displayName: string;
+      firstName: string;
+      lastName: string;
+      gradeLevel: string;
+      birthYear: number;
+      timezone?: string | null;
+      city?: string | null;
+      region?: string | null;
+      countryCode?: string | null;
+      countryName?: string | null;
+    }) => {
+      try {
+        const child = await createChildProfileAction(input);
+        setSidebarData((prev) => {
+          const profile = prev.user.profile;
+          if (profile.kind !== 'guardian') {
+            return prev;
+          }
+
+          const existingChildren = profile.children?.items ?? [];
+
+          return {
+            ...prev,
+            user: {
+              ...prev.user,
+              profile: {
+                ...profile,
+                children: {
+                  items: [...existingChildren, child],
+                  total: (profile.children?.total ?? 0) + 1,
+                  nextCursor: profile.children?.nextCursor ?? null,
+                },
+              },
+            },
+          };
+        });
+        showSuccessToast('Child profile created');
+        return child;
       } catch (error) {
-        showErrorToast('Unable to save student profile', error);
+        showErrorToast('Unable to create child', error);
         throw error;
       }
     },
-    [supabase],
+    [setSidebarData],
   );
 
   const handleAccountUpdate = React.useCallback(
@@ -794,6 +844,7 @@ export function SidebarShell({
         onFamilyInviteCreate={handleFamilyInviteCreate}
         onFamilyInviteRemove={handleFamilyInviteRemove}
         onChildThemeSave={handleChildThemeSave}
+        onChildProfileCreate={handleChildProfileCreate}
       />
       <SidebarInset>{children}</SidebarInset>
     </>

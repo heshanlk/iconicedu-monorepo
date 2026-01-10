@@ -345,24 +345,26 @@ export function UserSettingsTabs({
             />
           </TabsContent>
 
-          <TabsContent value="family" className="mt-0 space-y-8 w-full px-1">
-            <FamilyTab
-              familyMembers={familyMembers}
-              profileThemes={profileThemes}
-              profileThemeOptions={PROFILE_THEME_OPTIONS}
-              setProfileThemes={setProfileThemes}
-              initialInvites={
-                profile.kind === 'guardian' ? profile.familyInvites ?? [] : []
-              }
-              onInviteCreate={onFamilyInviteCreate}
-              onInviteRemove={onFamilyInviteRemove}
-              onProfileSave={onProfileSave}
-              onChildThemeSave={onChildThemeSave}
-              timezone={prefs.timezone ?? undefined}
-              location={profile.location ?? null}
-              onChildProfileCreate={onChildProfileCreate}
-            />
-          </TabsContent>
+        <TabsContent value="family" className="mt-0 space-y-8 w-full px-1">
+          <FamilyTab
+            familyMembers={familyMembers}
+            profileThemes={profileThemes}
+            profileThemeOptions={PROFILE_THEME_OPTIONS}
+            setProfileThemes={setProfileThemes}
+            initialInvites={
+              profile.kind === 'guardian' ? profile.familyInvites ?? [] : []
+            }
+            onInviteCreate={onFamilyInviteCreate}
+            onInviteRemove={onFamilyInviteRemove}
+            onProfileSave={onProfileSave}
+            onChildThemeSave={onChildThemeSave}
+            timezone={prefs.timezone ?? undefined}
+            location={profile.location ?? null}
+            orgId={profile.ids.orgId}
+            guardianAccountId={profile.ids.accountId}
+            onChildProfileCreate={onChildProfileCreate}
+          />
+        </TabsContent>
 
           <TabsContent value="notifications" className="mt-0 space-y-8 w-full px-1">
             <NotificationsTab

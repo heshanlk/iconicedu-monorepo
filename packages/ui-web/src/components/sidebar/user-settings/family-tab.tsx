@@ -60,6 +60,8 @@ type FamilyMemberItem = {
 type EditableChildData = Record<string, { displayName: string; themeKey: ThemeKey }>;
 
 type FamilyTabProps = {
+  orgId: string;
+  guardianAccountId: string;
   timezone?: string | null;
   location?: {
     city?: string | null;
@@ -114,6 +116,8 @@ export function FamilyTab({
   onChildProfileCreate,
   timezone,
   location,
+  orgId,
+  guardianAccountId,
 }: FamilyTabProps) {
   const [isToastDismissed, setIsToastDismissed] = React.useState(false);
   const [isInviteOpen, setIsInviteOpen] = React.useState(false);
@@ -254,7 +258,7 @@ export function FamilyTab({
     setIsCreatingChild(true);
     try {
       await onChildProfileCreate({
-        orgId: familyMembers[0]?.orgId ?? '',
+        orgId,
         displayName: newChildDisplayName.trim(),
         firstName: newChildFirstName.trim(),
         lastName: newChildLastName.trim(),
@@ -290,6 +294,7 @@ export function FamilyTab({
     newChildLastName,
     onChildProfileCreate,
     timezone,
+    orgId,
   ]);
 
   const handleDisplayNameSave = React.useCallback(

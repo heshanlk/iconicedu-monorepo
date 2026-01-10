@@ -89,6 +89,7 @@ export function SidebarLeft({
   onFamilyInviteCreate,
   onFamilyInviteRemove,
   onChildThemeSave,
+  onChildProfileCreate,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
   data: SidebarLeftDataVM;
@@ -119,6 +120,19 @@ export function SidebarLeft({
     profileId: string;
     orgId: string;
     themeKey: ThemeKey;
+  }) => Promise<void> | void;
+  onChildProfileCreate?: (input: {
+    orgId: string;
+    displayName: string;
+    firstName: string;
+    lastName: string;
+    gradeLevel: string;
+    birthYear: number;
+    timezone?: string | null;
+    city?: string | null;
+    region?: string | null;
+    countryCode?: string | null;
+    countryName?: string | null;
   }) => Promise<void> | void;
   onLocationSave?: (input: {
     profileId: string;
@@ -310,6 +324,7 @@ export function SidebarLeft({
           onFamilyInviteCreate={onFamilyInviteCreate}
           onFamilyInviteRemove={onFamilyInviteRemove}
           onChildThemeSave={onChildThemeSave}
+          onChildProfileCreate={onChildProfileCreate}
         />
       </SidebarFooter>
     </Sidebar>
