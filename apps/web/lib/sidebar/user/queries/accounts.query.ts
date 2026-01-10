@@ -16,10 +16,10 @@ export async function getAccountByAuthUserId(
 ) {
   return supabase
     .from('accounts')
-    .select('id, org_id')
+    .select(ACCOUNT_SELECT)
     .eq('auth_user_id', authUserId)
     .is('deleted_at', null)
-    .maybeSingle();
+    .maybeSingle<AccountRow>();
 }
 
 export async function insertAccountForAuthUser(
@@ -46,4 +46,53 @@ export async function getAccountById(supabase: SupabaseClient, accountId: string
     .eq('id', accountId)
     .is('deleted_at', null)
     .maybeSingle<AccountRow>();
+}
+
+export async function getAccountByEmail(
+  supabase: SupabaseClient,
+  orgId: string,
+  email: string,
+) {
+  return supabase
+    .from('accounts')
+    .select(ACCOUNT_SELECT)
+    .eq('org_id', orgId)
+    .ilike('email', email)
+    .is('deleted_at', null)
+    .maybeSingle<AccountRow>();
+}
+
+export async function insertInvitedAccount(
+  supabase: SupabaseClient,
+  payload: { orgId: string; email: string; createdBy: string },
+) {
+  return supabase
+    .from('accounts')
+    .insert({
+      org_id: payload.orgId,
+      email: payload.email,
+      preferred_contact_channels: ['email'],
+      status: 'invited',
+      created_by: payload.createdBy,
+      updated_by: payload.createdBy,
+    })
+    .select(ACCOUNT_SELECT)
+    .single<AccountRow>();
+}
+
+export async function updateAccountAuthUserId(
+  supabase: SupabaseClient,
+  accountId: string,
+  authUserId: string,
+) {
+  return supabase
+    .from('accounts')
+    .update({
+      auth_user_id: authUserId,
+      status: 'active',
+      updated_by: authUserId,
+    })
+    .eq('id', accountId)
+    .select(ACCOUNT_SELECT)
+    .single<AccountRow>();
 }

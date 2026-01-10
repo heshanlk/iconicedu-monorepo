@@ -1,4 +1,4 @@
-import type { AccountStatus, ISODateTime, UUID } from '../shared/shared';
+import type { AccountStatus, FamilyRelation, ISODateTime, UUID } from '../shared/shared';
 
 export type ProfileKindRow = 'educator' | 'guardian' | 'child' | 'staff' | 'system';
 
@@ -7,7 +7,7 @@ export interface ProfileRow {
   org_id: UUID;
   account_id: UUID;
   kind: ProfileKindRow;
-  display_name: string;
+  display_name?: string | null;
   first_name?: string | null;
   last_name?: string | null;
   bio?: string | null;
@@ -182,7 +182,7 @@ export interface FamilyLinkRow {
   family_id: UUID;
   guardian_account_id: UUID;
   child_account_id: UUID;
-  relation: string;
+  relation: FamilyRelation;
   permissions_scope?: string[] | null;
   created_at?: ISODateTime | null;
   updated_at?: ISODateTime | null;

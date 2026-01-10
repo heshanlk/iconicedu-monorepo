@@ -14,7 +14,12 @@ import {
 } from 'lucide-react';
 
 import { AvatarWithStatus } from '../shared/avatar-with-status';
-import type { UserAccountVM, UserProfileVM } from '@iconicedu/shared-types';
+import type {
+  FamilyLinkInviteRole,
+  FamilyLinkInviteVM,
+  UserAccountVM,
+  UserProfileVM,
+} from '@iconicedu/shared-types';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -50,6 +55,8 @@ export function NavUser({
   onAvatarUpload,
   onAvatarRemove,
   onNotificationPreferenceSave,
+  onFamilyInviteCreate,
+  onFamilyInviteRemove,
 }: {
   profile: UserProfileVM;
   account?: UserAccountVM | null;
@@ -92,6 +99,11 @@ export function NavUser({
     channels: string[];
     muted?: boolean | null;
   }) => Promise<void> | void;
+  onFamilyInviteCreate?: (input: {
+    invitedRole: FamilyLinkInviteRole;
+    invitedEmail: string;
+  }) => Promise<FamilyLinkInviteVM> | void;
+  onFamilyInviteRemove?: (input: { inviteId: string }) => Promise<void> | void;
 }) {
   const { isMobile } = useSidebar();
   const secondaryLabel =
@@ -230,6 +242,8 @@ export function NavUser({
           onAvatarUpload={onAvatarUpload}
           onAvatarRemove={onAvatarRemove}
           onNotificationPreferenceSave={onNotificationPreferenceSave}
+          onFamilyInviteCreate={onFamilyInviteCreate}
+          onFamilyInviteRemove={onFamilyInviteRemove}
         />
       </SidebarMenuItem>
     </SidebarMenu>

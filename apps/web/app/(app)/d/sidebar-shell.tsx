@@ -3,10 +3,14 @@
 import * as React from 'react';
 import type { ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
-import type { SidebarLeftDataVM } from '@iconicedu/shared-types';
+import type { FamilyLinkInviteRole, SidebarLeftDataVM } from '@iconicedu/shared-types';
 import { SidebarLeft, SidebarInset } from '@iconicedu/ui-web';
 import { toast } from 'sonner';
 import { createSupabaseBrowserClient } from '../../../lib/supabase/client';
+import {
+  revokeFamilyInviteAction,
+  sendFamilyInviteAction,
+} from '../../actions/family-invite';
 
 const AVATAR_BUCKET = 'public-avatars';
 const AVATAR_SIGNED_URL_TTL = 60 * 60;
@@ -411,8 +415,48 @@ export function SidebarShell({
         showErrorToast('Unable to save location', error);
         throw error;
       }
+   },
+   [supabase],
+ );
+
+  const handleFamilyInviteCreate = React.useCallback(
+    async (input: { invitedEmail: string; invitedRole: FamilyLinkInviteRole }) => {
+      const invite = await sendFamilyInviteAction({
+        invitedEmail: input.invitedEmail,
+        invitedRole: input.invitedRole,
+      });
+      setSidebarData((prev) => ({
+        ...prev,
+        user: {
+          ...prev.user,
+          profile: {
+            ...prev.user.profile,
+            familyInvites: [...(prev.user.profile.familyInvites ?? []), invite],
+          },
+        },
+      }));
+      return invite;
     },
-    [supabase],
+    [],
+  );
+
+  const handleFamilyInviteRemove = React.useCallback(
+    async (input: { inviteId: string }) => {
+      await revokeFamilyInviteAction({ inviteId: input.inviteId });
+      setSidebarData((prev) => ({
+        ...prev,
+        user: {
+          ...prev.user,
+          profile: {
+            ...prev.user.profile,
+            familyInvites: (prev.user.profile.familyInvites ?? []).filter(
+              (invite) => invite.id !== input.inviteId,
+            ),
+          },
+        },
+      }));
+    },
+    [],
   );
 
   const handleAvatarUpload = React.useCallback(
@@ -560,6 +604,8 @@ export function SidebarShell({
         onAvatarUpload={handleAvatarUpload}
         onAvatarRemove={handleAvatarRemove}
         onNotificationPreferenceSave={handleNotificationPreferenceSave}
+        onFamilyInviteCreate={handleFamilyInviteCreate}
+        onFamilyInviteRemove={handleFamilyInviteRemove}
       />
       <SidebarInset>{children}</SidebarInset>
     </>

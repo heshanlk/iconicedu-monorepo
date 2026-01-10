@@ -36,6 +36,8 @@ import type { FamilyLinkInviteRole, FamilyLinkInviteVM } from '@iconicedu/shared
 type FamilyMemberItem = {
   id: string;
   name: string;
+  firstName?: string | null;
+  lastName?: string | null;
   email?: string;
   avatar?: UserProfileVM['profile']['avatar'] | null;
   roleLabel: string;
@@ -50,6 +52,11 @@ type FamilyTabProps = {
   setProfileThemes: React.Dispatch<React.SetStateAction<Record<string, ThemeKey>>>;
   showOnboardingToast?: boolean;
   initialInvites?: FamilyLinkInviteVM[];
+  onInviteCreate?: (input: {
+    invitedRole: FamilyLinkInviteRole;
+    invitedEmail: string;
+  }) => Promise<FamilyLinkInviteVM> | void;
+  onInviteRemove?: (input: { inviteId: string }) => Promise<void> | void;
 };
 
 export function FamilyTab({
@@ -59,52 +66,31 @@ export function FamilyTab({
   setProfileThemes,
   showOnboardingToast = false,
   initialInvites = [],
+  onInviteCreate,
+  onInviteRemove,
 }: FamilyTabProps) {
   const [isToastDismissed, setIsToastDismissed] = React.useState(false);
   const [isInviteOpen, setIsInviteOpen] = React.useState(false);
-  const [inviteRole, setInviteRole] = React.useState<FamilyLinkInviteRole>('guardian');
+  const [inviteRole, setInviteRole] = React.useState<FamilyLinkInviteRole>('child');
   const [inviteEmail, setInviteEmail] = React.useState('');
   const [inviteError, setInviteError] = React.useState<string | null>(null);
   const [invites, setInvites] = React.useState<FamilyLinkInviteVM[]>(initialInvites);
   const [isInviteSaving, setIsInviteSaving] = React.useState(false);
-  const [isInvitesLoading, setIsInvitesLoading] = React.useState(
-    initialInvites.length === 0,
-  );
   const [removingInviteIds, setRemovingInviteIds] = React.useState<
     Record<string, boolean>
   >({});
   const showToast = showOnboardingToast && !isToastDismissed;
-
-  React.useEffect(() => {
-    const controller = new AbortController();
-    const loadInvites = async () => {
-      setIsInvitesLoading(true);
-      try {
-        const response = await fetch('/api/family/invite', {
-          signal: controller.signal,
-        });
-        if (!response.ok) {
-          return;
-        }
-        const payload = await response
-          .json()
-          .catch(() => ({}) as { invites?: FamilyLinkInviteVM[] });
-        const fetchedInvites = payload.invites ?? [];
-        setInvites(fetchedInvites);
-      } catch (error) {
-        if (error instanceof DOMException && error.name === 'AbortError') {
-          return;
-        }
-      } finally {
-        setIsInvitesLoading(false);
-      }
-    };
-    loadInvites();
-    return () => controller.abort();
-  }, []);
+  const INVITE_SAVE_ERROR = 'Unable to send invite right now. Please try again.';
+  const INVITE_REMOVE_ERROR = 'Unable to remove invite right now. Please try again.';
 
   const handleInviteSave = React.useCallback(async () => {
     if (isInviteSaving) {
+      return;
+    }
+    if (!onInviteCreate) {
+      const message = 'Unable to send invite.';
+      setInviteError(message);
+      toast.error(message);
       return;
     }
     const trimmedEmail = inviteEmail.trim();
@@ -116,65 +102,46 @@ export function FamilyTab({
     }
     setIsInviteSaving(true);
     try {
-      const response = await fetch('/api/family/invite', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          invitedRole: inviteRole,
-          invitedEmail: trimmedEmail,
-        }),
+      const invite = await onInviteCreate({
+        invitedRole: inviteRole,
+        invitedEmail: trimmedEmail,
       });
-      const payload = await response
-        .json()
-        .catch(() => ({}) as { message?: string; invite?: FamilyLinkInviteVM });
-      if (!response.ok || !payload.invite) {
-        const message = payload.message ?? 'Unable to send invite.';
-        setInviteError(message);
-        toast.error(message);
-        return;
+      if (!invite) {
+        throw new Error('Unable to send invite.');
       }
-      setInvites((prev) => [...prev, payload.invite]);
+      setInvites((prev) => [...prev, invite]);
       setInviteEmail('');
-      setInviteRole('guardian');
+      setInviteRole('child');
       setInviteError(null);
       setIsInviteOpen(false);
       toast.success('Invitation sent');
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unable to send invite.';
-      setInviteError(message);
-      toast.error(message);
+      console.error(error);
+      setInviteError(INVITE_SAVE_ERROR);
+      toast.error(INVITE_SAVE_ERROR);
     } finally {
       setIsInviteSaving(false);
     }
-  }, [inviteEmail, inviteRole, isInviteSaving]);
+  }, [inviteEmail, inviteRole, isInviteSaving, onInviteCreate]);
 
   const handleRemoveInvite = React.useCallback(
     async (id: string) => {
       if (removingInviteIds[id]) {
         return;
       }
+      if (!onInviteRemove) {
+        toast.error(INVITE_REMOVE_ERROR);
+        return;
+      }
       setRemovingInviteIds((prev) => ({ ...prev, [id]: true }));
       try {
-        const response = await fetch('/api/family/invite', {
-          method: 'DELETE',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ inviteId: id }),
-        });
-        if (!response.ok) {
-          const payload = await response
-            .json()
-            .catch(() => ({ message: 'Unable to delete invite.' }));
-          const message = payload?.message ?? 'Unable to delete invite.';
-          toast.error(message);
-          return;
-        }
+        await onInviteRemove({ inviteId: id });
         setInvites((prev) => prev.filter((invite) => invite.id !== id));
         toast.success('Invite removed');
-      } catch (error) {
-        const message =
-          error instanceof Error ? error.message : 'Unable to delete invite.';
-        toast.error(message);
-      } finally {
+    } catch (error) {
+      console.error(error);
+      toast.error(INVITE_REMOVE_ERROR);
+    } finally {
         setRemovingInviteIds((prev) => {
           const next = { ...prev };
           delete next[id];
@@ -182,7 +149,7 @@ export function FamilyTab({
         });
       }
     },
-    [removingInviteIds],
+    [onInviteRemove, removingInviteIds],
   );
 
   const inviteRoles: FamilyLinkInviteRole[] = ['guardian', 'child'];
@@ -334,12 +301,23 @@ export function FamilyTab({
                   </AvatarFallback>
                 </Avatar>
               );
+              const memberNameParts = [member.firstName, member.lastName]
+                .filter(Boolean)
+                .map((part) => part?.trim())
+                .filter(Boolean);
+              const memberDescriptionParts = [
+                memberNameParts.length ? memberNameParts.join(' ') : undefined,
+                member.email,
+              ].filter(Boolean);
+              const subtitle = memberDescriptionParts.length
+                ? memberDescriptionParts.join(' · ')
+                : 'Invitation sent';
               return (
                 <UserSettingsTabSection
                   key={member.id}
                   icon={avatarIcon}
                   title={member.name}
-                  subtitle={member.email ?? 'Invitation sent'}
+                  subtitle={subtitle}
                   badgeIcon={<Badge variant="secondary">{member.roleLabel}</Badge>}
                   showSeparator={
                     index < familyMembers.length - 1 || Boolean(invites.length)
@@ -398,25 +376,7 @@ export function FamilyTab({
           ) : (
             <p className="text-sm text-muted-foreground">No family members added yet.</p>
           )}
-          {isInvitesLoading ? (
-            <div className="space-y-3">
-              {Array.from({ length: 2 }).map((_, index) => (
-                <div
-                  key={`skeleton-${index}`}
-                  className="flex items-center justify-between gap-4 rounded-xl border border-border/60 bg-muted/10 px-4 py-3 animate-pulse"
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="h-10 w-10 rounded-full bg-border/40" />
-                    <div className="space-y-2">
-                      <span className="h-3.5 w-32 rounded-full bg-border/40" />
-                      <span className="h-2 w-24 rounded-full bg-border/40" />
-                    </div>
-                  </div>
-                  <div className="h-6 w-16 rounded-full bg-border/40" />
-                </div>
-              ))}
-            </div>
-          ) : invites.length ? (
+          {invites.length ? (
             <>
               {invites.map((invite, index) => {
                 const statusLabel =

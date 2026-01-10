@@ -7,7 +7,7 @@ const fontSans = Public_Sans({ subsets: ['latin'], variable: '--font-sans' });
 
 export const metadata = {
   title: 'ICONIC EDU',
-  description: 'Welcome to ICONIC Academy.',
+  description: 'Welcome to ICONIC Academy',
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

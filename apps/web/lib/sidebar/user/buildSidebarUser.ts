@@ -11,7 +11,6 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { mapAccountRowToVM, mapUserRoles } from './mappers/account.mapper';
 import { mapBaseProfile } from './mappers/base-profile.mapper';
 import {
-  deriveDisplayName,
   deriveProfileKind,
   resolveAvatarSource,
   resolveExternalAvatarUrl,
@@ -32,7 +31,10 @@ import { buildEducatorProfile } from './builders/educator.builder';
 import { buildGuardianProfile } from './builders/guardian.builder';
 import { buildStaffProfile } from './builders/staff.builder';
 import { getGuardianFamilyInvites } from './queries/family-link-invites.query';
-import { mapFamilyLinkInviteRowToVM } from '../../family/invite';
+import {
+  findFamilyInviteForAccount,
+  mapFamilyLinkInviteRowToVM,
+} from '../../family/invite';
 
 export async function buildSidebarUser(
   supabase: SupabaseClient,
@@ -60,16 +62,19 @@ export async function buildSidebarUser(
 
   let profileRow = profileResponse.data as ProfileRow | null;
   const externalAvatarUrl = resolveExternalAvatarUrl(user);
+  const inviteRow = await findFamilyInviteForAccount({
+    supabase,
+    orgId: account.org_id,
+    accountId: account.id,
+    email: user.email ?? null,
+  });
+  const derivedKind = inviteRow?.invited_role ?? deriveProfileKind(userRoles);
 
   if (!profileRow) {
-    const derivedKind = deriveProfileKind(userRoles);
-    const displayName = deriveDisplayName(user);
-
     const upserted = await upsertProfileForAccount(supabase, {
       orgId: account.org_id,
       accountId: account.id,
       kind: derivedKind,
-      displayName,
       avatarSource: externalAvatarUrl ? 'external' : 'seed',
       avatarUrl: externalAvatarUrl,
       avatarSeed: user.id,
@@ -84,7 +89,6 @@ export async function buildSidebarUser(
         orgId: account.org_id,
         accountId: account.id,
         kind: derivedKind,
-        displayName,
         avatarSource: externalAvatarUrl ? 'external' : 'seed',
         avatarUrl: externalAvatarUrl,
         avatarSeed: user.id,

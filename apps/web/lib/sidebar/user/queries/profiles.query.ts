@@ -8,7 +8,7 @@ type ProfileInsertPayload = {
   orgId: string;
   accountId: string;
   kind: string;
-  displayName: string;
+  displayName?: string | null;
   avatarSource: string;
   avatarUrl: string | null;
   avatarSeed: string;
@@ -43,7 +43,7 @@ export async function upsertProfileForAccount(
         org_id: payload.orgId,
         account_id: payload.accountId,
         kind: payload.kind,
-        display_name: payload.displayName,
+        display_name: payload.displayName ?? null,
         first_name: null,
         last_name: null,
         avatar_source: payload.avatarSource,
@@ -70,7 +70,7 @@ export async function insertProfileForAccount(
       org_id: payload.orgId,
       account_id: payload.accountId,
       kind: payload.kind,
-      display_name: payload.displayName,
+      display_name: payload.displayName ?? null,
       first_name: null,
       last_name: null,
       avatar_source: payload.avatarSource,

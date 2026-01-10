@@ -1,11 +1,7 @@
+import type { FamilyRelation } from '../shared/shared';
 import type { IdsBaseVM, UUID } from '../shared/shared';
 
-export type FamilyRelationVM =
-  | 'guardian'
-  | 'legal_guardian'
-  | 'caregiver'
-  | 'relative'
-  | 'other';
+export type FamilyRelationVM = FamilyRelation;
 
 export interface FamilyVM {
   ids: IdsBaseVM;

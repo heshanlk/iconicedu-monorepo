@@ -12,6 +12,7 @@ export async function getGuardianFamilyInvites(
     .select('*')
     .eq('org_id', orgId)
     .eq('created_by_account_id', guardianAccountId)
+    .eq('status', 'pending')
     .is('deleted_at', null)
     .order('created_at', { ascending: false })
     .returns<FamilyLinkInviteRow[]>();

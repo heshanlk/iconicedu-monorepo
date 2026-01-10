@@ -1,7 +1,13 @@
 import * as React from 'react';
 import { LogOut } from 'lucide-react';
 
-import type { ThemeKey, UserAccountVM, UserProfileVM } from '@iconicedu/shared-types';
+import type {
+  FamilyLinkInviteRole,
+  FamilyLinkInviteVM,
+  ThemeKey,
+  UserAccountVM,
+  UserProfileVM,
+} from '@iconicedu/shared-types';
 import { ScrollArea } from '../../../ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../ui/tabs';
 import { useSidebar } from '../../../ui/sidebar';
@@ -61,6 +67,11 @@ export type UserSettingsTabsProps = {
     whatsappE164?: string | null;
     preferredContactChannels?: string[] | null;
   }) => Promise<void> | void;
+  onFamilyInviteCreate?: (input: {
+    invitedRole: FamilyLinkInviteRole;
+    invitedEmail: string;
+  }) => Promise<FamilyLinkInviteVM> | void;
+  onFamilyInviteRemove?: (input: { inviteId: string }) => Promise<void> | void;
 };
 
 export function UserSettingsTabs({
@@ -76,6 +87,8 @@ export function UserSettingsTabs({
   onNotificationPreferenceSave,
   onLocationContinue,
   onAccountUpdate,
+  onFamilyInviteCreate,
+  onFamilyInviteRemove,
 }: UserSettingsTabsProps) {
   const { isMobile } = useSidebar();
   const [scrollToken, setScrollToken] = React.useState(0);
@@ -145,6 +158,8 @@ export function UserSettingsTabs({
     const members: Array<{
       id: string;
       name: string;
+      firstName?: string | null;
+      lastName?: string | null;
       email?: string;
       avatar?: UserProfileVM['profile']['avatar'] | null;
       roleLabel: string;
@@ -155,6 +170,8 @@ export function UserSettingsTabs({
     members.push({
       id: profile.ids.id,
       name: profileBlock.displayName,
+      firstName: profileBlock.firstName ?? undefined,
+      lastName: profileBlock.lastName ?? undefined,
       email: contacts?.email ?? undefined,
       avatar: profileBlock.avatar,
       roleLabel: 'Myself',
@@ -166,6 +183,8 @@ export function UserSettingsTabs({
       members.push({
         id: childProfile.ids.id,
         name: childProfile.profile.displayName ?? 'Child',
+        firstName: childProfile.profile.firstName ?? undefined,
+        lastName: childProfile.profile.lastName ?? undefined,
         email: undefined,
         avatar: childProfile.profile.avatar ?? null,
         roleLabel: 'Child',
@@ -278,15 +297,17 @@ export function UserSettingsTabs({
           </TabsContent>
 
           <TabsContent value="family" className="mt-0 space-y-8 w-full px-1">
-            <FamilyTab
-              familyMembers={familyMembers}
-              profileThemes={profileThemes}
-              profileThemeOptions={PROFILE_THEME_OPTIONS}
-              setProfileThemes={setProfileThemes}
-              initialInvites={
-                profile.kind === 'guardian' ? profile.familyInvites ?? [] : []
-              }
-            />
+          <FamilyTab
+            familyMembers={familyMembers}
+            profileThemes={profileThemes}
+            profileThemeOptions={PROFILE_THEME_OPTIONS}
+            setProfileThemes={setProfileThemes}
+            initialInvites={
+              profile.kind === 'guardian' ? profile.familyInvites ?? [] : []
+            }
+            onInviteCreate={onFamilyInviteCreate}
+            onInviteRemove={onFamilyInviteRemove}
+          />
           </TabsContent>
 
           <TabsContent value="notifications" className="mt-0 space-y-8 w-full px-1">

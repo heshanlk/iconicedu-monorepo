@@ -1,7 +1,12 @@
 'use client';
 
 import * as React from 'react';
-import type { UserAccountVM, UserProfileVM } from '@iconicedu/shared-types';
+import type {
+  FamilyLinkInviteRole,
+  FamilyLinkInviteVM,
+  UserAccountVM,
+  UserProfileVM,
+} from '@iconicedu/shared-types';
 import { useSidebar } from '../../ui/sidebar';
 import { cn } from '@iconicedu/ui-web/lib/utils';
 import type {
@@ -48,6 +53,11 @@ type UserSettingsDialogProps = {
     channels: string[];
     muted?: boolean | null;
   }) => Promise<void> | void;
+  onFamilyInviteCreate?: (input: {
+    invitedRole: FamilyLinkInviteRole;
+    invitedEmail: string;
+  }) => Promise<FamilyLinkInviteVM> | void;
+  onFamilyInviteRemove?: (input: { inviteId: string }) => Promise<void> | void;
   onLocationSave?: (input: {
     profileId: string;
     orgId: string;
@@ -76,6 +86,8 @@ export function UserSettingsDialog({
   onLocationSave,
   onAvatarUpload,
   onAvatarRemove,
+  onFamilyInviteCreate,
+  onFamilyInviteRemove,
 }: UserSettingsDialogProps) {
   const handleLocationContinue = React.useCallback(
     (input: {
@@ -117,6 +129,8 @@ export function UserSettingsDialog({
         onNotificationPreferenceSave={onNotificationPreferenceSave}
         onLocationContinue={handleLocationContinue}
         onAccountUpdate={onAccountUpdate}
+        onFamilyInviteCreate={onFamilyInviteCreate}
+        onFamilyInviteRemove={onFamilyInviteRemove}
       />
   );
   const { isMobile } = useSidebar();

@@ -58,3 +58,10 @@ export type EntityRefVM =
 
 export type FamilyLinkInviteRole = 'guardian' | 'child';
 export type FamilyLinkInviteStatus = 'pending' | 'accepted' | 'revoked' | 'expired';
+
+export type FamilyRelation =
+  | 'guardian'
+  | 'legal_guardian'
+  | 'caregiver'
+  | 'relative'
+  | 'other';

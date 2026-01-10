@@ -51,6 +51,8 @@ import { SiteLogoWithName } from '../site-logo-wt-name';
 import { Empty } from '../../ui/empty';
 import { EmptyContent } from '../../ui/empty';
 import type {
+  FamilyLinkInviteRole,
+  FamilyLinkInviteVM,
   SidebarLeftDataVM,
   SidebarNavItem,
   SidebarSecondaryItem,
@@ -81,6 +83,8 @@ export function SidebarLeft({
   onAvatarUpload,
   onAvatarRemove,
   onNotificationPreferenceSave,
+  onFamilyInviteCreate,
+  onFamilyInviteRemove,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
   data: SidebarLeftDataVM;
@@ -124,6 +128,11 @@ export function SidebarLeft({
     channels: string[];
     muted?: boolean | null;
   }) => Promise<void> | void;
+  onFamilyInviteCreate?: (input: {
+    invitedRole: FamilyLinkInviteRole;
+    invitedEmail: string;
+  }) => Promise<FamilyLinkInviteVM> | void;
+  onFamilyInviteRemove?: (input: { inviteId: string }) => Promise<void> | void;
 }) {
   const navMain: SidebarNavItem[] = data.navigation.navMain.map((item) => ({
     ...item,
@@ -287,6 +296,8 @@ export function SidebarLeft({
           onAvatarUpload={onAvatarUpload}
           onAvatarRemove={onAvatarRemove}
           onNotificationPreferenceSave={onNotificationPreferenceSave}
+          onFamilyInviteCreate={onFamilyInviteCreate}
+          onFamilyInviteRemove={onFamilyInviteRemove}
         />
       </SidebarFooter>
     </Sidebar>

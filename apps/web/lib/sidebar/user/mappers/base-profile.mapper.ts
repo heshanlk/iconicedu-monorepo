@@ -22,7 +22,7 @@ export function mapBaseProfile(
       accountId: profileRow.account_id,
     },
     profile: {
-      displayName: profileRow.display_name,
+      displayName: profileRow.display_name ?? '',
       firstName: profileRow.first_name,
       lastName: profileRow.last_name,
       bio: profileRow.bio,

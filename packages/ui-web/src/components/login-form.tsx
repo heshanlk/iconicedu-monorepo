@@ -67,7 +67,7 @@ export function LoginForm({
               <SiteLogo className="size-18 border-0" />
               <span className="sr-only">ICONIC Academy LLC.</span>
             </a>
-            <h1 className="text-xl font-bold">Welcome to ICONIC Academy.</h1>
+            <h1 className="text-xl font-bold">Welcome to ICONIC Academy</h1>
             <FieldDescription className="text-center text-xs">
               Continue with Google or enter your email to get a secure login link and
               access your learning spaces, messages, and schedule.

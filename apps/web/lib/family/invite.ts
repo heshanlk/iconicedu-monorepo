@@ -2,11 +2,17 @@ import { createHash, randomUUID } from 'crypto';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
 import type {
+  AccountRow,
   FamilyLinkInviteRole,
   FamilyLinkInviteRow,
   FamilyLinkInviteVM,
+  FamilyRelation,
 } from '@iconicedu/shared-types';
-import { getProfileByAccountId } from '../sidebar/user/queries/profiles.query';
+import { getProfileByAccountId, upsertProfileForAccount } from '../sidebar/user/queries/profiles.query';
+import {
+  getAccountByEmail,
+  insertInvitedAccount,
+} from '../sidebar/user/queries/accounts.query';
 
 export const FAMILY_INVITE_EXPIRATION_DAYS = 7;
 
@@ -25,7 +31,7 @@ type CreateFamilyInviteOptions = EnsureFamilyOptions & {
   maxUses?: number;
 };
 
-const getFamilyInviteAdminClient = () => {
+export const getFamilyInviteAdminClient = () => {
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 
@@ -44,6 +50,74 @@ const createFamilyInvitationHash = () => {
   return inviteCodeHash;
 };
 
+type InvitedAccountKind = 'child' | 'guardian';
+
+async function ensureInvitedAccountForRole(options: {
+  supabase: SupabaseClient;
+  orgId: string;
+  invitedEmail: string;
+  createdByAccountId: string;
+  kind: InvitedAccountKind;
+}) {
+  const normalizedEmail = options.invitedEmail.trim().toLowerCase();
+  if (!normalizedEmail) {
+    throw new Error('Invited email is required.');
+  }
+
+  const existingAccount = await getAccountByEmail(
+    options.supabase,
+    options.orgId,
+    normalizedEmail,
+  );
+  const displayName =
+    options.kind === 'child' ? 'Invited child' : 'Invited guardian';
+  if (existingAccount) {
+    await upsertProfileForAccount(options.supabase, {
+      orgId: options.orgId,
+      accountId: existingAccount.id,
+      kind: options.kind,
+      displayName,
+      avatarSource: 'seed',
+      avatarUrl: null,
+      avatarSeed: existingAccount.id,
+      timezone: 'UTC',
+      locale: 'en-US',
+      status: 'invited',
+      uiThemeKey: 'teal',
+    });
+    return existingAccount;
+  }
+
+  const { data: insertedAccount, error: insertedError } = await insertInvitedAccount(
+    options.supabase,
+    {
+      orgId: options.orgId,
+      email: normalizedEmail,
+      createdBy: options.createdByAccountId,
+    },
+  );
+
+  if (insertedError || !insertedAccount) {
+    throw insertedError ?? new Error('Unable to create invited account.');
+  }
+
+  await upsertProfileForAccount(options.supabase, {
+    orgId: options.orgId,
+    accountId: insertedAccount.id,
+    kind: options.kind,
+    displayName,
+    avatarSource: 'seed',
+    avatarUrl: null,
+    avatarSeed: insertedAccount.id,
+    timezone: 'UTC',
+    locale: 'en-US',
+    status: 'invited',
+    uiThemeKey: 'teal',
+  });
+
+  return insertedAccount;
+}
+
 export async function ensureFamilyForGuardian(options: EnsureFamilyOptions) {
   const { supabase, guardianAccountId, orgId } = options;
 
@@ -58,6 +132,19 @@ export async function ensureFamilyForGuardian(options: EnsureFamilyOptions) {
 
   if (existingLink?.family_id) {
     return existingLink.family_id;
+  }
+
+  const { data: existingFamily } = await supabase
+    .from('families')
+    .select('id')
+    .eq('org_id', orgId)
+    .eq('created_by', guardianAccountId)
+    .is('deleted_at', null)
+    .limit(1)
+    .maybeSingle<{ id: string }>();
+
+  if (existingFamily?.id) {
+    return existingFamily.id;
   }
 
   const profileResponse = await getProfileByAccountId(supabase, guardianAccountId);
@@ -82,6 +169,18 @@ export async function ensureFamilyForGuardian(options: EnsureFamilyOptions) {
 }
 
 export async function createFamilyInvite(options: CreateFamilyInviteOptions) {
+  const normalizedEmail = options.invitedEmail.trim().toLowerCase();
+  const invitedKind: InvitedAccountKind =
+    options.invitedRole === 'child' ? 'child' : 'guardian';
+
+  await ensureInvitedAccountForRole({
+    supabase: options.supabase,
+    orgId: options.orgId,
+    invitedEmail: normalizedEmail,
+    createdByAccountId: options.createdByAccountId,
+    kind: invitedKind,
+  });
+
   const familyId = await ensureFamilyForGuardian({
     supabase: options.supabase,
     guardianAccountId: options.guardianAccountId,
@@ -90,7 +189,7 @@ export async function createFamilyInvite(options: CreateFamilyInviteOptions) {
 
   const adminClient = getFamilyInviteAdminClient();
   const { error: inviteError } = await adminClient.auth.admin.inviteUserByEmail(
-    options.invitedEmail,
+    normalizedEmail,
   );
 
   if (inviteError) {
@@ -106,11 +205,11 @@ export async function createFamilyInvite(options: CreateFamilyInviteOptions) {
 
   const { data, error } = await options.supabase
     .from('family_link_invites')
-    .insert({
-      org_id: options.orgId,
-      family_id: familyId,
-      invited_role: options.invitedRole,
-      invited_email: options.invitedEmail,
+      .insert({
+        org_id: options.orgId,
+        family_id: familyId,
+        invited_role: options.invitedRole,
+        invited_email: normalizedEmail,
       invited_phone_e164: options.invitedPhoneE164 ?? null,
       invite_code_hash: inviteCodeHash,
       created_by_account_id: options.createdByAccountId,
@@ -162,12 +261,129 @@ export async function deleteFamilyInvite(options: {
     .delete()
     .eq('id', options.inviteId)
     .eq('org_id', options.orgId)
-    .eq('created_by_account_id', options.guardianAccountId)
-    .is('deleted_at', null);
+    .eq('created_by_account_id', options.guardianAccountId);
 
   if (error) {
     throw error;
   }
 
   return data;
+}
+
+export async function findFamilyInviteForAccount(options: {
+  supabase: SupabaseClient;
+  orgId: string;
+  accountId: string;
+  email?: string | null;
+}) {
+  const normalizedEmail = options.email?.trim().toLowerCase();
+  let query = options.supabase
+    .from('family_link_invites')
+    .select('*')
+    .eq('org_id', options.orgId)
+    .is('deleted_at', null)
+    .in('status', ['pending', 'accepted'])
+    .limit(1);
+
+  if (normalizedEmail) {
+    query = query.or(
+      `accepted_by_account_id.eq.${options.accountId},invited_email.eq.${normalizedEmail}`,
+    );
+  } else {
+    query = query.eq('accepted_by_account_id', options.accountId);
+  }
+
+  const { data } = await query.maybeSingle<FamilyLinkInviteRow>();
+  return data ?? null;
+}
+
+export type AcceptFamilyInviteOptions = {
+  inviteId: string;
+  account: AccountRow;
+  relation?: FamilyRelation;
+  permissionsScope?: string[] | null;
+  adminClient?: SupabaseClient;
+};
+
+export async function acceptFamilyInvite(options: AcceptFamilyInviteOptions) {
+  const adminClient = options.adminClient ?? getFamilyInviteAdminClient();
+
+  const { data: inviteRow, error: inviteError } = await adminClient
+    .from('family_link_invites')
+    .select('*')
+    .eq('id', options.inviteId)
+    .eq('org_id', options.account.org_id)
+    .eq('status', 'pending')
+    .limit(1)
+    .maybeSingle<FamilyLinkInviteRow>();
+
+  if (inviteError) {
+    throw inviteError;
+  }
+
+  if (!inviteRow) {
+    throw new Error('Invite not found.');
+  }
+
+  const normalizedEmail = options.account.email?.trim().toLowerCase();
+  const normalizedPhone = options.account.phone_e164?.trim();
+  const inviteEmail = inviteRow.invited_email?.trim().toLowerCase() ?? null;
+  const invitePhone = inviteRow.invited_phone_e164?.trim() ?? null;
+  const emailMatch = normalizedEmail && inviteEmail && normalizedEmail === inviteEmail;
+  const phoneMatch = normalizedPhone && invitePhone && normalizedPhone === invitePhone;
+
+  if (!emailMatch && !phoneMatch) {
+    throw new Error('This invite is not associated with your account.');
+  }
+
+  const now = new Date().toISOString();
+  const { error: updateError } = await adminClient
+    .from('family_link_invites')
+    .update({
+      status: 'accepted',
+      accepted_by_account_id: options.account.id,
+      accepted_at: now,
+      updated_at: now,
+      updated_by: options.account.id,
+    })
+    .eq('id', inviteRow.id)
+    .eq('status', 'pending');
+
+  if (updateError) {
+    throw updateError;
+  }
+
+  if (inviteRow.invited_role === 'child') {
+    const { error: linkError } = await adminClient
+      .from('family_links')
+      .upsert(
+        {
+          org_id: inviteRow.org_id,
+          family_id: inviteRow.family_id,
+          guardian_account_id: inviteRow.created_by_account_id,
+          child_account_id: options.account.id,
+          relation: options.relation ?? 'guardian',
+          permissions_scope: options.permissionsScope ?? null,
+          created_by: options.account.id,
+          updated_by: options.account.id,
+        },
+        { onConflict: 'org_id,family_id,guardian_account_id,child_account_id' },
+      );
+
+    if (linkError) {
+      throw linkError;
+    }
+  }
+
+  const { data: refreshedInvite, error: refreshedError } = await adminClient
+    .from('family_link_invites')
+    .select('*')
+    .eq('id', inviteRow.id)
+    .maybeSingle<FamilyLinkInviteRow>();
+
+  if (refreshedError || !refreshedInvite) {
+    throw refreshedError ?? new Error('Unable to load invite after acceptance.');
+  }
+
+  return mapFamilyLinkInviteRowToVM(refreshedInvite);
 }
