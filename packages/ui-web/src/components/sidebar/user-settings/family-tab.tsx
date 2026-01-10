@@ -424,32 +424,42 @@ export function FamilyTab({
                         </div>
                       ) : (
                         <div className="space-y-4">
+                          {member.email ? (
+                            <p className="text-xs text-muted-foreground">Email: {member.email}</p>
+                          ) : null}
                           {isChildMember ? (
                             <>
-                              <div className="space-y-2">
-                                <Label>Display name</Label>
-                                <Input
-                                  value={displayNameValue}
-                                  onChange={(event) => {
-                                    const next = event.target.value;
-                                    setEditableChildData((prev) => ({
-                                      ...prev,
-                                      [member.id]: {
-                                        displayName: next,
-                                        themeKey: prev[member.id]?.themeKey ?? themeValue,
-                                      },
-                                    }));
-                                  }}
-                                  onBlur={() => {
-                                    void handleDisplayNameSave(member);
-                                  }}
-                                  onKeyDown={(event) => {
-                                    if (event.key === 'Enter') {
-                                      (event.target as HTMLInputElement).blur();
-                                    }
-                                  }}
-                                />
-                              </div>
+                            <div className="space-y-2">
+                              <Label>
+                                Display name
+                                {member.email ? (
+                                  <span className="text-xs text-muted-foreground ml-2">
+                                    ({member.email})
+                                  </span>
+                                ) : null}
+                              </Label>
+                              <Input
+                                value={displayNameValue}
+                                onChange={(event) => {
+                                  const next = event.target.value;
+                                  setEditableChildData((prev) => ({
+                                    ...prev,
+                                    [member.id]: {
+                                      displayName: next,
+                                      themeKey: prev[member.id]?.themeKey ?? themeValue,
+                                    },
+                                  }));
+                                }}
+                                onBlur={() => {
+                                  void handleDisplayNameSave(member);
+                                }}
+                                onKeyDown={(event) => {
+                                  if (event.key === 'Enter') {
+                                    (event.target as HTMLInputElement).blur();
+                                  }
+                                }}
+                              />
+                            </div>
                               <div className="space-y-2">
                                 <Label>Accent color</Label>
                                 <Select
@@ -486,15 +496,15 @@ export function FamilyTab({
                                   </SelectContent>
                                 </Select>
                               </div>
-                          </>
-                        ) : null}
-                        <div className="flex justify-end">
-                          <Button variant="destructive" size="sm">
-                            Remove from family
-                          </Button>
+                            </>
+                          ) : null}
+                          <div className="flex justify-end">
+                            <Button variant="destructive" size="sm">
+                              Remove from family
+                            </Button>
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
                   </UserSettingsTabSection>
                 );
               })

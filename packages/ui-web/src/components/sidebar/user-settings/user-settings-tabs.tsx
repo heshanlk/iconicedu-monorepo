@@ -204,7 +204,7 @@ export function UserSettingsTabs({
         firstName: childProfile.profile.firstName ?? undefined,
         lastName: childProfile.profile.lastName ?? undefined,
         bio: childProfile.profile.bio ?? undefined,
-        email: undefined,
+        email: childProfile.accountEmail ?? undefined,
         avatar: childProfile.profile.avatar ?? null,
         roleLabel: 'Child',
         canRemove: true,

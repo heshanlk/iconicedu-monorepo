@@ -7,6 +7,7 @@ import { resolveAvatarSource } from '../derive';
 import { createSignedAvatarUrl } from '../queries/avatar.query';
 import { getChildProfilesDetails } from '../queries/child.query';
 import { getChildProfilesByAccountIds } from '../queries/profiles.query';
+import { getAccountsByIds } from '../queries/accounts.query';
 
 async function resolveAvatarUrl(
   supabase: SupabaseClient,
@@ -48,6 +49,11 @@ export async function loadChildProfiles(
     supabase,
     profileIds,
   );
+  const accountIds = profiles.data.map((row) => row.account_id);
+  const accountsResponse = await getAccountsByIds(supabase, orgId, accountIds);
+  const accountById = new Map(
+    (accountsResponse.data ?? []).map((account) => [account.id, account]),
+  );
 
   const childByProfileId = new Map(
     ((childRows as ChildProfileRow[] | null) ?? []).map((row) => [row.profile_id, row]),
@@ -84,6 +90,7 @@ export async function loadChildProfiles(
         }
       : null;
 
+      const account = accountById.get(row.account_id);
     return {
       ...baseProfile,
       kind: 'child',
@@ -98,6 +105,7 @@ export async function loadChildProfiles(
       confidenceLevel: child?.confidence_level ?? null,
       communicationStyles:
         child?.communication_styles ?? (child?.communication_style ? [child.communication_style] : null),
+      accountEmail: account?.email ?? null,
     };
   });
 }

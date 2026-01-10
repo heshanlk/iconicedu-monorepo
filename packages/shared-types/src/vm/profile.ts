@@ -153,6 +153,8 @@ export interface ChildProfileVM extends BaseUserProfileVM {
 
   confidenceLevel?: string | null;
   communicationStyles?: string[] | null;
+
+  accountEmail?: string | null;
 }
 
 export type ChildProfileSaveInput = {

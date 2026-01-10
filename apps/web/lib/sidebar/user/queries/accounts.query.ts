@@ -48,6 +48,23 @@ export async function getAccountById(supabase: SupabaseClient, accountId: string
     .maybeSingle<AccountRow>();
 }
 
+export async function getAccountsByIds(
+  supabase: SupabaseClient,
+  orgId: string,
+  accountIds: string[],
+) {
+  if (!accountIds.length) {
+    return { data: [] as AccountRow[] };
+  }
+  return supabase
+    .from('accounts')
+    .select(ACCOUNT_SELECT)
+    .eq('org_id', orgId)
+    .in('id', accountIds)
+    .is('deleted_at', null)
+    .returns<AccountRow[]>();
+}
+
 export async function getAccountByEmail(
   supabase: SupabaseClient,
   orgId: string,
