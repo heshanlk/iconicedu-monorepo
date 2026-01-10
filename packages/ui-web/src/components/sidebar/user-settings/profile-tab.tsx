@@ -11,8 +11,6 @@ import {
   X,
 } from 'lucide-react';
 
-import { toast } from 'sonner';
-
 import type {
   ChildProfileVM,
   EducatorProfileVM,
@@ -127,6 +125,7 @@ export function ProfileTab({
   const [displayNameValue, setDisplayNameValue] = React.useState(
     profileBlock.displayName ?? '',
   );
+  const [hasDisplayNameBeenEdited, setHasDisplayNameBeenEdited] = React.useState(false);
   const [bioValue, setBioValue] = React.useState(profileBlock.bio ?? '');
   const [saveError, setSaveError] = React.useState<string | null>(null);
   const [showRequiredErrors, setShowRequiredErrors] = React.useState(false);
@@ -180,6 +179,7 @@ export function ProfileTab({
     setFirstNameValue(profileBlock.firstName ?? '');
     setLastNameValue(profileBlock.lastName ?? '');
     setDisplayNameValue(profileBlock.displayName ?? '');
+    setHasDisplayNameBeenEdited(false);
     setBioValue(profileBlock.bio ?? '');
     setAvatarPreview(null);
     setAvatarRemoved(false);
@@ -190,15 +190,24 @@ export function ProfileTab({
     profileBlock.bio,
   ]);
 
-  React.useEffect(() => {
-    if (displayNameValue.trim()) {
+  const fillDisplayNameFromNames = React.useCallback(() => {
+    if (hasDisplayNameBeenEdited || displayNameValue.trim()) {
       return;
     }
     const derivedName = `${firstNameValue.trim()} ${lastNameValue.trim()}`.trim();
     if (derivedName) {
       setDisplayNameValue(derivedName);
     }
-  }, [displayNameValue, firstNameValue, lastNameValue]);
+  }, [
+    displayNameValue,
+    firstNameValue,
+    lastNameValue,
+    hasDisplayNameBeenEdited,
+  ]);
+
+  React.useEffect(() => {
+    fillDisplayNameFromNames();
+  }, [fillDisplayNameFromNames]);
 
   const handleProfileSave = React.useCallback(
     async (afterSave?: () => void) => {
@@ -218,7 +227,6 @@ export function ProfileTab({
       setShowRequiredErrors(false);
 
       if (!onProfileSave) {
-        toast.success('Profile saved');
         afterSave?.();
         return;
       }
@@ -233,13 +241,11 @@ export function ProfileTab({
           lastName: trimmedLastName,
           bio: trimmedBio || null,
         });
-        toast.success('Profile saved');
         afterSave?.();
       } catch (error) {
         const message =
           error instanceof Error ? error.message : 'Unable to save profile.';
         setSaveError(message);
-        toast.error(message);
         throw error;
       } finally {
         setIsSaving(false);
@@ -494,7 +500,10 @@ export function ProfileTab({
                 <Input
                   id="settings-display-name"
                   value={displayNameValue}
-                  onChange={(event) => setDisplayNameValue(event.target.value)}
+                  onChange={(event) => {
+                    setHasDisplayNameBeenEdited(true);
+                    setDisplayNameValue(event.target.value);
+                  }}
                   placeholder="Enter a display name"
                 />
               </div>
@@ -565,7 +574,10 @@ export function ProfileTab({
                     className="relative"
                     placeholder="Enter your last name"
                     onFocus={() => setIsLastFocused(true)}
-                    onBlur={() => setIsLastFocused(false)}
+                    onBlur={() => {
+                      setIsLastFocused(false);
+                      fillDisplayNameFromNames();
+                    }}
                     onChange={(event) => {
                       setLastNameValue(event.target.value);
                       if (showRequiredErrors && event.target.value.trim()) {

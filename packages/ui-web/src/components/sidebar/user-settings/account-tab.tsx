@@ -95,15 +95,21 @@ export function AccountTab({
         <span className="sr-only">Not verified</span>
       </Badge>
     );
-  const phoneInputValue =
-    phoneValue.trim() || formattedPhoneFromContacts || '';
-  const whatsappInputValue =
-    whatsappValue.trim() || formattedWhatsappFromContacts || '';
-  const phoneDisplay = phoneInputValue || 'Not provided';
-  const whatsappDisplay = whatsappInputValue || 'Not provided';
-  const parsedPhone = parsePhoneNumberFromString(phoneInputValue);
-  const isPhoneValid = Boolean(phoneInputValue.trim() && parsedPhone?.isValid());
+  const phoneInputValue = phoneValue;
+  const whatsappInputValue = whatsappValue;
+  const phoneDisplay =
+    phoneInputValue.trim() || formattedPhoneFromContacts || 'Not provided';
+  const whatsappDisplay =
+    whatsappInputValue.trim() || formattedWhatsappFromContacts || 'Not provided';
   const shouldScrollToPhone = !phoneInputValue.trim();
+  const isPhoneSaveDisabled =
+    isPhoneSaving || !onAccountUpdate || !accountId || !orgId;
+  const isWhatsappSaveDisabled =
+    isWhatsappSaving ||
+    !onAccountUpdate ||
+    !accountId ||
+    !orgId ||
+    usePhoneForWhatsapp;
   const [emailOpen, setEmailOpen] = React.useState(false);
   React.useEffect(() => {
     if (!usePhoneForWhatsapp || !phoneInputValue.trim()) {
@@ -119,10 +125,8 @@ export function AccountTab({
   }, [email]);
 
   React.useEffect(() => {
-    if (!isPhoneFocused) {
-      setPhoneValue(formatPhoneInput(contacts?.phoneE164 ?? ''));
-    }
-  }, [contacts?.phoneE164, formatPhoneInput, isPhoneFocused]);
+    setPhoneValue(formatPhoneInput(contacts?.phoneE164 ?? ''));
+  }, [contacts?.phoneE164, formatPhoneInput]);
 
   React.useEffect(() => {
     if (!scrollToRequired || !shouldScrollToPhone) {
@@ -151,7 +155,7 @@ export function AccountTab({
 
     const nextValue = shouldUsePhone ? contactPhone : contactWhatsapp;
     setWhatsappValue(formatPhoneInput(nextValue));
-  }, [contacts?.phoneE164, contacts?.whatsappE164, formatPhoneInput, isWhatsappFocused]);
+  }, [contacts?.phoneE164, contacts?.whatsappE164, formatPhoneInput]);
 
   const handlePhoneSave = React.useCallback(async () => {
     if (!onAccountUpdate || !accountId || !orgId) {
@@ -162,7 +166,7 @@ export function AccountTab({
       setPhoneError('Please enter your phone number.');
       return;
     }
-    if (!parsed?.isValid()) {
+    if (phoneInputValue.trim() && !parsed?.isValid()) {
       setPhoneError('Enter a valid international number (e.g. +1 415 555 0100).');
       return;
     }
@@ -171,23 +175,20 @@ export function AccountTab({
       await onAccountUpdate({
         accountId,
         orgId,
-        phoneE164: parsed.number,
+        phoneE164: parsed?.number ?? null,
+        ...(usePhoneForWhatsapp ? { whatsappE164: parsed?.number ?? null } : {}),
       });
     } finally {
       setIsPhoneSaving(false);
     }
-  }, [accountId, orgId, onAccountUpdate, phoneInputValue]);
+  }, [accountId, orgId, onAccountUpdate, phoneInputValue, usePhoneForWhatsapp]);
 
   const handleWhatsappSave = React.useCallback(async () => {
     if (!onAccountUpdate || !accountId || !orgId) {
       return;
     }
     const parsed = parsePhoneNumberFromString(whatsappInputValue);
-    if (!whatsappInputValue.trim()) {
-      setWhatsappError('Please enter your WhatsApp number.');
-      return;
-    }
-    if (!parsed?.isValid()) {
+    if (whatsappInputValue.trim() && !parsed?.isValid()) {
       setWhatsappError('Enter a valid international number (e.g. +1 415 555 0100).');
       return;
     }
@@ -196,7 +197,7 @@ export function AccountTab({
       await onAccountUpdate({
         accountId,
         orgId,
-        whatsappE164: parsed.number,
+      whatsappE164: parsed?.number ?? null,
       });
     } finally {
       setIsWhatsappSaving(false);
@@ -360,13 +361,7 @@ export function AccountTab({
                 <Button
                   size="sm"
                   onClick={handlePhoneSave}
-                  disabled={
-                    isPhoneSaving ||
-                    !isPhoneValid ||
-                    !onAccountUpdate ||
-                    !accountId ||
-                    !orgId
-                  }
+                  disabled={isPhoneSaveDisabled}
                 >
                   {isPhoneSaving ? 'Saving...' : 'Save'}
                 </Button>
@@ -473,19 +468,13 @@ export function AccountTab({
                   />
                   Use phone number
                 </label>
-                <Button
-                  size="sm"
-                  onClick={handleWhatsappSave}
-                  disabled={
-                    isWhatsappSaving ||
-                    !whatsappInputValue.trim() ||
-                    !onAccountUpdate ||
-                    !accountId ||
-                    !orgId
-                  }
-                >
-                  {isWhatsappSaving ? 'Saving...' : 'Save'}
-                </Button>
+                  <Button
+                    size="sm"
+                    onClick={handleWhatsappSave}
+                    disabled={isWhatsappSaveDisabled}
+                  >
+                    {isWhatsappSaving ? 'Saving...' : 'Save'}
+                  </Button>
               </div>
             </div>
           </UserSettingsTabSection>

@@ -247,6 +247,8 @@ export function UserSettingsTabs({
               togglePreferredChannel={togglePreferredChannel}
               scrollToRequired={value === 'account'}
               scrollToken={scrollToken}
+              accountId={account?.ids.id}
+              orgId={account?.ids.orgId}
               onAccountUpdate={onAccountUpdate}
             />
           </TabsContent>
