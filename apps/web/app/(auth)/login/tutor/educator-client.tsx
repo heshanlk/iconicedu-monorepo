@@ -1,0 +1,104 @@
+'use client';
+
+import * as React from 'react';
+import { Button } from '@iconicedu/ui-web';
+import { LoginForm } from '@iconicedu/ui-web';
+import { createSupabaseBrowserClient } from '../../../../lib/supabase/client';
+import { educatorSignupAction } from './actions/educator-signup';
+
+export default function EducatorAuthClient() {
+  const supabase = React.useMemo(() => createSupabaseBrowserClient(), []);
+  const [statusMessage, setStatusMessage] = React.useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
+  const [signupState, setSignupState] = React.useState({
+    email: '',
+    password: '',
+    firstName: '',
+    lastName: '',
+    displayName: '',
+  });
+  const [signupMessage, setSignupMessage] = React.useState<string | null>(null);
+  const [signupError, setSignupError] = React.useState<string | null>(null);
+  const [isSigningUp, setIsSigningUp] = React.useState(false);
+
+  const handleEmailLogin = async (email: string) => {
+    setErrorMessage(null);
+    setStatusMessage(null);
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+
+    if (error) {
+      setErrorMessage(error.message);
+      return;
+    }
+
+    setStatusMessage('Check your email for a login link.');
+  };
+
+  const handleOAuthLogin = async (provider: 'apple' | 'google') => {
+    setErrorMessage(null);
+    setStatusMessage(null);
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider,
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+
+    if (error) {
+      setErrorMessage(error.message);
+    }
+  };
+
+  const handleSignup = async () => {
+    setSignupError(null);
+    setSignupMessage(null);
+    if (
+      !signupState.email ||
+      !signupState.password ||
+      !signupState.firstName ||
+      !signupState.lastName
+    ) {
+      setSignupError('Please complete all required fields.');
+      return;
+    }
+    setIsSigningUp(true);
+    try {
+      await educatorSignupAction({
+        email: signupState.email,
+        password: signupState.password,
+        firstName: signupState.firstName,
+        lastName: signupState.lastName,
+        displayName:
+          signupState.displayName || `${signupState.firstName} ${signupState.lastName}`,
+      });
+      setSignupMessage('Educator account created. Please log in with the same email.');
+      setSignupState({
+        email: '',
+        password: '',
+        firstName: '',
+        lastName: '',
+        displayName: '',
+      });
+    } catch (error) {
+      setSignupError(error instanceof Error ? error.message : 'Unable to create account');
+    } finally {
+      setIsSigningUp(false);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <LoginForm
+        onEmailLogin={handleEmailLogin}
+        onOAuthLogin={handleOAuthLogin}
+        statusMessage={statusMessage}
+        errorMessage={errorMessage}
+      />
+    </div>
+  );
+}
