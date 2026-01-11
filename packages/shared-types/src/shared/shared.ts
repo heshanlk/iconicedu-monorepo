@@ -9,11 +9,6 @@ export interface IdsBaseVM {
 
 export type AvatarSource = 'seed' | 'upload' | 'external';
 export type AccountStatus = 'active' | 'invited' | 'suspended' | 'deleted';
-export type GradeLevelOption = {
-  id: string | number;
-  label: string;
-} | null;
-
 export type ThemeKey =
   | 'slate'
   | 'gray'

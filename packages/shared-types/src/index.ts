@@ -12,3 +12,4 @@ export * from './vm/family-link-invite';
 export * from './vm/learning-space';
 export * from './vm/org';
 export * from './rows';
+export * from './grades';

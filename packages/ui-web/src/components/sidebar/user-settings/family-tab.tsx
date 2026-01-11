@@ -4,6 +4,7 @@ import * as React from 'react';
 import { Plus, UserPlus, X } from 'lucide-react';
 
 import type { ThemeKey, UserProfileVM } from '@iconicedu/shared-types';
+import { normalizeCountryCode, optionsForCountry } from '@iconicedu/shared-types';
 import { BorderBeam } from '../../../ui/border-beam';
 import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
 import { Badge } from '../../../ui/badge';
@@ -33,7 +34,7 @@ import { toast } from 'sonner';
 
 import type { FamilyLinkInviteRole, FamilyLinkInviteVM } from '@iconicedu/shared-types';
 import type { ProfileSaveInput } from './profile-tab';
-import { BIRTH_YEAR_OPTIONS, GRADE_LEVEL_OPTIONS } from './student-profile-tab';
+import { BIRTH_YEAR_OPTIONS } from './student-profile-tab';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -145,6 +146,14 @@ export function FamilyTab({
   const [newChildLastName, setNewChildLastName] = React.useState('');
   const [newChildGrade, setNewChildGrade] = React.useState('');
   const [newChildBirthYear, setNewChildBirthYear] = React.useState('');
+  const familyCountryCode = React.useMemo(
+    () => normalizeCountryCode(location?.countryCode),
+    [location?.countryCode],
+  );
+  const gradeOptions = React.useMemo(
+    () => optionsForCountry(familyCountryCode),
+    [familyCountryCode],
+  );
   const [newChildEmail, setNewChildEmail] = React.useState('');
   const [newChildEmailError, setNewChildEmailError] = React.useState<string | null>(null);
   const [isCreatingChild, setIsCreatingChild] = React.useState(false);
@@ -581,9 +590,9 @@ export function FamilyTab({
                           <SelectValue placeholder="Select grade" />
                         </SelectTrigger>
                         <SelectContent>
-                          {GRADE_LEVEL_OPTIONS.map((option: string) => (
-                            <SelectItem key={option} value={option}>
-                              {option}
+                          {gradeOptions.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
                             </SelectItem>
                           ))}
                         </SelectContent>

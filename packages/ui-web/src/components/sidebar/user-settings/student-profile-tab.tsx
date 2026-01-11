@@ -4,6 +4,12 @@ import { BookOpen, Lightbulb, SlidersHorizontal, Users, User } from 'lucide-reac
 import type {
   ChildProfileVM,
   ChildProfileSaveInput,
+  GradeLevel,
+} from '@iconicedu/shared-types';
+import {
+  gradeLabel,
+  normalizeCountryCode,
+  optionsForCountry,
 } from '@iconicedu/shared-types';
 import { Button } from '../../../ui/button';
 import {
@@ -18,7 +24,6 @@ import { Separator } from '../../../ui/separator';
 import { Checkbox } from '../../../ui/checkbox';
 import { ChevronIcon } from './components/chevron-icon';
 
-export const GRADE_LEVEL_OPTIONS = ['3K', 'Pre-K', 'K', ...Array.from({ length: 12 }, (_, index) => `${index + 1}`)];
 export const BIRTH_YEAR_OPTIONS = (() => {
   const currentYear = new Date().getFullYear();
   const startYear = currentYear - 3;
@@ -79,19 +84,30 @@ const CONFIDENCE_LEVEL_OPTIONS = ['Low', 'Medium', 'High'];
 
 type StudentProfileTabProps = {
   childProfile: ChildProfileVM;
+  fallbackCountryCode?: string | null;
   onChildProfileSave?: (input: ChildProfileSaveInput) => Promise<void> | void;
 };
 
-const resolveGradeSelection = (profile: ChildProfileVM) => {
-  const gradeValue = profile.gradeLevel?.label ?? profile.gradeLevel?.id;
-  return gradeValue != null ? String(gradeValue) : '';
-};
+const resolveGradeSelection = (profile: ChildProfileVM): GradeLevel | '' =>
+  profile.gradeLevel ?? '';
 
 export function StudentProfileTab({
   childProfile,
+  fallbackCountryCode,
   onChildProfileSave,
 }: StudentProfileTabProps) {
-  const [gradeSelection, setGradeSelection] = React.useState(
+  const studentCountryCode = React.useMemo(
+    () =>
+      normalizeCountryCode(
+        childProfile.location?.countryCode ?? fallbackCountryCode,
+      ),
+    [childProfile.location?.countryCode, fallbackCountryCode],
+  );
+  const gradeOptions = React.useMemo(
+    () => optionsForCountry(studentCountryCode),
+    [studentCountryCode],
+  );
+  const [gradeSelection, setGradeSelection] = React.useState<GradeLevel | ''>(
     resolveGradeSelection(childProfile),
   );
   const [birthYearSelection, setBirthYearSelection] = React.useState(
@@ -159,12 +175,17 @@ export function StudentProfileTab({
 
     setChildProfileError(null);
     setIsSavingChildProfile(true);
+    const gradeForSave = gradeSelection || null;
+    const gradeLabelValue =
+      gradeForSave !== null
+        ? gradeLabel(gradeForSave, studentCountryCode)
+        : null;
     try {
       await onChildProfileSave({
         profileId: childProfile.ids.id,
         orgId: childProfile.ids.orgId,
-        gradeId: gradeSelection,
-        gradeLabel: gradeSelection,
+        gradeId: gradeForSave,
+        gradeLabel: gradeLabelValue,
         birthYear: Number(birthYearSelection),
         schoolName: schoolNameValue.trim() || null,
         schoolYear: schoolYearValue.trim() || null,
@@ -187,6 +208,7 @@ export function StudentProfileTab({
     childProfile.ids.id,
     childProfile.ids.orgId,
     gradeSelection,
+    studentCountryCode,
     birthYearSelection,
     schoolNameValue,
     schoolYearValue,
@@ -222,7 +244,9 @@ export function StudentProfileTab({
             <div className="flex-1">
               <div className="text-sm font-medium">Basic student info</div>
               <div className="text-xs text-muted-foreground">
-                {childProfile.gradeLevel?.label ?? childProfile.gradeLevel?.id ?? 'Not set'}
+                {childProfile.gradeLevel
+                  ? gradeLabel(childProfile.gradeLevel, studentCountryCode)
+                  : 'Not set'}
               </div>
             </div>
             <ChevronIcon />
@@ -235,15 +259,15 @@ export function StudentProfileTab({
                 </Label>
                 <Select
                   value={gradeSelection}
-                  onValueChange={(value) => setGradeSelection(value)}
+                  onValueChange={(value) => setGradeSelection(value as GradeLevel)}
                 >
                   <SelectTrigger id="settings-grade" className="w-full">
                     <SelectValue placeholder="Select grade" />
                   </SelectTrigger>
                   <SelectContent>
-                    {GRADE_LEVEL_OPTIONS.map((option) => (
-                      <SelectItem key={option} value={option}>
-                        {option}
+                    {gradeOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
                       </SelectItem>
                     ))}
                   </SelectContent>

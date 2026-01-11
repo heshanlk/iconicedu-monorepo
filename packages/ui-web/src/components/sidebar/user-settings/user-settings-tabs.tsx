@@ -315,6 +315,7 @@ export function UserSettingsTabs({
             <TabsContent value="educator-profile" className="mt-0 space-y-8 w-full px-1">
               <EducatorProfileTab
                 educatorProfile={educatorProfile}
+                fallbackCountryCode={profile.location?.countryCode}
                 onSave={onEducatorProfileSave}
               />
             </TabsContent>
@@ -323,6 +324,7 @@ export function UserSettingsTabs({
             <TabsContent value="student-profile" className="mt-0 space-y-8 w-full px-1">
               <StudentProfileTab
                 childProfile={childProfile}
+                fallbackCountryCode={profile.location?.countryCode}
                 onChildProfileSave={onChildProfileSave}
               />
             </TabsContent>

@@ -1,4 +1,4 @@
-import type { EducatorProfileVM, GradeLevelOption, UserProfileVM } from '@iconicedu/shared-types';
+import type { EducatorProfileVM, GradeLevel, UserProfileVM } from '@iconicedu/shared-types';
 import type { ProfileRow } from '@iconicedu/shared-types';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
@@ -9,6 +9,7 @@ import {
   getEducatorProfile,
   getEducatorSubjects,
 } from '../queries/educator.query';
+import { parseGradeLevel } from '@iconicedu/shared-types';
 
 export async function buildEducatorProfile(
   supabase: SupabaseClient,
@@ -23,11 +24,10 @@ export async function buildEducatorProfile(
     getEducatorBadges(supabase, profileRow.id),
   ]);
 
-  const gradeLevels: GradeLevelOption[] | null = grades.data
-    ? grades.data.map((row) => ({
-        id: row.grade_id,
-        label: row.grade_label ?? row.grade_id,
-      }))
+  const gradeLevels: GradeLevel[] | null = grades.data
+    ? grades.data
+        .map((row) => parseGradeLevel(row.grade_id) ?? parseGradeLevel(row.grade_label))
+        .filter((item): item is GradeLevel => Boolean(item))
     : null;
 
   return {

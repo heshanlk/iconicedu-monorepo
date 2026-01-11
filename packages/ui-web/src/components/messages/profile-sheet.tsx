@@ -15,10 +15,11 @@ import { ProfileActions } from './profile-actions';
 import type {
   ChannelFileItemVM,
   ChannelMediaItemVM,
-  GradeLevelOption,
+  GradeLevel,
   UserProfileVM,
 } from '@iconicedu/shared-types';
 import { MediaFilesPanel } from './shared/media-files-panel';
+import { gradeLabel, normalizeCountryCode } from '@iconicedu/shared-types';
 
 export type ProfileDetailsUser = UserProfileVM & {
   role?: string;
@@ -28,7 +29,7 @@ export type ProfileDetailsUser = UserProfileVM & {
   headline?: string | null;
   bio?: string | null;
   subjects?: string[] | null;
-  gradesSupported?: GradeLevelOption[] | null;
+  gradesSupported?: GradeLevel[] | null;
   experienceYears?: number | null;
   certifications?: Array<{
     name: string;
@@ -68,6 +69,7 @@ export function ProfileContent({
   onShareClick?: () => void;
   onReportClick?: () => void;
 }) {
+  const countryCode = normalizeCountryCode(user.location?.countryCode);
   return (
     <div className="flex-1 overflow-y-auto">
       <div className="flex flex-col items-center gap-3 p-6 min-w-0">
@@ -164,7 +166,7 @@ export function ProfileContent({
                 <p className="text-xs text-muted-foreground">Grades supported</p>
                 <p className="text-sm text-foreground break-words">
                   {user.gradesSupported
-                    .map((grade) => grade?.label)
+                    .map((grade) => (grade ? gradeLabel(grade, countryCode) : null))
                     .filter(Boolean)
                     .join(', ')}
                 </p>

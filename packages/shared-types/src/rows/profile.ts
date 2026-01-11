@@ -1,4 +1,5 @@
 import type { AccountStatus, FamilyRelation, ISODateTime, UUID } from '../shared/shared';
+import type { GradeLevel } from '../grades';
 
 export type ProfileKindRow = 'educator' | 'guardian' | 'child' | 'staff' | 'system';
 
@@ -105,7 +106,7 @@ export interface EducatorProfileGradeLevelRow {
   id: UUID;
   org_id: UUID;
   profile_id: UUID;
-  grade_id: string;
+  grade_id: GradeLevel;
   grade_label?: string | null;
   created_at?: ISODateTime | null;
   updated_at?: ISODateTime | null;
@@ -116,7 +117,7 @@ export interface ChildProfileGradeLevelRow {
   id: UUID;
   org_id: UUID;
   profile_id: UUID;
-  grade_id: string;
+  grade_id: GradeLevel;
   grade_label?: string | null;
   created_at?: ISODateTime | null;
   updated_at?: ISODateTime | null;

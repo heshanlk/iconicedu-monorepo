@@ -2,12 +2,12 @@ import type {
   AccountStatus,
   AvatarSource,
   ConnectionVM,
-  GradeLevelOption,
   IdsBaseVM,
   ISODateTime,
   ThemeKey,
   UUID,
 } from '../shared/shared';
+import type { GradeLevel } from '../grades';
 import type { FamilyLinkInviteVM } from './family-link-invite';
 
 export interface AvatarVM {
@@ -111,7 +111,7 @@ export interface EducatorProfileVM extends BaseUserProfileVM {
 
   headline?: string | null;
   subjects?: string[] | null;
-  gradesSupported?: GradeLevelOption[] | null;
+  gradesSupported?: GradeLevel[] | null;
 
   education?: string | null;
   experienceYears?: number | null;
@@ -140,7 +140,7 @@ export interface EducatorProfileVM extends BaseUserProfileVM {
 export interface ChildProfileVM extends BaseUserProfileVM {
   kind: 'child';
 
-  gradeLevel?: GradeLevelOption | null;
+  gradeLevel?: GradeLevel | null;
   birthYear?: number | null;
 
   schoolName?: string | null;
@@ -161,7 +161,7 @@ export interface ChildProfileVM extends BaseUserProfileVM {
 export type ChildProfileSaveInput = {
   profileId: string;
   orgId: string;
-  gradeId?: string | null;
+  gradeId?: GradeLevel | null;
   gradeLabel?: string | null;
   birthYear?: number | null;
   schoolName?: string | null;
@@ -211,7 +211,7 @@ export type UserProfileVM =
   | SystemProfileVM;
 
 export type EducatorGradeEntry = {
-  gradeId: string;
+  gradeId: GradeLevel;
   gradeLabel?: string | null;
 };
 

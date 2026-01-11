@@ -1,8 +1,9 @@
-import type { ChildProfileVM, GradeLevelOption, UserProfileVM } from '@iconicedu/shared-types';
+import type { ChildProfileVM, GradeLevel, UserProfileVM } from '@iconicedu/shared-types';
 import type { ProfileRow } from '@iconicedu/shared-types';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 import { getChildGradeLevel, getChildProfile } from '../queries/child.query';
+import { parseGradeLevel } from '@iconicedu/shared-types';
 
 export async function buildChildProfile(
   supabase: SupabaseClient,
@@ -14,11 +15,9 @@ export async function buildChildProfile(
     getChildGradeLevel(supabase, profileRow.id),
   ]);
 
-  const gradeLevel: GradeLevelOption | null = grade.data
-    ? {
-        id: grade.data.grade_id,
-        label: grade.data.grade_label ?? grade.data.grade_id,
-      }
+  const gradeLevel: GradeLevel | null = grade.data
+    ? parseGradeLevel(grade.data.grade_id) ??
+      parseGradeLevel(grade.data.grade_label ?? grade.data.grade_id)
     : null;
 
   return {

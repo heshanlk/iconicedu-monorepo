@@ -7,6 +7,7 @@ import type {
   ChildProfileSaveInput,
   EducatorProfileSaveInput,
   FamilyLinkInviteRole,
+  GradeLevel,
   SidebarLeftDataVM,
   ThemeKey,
 } from '@iconicedu/shared-types';
@@ -462,10 +463,7 @@ export function SidebarShell({
         }
 
         const gradeOptions = uniqueGrades.length
-          ? uniqueGrades.map((grade) => ({
-              id: grade.gradeId,
-              label: grade.gradeLabel ?? grade.gradeId,
-            }))
+          ? uniqueGrades.map((grade) => grade.gradeId as GradeLevel)
           : null;
 
         setSidebarData((prev) => {

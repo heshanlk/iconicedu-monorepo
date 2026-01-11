@@ -4,9 +4,10 @@ import * as React from 'react';
 import { Briefcase, SlidersHorizontal, User } from 'lucide-react';
 
 import type {
+  CountryCode,
   EducatorProfileSaveInput,
   EducatorProfileVM,
-  GradeLevelOption,
+  GradeLevel,
 } from '@iconicedu/shared-types';
 import { Button } from '../../../ui/button';
 import { Checkbox } from '../../../ui/checkbox';
@@ -14,6 +15,12 @@ import { Input } from '../../../ui/input';
 import { Textarea } from '../../../ui/textarea';
 import { Label } from '../../../ui/label';
 import { UserSettingsTabSection } from './components/user-settings-tab-section';
+import {
+  GRADE_META,
+  gradeLabel,
+  normalizeCountryCode,
+  optionsForCountry,
+} from '@iconicedu/shared-types';
 
 const listToString = (items?: string[] | null) => (items ?? []).join(', ');
 
@@ -22,24 +29,6 @@ const stringToList = (value: string) =>
     .split(',')
     .map((segment) => segment.trim())
     .filter(Boolean);
-
-const sanitizeGrades = (grades?: EducatorProfileVM['gradesSupported']) =>
-  (grades ?? []).filter((grade): grade is Exclude<GradeLevelOption, null> =>
-    Boolean(grade),
-  );
-
-const gradeValueToString = (grade?: GradeLevelOption) => {
-  if (!grade) {
-    return '';
-  }
-  if (grade.label) {
-    return grade.label;
-  }
-  if (grade.id != null) {
-    return String(grade.id);
-  }
-  return '';
-};
 
 const SUBJECT_OPTIONS = [
   'Math',
@@ -52,25 +41,6 @@ const SUBJECT_OPTIONS = [
   'Mindfulness & SEL',
   'Language studies',
   'Career readiness',
-];
-
-const GRADE_OPTIONS = [
-  '3K',
-  'Pre-K',
-  'K',
-  'Grade 1',
-  'Grade 2',
-  'Grade 3',
-  'Grade 4',
-  'Grade 5',
-  'Grade 6',
-  'Grade 7',
-  'Grade 8',
-  'Grade 9',
-  'Grade 10',
-  'Grade 11',
-  'Grade 12',
-  'Post-secondary & adult',
 ];
 
 const AGE_GROUP_OPTIONS = [
@@ -95,31 +65,49 @@ const CURRICULUM_TAG_OPTIONS = [
   'Differentiated',
 ];
 
+const isValidGradeLevel = (value?: GradeLevel | null): value is GradeLevel =>
+  typeof value === 'string' && Boolean(GRADE_META[value as GradeLevel]);
+
+const sanitizeGrades = (grades?: GradeLevel[] | null): GradeLevel[] =>
+  (grades ?? []).filter(isValidGradeLevel);
+
 type EducatorProfileTabProps = {
   educatorProfile: EducatorProfileVM;
+  fallbackCountryCode?: string | null;
   onSave?: (input: EducatorProfileSaveInput) => Promise<void> | void;
 };
 
-export function EducatorProfileTab({ educatorProfile, onSave }: EducatorProfileTabProps) {
+export function EducatorProfileTab({
+  educatorProfile,
+  fallbackCountryCode,
+  onSave,
+}: EducatorProfileTabProps) {
+  const educatorCountryCode = React.useMemo<CountryCode>(
+    () =>
+      normalizeCountryCode(
+        educatorProfile.location?.countryCode ?? fallbackCountryCode,
+      ),
+    [educatorProfile.location?.countryCode, fallbackCountryCode],
+  );
+  const gradeOptions = React.useMemo(
+    () => optionsForCountry(educatorCountryCode),
+    [educatorCountryCode],
+  );
+
   const [headlineValue, setHeadlineValue] = React.useState(
     educatorProfile.headline ?? '',
   );
   const [selectedSubjects, setSelectedSubjects] = React.useState<string[]>(
     educatorProfile.subjects ?? [],
   );
-  const [selectedGrades, setSelectedGrades] = React.useState<string[]>(
-    sanitizeGrades(educatorProfile.gradesSupported)
-      .map(gradeValueToString)
-      .filter(Boolean),
+  const [selectedGrades, setSelectedGrades] = React.useState<GradeLevel[]>(
+    sanitizeGrades(educatorProfile.gradesSupported),
   );
   const [videoValue, setVideoValue] = React.useState(
     educatorProfile.featuredVideoIntroUrl ?? '',
   );
   const toggleSelection = React.useCallback(
-    (
-      value: string,
-      setter: React.Dispatch<React.SetStateAction<string[]>>,
-    ) => {
+    <T,>(value: T, setter: React.Dispatch<React.SetStateAction<T[]>>) => {
       setter((prev) =>
         prev.includes(value) ? prev.filter((item) => item !== value) : [...prev, value],
       );
@@ -147,11 +135,7 @@ export function EducatorProfileTab({ educatorProfile, onSave }: EducatorProfileT
   React.useEffect(() => {
     setHeadlineValue(educatorProfile.headline ?? '');
     setSelectedSubjects(educatorProfile.subjects ?? []);
-    setSelectedGrades(
-      sanitizeGrades(educatorProfile.gradesSupported)
-        .map(gradeValueToString)
-        .filter(Boolean),
-    );
+    setSelectedGrades(sanitizeGrades(educatorProfile.gradesSupported));
     setVideoValue(educatorProfile.featuredVideoIntroUrl ?? '');
     setExperienceValue(educatorProfile.experienceYears?.toString() ?? '');
     setEducationValue(educatorProfile.education ?? '');
@@ -161,6 +145,11 @@ export function EducatorProfileTab({ educatorProfile, onSave }: EducatorProfileT
     setSelectedAgeGroups(educatorProfile.ageGroupsComfortableWith ?? []);
     setSelectedCurriculumTags(educatorProfile.curriculumTags ?? []);
   }, [educatorProfile]);
+
+  const selectedGradeLabels = React.useMemo(
+    () => selectedGrades.map((grade) => gradeLabel(grade, educatorCountryCode)),
+    [selectedGrades, educatorCountryCode],
+  );
 
   const handleSave = React.useCallback(async () => {
     if (!onSave) {
@@ -181,13 +170,13 @@ export function EducatorProfileTab({ educatorProfile, onSave }: EducatorProfileT
         ? null
         : experienceNumber;
 
-        const gradeLevels =
-          selectedGrades.length > 0
-            ? selectedGrades.map((grade) => ({
-                gradeId: grade,
-                gradeLabel: grade,
-              }))
-            : null;
+    const gradeLevels =
+      selectedGrades.length > 0
+        ? selectedGrades.map((grade) => ({
+            gradeId: grade,
+            gradeLabel: gradeLabel(grade, educatorCountryCode),
+          }))
+        : null;
 
     try {
       await onSave({
@@ -239,13 +228,13 @@ export function EducatorProfileTab({ educatorProfile, onSave }: EducatorProfileT
       <UserSettingsTabSection
         title="Basic info"
         subtitle={
-          selectedSubjects.length || selectedGrades.length
+          selectedSubjects.length || selectedGradeLabels.length
             ? [
                 selectedSubjects.length
                   ? `Subjects: ${selectedSubjects.join(', ')}`
                   : 'Subjects not set',
-                selectedGrades.length
-                  ? `Grades: ${selectedGrades.join(', ')}`
+                selectedGradeLabels.length
+                  ? `Grades: ${selectedGradeLabels.join(', ')}`
                   : 'Grades not set',
               ].join(' · ')
             : 'Subjects and grades not set'
@@ -278,14 +267,14 @@ export function EducatorProfileTab({ educatorProfile, onSave }: EducatorProfileT
               placeholder="Short headline"
             />
           </div>
-            <div className="space-y-2 sm:col-span-2">
-              <div className="flex items-center gap-1 text-sm">
-                <Label>Subjects</Label>
-                <span className="text-destructive">*</span>
-              </div>
-              {!selectedSubjects.length ? (
-                <p className="text-xs text-destructive">Select at least one subject.</p>
-              ) : null}
+          <div className="space-y-2 sm:col-span-2">
+            <div className="flex items-center gap-1 text-sm">
+              <Label>Subjects</Label>
+              <span className="text-destructive">*</span>
+            </div>
+            {!selectedSubjects.length ? (
+              <p className="text-xs text-destructive">Select at least one subject.</p>
+            ) : null}
             <div className="grid gap-2 sm:grid-cols-2">
               {SUBJECT_OPTIONS.map((option) => (
                 <label
@@ -303,27 +292,27 @@ export function EducatorProfileTab({ educatorProfile, onSave }: EducatorProfileT
               ))}
             </div>
           </div>
-            <div className="space-y-2 sm:col-span-2">
-              <div className="flex items-center gap-1 text-sm">
-                <Label>Grades supported</Label>
-                <span className="text-destructive">*</span>
-              </div>
-              {!selectedGrades.length ? (
-                <p className="text-xs text-destructive">Select at least one grade.</p>
-              ) : null}
-            <div className="grid gap-2 sm:grid-cols-2">
-              {GRADE_OPTIONS.map((option) => (
+          <div className="space-y-2 sm:col-span-2">
+            <div className="flex items-center gap-1 text-sm">
+              <Label>Grades supported</Label>
+              <span className="text-destructive">*</span>
+            </div>
+            {!selectedGrades.length ? (
+              <p className="text-xs text-destructive">Select at least one grade.</p>
+            ) : null}
+            <div className="grid gap-2">
+              {gradeOptions.map((option) => (
                 <label
-                  key={option}
+                  key={option.value}
                   className="flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition hover:border-primary"
                 >
                   <Checkbox
-                    checked={selectedGrades.includes(option)}
+                    checked={selectedGrades.includes(option.value)}
                     onCheckedChange={() =>
-                      toggleSelection(option, setSelectedGrades)
+                      toggleSelection(option.value, setSelectedGrades)
                     }
                   />
-                  {option}
+                  {option.label}
                 </label>
               ))}
             </div>

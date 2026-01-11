@@ -1,4 +1,4 @@
-import type { ChildProfileVM, GradeLevelOption, UserProfileVM } from '@iconicedu/shared-types';
+import type { ChildProfileVM, GradeLevel, UserProfileVM } from '@iconicedu/shared-types';
 import type { ChildProfileGradeLevelRow, ChildProfileRow, ProfileRow } from '@iconicedu/shared-types';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
@@ -8,6 +8,7 @@ import { createSignedAvatarUrl } from '../queries/avatar.query';
 import { getChildProfilesDetails } from '../queries/child.query';
 import { getChildProfilesByAccountIds } from '../queries/profiles.query';
 import { getAccountsByIds } from '../queries/accounts.query';
+import { parseGradeLevel } from '@iconicedu/shared-types';
 
 async function resolveAvatarUrl(
   supabase: SupabaseClient,
@@ -83,12 +84,9 @@ export async function loadChildProfiles(
     );
     const child = childByProfileId.get(row.id);
     const grade = gradeByProfileId.get(row.id);
-    const gradeLevel: GradeLevelOption | null = grade
-      ? {
-          id: grade.grade_id,
-          label: grade.grade_label ?? grade.grade_id,
-        }
-      : null;
+  const gradeLevel: GradeLevel | null = grade
+    ? parseGradeLevel(grade.grade_id) ?? parseGradeLevel(grade.grade_label ?? grade.grade_id)
+    : null;
 
       const account = accountById.get(row.account_id);
     return {
