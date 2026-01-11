@@ -1,5 +1,5 @@
 import type { AccountStatus, FamilyRelation, ISODateTime, UUID } from '../shared/shared';
-import type { GradeLevel } from '../grades';
+import type { GradeLevel } from '../shared/grades';
 
 export type ProfileKindRow = 'educator' | 'guardian' | 'child' | 'staff' | 'system';
 

@@ -7,7 +7,7 @@ import type {
   ThemeKey,
   UUID,
 } from '../shared/shared';
-import type { GradeLevel } from '../grades';
+import type { GradeLevel } from '../shared/grades';
 import type { FamilyLinkInviteVM } from './family-link-invite';
 
 export interface AvatarVM {
