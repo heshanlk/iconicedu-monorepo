@@ -191,6 +191,7 @@ export function UserSettingsTabs({
       canRemove: boolean;
       isChild?: boolean;
       themeKey: ThemeKey;
+      hasAuthAccount?: boolean;
     }> = [];
 
       members.push({
@@ -224,6 +225,7 @@ export function UserSettingsTabs({
         canRemove: true,
         isChild: true,
         themeKey: childProfile.ui?.themeKey ?? 'teal',
+        hasAuthAccount: Boolean(childProfile.accountAuthUserId),
       });
     });
 
@@ -362,6 +364,7 @@ export function UserSettingsTabs({
             location={profile.location ?? null}
             orgId={profile.ids.orgId}
             guardianAccountId={profile.ids.accountId}
+            guardianEmail={contacts?.email ?? null}
             onChildProfileCreate={onChildProfileCreate}
           />
         </TabsContent>

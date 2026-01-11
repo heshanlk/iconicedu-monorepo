@@ -1,6 +1,7 @@
 export const ACCOUNT_SELECT = [
   'id',
   'org_id',
+  'auth_user_id',
   'email',
   'phone_e164',
   'whatsapp_e164',

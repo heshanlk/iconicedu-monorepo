@@ -94,6 +94,7 @@ export async function loadChildProfiles(
     return {
       ...baseProfile,
       kind: 'child',
+      accountAuthUserId: account?.auth_user_id ?? null,
       gradeLevel,
       birthYear: child?.birth_year ?? null,
       schoolName: child?.school_name ?? null,

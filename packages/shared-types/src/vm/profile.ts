@@ -155,6 +155,7 @@ export interface ChildProfileVM extends BaseUserProfileVM {
   communicationStyles?: string[] | null;
 
   accountEmail?: string | null;
+  accountAuthUserId?: UUID | null;
 }
 
 export type ChildProfileSaveInput = {

@@ -13,6 +13,7 @@ type CreateChildProfileInput = {
   lastName: string;
   gradeLevel: string;
   birthYear: number;
+  email?: string | null;
   timezone?: string | null;
   city?: string | null;
   region?: string | null;
@@ -47,6 +48,7 @@ export async function createChildProfileAction(
     .from('accounts')
     .insert({
       org_id: guardianAccount.org_id,
+      email: input.email?.toLowerCase() ?? null,
       preferred_contact_channels: ['email'],
       status: 'active',
       created_by: guardianAccount.id,
