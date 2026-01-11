@@ -34,6 +34,16 @@ import { toast } from 'sonner';
 import type { FamilyLinkInviteRole, FamilyLinkInviteVM } from '@iconicedu/shared-types';
 import type { ProfileSaveInput } from './profile-tab';
 import { BIRTH_YEAR_OPTIONS, GRADE_LEVEL_OPTIONS } from './student-profile-tab';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '../../../ui/alert-dialog';
 
 type FamilyMemberItem = {
   id: string;
@@ -138,6 +148,8 @@ export function FamilyTab({
   const [newChildEmail, setNewChildEmail] = React.useState('');
   const [newChildEmailError, setNewChildEmailError] = React.useState<string | null>(null);
   const [isCreatingChild, setIsCreatingChild] = React.useState(false);
+  const [memberToRemove, setMemberToRemove] = React.useState<FamilyMemberItem | null>(null);
+  const [isRemoveDialogOpen, setIsRemoveDialogOpen] = React.useState(false);
   const [removingMemberIds, setRemovingMemberIds] = React.useState<Record<string, boolean>>(
     {},
   );
@@ -393,11 +405,8 @@ export function FamilyTab({
   );
 
   const handleFamilyMemberRemove = React.useCallback(
-    async (member: FamilyMemberItem) => {
-      if (!onFamilyMemberRemove || !member.accountId) {
-        return;
-      }
-      if (!confirm('Are you sure you want to remove this family member?')) {
+    async (member?: FamilyMemberItem | null) => {
+      if (!member || !onFamilyMemberRemove || !member.accountId) {
         return;
       }
       setRemovingMemberIds((prev) => ({ ...prev, [member.id]: true }));
@@ -413,10 +422,19 @@ export function FamilyTab({
           delete next[member.id];
           return next;
         });
+        setMemberToRemove(null);
       }
     },
     [onFamilyMemberRemove],
   );
+
+  const handleConfirmRemove = React.useCallback(async () => {
+    if (!memberToRemove) {
+      return;
+    }
+    await handleFamilyMemberRemove(memberToRemove);
+    setIsRemoveDialogOpen(false);
+  }, [handleFamilyMemberRemove, memberToRemove]);
 
   return (
     <div className="space-y-8 w-full">
@@ -821,7 +839,10 @@ export function FamilyTab({
                         <Button
                           variant="destructive"
                           size="sm"
-                          onClick={() => handleFamilyMemberRemove(member)}
+                          onClick={() => {
+                            setMemberToRemove(member);
+                            setIsRemoveDialogOpen(true);
+                          }}
                           disabled={Boolean(removingMemberIds[member.id])}
                         >
                           {removingMemberIds[member.id] ? 'Removing...' : 'Remove from family'}
@@ -896,6 +917,45 @@ export function FamilyTab({
               })}
             </>
           ) : null}
+          <AlertDialog
+            open={isRemoveDialogOpen}
+            onOpenChange={(open) => {
+              setIsRemoveDialogOpen(open);
+              if (!open) {
+                setMemberToRemove(null);
+              }
+            }}
+          >
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Remove from family?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This will unlink {memberToRemove?.name ?? 'the family member'} from your
+                  account. Their data and child profile will remain, but they will no longer
+                  be directly associated with this guardian.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter className="flex justify-end gap-2">
+                <AlertDialogCancel asChild>
+                  <Button size="sm" variant="ghost">
+                    Cancel
+                  </Button>
+                </AlertDialogCancel>
+                <AlertDialogAction asChild>
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    disabled={Boolean(memberToRemove && removingMemberIds[memberToRemove.id])}
+                    onClick={() => handleConfirmRemove()}
+                  >
+                    {memberToRemove && removingMemberIds[memberToRemove.id]
+                      ? 'Removing...'
+                      : 'Confirm remove'}
+                  </Button>
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </div>
     </div>
