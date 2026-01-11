@@ -50,6 +50,7 @@ type FamilyMemberItem = {
   isChild?: boolean;
   themeKey: ThemeKey;
   hasAuthAccount?: boolean;
+  accountId?: string;
 };
 
 type EditableChildData = Record<string, { displayName: string; themeKey: ThemeKey }>;
@@ -96,6 +97,7 @@ type FamilyTabProps = {
     countryCode?: string | null;
     countryName?: string | null;
   }) => Promise<void> | void;
+  onFamilyMemberRemove?: (input: { childAccountId: string }) => Promise<void> | void;
   guardianEmail?: string | null;
 };
 
@@ -116,6 +118,7 @@ export function FamilyTab({
   orgId,
   guardianAccountId,
   guardianEmail,
+  onFamilyMemberRemove,
 }: FamilyTabProps) {
   const [isToastDismissed, setIsToastDismissed] = React.useState(false);
   const [isInviteOpen, setIsInviteOpen] = React.useState(false);
@@ -135,6 +138,9 @@ export function FamilyTab({
   const [newChildEmail, setNewChildEmail] = React.useState('');
   const [newChildEmailError, setNewChildEmailError] = React.useState<string | null>(null);
   const [isCreatingChild, setIsCreatingChild] = React.useState(false);
+  const [removingMemberIds, setRemovingMemberIds] = React.useState<Record<string, boolean>>(
+    {},
+  );
   const showToast = showOnboardingToast && !isToastDismissed;
   const INVITE_SAVE_ERROR = 'Unable to send invite right now. Please try again.';
   const INVITE_REMOVE_ERROR = 'Unable to remove invite right now. Please try again.';
@@ -384,6 +390,32 @@ export function FamilyTab({
       });
     },
     [onChildThemeSave],
+  );
+
+  const handleFamilyMemberRemove = React.useCallback(
+    async (member: FamilyMemberItem) => {
+      if (!onFamilyMemberRemove || !member.accountId) {
+        return;
+      }
+      if (!confirm('Are you sure you want to remove this family member?')) {
+        return;
+      }
+      setRemovingMemberIds((prev) => ({ ...prev, [member.id]: true }));
+      try {
+        await onFamilyMemberRemove({ childAccountId: member.accountId });
+        toast.success('Family member removed');
+      } catch (error) {
+        console.error(error);
+        toast.error('Unable to remove family member');
+      } finally {
+        setRemovingMemberIds((prev) => {
+          const next = { ...prev };
+          delete next[member.id];
+          return next;
+        });
+      }
+    },
+    [onFamilyMemberRemove],
   );
 
   return (
@@ -702,13 +734,7 @@ export function FamilyTab({
                     index < familyMembers.length - 1 || Boolean(invites.length)
                   }
                 >
-                  {isSelf ? (
-                    <div className="flex justify-end">
-                      <Button variant="destructive" size="sm">
-                        Remove from family
-                      </Button>
-                    </div>
-                  ) : (
+                  {isSelf ? null : (
                     <div className="space-y-4">
                       {isChildMember ? (
                         <>
@@ -792,8 +818,13 @@ export function FamilyTab({
                         </div>
                       ) : null}
                       <div className="flex justify-end">
-                        <Button variant="destructive" size="sm">
-                          Remove from family
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleFamilyMemberRemove(member)}
+                          disabled={Boolean(removingMemberIds[member.id])}
+                        >
+                          {removingMemberIds[member.id] ? 'Removing...' : 'Remove from family'}
                         </Button>
                       </div>
                     </div>

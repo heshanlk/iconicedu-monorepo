@@ -62,6 +62,7 @@ export function NavUser({
   onFamilyInviteRemove,
   onChildThemeSave,
   onChildProfileCreate,
+  onFamilyMemberRemove,
 }: {
   profile: UserProfileVM;
   account?: UserAccountVM | null;
@@ -128,6 +129,7 @@ export function NavUser({
     countryCode?: string | null;
     countryName?: string | null;
   }) => Promise<void> | void;
+  onFamilyMemberRemove?: (input: { childAccountId: string }) => Promise<void> | void;
 }) {
   const { isMobile } = useSidebar();
   const secondaryLabel =
@@ -253,27 +255,28 @@ export function NavUser({
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        <UserSettingsDialog
-          open={settingsOpen}
-          onOpenChange={setSettingsOpen}
-          activeTab={settingsTab}
-          onTabChange={setSettingsTab}
-          profile={profile}
-          account={account}
-          onLogout={onLogout}
-          onProfileSave={onProfileSave}
-          onChildProfileSave={onChildProfileSave}
-          onAccountUpdate={onAccountUpdate}
-          onPrefsSave={onPrefsSave}
-          onChildThemeSave={onChildThemeSave}
-          onLocationSave={onLocationSave}
-          onAvatarUpload={onAvatarUpload}
-          onAvatarRemove={onAvatarRemove}
-          onNotificationPreferenceSave={onNotificationPreferenceSave}
-          onFamilyInviteCreate={onFamilyInviteCreate}
-          onFamilyInviteRemove={onFamilyInviteRemove}
-          onChildProfileCreate={onChildProfileCreate}
-        />
+      <UserSettingsDialog
+        open={settingsOpen}
+        onOpenChange={setSettingsOpen}
+        activeTab={settingsTab}
+        onTabChange={setSettingsTab}
+        profile={profile}
+        account={account}
+        onLogout={onLogout}
+        onProfileSave={onProfileSave}
+        onChildProfileSave={onChildProfileSave}
+        onAccountUpdate={onAccountUpdate}
+        onPrefsSave={onPrefsSave}
+        onChildThemeSave={onChildThemeSave}
+        onLocationSave={onLocationSave}
+        onAvatarUpload={onAvatarUpload}
+        onAvatarRemove={onAvatarRemove}
+        onNotificationPreferenceSave={onNotificationPreferenceSave}
+        onFamilyInviteCreate={onFamilyInviteCreate}
+        onFamilyInviteRemove={onFamilyInviteRemove}
+        onChildProfileCreate={onChildProfileCreate}
+        onFamilyMemberRemove={onFamilyMemberRemove}
+      />
       </SidebarMenuItem>
     </SidebarMenu>
   );

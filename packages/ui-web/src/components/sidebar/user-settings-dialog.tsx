@@ -90,6 +90,7 @@ type UserSettingsDialogProps = {
     countryCode?: string | null;
     countryName?: string | null;
   }) => Promise<void> | void;
+  onFamilyMemberRemove?: (input: { childAccountId: string }) => Promise<void> | void;
 };
 
 export function UserSettingsDialog({
@@ -112,6 +113,7 @@ export function UserSettingsDialog({
   onFamilyInviteCreate,
   onFamilyInviteRemove,
   onChildProfileCreate,
+  onFamilyMemberRemove,
 }: UserSettingsDialogProps) {
   const handleLocationContinue = React.useCallback(
     (input: {
@@ -158,6 +160,7 @@ export function UserSettingsDialog({
         onFamilyInviteCreate={onFamilyInviteCreate}
         onFamilyInviteRemove={onFamilyInviteRemove}
         onChildProfileCreate={onChildProfileCreate}
+        onFamilyMemberRemove={onFamilyMemberRemove}
       />
   );
   const { isMobile } = useSidebar();

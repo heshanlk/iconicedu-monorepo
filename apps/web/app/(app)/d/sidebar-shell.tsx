@@ -16,6 +16,7 @@ import {
   revokeFamilyInviteAction,
   sendFamilyInviteAction,
 } from '../../actions/family-invite';
+import { removeFamilyMemberAction } from '../../actions/remove-family-member';
 import { createChildProfileAction } from '../../actions/create-child-profile';
 
 const AVATAR_BUCKET = 'public-avatars';
@@ -350,6 +351,44 @@ export function SidebarShell({
         return child;
       } catch (error) {
         showErrorToast('Unable to create child', error);
+        throw error;
+      }
+    },
+    [setSidebarData],
+  );
+
+  const handleFamilyMemberRemove = React.useCallback(
+    async (input: { childAccountId: string }) => {
+      try {
+        await removeFamilyMemberAction(input);
+        setSidebarData((prev) => {
+          const profile = prev.user.profile;
+          if (profile.kind !== 'guardian' || !profile.children?.items) {
+            return prev;
+          }
+
+          const filtered = profile.children.items.filter(
+            (child) => child.ids.accountId !== input.childAccountId,
+          );
+
+          return {
+            ...prev,
+            user: {
+              ...prev.user,
+              profile: {
+                ...profile,
+                children: {
+                  ...profile.children,
+                  items: filtered,
+                  total: filtered.length,
+                },
+              },
+            },
+          };
+        });
+        showSuccessToast('Family member removed');
+      } catch (error) {
+        showErrorToast('Unable to remove family member', error);
         throw error;
       }
     },
@@ -845,6 +884,7 @@ export function SidebarShell({
         onFamilyInviteRemove={handleFamilyInviteRemove}
         onChildThemeSave={handleChildThemeSave}
         onChildProfileCreate={handleChildProfileCreate}
+        onFamilyMemberRemove={handleFamilyMemberRemove}
       />
       <SidebarInset>{children}</SidebarInset>
     </>

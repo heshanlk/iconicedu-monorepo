@@ -93,6 +93,7 @@ export type UserSettingsTabsProps = {
     countryCode?: string | null;
     countryName?: string | null;
   }) => Promise<void> | void;
+  onFamilyMemberRemove?: (input: { childAccountId: string }) => Promise<void> | void;
 };
 
 export function UserSettingsTabs({
@@ -113,6 +114,7 @@ export function UserSettingsTabs({
   onFamilyInviteRemove,
   onChildThemeSave,
   onChildProfileCreate,
+  onFamilyMemberRemove,
 }: UserSettingsTabsProps) {
   const { isMobile } = useSidebar();
   const [scrollToken, setScrollToken] = React.useState(0);
@@ -192,23 +194,25 @@ export function UserSettingsTabs({
       isChild?: boolean;
       themeKey: ThemeKey;
       hasAuthAccount?: boolean;
+      accountId?: string;
     }> = [];
 
-      members.push({
-        id: profile.ids.id,
-        profileId: profile.ids.id,
-        orgId: profile.ids.orgId,
-        name: profileBlock.displayName,
-        firstName: profileBlock.firstName ?? undefined,
-        lastName: profileBlock.lastName ?? undefined,
-        bio: profileBlock.bio ?? undefined,
-        email: contacts?.email ?? undefined,
-        avatar: profileBlock.avatar,
-        roleLabel: 'Myself',
-        canRemove: false,
-        isChild: false,
-        themeKey: profile.ui?.themeKey ?? 'teal',
-      });
+    members.push({
+      id: profile.ids.id,
+      profileId: profile.ids.id,
+      orgId: profile.ids.orgId,
+      name: profileBlock.displayName,
+      firstName: profileBlock.firstName ?? undefined,
+      lastName: profileBlock.lastName ?? undefined,
+      bio: profileBlock.bio ?? undefined,
+      email: contacts?.email ?? undefined,
+      avatar: profileBlock.avatar,
+      roleLabel: 'Myself',
+      canRemove: false,
+      isChild: false,
+      themeKey: profile.ui?.themeKey ?? 'teal',
+      accountId: profile.ids.accountId,
+    });
 
     guardianChildren.forEach((childProfile) => {
       members.push({
@@ -226,6 +230,7 @@ export function UserSettingsTabs({
         isChild: true,
         themeKey: childProfile.ui?.themeKey ?? 'teal',
         hasAuthAccount: Boolean(childProfile.accountAuthUserId),
+        accountId: childProfile.ids.accountId,
       });
     });
 
@@ -366,6 +371,7 @@ export function UserSettingsTabs({
             guardianAccountId={profile.ids.accountId}
             guardianEmail={contacts?.email ?? null}
             onChildProfileCreate={onChildProfileCreate}
+            onFamilyMemberRemove={onFamilyMemberRemove}
           />
         </TabsContent>
 

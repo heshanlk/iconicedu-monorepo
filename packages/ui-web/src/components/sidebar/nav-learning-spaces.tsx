@@ -85,7 +85,7 @@ export function NavLearningSpaces({
               <EmptyContent>
                 <div className="flex">
                   <Button size={'lg'}>
-                    <MessageSquarePlus /> Request a learning space
+                    <MessageSquarePlus /> Request a tutoring
                   </Button>
                 </div>
               </EmptyContent>

@@ -90,6 +90,7 @@ export function SidebarLeft({
   onFamilyInviteRemove,
   onChildThemeSave,
   onChildProfileCreate,
+  onFamilyMemberRemove,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
   data: SidebarLeftDataVM;
@@ -157,6 +158,7 @@ export function SidebarLeft({
     invitedEmail: string;
   }) => Promise<FamilyLinkInviteVM> | void;
   onFamilyInviteRemove?: (input: { inviteId: string }) => Promise<void> | void;
+  onFamilyMemberRemove?: (input: { childAccountId: string }) => Promise<void> | void;
 }) {
   const navMain: SidebarNavItem[] = data.navigation.navMain.map((item) => ({
     ...item,
@@ -325,6 +327,7 @@ export function SidebarLeft({
           onFamilyInviteRemove={onFamilyInviteRemove}
           onChildThemeSave={onChildThemeSave}
           onChildProfileCreate={onChildProfileCreate}
+          onFamilyMemberRemove={onFamilyMemberRemove}
         />
       </SidebarFooter>
     </Sidebar>
