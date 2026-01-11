@@ -8,6 +8,7 @@ import type {
   UUID,
 } from '../shared/shared';
 import type { GradeLevel } from '../shared/grades';
+import type { WorkingHoursSchedule } from '../shared/working-hours';
 import type { FamilyLinkInviteVM } from './family-link-invite';
 
 export interface AvatarVM {
@@ -196,7 +197,7 @@ export interface StaffProfileVM extends BaseUserProfileVM {
 
   permissionsScope?: 'limited' | 'standard' | 'elevated' | null;
 
-  workingHoursRules?: string[] | null;
+  workingHoursSchedule?: WorkingHoursSchedule | null;
 }
 
 export interface SystemProfileVM extends BaseUserProfileVM {
@@ -235,5 +236,5 @@ export type StaffProfileSaveInput = {
   orgId: UUID;
   department?: string | null;
   jobTitle?: string | null;
-  workingHoursRules?: string[] | null;
+  workingHoursSchedule?: WorkingHoursSchedule | null;
 };

@@ -771,7 +771,15 @@ export const STAFF_SUPPORT_PROFILE: UserProfileVM = {
   specialties: ['Scheduling', 'Billing', 'Onboarding'],
   jobTitle: 'Support Specialist',
   permissionsScope: 'standard',
-  workingHoursRules: ['Weekdays 8am-5pm PT'],
+  workingHoursSchedule: [
+    { day: 'monday', enabled: true, from: '09:00', to: '17:00' },
+    { day: 'tuesday', enabled: true, from: '09:00', to: '17:00' },
+    { day: 'wednesday', enabled: true, from: '09:00', to: '17:00' },
+    { day: 'thursday', enabled: true, from: '09:00', to: '17:00' },
+    { day: 'friday', enabled: true, from: '09:00', to: '17:00' },
+    { day: 'saturday', enabled: false },
+    { day: 'sunday', enabled: false },
+  ],
 };
 
 export const PROFILES: UserProfileVM[] = [

@@ -94,7 +94,7 @@ export const CHILD_PROFILE_SELECT = [
 export const CHILD_GRADE_LEVEL_SELECT = 'grade_id, grade_label';
 
 export const STAFF_PROFILE_SELECT =
-  'department, manager_staff_id, job_title, permissions_scope, working_hours_rules';
+  'department, manager_staff_id, job_title, permissions_scope, working_hours_rules, working_hours_schedule';
 export const STAFF_SPECIALTIES_SELECT = 'specialty';
 
 export const GUARDIAN_PROFILE_SELECT = 'joined_date, session_notes_visibility';

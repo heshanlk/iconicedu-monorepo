@@ -1,6 +1,7 @@
 export * from './vm/message';
 export * from './vm/sidebar';
 export * from './shared/shared';
+export * from './shared/working-hours';
 export * from './vm/class-schedule';
 export * from './vm/channel';
 export * from './vm/activity-feed';

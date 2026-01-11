@@ -226,6 +226,11 @@ export function SidebarShell({
   const handleStaffProfileSave = React.useCallback(
     async (input: StaffProfileSaveInput) => {
       try {
+        const normalizedSchedule =
+          input.workingHoursSchedule && input.workingHoursSchedule.length > 0
+            ? input.workingHoursSchedule
+            : null;
+
         const { error } = await supabase
           .from('staff_profiles')
           .upsert(
@@ -234,8 +239,7 @@ export function SidebarShell({
               org_id: input.orgId,
               department: input.department ?? null,
               job_title: input.jobTitle ?? null,
-              working_hours_rules:
-                input.workingHoursRules?.length ? input.workingHoursRules : null,
+              working_hours_rules: normalizedSchedule,
             },
             { onConflict: 'profile_id' },
           );
@@ -248,10 +252,7 @@ export function SidebarShell({
           if (profile.ids.id !== input.profileId || profile.kind !== 'staff') {
             return prev;
           }
-          const normalizedAvailability =
-            input.workingHoursRules && input.workingHoursRules.length > 0
-              ? input.workingHoursRules
-              : null;
+          const normalizedAvailability = normalizedSchedule;
           return {
             ...prev,
             user: {
@@ -260,7 +261,7 @@ export function SidebarShell({
                 ...profile,
                 department: input.department ?? null,
                 jobTitle: input.jobTitle ?? null,
-                workingHoursRules: normalizedAvailability,
+                workingHoursSchedule: normalizedAvailability,
               },
             },
           };
