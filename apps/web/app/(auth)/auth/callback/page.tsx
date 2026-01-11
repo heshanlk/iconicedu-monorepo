@@ -22,8 +22,8 @@ export default function CallbackPage() {
     const hashParams = new URLSearchParams(
       window.location.hash.startsWith('#') ? window.location.hash.slice(1) : window.location.hash,
     );
-    const accessToken = hashParams.get('access_token');
-    const refreshToken = hashParams.get('refresh_token');
+const accessToken = hashParams.get('access_token');
+const refreshToken = hashParams.get('refresh_token');
 
     const finish = async () => {
       if (code) {

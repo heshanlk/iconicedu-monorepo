@@ -52,6 +52,7 @@ import { Empty } from '../../ui/empty';
 import { EmptyContent } from '../../ui/empty';
 import type {
   ChildProfileSaveInput,
+  EducatorProfileSaveInput,
   FamilyLinkInviteRole,
   FamilyLinkInviteVM,
   SidebarLeftDataVM,
@@ -91,6 +92,7 @@ export function SidebarLeft({
   onChildThemeSave,
   onChildProfileCreate,
   onFamilyMemberRemove,
+  onEducatorProfileSave,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
   data: SidebarLeftDataVM;
@@ -159,6 +161,7 @@ export function SidebarLeft({
   }) => Promise<FamilyLinkInviteVM> | void;
   onFamilyInviteRemove?: (input: { inviteId: string }) => Promise<void> | void;
   onFamilyMemberRemove?: (input: { childAccountId: string }) => Promise<void> | void;
+  onEducatorProfileSave?: (input: EducatorProfileSaveInput) => Promise<void> | void;
 }) {
   const navMain: SidebarNavItem[] = data.navigation.navMain.map((item) => ({
     ...item,
@@ -328,6 +331,7 @@ export function SidebarLeft({
           onChildThemeSave={onChildThemeSave}
           onChildProfileCreate={onChildProfileCreate}
           onFamilyMemberRemove={onFamilyMemberRemove}
+          onEducatorProfileSave={onEducatorProfileSave}
         />
       </SidebarFooter>
     </Sidebar>

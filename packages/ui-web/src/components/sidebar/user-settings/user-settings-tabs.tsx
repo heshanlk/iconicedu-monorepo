@@ -3,6 +3,7 @@ import { LogOut } from 'lucide-react';
 
 import type {
   ChildProfileSaveInput,
+  EducatorProfileSaveInput,
   FamilyLinkInviteRole,
   FamilyLinkInviteVM,
   ThemeKey,
@@ -25,6 +26,7 @@ import {
   type ProfileSaveInput,
 } from './profile-tab';
 import { StudentProfileTab } from './student-profile-tab';
+import { EducatorProfileTab } from './educator-profile-tab';
 import {
   PROFILE_THEME_OPTIONS,
   SETTINGS_TABS,
@@ -94,6 +96,7 @@ export type UserSettingsTabsProps = {
     countryName?: string | null;
   }) => Promise<void> | void;
   onFamilyMemberRemove?: (input: { childAccountId: string }) => Promise<void> | void;
+  onEducatorProfileSave?: (input: EducatorProfileSaveInput) => Promise<void> | void;
 };
 
 export function UserSettingsTabs({
@@ -115,6 +118,7 @@ export function UserSettingsTabs({
   onChildThemeSave,
   onChildProfileCreate,
   onFamilyMemberRemove,
+  onEducatorProfileSave,
 }: UserSettingsTabsProps) {
   const { isMobile } = useSidebar();
   const [scrollToken, setScrollToken] = React.useState(0);
@@ -250,6 +254,9 @@ export function UserSettingsTabs({
     if (tab.value === 'family') {
       return profile.kind === 'guardian';
     }
+    if (tab.value === 'educator-profile') {
+      return profile.kind === 'educator';
+    }
     return true;
   });
 
@@ -292,27 +299,34 @@ export function UserSettingsTabs({
         </TabsList>
 
         <ScrollArea className={cn('min-h-0 flex-1 w-full min-w-0', isMobile && 'flex-1')}>
-        <TabsContent value="profile" className="mt-0 space-y-8 w-full px-1">
-          <ProfileTab
-            profile={profile}
-            profileBlock={profileBlock}
-            educatorProfile={educatorProfile}
+          <TabsContent value="profile" className="mt-0 space-y-8 w-full px-1">
+            <ProfileTab
+              profile={profile}
+              profileBlock={profileBlock}
               staffProfile={staffProfile}
               scrollToRequired={value === 'profile'}
               scrollToken={scrollToken}
-            onProfileSave={onProfileSave}
-            onAvatarUpload={onAvatarUpload}
-            onAvatarRemove={onAvatarRemove}
-          />
-        </TabsContent>
-        {childProfile ? (
-          <TabsContent value="student-profile" className="mt-0 space-y-8 w-full px-1">
-            <StudentProfileTab
-              childProfile={childProfile}
-              onChildProfileSave={onChildProfileSave}
+              onProfileSave={onProfileSave}
+              onAvatarUpload={onAvatarUpload}
+              onAvatarRemove={onAvatarRemove}
             />
           </TabsContent>
-        ) : null}
+          {educatorProfile ? (
+            <TabsContent value="educator-profile" className="mt-0 space-y-8 w-full px-1">
+              <EducatorProfileTab
+                educatorProfile={educatorProfile}
+                onSave={onEducatorProfileSave}
+              />
+            </TabsContent>
+          ) : null}
+          {childProfile ? (
+            <TabsContent value="student-profile" className="mt-0 space-y-8 w-full px-1">
+              <StudentProfileTab
+                childProfile={childProfile}
+                onChildProfileSave={onChildProfileSave}
+              />
+            </TabsContent>
+          ) : null}
 
           <TabsContent value="account" className="mt-0 space-y-8 w-full px-1">
             <AccountTab
@@ -343,14 +357,14 @@ export function UserSettingsTabs({
             />
           </TabsContent>
 
-          <TabsContent value="location" className="mt-0 space-y-8 w-full px-1">
-            <LocationTab
-              location={location}
-              scrollToRequired={value === 'location'}
-              scrollToken={scrollToken}
-              onLocationContinue={onLocationContinue}
-            />
-          </TabsContent>
+        <TabsContent value="location" className="mt-0 space-y-8 w-full px-1">
+          <LocationTab
+            location={location}
+            scrollToRequired={value === 'location'}
+            scrollToken={scrollToken}
+            onLocationContinue={onLocationContinue}
+          />
+        </TabsContent>
 
         <TabsContent value="family" className="mt-0 space-y-8 w-full px-1">
           <FamilyTab
@@ -375,7 +389,7 @@ export function UserSettingsTabs({
           />
         </TabsContent>
 
-          <TabsContent value="notifications" className="mt-0 space-y-8 w-full px-1">
+        <TabsContent value="notifications" className="mt-0 space-y-8 w-full px-1">
             <NotificationsTab
               isGuardianOrAdmin={isGuardianOrAdmin}
               notificationChannels={notificationChannels}

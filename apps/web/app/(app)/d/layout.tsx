@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { SidebarProvider } from '@iconicedu/ui-web';
+import { headers } from 'next/headers';
 
 import { SidebarShell } from './sidebar-shell';
 import { createSupabaseServerClient } from '../../../lib/supabase/server';
@@ -19,12 +20,21 @@ export default async function Layout({ children }: { children: ReactNode }) {
     authEmail: authUser.email ?? null,
   });
 
+  const headerStore = await headers();
+  const referer = headerStore.get('referer');
+  const profileKindOverride =
+    referer?.includes('/login/tutor') &&
+    new URL(referer, 'http://localhost').searchParams.get('educator') === '1'
+      ? 'educator'
+      : undefined;
+
   const { sidebarData, needsNameCompletion, needsPhoneCompletion } =
     await loadSidebarContext(supabase, {
       authUser,
       account,
       familyInvite: invite,
       baseSidebarData: SIDEBAR_LEFT_DATA,
+      profileKindOverride,
     });
 
   return (

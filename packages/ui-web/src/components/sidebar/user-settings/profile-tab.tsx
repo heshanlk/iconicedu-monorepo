@@ -1,14 +1,5 @@
 import * as React from 'react';
-import {
-  BookOpen,
-  Briefcase,
-  Lightbulb,
-  SlidersHorizontal,
-  ArrowRight,
-  User,
-  Users,
-  X,
-} from 'lucide-react';
+import { ArrowRight, Briefcase, User, X } from 'lucide-react';
 
 import type {
   EducatorProfileVM,
@@ -53,12 +44,7 @@ import { ChevronIcon } from './components/chevron-icon';
 type ProfileTabProps = {
   profile: UserProfileVM;
   profileBlock: UserProfileVM['profile'];
-  educatorProfile: EducatorProfileVM | null;
   staffProfile: StaffProfileVM | null;
-  educatorSubjects?: string[];
-  educatorGradesSupported?: GradeLevelOption[];
-  educatorCurriculumTags?: string[];
-  educatorBadges?: string[];
   staffSpecialties?: string[];
   expandProfileDetails?: boolean;
   scrollToRequired?: boolean;
@@ -93,12 +79,7 @@ export type ProfileAvatarRemoveInput = {
 export function ProfileTab({
   profile,
   profileBlock,
-  educatorProfile,
   staffProfile,
-  educatorSubjects = [],
-  educatorGradesSupported = [],
-  educatorCurriculumTags = [],
-  educatorBadges = [],
   staffSpecialties = [],
   expandProfileDetails = false,
   scrollToRequired = false,
@@ -631,180 +612,6 @@ export function ProfileTab({
           </UserSettingsTabSection>
         </div>
       </div>
-
-      {profile.kind === 'educator' ? (
-        <div className="space-y-3">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="space-y-1">
-              <h3 className="text-base font-semibold">Educator profile</h3>
-              <p className="text-sm text-muted-foreground">
-                Teaching focus, credentials, and specialties.
-              </p>
-            </div>
-          </div>
-          <Separator />
-          <div className="space-y-1 w-full">
-            <Collapsible className="rounded-2xl w-full">
-              <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
-                <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
-                  <User className="h-5 w-5" />
-                </span>
-                <div className="flex-1">
-                  <div className="text-sm font-medium">Basic info</div>
-                  <div className="text-xs text-muted-foreground">
-                    {educatorProfile?.headline ?? 'Headline not set'}
-                  </div>
-                </div>
-                <ChevronIcon />
-              </CollapsibleTrigger>
-              <CollapsibleContent className="py-4 w-full">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="space-y-2 sm:col-span-2">
-                    <Label htmlFor="settings-educator-headline">Headline</Label>
-                    <Input
-                      id="settings-educator-headline"
-                      defaultValue={educatorProfile?.headline ?? ''}
-                      placeholder="Short headline"
-                    />
-                  </div>
-                  <div className="space-y-2 sm:col-span-2">
-                    <Label htmlFor="settings-educator-subjects">Subjects</Label>
-                    <Input
-                      id="settings-educator-subjects"
-                      defaultValue={educatorSubjects.join(', ') ?? ''}
-                      placeholder="Subjects (comma-separated)"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="settings-educator-grades">Grades supported</Label>
-                    <Input
-                      id="settings-educator-grades"
-                      defaultValue={educatorGradesSupported
-                        .map((grade) => grade?.label)
-                        .filter(Boolean)
-                        .join(', ')}
-                      placeholder="Grades (comma-separated)"
-                    />
-                  </div>
-                  <div className="space-y-2 sm:col-span-2">
-                    <Label htmlFor="settings-educator-video">Intro video URL</Label>
-                    <Input
-                      id="settings-educator-video"
-                      defaultValue={educatorProfile?.featuredVideoIntroUrl ?? ''}
-                      placeholder="Video intro URL"
-                    />
-                  </div>
-                  <div className="sm:col-span-2 flex justify-end">
-                    <Button size="sm">Save</Button>
-                  </div>
-                </div>
-              </CollapsibleContent>
-            </Collapsible>
-            <Separator />
-            <Collapsible className="rounded-2xl w-full">
-              <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
-                <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
-                  <Briefcase className="h-5 w-5" />
-                </span>
-                <div className="flex-1">
-                  <div className="text-sm font-medium">Expertise & background</div>
-                  <div className="text-xs text-muted-foreground">
-                    {educatorSubjects.join(', ') || 'Subjects not set'}
-                  </div>
-                </div>
-                <ChevronIcon />
-              </CollapsibleTrigger>
-              <CollapsibleContent className="py-4 w-full">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="settings-educator-experience">Experience years</Label>
-                    <Input
-                      id="settings-educator-experience"
-                      defaultValue={educatorProfile?.experienceYears ?? ''}
-                      placeholder="Years of experience"
-                    />
-                  </div>
-                  <div className="space-y-2 sm:col-span-2">
-                    <Label htmlFor="settings-educator-education">Education</Label>
-                    <Input
-                      id="settings-educator-education"
-                      defaultValue={educatorProfile?.education ?? ''}
-                      placeholder="Education background"
-                    />
-                  </div>
-                  <div className="space-y-2 sm:col-span-2">
-                    <Label htmlFor="settings-educator-certifications">
-                      Certifications
-                    </Label>
-                    <Input
-                      id="settings-educator-certifications"
-                      defaultValue={
-                        educatorProfile?.certifications
-                          ?.map((cert) => cert.name)
-                          .join(', ') ?? ''
-                      }
-                      placeholder="Certifications (comma-separated)"
-                    />
-                  </div>
-                  <div className="space-y-2 sm:col-span-2">
-                    <Label htmlFor="settings-educator-badges">Badges</Label>
-                    <Input
-                      id="settings-educator-badges"
-                      defaultValue={educatorBadges.join(', ')}
-                      placeholder="Badges (comma-separated)"
-                    />
-                  </div>
-                  <div className="sm:col-span-2 flex justify-end">
-                    <Button size="sm">Save</Button>
-                  </div>
-                </div>
-              </CollapsibleContent>
-            </Collapsible>
-            <Separator />
-            <Collapsible className="rounded-2xl w-full">
-              <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
-                <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
-                  <SlidersHorizontal className="h-5 w-5" />
-                </span>
-                <div className="flex-1">
-                  <div className="text-sm font-medium">Teaching preferences</div>
-                  <div className="text-xs text-muted-foreground">
-                    {educatorCurriculumTags.join(', ') || 'Not set'}
-                  </div>
-                </div>
-                <ChevronIcon />
-              </CollapsibleTrigger>
-              <CollapsibleContent className="py-4 w-full">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="space-y-2 sm:col-span-2">
-                    <Label htmlFor="settings-educator-age-groups">
-                      Age groups comfortable with
-                    </Label>
-                    <Input
-                      id="settings-educator-age-groups"
-                      defaultValue={
-                        educatorProfile?.ageGroupsComfortableWith?.join(', ') ?? ''
-                      }
-                      placeholder="Age groups (comma-separated)"
-                    />
-                  </div>
-                  <div className="space-y-2 sm:col-span-2">
-                    <Label htmlFor="settings-educator-curriculum">Curriculum tags</Label>
-                    <Input
-                      id="settings-educator-curriculum"
-                      defaultValue={educatorCurriculumTags.join(', ')}
-                      placeholder="Curriculum tags (comma-separated)"
-                    />
-                  </div>
-                  <div className="sm:col-span-2 flex justify-end">
-                    <Button size="sm">Save</Button>
-                  </div>
-                </div>
-              </CollapsibleContent>
-            </Collapsible>
-          </div>
-        </div>
-      ) : null}
 
       {profile.kind === 'staff' ? (
         <div className="space-y-3">

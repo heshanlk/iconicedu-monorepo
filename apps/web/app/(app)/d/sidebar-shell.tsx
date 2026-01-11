@@ -5,6 +5,7 @@ import type { ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
 import type {
   ChildProfileSaveInput,
+  EducatorProfileSaveInput,
   FamilyLinkInviteRole,
   SidebarLeftDataVM,
   ThemeKey,
@@ -307,6 +308,203 @@ export function SidebarShell({
   },
   [supabase],
 );
+
+  const normalizeList = (values?: string[] | null) => {
+    const cleaned =
+      values?.map((value) => value.trim()).filter((value) => value) ?? [];
+    return Array.from(new Set(cleaned));
+  };
+
+  const handleEducatorProfileSave = React.useCallback(
+    async (input: EducatorProfileSaveInput) => {
+      try {
+        const subjects = normalizeList(input.subjects);
+        const curriculumTags = normalizeList(input.curriculumTags);
+        const badges = normalizeList(input.badges);
+        const ageGroups = normalizeList(input.ageGroups);
+        const certifications = normalizeList(input.certifications);
+
+        const gradeEntries =
+          input.gradeLevels
+            ?.map((grade) => {
+              const gradeId = grade.gradeId?.trim() ?? '';
+              if (!gradeId) {
+                return null;
+              }
+              return {
+                gradeId,
+                gradeLabel: grade.gradeLabel?.trim() ?? gradeId,
+              };
+            })
+            .filter((entry): entry is NonNullable<typeof entry> => Boolean(entry)) ??
+          [];
+
+        const uniqueGradeMap = new Map(
+          gradeEntries.map((grade) => [grade.gradeId, grade]),
+        );
+        const uniqueGrades = Array.from(uniqueGradeMap.values());
+
+        const educatorPayload = {
+          profile_id: input.profileId,
+          org_id: input.orgId,
+          headline: input.headline ?? null,
+          education: input.education ?? null,
+          experience_years: input.experienceYears ?? null,
+          certifications: certifications.length
+            ? certifications.map((name) => ({ name }))
+            : null,
+          age_groups_comfortable_with: ageGroups.length ? ageGroups : null,
+          featured_video_intro_url: input.featuredVideoIntroUrl ?? null,
+        };
+
+        const { error: educatorError } = await supabase
+          .from('educator_profiles')
+          .upsert(educatorPayload, { onConflict: 'profile_id' });
+        if (educatorError) {
+          throw educatorError;
+        }
+
+        const deleteSubjects = await supabase
+          .from('educator_profile_subjects')
+          .delete()
+          .eq('org_id', input.orgId)
+          .eq('profile_id', input.profileId);
+        if (deleteSubjects.error) {
+          throw deleteSubjects.error;
+        }
+
+        if (subjects.length) {
+          const { error: insertSubjectsError } = await supabase
+            .from('educator_profile_subjects')
+            .insert(
+              subjects.map((subject) => ({
+                org_id: input.orgId,
+                profile_id: input.profileId,
+                subject,
+              })),
+            );
+          if (insertSubjectsError) {
+            throw insertSubjectsError;
+          }
+        }
+
+        const deleteGrades = await supabase
+          .from('educator_profile_grade_levels')
+          .delete()
+          .eq('org_id', input.orgId)
+          .eq('profile_id', input.profileId);
+        if (deleteGrades.error) {
+          throw deleteGrades.error;
+        }
+
+        if (uniqueGrades.length) {
+          const { error: gradeError } = await supabase
+            .from('educator_profile_grade_levels')
+            .insert(
+              uniqueGrades.map((grade) => ({
+                org_id: input.orgId,
+                profile_id: input.profileId,
+                grade_id: grade.gradeId,
+                grade_label: grade.gradeLabel,
+              })),
+            );
+          if (gradeError) {
+            throw gradeError;
+          }
+        }
+
+        const deleteCurriculum = await supabase
+          .from('educator_profile_curriculum_tags')
+          .delete()
+          .eq('org_id', input.orgId)
+          .eq('profile_id', input.profileId);
+        if (deleteCurriculum.error) {
+          throw deleteCurriculum.error;
+        }
+
+        if (curriculumTags.length) {
+          const { error: curriculumError } = await supabase
+            .from('educator_profile_curriculum_tags')
+            .insert(
+              curriculumTags.map((tag) => ({
+                org_id: input.orgId,
+                profile_id: input.profileId,
+                tag,
+              })),
+            );
+          if (curriculumError) {
+            throw curriculumError;
+          }
+        }
+
+        const deleteBadges = await supabase
+          .from('educator_profile_badges')
+          .delete()
+          .eq('org_id', input.orgId)
+          .eq('profile_id', input.profileId);
+        if (deleteBadges.error) {
+          throw deleteBadges.error;
+        }
+
+        if (badges.length) {
+          const { error: badgesError } = await supabase
+            .from('educator_profile_badges')
+            .insert(
+              badges.map((badge) => ({
+                org_id: input.orgId,
+                profile_id: input.profileId,
+                badge,
+              })),
+            );
+          if (badgesError) {
+            throw badgesError;
+          }
+        }
+
+        const gradeOptions = uniqueGrades.length
+          ? uniqueGrades.map((grade) => ({
+              id: grade.gradeId,
+              label: grade.gradeLabel ?? grade.gradeId,
+            }))
+          : null;
+
+        setSidebarData((prev) => {
+          const profile = prev.user.profile;
+          if (profile.kind !== 'educator') {
+            return prev;
+          }
+
+          return {
+            ...prev,
+            user: {
+              ...prev.user,
+              profile: {
+                ...profile,
+                headline: educatorPayload.headline,
+                education: educatorPayload.education,
+                experienceYears: educatorPayload.experience_years,
+                certifications: certifications.length
+                  ? certifications.map((name) => ({ name }))
+                  : null,
+                ageGroupsComfortableWith: ageGroups.length ? ageGroups : null,
+                featuredVideoIntroUrl: educatorPayload.featured_video_intro_url,
+                subjects: subjects.length ? subjects : null,
+                gradesSupported: gradeOptions,
+                curriculumTags: curriculumTags.length ? curriculumTags : null,
+                badges: badges.length ? badges : null,
+              },
+            },
+          };
+        });
+
+        showSuccessToast('Educator profile saved');
+      } catch (error) {
+        showErrorToast('Unable to save educator profile', error);
+        throw error;
+      }
+    },
+    [supabase],
+  );
 
   const handleChildProfileCreate = React.useCallback(
     async (input: {
@@ -885,6 +1083,7 @@ export function SidebarShell({
         onChildThemeSave={handleChildThemeSave}
         onChildProfileCreate={handleChildProfileCreate}
         onFamilyMemberRemove={handleFamilyMemberRemove}
+        onEducatorProfileSave={handleEducatorProfileSave}
       />
       <SidebarInset>{children}</SidebarInset>
     </>

@@ -24,6 +24,7 @@ export async function loadSidebarContext(
     account: { id: string; org_id: string };
     baseSidebarData: SidebarLeftDataVM;
     familyInvite?: FamilyLinkInviteRow | null;
+    profileKindOverride?: UserProfileVM['kind'];
   },
 ): Promise<{
   sidebarData: SidebarLeftDataVM;
@@ -39,6 +40,7 @@ export async function loadSidebarContext(
     input.authUser,
     input.account,
     input.familyInvite ?? null,
+    input.profileKindOverride,
   );
 
   const needsNameCompletion =

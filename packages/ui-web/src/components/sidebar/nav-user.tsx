@@ -6,6 +6,7 @@ import {
   Bell,
   ChevronsUpDown,
   CreditCard,
+  Lightbulb,
   LogOut,
   SlidersHorizontal,
   Sparkles,
@@ -16,6 +17,7 @@ import {
 import { AvatarWithStatus } from '../shared/avatar-with-status';
 import type {
   ChildProfileSaveInput,
+  EducatorProfileSaveInput,
   FamilyLinkInviteRole,
   FamilyLinkInviteVM,
   ThemeKey,
@@ -63,6 +65,7 @@ export function NavUser({
   onChildThemeSave,
   onChildProfileCreate,
   onFamilyMemberRemove,
+  onEducatorProfileSave,
 }: {
   profile: UserProfileVM;
   account?: UserAccountVM | null;
@@ -130,6 +133,7 @@ export function NavUser({
     countryName?: string | null;
   }) => Promise<void> | void;
   onFamilyMemberRemove?: (input: { childAccountId: string }) => Promise<void> | void;
+  onEducatorProfileSave?: (input: EducatorProfileSaveInput) => Promise<void> | void;
 }) {
   const { isMobile } = useSidebar();
   const secondaryLabel =
@@ -233,6 +237,12 @@ export function NavUser({
                 <User />
                 Profile
               </DropdownMenuItem>
+              {profile.kind === 'educator' ? (
+                <DropdownMenuItem onSelect={() => openSettings('educator-profile')}>
+                  <Lightbulb />
+                  Educator profile
+                </DropdownMenuItem>
+              ) : null}
               <DropdownMenuItem onSelect={() => openSettings('preferences')}>
                 <SlidersHorizontal />
                 Preferences
@@ -249,13 +259,13 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onSelect={handleLogout} disabled={isLoggingOut}>
-              <LogOut />
-              Log out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      <UserSettingsDialog
+        <DropdownMenuItem onSelect={handleLogout} disabled={isLoggingOut}>
+          <LogOut />
+          Log out
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  <UserSettingsDialog
         open={settingsOpen}
         onOpenChange={setSettingsOpen}
         activeTab={settingsTab}
@@ -276,6 +286,7 @@ export function NavUser({
         onFamilyInviteRemove={onFamilyInviteRemove}
         onChildProfileCreate={onChildProfileCreate}
         onFamilyMemberRemove={onFamilyMemberRemove}
+        onEducatorProfileSave={onEducatorProfileSave}
       />
       </SidebarMenuItem>
     </SidebarMenu>

@@ -209,3 +209,23 @@ export type UserProfileVM =
   | ChildProfileVM
   | StaffProfileVM
   | SystemProfileVM;
+
+export type EducatorGradeEntry = {
+  gradeId: string;
+  gradeLabel?: string | null;
+};
+
+export type EducatorProfileSaveInput = {
+  profileId: UUID;
+  orgId: UUID;
+  headline?: string | null;
+  subjects?: string[] | null;
+  gradeLevels?: EducatorGradeEntry[] | null;
+  featuredVideoIntroUrl?: string | null;
+  education?: string | null;
+  experienceYears?: number | null;
+  certifications?: string[] | null;
+  badges?: string[] | null;
+  ageGroups?: string[] | null;
+  curriculumTags?: string[] | null;
+};

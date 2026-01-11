@@ -2,6 +2,7 @@ import {
   BadgeCheck,
   Bell,
   BookOpen,
+  Lightbulb,
   MapPin,
   SlidersHorizontal,
   User,
@@ -12,6 +13,7 @@ import type { ComponentType, SVGProps } from 'react';
 export type UserSettingsTab =
   | 'account'
   | 'profile'
+  | 'educator-profile'
   | 'student-profile'
   | 'preferences'
   | 'location'
@@ -33,6 +35,7 @@ export const SETTINGS_TABS: Array<{
 }> = [
   { value: 'account', label: 'Account', icon: BadgeCheck },
   { value: 'profile', label: 'Profile', icon: User },
+  { value: 'educator-profile', label: 'Educator profile', icon: Lightbulb },
   { value: 'student-profile', label: 'Student profile', icon: BookOpen },
   { value: 'preferences', label: 'Preferences', icon: SlidersHorizontal },
   { value: 'location', label: 'Location', icon: MapPin },

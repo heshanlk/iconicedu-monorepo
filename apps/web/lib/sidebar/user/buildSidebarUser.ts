@@ -47,6 +47,7 @@ export async function buildSidebarUser(
   },
   account: { id: string; org_id: string },
   familyInvite?: FamilyLinkInviteRow | null,
+  profileKindOverride?: UserProfileVM['kind'],
 ): Promise<{ accountVM: UserAccountVM; profileVM: UserProfileVM }> {
   const [accountRow, roleRows, profileResponse] = await Promise.all([
     getAccountById(supabase, account.id),
@@ -72,7 +73,8 @@ export async function buildSidebarUser(
       accountId: account.id,
       email: user.email ?? null,
     }));
-  const derivedKind = inviteRow?.invited_role ?? deriveProfileKind(userRoles);
+  const derivedKind =
+    profileKindOverride ?? inviteRow?.invited_role ?? deriveProfileKind(userRoles);
 
   if (!profileRow) {
     const upserted = await upsertProfileForAccount(supabase, {

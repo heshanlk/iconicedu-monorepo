@@ -3,6 +3,7 @@
 import * as React from 'react';
 import type {
   ChildProfileSaveInput,
+  EducatorProfileSaveInput,
   FamilyLinkInviteRole,
   FamilyLinkInviteVM,
   ThemeKey,
@@ -91,6 +92,7 @@ type UserSettingsDialogProps = {
     countryName?: string | null;
   }) => Promise<void> | void;
   onFamilyMemberRemove?: (input: { childAccountId: string }) => Promise<void> | void;
+  onEducatorProfileSave?: (input: EducatorProfileSaveInput) => Promise<void> | void;
 };
 
 export function UserSettingsDialog({
@@ -114,6 +116,7 @@ export function UserSettingsDialog({
   onFamilyInviteRemove,
   onChildProfileCreate,
   onFamilyMemberRemove,
+  onEducatorProfileSave,
 }: UserSettingsDialogProps) {
   const handleLocationContinue = React.useCallback(
     (input: {
@@ -161,6 +164,7 @@ export function UserSettingsDialog({
         onFamilyInviteRemove={onFamilyInviteRemove}
         onChildProfileCreate={onChildProfileCreate}
         onFamilyMemberRemove={onFamilyMemberRemove}
+        onEducatorProfileSave={onEducatorProfileSave}
       />
   );
   const { isMobile } = useSidebar();

@@ -24,10 +24,12 @@ export default function EducatorAuthClient() {
   const handleEmailLogin = async (email: string) => {
     setErrorMessage(null);
     setStatusMessage(null);
+    const redirectTo = `${window.location.origin}/auth/callback?educator=1`;
+
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: redirectTo,
       },
     });
 
@@ -42,10 +44,12 @@ export default function EducatorAuthClient() {
   const handleOAuthLogin = async (provider: 'apple' | 'google') => {
     setErrorMessage(null);
     setStatusMessage(null);
+    const redirectTo = `${window.location.origin}/auth/callback?educator=1`;
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo,
       },
     });
 
