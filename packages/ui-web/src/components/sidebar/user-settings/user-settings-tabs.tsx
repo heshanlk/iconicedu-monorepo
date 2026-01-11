@@ -6,6 +6,7 @@ import type {
   EducatorProfileSaveInput,
   FamilyLinkInviteRole,
   FamilyLinkInviteVM,
+  StaffProfileSaveInput,
   ThemeKey,
   UserAccountVM,
   UserProfileVM,
@@ -25,6 +26,7 @@ import {
   type ProfileAvatarRemoveInput,
   type ProfileSaveInput,
 } from './profile-tab';
+import { StaffProfileTab } from './staff-profile-tab';
 import { StudentProfileTab } from './student-profile-tab';
 import { EducatorProfileTab } from './educator-profile-tab';
 import {
@@ -97,6 +99,7 @@ export type UserSettingsTabsProps = {
   }) => Promise<void> | void;
   onFamilyMemberRemove?: (input: { childAccountId: string }) => Promise<void> | void;
   onEducatorProfileSave?: (input: EducatorProfileSaveInput) => Promise<void> | void;
+  onStaffProfileSave?: (input: StaffProfileSaveInput) => Promise<void> | void;
 };
 
 export function UserSettingsTabs({
@@ -119,6 +122,7 @@ export function UserSettingsTabs({
   onChildProfileCreate,
   onFamilyMemberRemove,
   onEducatorProfileSave,
+  onStaffProfileSave,
 }: UserSettingsTabsProps) {
   const { isMobile } = useSidebar();
   const [scrollToken, setScrollToken] = React.useState(0);
@@ -257,6 +261,9 @@ export function UserSettingsTabs({
     if (tab.value === 'educator-profile') {
       return profile.kind === 'educator';
     }
+    if (tab.value === 'staff-profile') {
+      return profile.kind === 'staff';
+    }
     return true;
   });
 
@@ -311,6 +318,11 @@ export function UserSettingsTabs({
               onAvatarRemove={onAvatarRemove}
             />
           </TabsContent>
+          {staffProfile ? (
+            <TabsContent value="staff-profile" className="mt-0 space-y-8 w-full px-1">
+              <StaffProfileTab staffProfile={staffProfile} onSave={onStaffProfileSave} />
+            </TabsContent>
+          ) : null}
           {educatorProfile ? (
             <TabsContent value="educator-profile" className="mt-0 space-y-8 w-full px-1">
               <EducatorProfileTab

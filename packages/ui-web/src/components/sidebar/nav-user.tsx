@@ -20,6 +20,7 @@ import type {
   EducatorProfileSaveInput,
   FamilyLinkInviteRole,
   FamilyLinkInviteVM,
+  StaffProfileSaveInput,
   ThemeKey,
   UserAccountVM,
   UserProfileVM,
@@ -66,6 +67,7 @@ export function NavUser({
   onChildProfileCreate,
   onFamilyMemberRemove,
   onEducatorProfileSave,
+  onStaffProfileSave,
 }: {
   profile: UserProfileVM;
   account?: UserAccountVM | null;
@@ -134,6 +136,7 @@ export function NavUser({
   }) => Promise<void> | void;
   onFamilyMemberRemove?: (input: { childAccountId: string }) => Promise<void> | void;
   onEducatorProfileSave?: (input: EducatorProfileSaveInput) => Promise<void> | void;
+  onStaffProfileSave?: (input: StaffProfileSaveInput) => Promise<void> | void;
 }) {
   const { isMobile } = useSidebar();
   const secondaryLabel =
@@ -287,6 +290,7 @@ export function NavUser({
         onChildProfileCreate={onChildProfileCreate}
         onFamilyMemberRemove={onFamilyMemberRemove}
         onEducatorProfileSave={onEducatorProfileSave}
+        onStaffProfileSave={onStaffProfileSave}
       />
       </SidebarMenuItem>
     </SidebarMenu>

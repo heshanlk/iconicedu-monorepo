@@ -6,6 +6,7 @@ import type {
   EducatorProfileSaveInput,
   FamilyLinkInviteRole,
   FamilyLinkInviteVM,
+  StaffProfileSaveInput,
   ThemeKey,
   UserAccountVM,
   UserProfileVM,
@@ -93,6 +94,7 @@ type UserSettingsDialogProps = {
   }) => Promise<void> | void;
   onFamilyMemberRemove?: (input: { childAccountId: string }) => Promise<void> | void;
   onEducatorProfileSave?: (input: EducatorProfileSaveInput) => Promise<void> | void;
+  onStaffProfileSave?: (input: StaffProfileSaveInput) => Promise<void> | void;
 };
 
 export function UserSettingsDialog({
@@ -117,6 +119,7 @@ export function UserSettingsDialog({
   onChildProfileCreate,
   onFamilyMemberRemove,
   onEducatorProfileSave,
+  onStaffProfileSave,
 }: UserSettingsDialogProps) {
   const handleLocationContinue = React.useCallback(
     (input: {
@@ -165,6 +168,7 @@ export function UserSettingsDialog({
         onChildProfileCreate={onChildProfileCreate}
         onFamilyMemberRemove={onFamilyMemberRemove}
         onEducatorProfileSave={onEducatorProfileSave}
+        onStaffProfileSave={onStaffProfileSave}
       />
   );
   const { isMobile } = useSidebar();

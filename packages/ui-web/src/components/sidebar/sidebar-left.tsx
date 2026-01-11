@@ -58,6 +58,7 @@ import type {
   SidebarLeftDataVM,
   SidebarNavItem,
   SidebarSecondaryItem,
+  StaffProfileSaveInput,
   ThemeKey,
 } from '@iconicedu/shared-types';
 
@@ -93,6 +94,7 @@ export function SidebarLeft({
   onChildProfileCreate,
   onFamilyMemberRemove,
   onEducatorProfileSave,
+  onStaffProfileSave,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
   data: SidebarLeftDataVM;
@@ -162,6 +164,7 @@ export function SidebarLeft({
   onFamilyInviteRemove?: (input: { inviteId: string }) => Promise<void> | void;
   onFamilyMemberRemove?: (input: { childAccountId: string }) => Promise<void> | void;
   onEducatorProfileSave?: (input: EducatorProfileSaveInput) => Promise<void> | void;
+  onStaffProfileSave?: (input: StaffProfileSaveInput) => Promise<void> | void;
 }) {
   const navMain: SidebarNavItem[] = data.navigation.navMain.map((item) => ({
     ...item,
@@ -332,6 +335,7 @@ export function SidebarLeft({
           onChildProfileCreate={onChildProfileCreate}
           onFamilyMemberRemove={onFamilyMemberRemove}
           onEducatorProfileSave={onEducatorProfileSave}
+          onStaffProfileSave={onStaffProfileSave}
         />
       </SidebarFooter>
     </Sidebar>

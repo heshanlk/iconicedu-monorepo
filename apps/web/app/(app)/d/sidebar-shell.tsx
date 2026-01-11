@@ -9,6 +9,7 @@ import type {
   FamilyLinkInviteRole,
   GradeLevel,
   SidebarLeftDataVM,
+  StaffProfileSaveInput,
   ThemeKey,
 } from '@iconicedu/shared-types';
 import { SidebarLeft, SidebarInset } from '@iconicedu/ui-web';
@@ -216,6 +217,58 @@ export function SidebarShell({
           };
         });
       } catch (error) {
+        throw error;
+      }
+    },
+    [supabase],
+  );
+
+  const handleStaffProfileSave = React.useCallback(
+    async (input: StaffProfileSaveInput) => {
+      try {
+        const { error } = await supabase
+          .from('staff_profiles')
+          .upsert(
+            {
+              profile_id: input.profileId,
+              org_id: input.orgId,
+              department: input.department ?? null,
+              job_title: input.jobTitle ?? null,
+              working_hours_rules:
+                input.workingHoursRules?.length ? input.workingHoursRules : null,
+            },
+            { onConflict: 'profile_id' },
+          );
+        if (error) {
+          throw error;
+        }
+
+        setSidebarData((prev) => {
+          const profile = prev.user.profile;
+          if (profile.ids.id !== input.profileId || profile.kind !== 'staff') {
+            return prev;
+          }
+          const normalizedAvailability =
+            input.workingHoursRules && input.workingHoursRules.length > 0
+              ? input.workingHoursRules
+              : null;
+          return {
+            ...prev,
+            user: {
+              ...prev.user,
+              profile: {
+                ...profile,
+                department: input.department ?? null,
+                jobTitle: input.jobTitle ?? null,
+                workingHoursRules: normalizedAvailability,
+              },
+            },
+          };
+        });
+
+        showSuccessToast('Staff profile saved');
+      } catch (error) {
+        showErrorToast('Unable to save staff profile', error);
         throw error;
       }
     },
@@ -1082,6 +1135,7 @@ export function SidebarShell({
         onChildProfileCreate={handleChildProfileCreate}
         onFamilyMemberRemove={handleFamilyMemberRemove}
         onEducatorProfileSave={handleEducatorProfileSave}
+        onStaffProfileSave={handleStaffProfileSave}
       />
       <SidebarInset>{children}</SidebarInset>
     </>

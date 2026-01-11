@@ -229,3 +229,11 @@ export type EducatorProfileSaveInput = {
   ageGroups?: string[] | null;
   curriculumTags?: string[] | null;
 };
+
+export type StaffProfileSaveInput = {
+  profileId: UUID;
+  orgId: UUID;
+  department?: string | null;
+  jobTitle?: string | null;
+  workingHoursRules?: string[] | null;
+};

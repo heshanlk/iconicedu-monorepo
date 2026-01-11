@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ArrowRight, Briefcase, User, X } from 'lucide-react';
+import { ArrowRight, User, X } from 'lucide-react';
 
 import type {
   EducatorProfileVM,
@@ -22,11 +22,6 @@ import {
 } from '../../../ui/alert-dialog';
 import { cn } from '@iconicedu/ui-web/lib/utils';
 import { Button } from '../../../ui/button';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '../../../ui/collapsible';
 import { Input } from '../../../ui/input';
 import { Label } from '../../../ui/label';
 import { Separator } from '../../../ui/separator';
@@ -613,58 +608,6 @@ export function ProfileTab({
         </div>
       </div>
 
-      {profile.kind === 'staff' ? (
-        <div className="space-y-3">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="space-y-1">
-              <h3 className="text-base font-semibold">Staff profile</h3>
-              <p className="text-sm text-muted-foreground">
-                Department, role, and internal availability.
-              </p>
-            </div>
-          </div>
-          <Separator />
-          <div className="space-y-1 w-full">
-            <Collapsible className="rounded-2xl w-full">
-              <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
-                <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
-                  <Briefcase className="h-5 w-5" />
-                </span>
-                <div className="flex-1">
-                  <div className="text-sm font-medium">Availability & working rules</div>
-                  <div className="text-xs text-muted-foreground">
-                    {staffProfile?.workingHoursRules?.join(', ') ?? 'Not set'}
-                  </div>
-                </div>
-                <ChevronIcon />
-              </CollapsibleTrigger>
-              <CollapsibleContent className="py-4 w-full">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="space-y-2 sm:col-span-2">
-                    <Label htmlFor="settings-staff-hours">Working hours rules</Label>
-                    <Input
-                      id="settings-staff-hours"
-                      defaultValue={staffProfile?.workingHoursRules?.join(', ') ?? ''}
-                      placeholder="Working hours (comma-separated)"
-                    />
-                  </div>
-                  <div className="space-y-2 sm:col-span-2">
-                    <Label htmlFor="settings-staff-specialties">Specialties</Label>
-                    <Input
-                      id="settings-staff-specialties"
-                      defaultValue={staffSpecialties.join(', ')}
-                      placeholder="Specialties (comma-separated)"
-                    />
-                  </div>
-                  <div className="sm:col-span-2 flex justify-end">
-                    <Button size="sm">Save</Button>
-                  </div>
-                </div>
-              </CollapsibleContent>
-            </Collapsible>
-          </div>
-        </div>
-      ) : null}
     </div>
   );
 }
