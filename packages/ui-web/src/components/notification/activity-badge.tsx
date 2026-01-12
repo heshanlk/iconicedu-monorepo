@@ -4,6 +4,7 @@ import { AvatarWithStatus } from '../shared/avatar-with-status';
 import { cn } from '../../lib/utils';
 import { AvatarGroup, AvatarGroupCount } from '../../ui/avatar';
 import type { ActivityFeedItemVM } from '@iconicedu/shared-types';
+import { getProfileDisplayName } from '../../lib/display-name';
 
 type ActivityBadgeProps = {
   activity: ActivityFeedItemVM;
@@ -51,7 +52,7 @@ export function ActivityBadge({ activity, className }: ActivityBadgeProps) {
   }
 
   const actor = activity.refs.actor;
-  const actorName = actor.profile.displayName;
+  const actorName = getProfileDisplayName(actor.profile);
   const actorAvatar = actor.profile.avatar;
   const initials = getInitials(actorName);
 

@@ -15,6 +15,7 @@ import { ScrollArea } from '../../../ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../ui/tabs';
 import { useSidebar } from '../../../ui/sidebar';
 import { cn } from '@iconicedu/ui-web/lib/utils';
+import { getProfileDisplayName } from '../../../lib/display-name';
 import { AccountTab } from './account-tab';
 import { FamilyTab } from './family-tab';
 import { LocationTab } from './location-tab';
@@ -127,6 +128,7 @@ export function UserSettingsTabs({
   const { isMobile } = useSidebar();
   const [scrollToken, setScrollToken] = React.useState(0);
   const profileBlock = profile.profile;
+  const profileDisplayName = getProfileDisplayName(profileBlock);
   const prefs = profile.prefs;
   const contacts = account?.contacts;
   const email = contacts?.email ?? '';
@@ -209,7 +211,7 @@ export function UserSettingsTabs({
       id: profile.ids.id,
       profileId: profile.ids.id,
       orgId: profile.ids.orgId,
-      name: profileBlock.displayName,
+      name: profileDisplayName,
       firstName: profileBlock.firstName ?? undefined,
       lastName: profileBlock.lastName ?? undefined,
       bio: profileBlock.bio ?? undefined,
@@ -227,7 +229,7 @@ export function UserSettingsTabs({
         id: childProfile.ids.id,
         profileId: childProfile.ids.id,
         orgId: childProfile.ids.orgId,
-        name: childProfile.profile.displayName ?? 'Child',
+        name: getProfileDisplayName(childProfile.profile, 'Child'),
         firstName: childProfile.profile.firstName ?? undefined,
         lastName: childProfile.profile.lastName ?? undefined,
         bio: childProfile.profile.bio ?? undefined,
@@ -246,7 +248,7 @@ export function UserSettingsTabs({
   }, [
     profile.ids.id,
     profileBlock.avatar,
-    profileBlock.displayName,
+    profileDisplayName,
     contacts?.email,
     profile.ui?.themeKey,
     guardianChildren,

@@ -25,6 +25,7 @@ import type {
   UserAccountVM,
   UserProfileVM,
 } from '@iconicedu/shared-types';
+import { getProfileDisplayName } from '../../lib/display-name';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -139,6 +140,7 @@ export function NavUser({
   onStaffProfileSave?: (input: StaffProfileSaveInput) => Promise<void> | void;
 }) {
   const { isMobile } = useSidebar();
+  const profileDisplayName = getProfileDisplayName(profile.profile);
   const secondaryLabel =
     account?.contacts.email ?? profile.prefs.locale ?? profile.prefs.timezone ?? '';
   const [settingsOpen, setSettingsOpen] = React.useState(false);
@@ -181,7 +183,7 @@ export function NavUser({
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton size="lg">
               <AvatarWithStatus
-                name={profile.profile.displayName}
+                name={profileDisplayName}
                 avatar={profile.profile.avatar}
                 presence={profile.presence}
                 themeKey={profile.ui?.themeKey}
@@ -191,7 +193,7 @@ export function NavUser({
               />
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">
-                  {profile.profile.displayName}
+                  {profileDisplayName}
                 </span>
                 {secondaryLabel ? (
                   <span className="truncate text-xs">{secondaryLabel}</span>
@@ -209,7 +211,7 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <AvatarWithStatus
-                  name={profile.profile.displayName}
+                  name={profileDisplayName}
                   avatar={profile.profile.avatar}
                   presence={profile.presence}
                   themeKey={profile.ui?.themeKey}
@@ -218,8 +220,8 @@ export function NavUser({
                   initialsLength={2}
                 />
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">
-                    {profile.profile.displayName}
+                    <span className="truncate font-medium">
+                      {profileDisplayName}
                   </span>
                   {secondaryLabel ? (
                     <span className="truncate text-xs">{secondaryLabel}</span>

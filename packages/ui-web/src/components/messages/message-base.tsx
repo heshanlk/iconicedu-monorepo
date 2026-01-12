@@ -17,6 +17,7 @@ import { ThreadIndicator } from './shared/thread-indicator';
 import { VisibilityBadge } from './shared/visibility-badge';
 import { HiddenMessagePlaceholder } from './shared/hidden-message-placeholder';
 import { MessageActions } from './message-actions';
+import { getProfileDisplayName } from '../../lib/display-name';
 
 export interface MessageBaseProps {
   message: MessageVM;
@@ -61,17 +62,19 @@ export const MessageBase = memo(function MessageBase({
     }
   }, [message, onOpenThread]);
 
+  const senderName = getProfileDisplayName(message.core.sender.profile);
+
   if (message.state?.isHidden) {
     return (
       <div className="group relative flex items-start gap-3 rounded-xl px-2 py-1.5">
         <button
           onClick={handleProfileClick}
           className="flex-shrink-0 transition-opacity hover:opacity-80"
-          aria-label={`View ${message.core.sender.profile.displayName}'s profile`}
+          aria-label={`View ${senderName}'s profile`}
         >
-          <AvatarWithStatus
-            name={message.core.sender.profile.displayName}
-            avatar={message.core.sender.profile.avatar}
+            <AvatarWithStatus
+              name={senderName}
+              avatar={message.core.sender.profile.avatar}
             themeKey={message.core.sender.ui?.themeKey}
             sizeClassName="h-9 w-9"
             initialsLength={1}
@@ -83,7 +86,7 @@ export const MessageBase = memo(function MessageBase({
               onClick={handleProfileClick}
               className="text-sm font-semibold text-foreground hover:underline"
             >
-              {message.core.sender.profile.displayName}
+                  {senderName}
             </button>
             <TooltipProvider>
               <Tooltip>
@@ -121,11 +124,11 @@ export const MessageBase = memo(function MessageBase({
       <button
         onClick={handleProfileClick}
         className="flex-shrink-0 transition-opacity hover:opacity-80"
-        aria-label={`View ${message.core.sender.profile.displayName}'s profile`}
+          aria-label={`View ${senderName}'s profile`}
       >
-        <AvatarWithStatus
-          name={message.core.sender.profile.displayName}
-          avatar={message.core.sender.profile.avatar}
+          <AvatarWithStatus
+            name={senderName}
+            avatar={message.core.sender.profile.avatar}
           themeKey={message.core.sender.ui?.themeKey}
           sizeClassName="h-9 w-9"
           initialsLength={1}
@@ -135,11 +138,11 @@ export const MessageBase = memo(function MessageBase({
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
           <button
-          onClick={handleProfileClick}
-          className="text-sm font-semibold text-foreground hover:underline"
-        >
-          {message.core.sender.profile.displayName}
-        </button>
+            onClick={handleProfileClick}
+            className="text-sm font-semibold text-foreground hover:underline"
+          >
+            {senderName}
+          </button>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>

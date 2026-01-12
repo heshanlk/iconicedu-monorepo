@@ -32,6 +32,7 @@ import { useMessagesState } from '../context/messages-state-provider';
 import { formatEventTime } from '../../../lib/class-schedule-utils';
 import { useIsMobile } from '../../../hooks/use-mobile';
 import { cn } from '../../../lib/utils';
+import { getProfileDisplayName } from '../../../lib/display-name';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -438,6 +439,7 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
             <h3 className="text-sm font-semibold text-foreground">Members</h3>
             <div className="space-y-3 min-w-0">
               {learningSpace.participants.map((member) => {
+                const memberName = getProfileDisplayName(member.profile);
                 const dmKey =
                   currentUserId && member.ids.id !== currentUserId
                     ? `dm:${[currentUserId, member.ids.id].sort().join('-')}`
@@ -446,7 +448,7 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
                 return (
                   <div key={member.ids.id} className="flex items-center gap-3">
                     <AvatarWithStatus
-                      name={member.profile.displayName}
+                      name={memberName}
                       avatar={member.profile.avatar}
                       themeKey={member.ui?.themeKey}
                       sizeClassName="h-9 w-9"
@@ -456,7 +458,7 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
                     />
                     <div className="min-w-0 flex-1">
                       <div className="truncate text-sm font-medium text-foreground">
-                        {member.profile.displayName}
+                        {memberName}
                       </div>
                       {member.presence?.state?.emoji || member.presence?.state?.text ? (
                         <div className="truncate text-xs text-muted-foreground">
@@ -479,7 +481,7 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
                         variant="ghost"
                         size="icon"
                         className="h-8 w-8 shrink-0 text-muted-foreground hover:bg-primary/15 hover:text-primary"
-                        aria-label={`Message ${member.profile.displayName}`}
+                        aria-label={`Message ${memberName}`}
                       >
                         <a href={`/d/dm/${dmKey}`}>
                           <MessageCircle className="h-4 w-4" />

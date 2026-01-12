@@ -16,6 +16,7 @@ import type { MessagesRightPanelIntent } from '@iconicedu/shared-types';
 import { Badge } from '../../../ui/badge';
 import { Separator } from '../../../ui/separator';
 import { AvatarWithStatus } from '../../shared/avatar-with-status';
+import { getProfileDisplayName } from '../../../lib/display-name';
 import { ThemedIconBadge } from '../../shared/themed-icon';
 import { MediaFilesPanel } from '../shared/media-files-panel';
 import { useMessagesState } from '../context/messages-state-provider';
@@ -83,35 +84,38 @@ const ChannelInfoPanelContent = memo(function ChannelInfoPanelContent() {
           <div className="space-y-4 p-4 min-w-0">
             <h3 className="text-sm font-semibold text-foreground">Members</h3>
             <div className="space-y-3 min-w-0">
-              {channel.collections.participants.map((member) => (
-                <div key={member.ids.id} className="flex items-center gap-3">
-                  <AvatarWithStatus
-                    name={member.profile.displayName}
-                    avatar={member.profile.avatar}
-                    presence={member.presence}
-                    themeKey={member.ui?.themeKey}
-                    sizeClassName="h-9 w-9"
-                    initialsLength={1}
-                  />
-                  <div className="min-w-0">
-                    <div className="truncate text-sm font-medium text-foreground">
-                      {member.profile.displayName}
-                    </div>
-                    {(member.presence?.state?.emoji || member.presence?.state?.text) && (
-                      <div className="truncate text-xs text-muted-foreground">
-                        <span className="inline-flex items-center gap-1.5">
-                          {member.presence?.state?.emoji ? (
-                            <span>{member.presence.state.emoji}</span>
-                          ) : null}
-                          {member.presence?.state?.text ? (
-                            <span className="truncate">{member.presence.state.text}</span>
-                          ) : null}
-                        </span>
+              {channel.collections.participants.map((member) => {
+                const memberName = getProfileDisplayName(member.profile);
+                return (
+                  <div key={member.ids.id} className="flex items-center gap-3">
+                    <AvatarWithStatus
+                      name={memberName}
+                      avatar={member.profile.avatar}
+                      presence={member.presence}
+                      themeKey={member.ui?.themeKey}
+                      sizeClassName="h-9 w-9"
+                      initialsLength={1}
+                    />
+                    <div className="min-w-0">
+                      <div className="truncate text-sm font-medium text-foreground">
+                        {memberName}
                       </div>
-                    )}
+                      {(member.presence?.state?.emoji || member.presence?.state?.text) && (
+                        <div className="truncate text-xs text-muted-foreground">
+                          <span className="inline-flex items-center gap-1.5">
+                            {member.presence?.state?.emoji ? (
+                              <span>{member.presence.state.emoji}</span>
+                            ) : null}
+                            {member.presence?.state?.text ? (
+                              <span className="truncate">{member.presence.state.text}</span>
+                            ) : null}
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </>

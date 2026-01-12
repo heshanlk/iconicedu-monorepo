@@ -26,6 +26,7 @@ import {
 } from '../../ui/tooltip';
 import { cn } from '../../lib/utils';
 import { AvatarWithStatus } from '../shared/avatar-with-status';
+import { getProfileDisplayName } from '../../lib/display-name';
 import { ThemedIconBadge } from '../shared/themed-icon';
 import type { ChannelVM, UserProfileVM } from '@iconicedu/shared-types';
 import { useMessagesState } from './context/messages-state-provider';
@@ -184,22 +185,29 @@ export const MessagesContainerHeader = memo(function MessagesContainerHeader({
     [channel.basics.kind, channel.collections.participants, currentUserId],
   );
 
+  const otherParticipantName =
+    otherParticipant && channel.basics.topic
+      ? getProfileDisplayName(
+          otherParticipant.profile,
+          channel.basics.topic ?? 'User',
+        )
+      : otherParticipant
+        ? getProfileDisplayName(otherParticipant.profile)
+        : channel.basics.topic;
   const title =
-    channel.basics.kind === 'dm'
-      ? (otherParticipant?.profile.displayName ?? channel.basics.topic)
-      : channel.basics.topic;
+    channel.basics.kind === 'dm' ? otherParticipantName : channel.basics.topic;
   const leading = useMemo(() => {
     if (channel.basics.kind === 'dm') {
       if (!otherParticipant) return null;
       return (
-        <button
-          type="button"
-          onClick={() => toggle({ key: 'profile', userId: otherParticipant.ids.id })}
-          className="rounded-full"
-          aria-label={`View ${otherParticipant.profile.displayName} profile`}
-        >
-          <AvatarWithStatus
-            name={otherParticipant.profile.displayName}
+          <button
+            type="button"
+            onClick={() => toggle({ key: 'profile', userId: otherParticipant.ids.id })}
+            className="rounded-full"
+            aria-label={`View ${otherParticipantName} profile`}
+          >
+            <AvatarWithStatus
+              name={otherParticipantName}
             avatar={otherParticipant.profile.avatar}
             presence={otherParticipant.presence}
             themeKey={otherParticipant.ui?.themeKey}
@@ -276,7 +284,7 @@ export const MessagesContainerHeader = memo(function MessagesContainerHeader({
         }
         ariaLabel={
           channel.basics.kind === 'dm' && otherParticipant
-            ? `View ${otherParticipant.profile.displayName} profile`
+            ? `View ${otherParticipantName} profile`
             : undefined
         }
       />

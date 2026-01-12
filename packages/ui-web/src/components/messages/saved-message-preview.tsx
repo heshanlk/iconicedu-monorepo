@@ -1,6 +1,7 @@
 'use client';
 
 import { AvatarWithStatus } from '../shared/avatar-with-status';
+import { getProfileDisplayName } from '../../lib/display-name';
 import { formatDistanceToNow } from 'date-fns';
 import type { MessageVM } from '@iconicedu/shared-types';
 import { cn } from '../../lib/utils';
@@ -57,6 +58,7 @@ export function SavedMessagePreview({ message, onClick }: SavedMessagePreviewPro
 
   const preview = getMessagePreview(message);
   const truncatedPreview = preview.length > 80 ? `${preview.slice(0, 80)}...` : preview;
+  const senderName = getProfileDisplayName(message.core.sender.profile);
 
   return (
     <button
@@ -68,7 +70,7 @@ export function SavedMessagePreview({ message, onClick }: SavedMessagePreviewPro
       )}
     >
       <AvatarWithStatus
-        name={message.core.sender.profile.displayName}
+        name={senderName}
         avatar={message.core.sender.profile.avatar}
         themeKey={message.core.sender.ui?.themeKey}
         sizeClassName="h-10 w-10 flex-shrink-0"
@@ -78,7 +80,7 @@ export function SavedMessagePreview({ message, onClick }: SavedMessagePreviewPro
       <div className="flex-1 min-w-0">
         <div className="flex items-baseline justify-between gap-2 mb-1">
           <span className="font-semibold text-sm text-foreground truncate">
-            {message.core.sender.profile.displayName}
+            {senderName}
           </span>
           <span className="text-xs text-muted-foreground flex-shrink-0">
             {formatDistanceToNow(new Date(message.core.createdAt), { addSuffix: true })}

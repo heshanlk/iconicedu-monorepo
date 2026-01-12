@@ -5,6 +5,7 @@ import { Badge } from '../../../ui/badge';
 import { MessageCircle } from 'lucide-react';
 import type { ThreadVM } from '@iconicedu/shared-types';
 import { formatThreadTime } from '../../../lib/message-utils';
+import { getProfileDisplayName } from '../../../lib/display-name';
 
 interface ThreadIndicatorProps {
   thread: ThreadVM;
@@ -35,18 +36,21 @@ export const ThreadIndicator = memo(function ThreadIndicator({
         </Badge>
       )}
       <div className="flex -space-x-2">
-        {thread.participants.slice(0, 3).map((participant) => (
-          <AvatarWithStatus
-            key={participant.ids.id}
-            name={participant.profile.displayName}
-            avatar={participant.profile.avatar}
-            themeKey={participant.ui?.themeKey}
-            showStatus={false}
-            sizeClassName="h-5 w-5 border-2 border-background"
-            fallbackClassName="text-[10px]"
-            initialsLength={1}
-          />
-        ))}
+        {thread.participants.slice(0, 3).map((participant) => {
+          const participantName = getProfileDisplayName(participant.profile);
+          return (
+            <AvatarWithStatus
+              key={participant.ids.id}
+              name={participantName}
+              avatar={participant.profile.avatar}
+              themeKey={participant.ui?.themeKey}
+              showStatus={false}
+              sizeClassName="h-5 w-5 border-2 border-background"
+              fallbackClassName="text-[10px]"
+              initialsLength={1}
+            />
+          );
+        })}
       </div>
       <span className="text-xs text-muted-foreground">
         {formatThreadTime(thread.stats.lastReplyAt)}

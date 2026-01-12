@@ -61,6 +61,7 @@ import type {
   StaffProfileSaveInput,
   ThemeKey,
 } from '@iconicedu/shared-types';
+import { getProfileDisplayName } from '../../lib/display-name';
 
 const ICONS = {
   home: Home,
@@ -293,7 +294,7 @@ export function SidebarLeft({
               learningSpacesByChild.map(({ child, learningSpaces }) => (
                 <NavLearningSpaces
                   key={child.ids.accountId}
-                  title={child.profile.displayName}
+                  title={getProfileDisplayName(child.profile)}
                   child={child}
                   learningSpaces={learningSpaces}
                   isOpen={openChildId === child.ids.accountId}

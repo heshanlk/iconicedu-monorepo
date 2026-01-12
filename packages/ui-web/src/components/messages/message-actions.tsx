@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import { EmojiPicker } from './emoji-picker';
 import { cn } from '../../lib/utils';
+import { getProfileDisplayName } from '../../lib/display-name';
 import type { MessageVM, ThreadVM } from '@iconicedu/shared-types';
 
 interface MessageActionsProps {
@@ -69,7 +70,7 @@ export const MessageActions = memo(function MessageActions({
           messageId: message.ids.id,
           snippet,
           authorId: message.core.sender.ids.id,
-          authorName: message.core.sender.profile.displayName,
+          authorName: getProfileDisplayName(message.core.sender.profile),
         },
         stats: {
           messageCount: 1,

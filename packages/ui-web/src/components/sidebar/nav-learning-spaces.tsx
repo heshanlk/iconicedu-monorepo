@@ -39,6 +39,7 @@ import {
 import { cn } from '../../lib/utils';
 import { Empty, EmptyContent } from '../../ui/empty';
 import { AvatarWithStatus } from '../shared/avatar-with-status';
+import { getProfileDisplayName } from '../../lib/display-name';
 import { ThemedIconBadge } from '../shared/themed-icon';
 
 export function NavLearningSpaces({
@@ -64,7 +65,7 @@ export function NavLearningSpaces({
         <CollapsibleTrigger asChild>
           <SidebarGroupLabel className="flex cursor-pointer items-center gap-2 rounded-md rounded-b-none px-2 py-1 uppercase">
             <AvatarWithStatus
-              name={child.profile.displayName}
+              name={getProfileDisplayName(child.profile)}
               showStatus={false}
               themeKey={child.ui?.themeKey}
               sizeClassName="size-5"

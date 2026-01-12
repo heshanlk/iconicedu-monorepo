@@ -156,7 +156,7 @@ function DayRow({ row, onToggle, onChangeFrom, onChangeTo }: DayRowProps) {
             </Select>
           ) : (
             <div className="flex h-10 items-center gap-2 rounded-[14px] border border-muted/40 bg-muted/50 px-4 text-sm font-semibold text-muted-foreground">
-              <Moon className="size-4" />
+              <Moon className="h-4 w-4" />
               Closed
             </div>
           )}
@@ -179,7 +179,7 @@ function DayRow({ row, onToggle, onChangeFrom, onChangeTo }: DayRowProps) {
             </Select>
           ) : (
             <div className="flex h-10 items-center gap-2 rounded-[14px] border border-muted/40 bg-muted/50 px-4 text-sm font-semibold text-muted-foreground">
-              <Moon className="size-4" />
+              <Moon className="h-4 w-4" />
               Closed
             </div>
           )}
@@ -286,7 +286,12 @@ export function StaffProfileTab({ staffProfile, onSave }: StaffProfileTabProps) 
     if (!activeRows.length) {
       return 'No working hours shared yet';
     }
-    return activeRows.map((row) => `${row.label}: ${row.from} – ${row.to}`).join(', ');
+    return activeRows
+      .map(
+        (row) =>
+          `${row.label}: ${formatTimeLabel(row.from)} – ${formatTimeLabel(row.to)}`,
+      )
+      .join(', ');
   }, [schedule]);
 
   const isDirty = React.useMemo(() => {
@@ -393,7 +398,7 @@ export function StaffProfileTab({ staffProfile, onSave }: StaffProfileTabProps) 
                     onClick={() => removeSpecialty(value)}
                     className="flex h-4 w-4 items-center justify-center rounded-full text-muted-foreground hover:text-foreground"
                   >
-                    <X className="size-3" />
+                    <X className="h-3 w-3" />
                   </button>
                 </span>
               ))}

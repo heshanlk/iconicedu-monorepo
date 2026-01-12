@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { MessageList, type MessageListRef } from './message-list';
 import { MessageInput } from './message-input';
 import { useMessages } from '../../hooks/use-messages';
+import { getProfileDisplayName } from '../../lib/display-name';
 import { useMessagesState } from './context/messages-state-provider';
 import type {
   ChannelVM,
@@ -288,7 +289,10 @@ export function MessagesContainer({ channel }: MessagesContainerProps) {
       <MessageList ref={messageListRef} {...messageListProps} />
       <MessageInput
         onSend={handleSendMessage}
-        placeholder={`Message ${educator?.profile.displayName ?? channel.basics.topic}`}
+        placeholder={`Message ${getProfileDisplayName(
+          educator?.profile,
+          channel.basics.topic ?? 'User',
+        )}`}
       />
     </div>
   );

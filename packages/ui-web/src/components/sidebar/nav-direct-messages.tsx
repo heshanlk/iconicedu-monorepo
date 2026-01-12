@@ -23,6 +23,7 @@ import { Badge } from '../../ui/badge';
 import { Separator } from '../../ui/separator';
 import { AvatarWithStatus } from '../shared/avatar-with-status';
 import type { ChannelVM } from '@iconicedu/shared-types';
+import { getProfileDisplayName } from '../../lib/display-name';
 
 export function NavDirectMessages({
   dms,
@@ -47,7 +48,8 @@ export function NavDirectMessages({
             item.collections.participants.find(
               (participant) => participant.ids.accountId !== currentUserId,
             ) ?? item.collections.participants[0];
-          const name = otherParticipant?.profile.displayName ?? item.basics.topic;
+          const fallback = item.basics.topic ?? 'User';
+          const name = getProfileDisplayName(otherParticipant?.profile, fallback);
           const unreadCount = item.collections.readState?.unreadCount ?? 0;
           return (
             <SidebarMenuItem key={item.ids.id} className="py-1">

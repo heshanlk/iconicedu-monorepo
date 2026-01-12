@@ -29,7 +29,7 @@ const LIVE_STATUS_TO_DISPLAY: Record<LiveStatusVM, PresenceDisplayStatusVM> = {
 };
 
 interface AvatarWithStatusProps {
-  name: string;
+  name?: string | null;
   avatar?: AvatarVM | null;
   alt?: string;
   fallbackText?: string;
@@ -42,8 +42,8 @@ interface AvatarWithStatusProps {
   fallbackClassName?: string;
 }
 
-const getInitials = (name: string, maxLength = 2) =>
-  name
+const getInitials = (name?: string | null, maxLength = 2) =>
+  (name ?? '')
     .split(' ')
     .map((part) => part[0])
     .join('')
@@ -71,16 +71,17 @@ export function AvatarWithStatus({
   const shouldShowTooltip = Boolean(tooltipText || tooltipEmoji);
 
   const themeClass = themeKey ? `theme-${themeKey}` : '';
+  const safeName = name?.trim() ? name.trim() : 'User';
   const avatarNode = (
     <div className="relative">
       <Avatar
         className={cn(sizeClassName, themeClass, themeKey ? 'border theme-border' : '')}
       >
-        {avatarUrl ? <AvatarImage src={avatarUrl} alt={name} /> : null}
+        {avatarUrl ? <AvatarImage src={avatarUrl} alt={safeName} /> : null}
         <AvatarFallback
           className={cn(fallbackClassName, themeKey ? 'theme-bg theme-fg' : '')}
         >
-          {getInitials(name, initialsLength)}
+          {getInitials(safeName, initialsLength)}
         </AvatarFallback>
       </Avatar>
       {shouldShowStatus && (

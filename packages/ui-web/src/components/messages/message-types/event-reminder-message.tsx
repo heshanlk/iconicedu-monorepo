@@ -4,6 +4,7 @@ import { Button } from '../../../ui/button';
 import { AvatarWithStatus } from '../../shared/avatar-with-status';
 import type { EventReminderMessageVM as EventReminderMessageType } from '@iconicedu/shared-types';
 import { MessageBase, type MessageBaseProps } from '../message-base';
+import { getProfileDisplayName } from '../../../lib/display-name';
 
 interface EventReminderMessageProps extends Omit<
   MessageBaseProps,
@@ -105,18 +106,21 @@ export const EventReminderMessage = memo(function EventReminderMessage(
             <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border">
               <Users className="h-3 w-3 text-muted-foreground" />
               <div className="flex -space-x-1.5">
-                {event.attendees.slice(0, 4).map((attendee) => (
-                  <AvatarWithStatus
-                    key={attendee.ids.id}
-                    name={attendee.profile.displayName}
-                    avatar={attendee.profile.avatar}
-                    themeKey={attendee.ui?.themeKey}
-                    showStatus={false}
-                    sizeClassName="h-5 w-5 border-2 border-background"
-                    fallbackClassName="text-[8px]"
-                    initialsLength={1}
-                  />
-                ))}
+                {event.attendees.slice(0, 4).map((attendee) => {
+                  const attendeeName = getProfileDisplayName(attendee.profile);
+                  return (
+                    <AvatarWithStatus
+                      key={attendee.ids.id}
+                      name={attendeeName}
+                      avatar={attendee.profile.avatar}
+                      themeKey={attendee.ui?.themeKey}
+                      showStatus={false}
+                      sizeClassName="h-5 w-5 border-2 border-background"
+                      fallbackClassName="text-[8px]"
+                      initialsLength={1}
+                    />
+                  );
+                })}
               </div>
               <span className="text-xs text-muted-foreground">
                 {event.attendees.length} attendee{event.attendees.length !== 1 ? 's' : ''}

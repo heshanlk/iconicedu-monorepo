@@ -9,6 +9,7 @@ import {
   Megaphone,
 } from 'lucide-react';
 import { AvatarWithStatus } from '../shared/avatar-with-status';
+import { getProfileDisplayName } from '../../lib/display-name';
 import { Badge } from '../../ui/badge';
 import { Separator } from '../../ui/separator';
 import { ProfileActions } from './profile-actions';
@@ -70,11 +71,12 @@ export function ProfileContent({
   onReportClick?: () => void;
 }) {
   const countryCode = normalizeCountryCode(user.location?.countryCode);
+  const profileDisplayName = getProfileDisplayName(user.profile);
   return (
     <div className="flex-1 overflow-y-auto">
       <div className="flex flex-col items-center gap-3 p-6 min-w-0">
         <AvatarWithStatus
-          name={user.profile.displayName}
+          name={profileDisplayName}
           avatar={user.profile.avatar}
           presence={user.presence}
           themeKey={user.ui?.themeKey}
@@ -86,7 +88,7 @@ export function ProfileContent({
         />
         <div className="text-center min-w-0">
           <h2 className="text-lg font-semibold text-foreground break-words">
-            {user.profile.displayName}
+            {profileDisplayName}
           </h2>
           {(user.presence?.state?.emoji || user.presence?.state?.text) && (
             <Badge variant="secondary" className="mt-1 max-w-full">
