@@ -237,4 +237,5 @@ export type StaffProfileSaveInput = {
   department?: string | null;
   jobTitle?: string | null;
   workingHoursSchedule?: WorkingHoursSchedule | null;
+  specialties?: string[] | null;
 };

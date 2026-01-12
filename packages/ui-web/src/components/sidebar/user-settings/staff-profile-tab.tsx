@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Briefcase, Moon } from 'lucide-react';
+import { Briefcase, Clock, Moon, X } from 'lucide-react';
 
 import type {
   StaffProfileSaveInput,
@@ -11,6 +11,13 @@ import type {
 import { Button } from '../../../ui/button';
 import { Input } from '../../../ui/input';
 import { Label } from '../../../ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../../../ui/select';
 import { Switch } from '../../../ui/switch';
 import { UserSettingsTabSection } from './components/user-settings-tab-section';
 import { cn } from '../../../lib/utils';
@@ -26,7 +33,7 @@ const WORKING_DAYS: ReadonlyArray<{ day: Weekday; label: string }> = [
 ];
 
 const DEFAULT_FROM = '09:00';
-const DEFAULT_TO = '17:00';
+const DEFAULT_TO = '17:30';
 const DEFAULT_WEEKDAYS = new Set<Weekday>([
   'monday',
   'tuesday',
@@ -34,6 +41,40 @@ const DEFAULT_WEEKDAYS = new Set<Weekday>([
   'thursday',
   'friday',
 ]);
+
+const SPECIALTY_OPTIONS = [
+  'Scheduling',
+  'Billing',
+  'Onboarding',
+  'Customer success',
+  'Curriculum design',
+  'Operations',
+  'Mentorship',
+  'Technical support',
+  'Program management',
+];
+
+const normalizeSpecialties = (values?: string[] | null) =>
+  Array.from(new Set((values ?? []).map((value) => value.trim()).filter(Boolean)));
+
+const formatTimeLabel = (value: string) => {
+  const [hourString, minuteString] = value.split(':');
+  const hour = Number(hourString);
+  const minute = Number(minuteString);
+  const period = hour >= 12 ? 'PM' : 'AM';
+  const displayHour = hour % 12 === 0 ? 12 : hour % 12;
+  return `${displayHour.toString().padStart(2, '0')}:${minuteString} ${period}`;
+};
+
+const TIME_OPTIONS = Array.from({ length: 24 * 4 }, (_, index) => {
+  const totalMinutes = index * 15;
+  const hour = Math.floor(totalMinutes / 60);
+  const minute = totalMinutes % 60;
+  const value = `${hour.toString().padStart(2, '0')}:${minute
+    .toString()
+    .padStart(2, '0')}`;
+  return { value, label: formatTimeLabel(value) };
+});
 
 type WorkingHoursRowState = {
   day: Weekday;
@@ -76,13 +117,16 @@ type DayRowProps = {
 };
 
 function DayRow({ row, onToggle, onChangeFrom, onChangeTo }: DayRowProps) {
+  const cardClass =
+    'flex h-10 items-center gap-2 rounded-[14px] border border-muted/30 bg-white px-4 text-sm font-semibold text-foreground shadow-sm';
+
   return (
-    <div className="flex flex-wrap items-center gap-4 rounded-3xl border border-border bg-muted/40 px-3 py-2">
+    <div className="flex items-center gap-3 rounded-3xl border border-border bg-muted/50 px-3 py-2">
       <div className="flex items-center gap-3 min-w-[140px]">
         <Switch
           checked={row.enabled}
           onCheckedChange={(checked) => onToggle(Boolean(checked))}
-          className="data-[state=unchecked]:bg-muted data-[state=checked]:bg-foreground h-7 w-12 rounded-full border border-muted/40"
+          className="data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-purple-500 data-[state=checked]:to-purple-600 data-[state=unchecked]:bg-muted h-7 w-12 rounded-full border border-muted/40 shadow-sm"
         />
         <span
           className={cn(
@@ -93,38 +137,48 @@ function DayRow({ row, onToggle, onChangeFrom, onChangeTo }: DayRowProps) {
           {row.label}
         </span>
       </div>
-      <div className="grid flex-1 grid-cols-2 gap-2">
+      <div className="grid flex-1 grid-cols-[1fr_1fr] gap-2">
         <div className="flex flex-col gap-1">
-          <span className="text-[9px] uppercase tracking-[0.25em] text-muted-foreground">
-            From
-          </span>
+          <span className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">From</span>
           {row.enabled ? (
-            <Input
-              type="time"
-              value={row.from}
-              onChange={(event) => onChangeFrom(event.target.value)}
-              className="h-10 rounded-[18px] border border-transparent bg-muted/70 px-3 text-base font-semibold tracking-wide text-foreground outline-none"
-            />
+            <Select value={row.from} onValueChange={(value) => onChangeFrom(value)}>
+              <SelectTrigger className={`relative ${cardClass} justify-between pl-10 text-base`}>
+                <Clock className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                <SelectValue className="text-left" />
+              </SelectTrigger>
+              <SelectContent className="max-h-60">
+                {TIME_OPTIONS.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           ) : (
-            <div className="flex h-10 items-center justify-between rounded-[18px] border border-muted/40 bg-muted/40 px-3 text-xs font-semibold uppercase tracking-[0.4em] text-muted-foreground">
+            <div className="flex h-10 items-center gap-2 rounded-[14px] border border-muted/40 bg-muted/50 px-4 text-sm font-semibold text-muted-foreground">
               <Moon className="size-4" />
               Closed
             </div>
           )}
         </div>
         <div className="flex flex-col gap-1">
-          <span className="text-[9px] uppercase tracking-[0.25em] text-muted-foreground">
-            To
-          </span>
+          <span className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">To</span>
           {row.enabled ? (
-            <Input
-              type="time"
-              value={row.to}
-              onChange={(event) => onChangeTo(event.target.value)}
-              className="h-10 rounded-[18px] border border-transparent bg-muted/70 px-3 text-base font-semibold tracking-wide text-foreground outline-none"
-            />
+            <Select value={row.to} onValueChange={(value) => onChangeTo(value)}>
+              <SelectTrigger className={`relative ${cardClass} justify-between pl-10 text-base`}>
+                <Clock className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                <SelectValue className="text-left" />
+              </SelectTrigger>
+              <SelectContent className="max-h-60">
+                {TIME_OPTIONS.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           ) : (
-            <div className="flex h-10 items-center justify-between rounded-[18px] border border-muted/40 bg-muted/40 px-3 text-xs font-semibold uppercase tracking-[0.4em] text-muted-foreground">
+            <div className="flex h-10 items-center gap-2 rounded-[14px] border border-muted/40 bg-muted/50 px-4 text-sm font-semibold text-muted-foreground">
               <Moon className="size-4" />
               Closed
             </div>
@@ -143,6 +197,10 @@ type StaffProfileTabProps = {
 export function StaffProfileTab({ staffProfile, onSave }: StaffProfileTabProps) {
   const [department, setDepartment] = React.useState(staffProfile.department ?? '');
   const [jobTitle, setJobTitle] = React.useState(staffProfile.jobTitle ?? '');
+  const [specialties, setSpecialties] = React.useState<string[]>(() =>
+    normalizeSpecialties(staffProfile.specialties),
+  );
+  const [specialtyInput, setSpecialtyInput] = React.useState('');
   const [schedule, setSchedule] = React.useState<WorkingHoursRowState[]>(() =>
     buildScheduleState(staffProfile.workingHoursSchedule),
   );
@@ -155,6 +213,9 @@ export function StaffProfileTab({ staffProfile, onSave }: StaffProfileTabProps) 
   );
   const initialDepartmentRef = React.useRef(staffProfile.department ?? '');
   const initialJobTitleRef = React.useRef(staffProfile.jobTitle ?? '');
+  const initialSpecialtiesRef = React.useRef<string>(
+    JSON.stringify(normalizeSpecialties(staffProfile.specialties)),
+  );
 
   React.useEffect(() => {
     setDepartment(staffProfile.department ?? '');
@@ -168,7 +229,57 @@ export function StaffProfileTab({ staffProfile, onSave }: StaffProfileTabProps) 
     } else {
       initialScheduleRef.current = '';
     }
+    const normalizedSpecialties = normalizeSpecialties(staffProfile.specialties);
+    setSpecialties(normalizedSpecialties);
+    initialSpecialtiesRef.current = JSON.stringify(normalizedSpecialties);
+    setSpecialtyInput('');
   }, [staffProfile]);
+
+  const departmentRoleDescription = React.useMemo(() => {
+    if (!department && !jobTitle) {
+      return 'Select a department and job title so people know your focus.';
+    }
+    if (department && jobTitle) {
+      return `Department: ${department}. Role: ${jobTitle}.`;
+    }
+    if (department) {
+      return `Department: ${department}.`;
+    }
+    return `Role: ${jobTitle}.`;
+  }, [department, jobTitle]);
+
+  const specialtySuggestions = React.useMemo(
+    () => SPECIALTY_OPTIONS.filter((option) => !specialties.includes(option)),
+    [specialties],
+  );
+
+  const addSpecialty = React.useCallback(
+    (value: string) => {
+      const trimmed = value.trim();
+      if (!trimmed) {
+        return;
+      }
+      setSpecialties((current) =>
+        current.includes(trimmed) ? current : [...current, trimmed],
+      );
+      setSpecialtyInput('');
+    },
+    [],
+  );
+
+  const removeSpecialty = React.useCallback((value: string) => {
+    setSpecialties((current) => current.filter((item) => item !== value));
+  }, []);
+
+  const handleSpecialtyKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        addSpecialty(specialtyInput);
+      }
+    },
+    [addSpecialty, specialtyInput],
+  );
 
   const summary = React.useMemo(() => {
     const activeRows = schedule.filter((row) => row.enabled);
@@ -182,9 +293,10 @@ export function StaffProfileTab({ staffProfile, onSave }: StaffProfileTabProps) 
     return (
       department !== initialDepartmentRef.current ||
       jobTitle !== initialJobTitleRef.current ||
-      JSON.stringify(schedule) !== initialScheduleRef.current
+      JSON.stringify(schedule) !== initialScheduleRef.current ||
+      JSON.stringify(specialties) !== initialSpecialtiesRef.current
     );
-  }, [department, jobTitle, schedule]);
+  }, [department, jobTitle, schedule, specialties]);
 
   const handleSave = React.useCallback(async () => {
     if (!onSave) {
@@ -199,6 +311,7 @@ export function StaffProfileTab({ staffProfile, onSave }: StaffProfileTabProps) 
         department: department || null,
         jobTitle: jobTitle || null,
         workingHoursSchedule: serializeSchedule(schedule),
+        specialties: specialties.length ? specialties : null,
       });
     } catch (error) {
       setErrorMessage(
@@ -208,7 +321,15 @@ export function StaffProfileTab({ staffProfile, onSave }: StaffProfileTabProps) 
     } finally {
       setIsSaving(false);
     }
-  }, [onSave, schedule, staffProfile.ids.id, staffProfile.ids.orgId]);
+  }, [
+    onSave,
+    department,
+    jobTitle,
+    schedule,
+    specialties,
+    staffProfile.ids.id,
+    staffProfile.ids.orgId,
+  ]);
 
   const updateRow = (day: Weekday, changes: Partial<WorkingHoursRowState>) =>
     setSchedule((current) =>
@@ -248,14 +369,71 @@ export function StaffProfileTab({ staffProfile, onSave }: StaffProfileTabProps) 
             />
           </div>
           <div className="flex flex-col gap-1">
-            <Label htmlFor="staff-role">Role</Label>
+            <Label htmlFor="staff-job-title">Job title</Label>
             <Input
-              id="staff-role"
+              id="staff-job-title"
               value={jobTitle}
               onChange={(event) => setJobTitle(event.target.value)}
               placeholder="Support specialist"
               className="w-full"
             />
+          </div>
+          <p className="text-xs text-muted-foreground">{departmentRoleDescription}</p>
+          <div className="flex flex-col gap-3">
+            <Label htmlFor="staff-specialties">Specialties</Label>
+            <div className="flex flex-wrap gap-2">
+              {specialties.map((value) => (
+                <span
+                  key={value}
+                  className="flex items-center gap-1 rounded-full border border-border/70 bg-muted/30 px-3 py-1 text-xs font-medium text-foreground"
+                >
+                  {value}
+                  <button
+                    type="button"
+                    onClick={() => removeSpecialty(value)}
+                    className="flex h-4 w-4 items-center justify-center rounded-full text-muted-foreground hover:text-foreground"
+                  >
+                    <X className="size-3" />
+                  </button>
+                </span>
+              ))}
+              {!specialties.length && (
+                <span className="text-xs text-muted-foreground">
+                  Add specialties to describe your focus
+                </span>
+              )}
+            </div>
+            <div className="flex items-center gap-2">
+              <Input
+                id="staff-specialties"
+                value={specialtyInput}
+                onChange={(event) => setSpecialtyInput(event.target.value)}
+                onKeyDown={handleSpecialtyKeyDown}
+                placeholder="Add specialties"
+                className="w-full"
+              />
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => addSpecialty(specialtyInput)}
+                className="rounded-full"
+              >
+                Add
+              </Button>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {specialtySuggestions.map((option) => (
+                <Button
+                  key={option}
+                  variant="outline"
+                  size="xs"
+                  className="rounded-full"
+                  onClick={() => addSpecialty(option)}
+                >
+                  {option}
+                </Button>
+              ))}
+            </div>
           </div>
         </div>
       </UserSettingsTabSection>

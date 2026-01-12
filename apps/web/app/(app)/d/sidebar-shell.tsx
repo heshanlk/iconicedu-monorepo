@@ -223,9 +223,16 @@ export function SidebarShell({
     [supabase],
   );
 
+  const normalizeList = (values?: string[] | null) => {
+    const cleaned =
+      values?.map((value) => value.trim()).filter((value) => value) ?? [];
+    return Array.from(new Set(cleaned));
+  };
+
   const handleStaffProfileSave = React.useCallback(
     async (input: StaffProfileSaveInput) => {
       try {
+        const specialties = normalizeList(input.specialties);
         const normalizedSchedule =
           input.workingHoursSchedule && input.workingHoursSchedule.length > 0
             ? input.workingHoursSchedule
@@ -239,12 +246,37 @@ export function SidebarShell({
               org_id: input.orgId,
               department: input.department ?? null,
               job_title: input.jobTitle ?? null,
+              working_hours_schedule: normalizedSchedule,
               working_hours_rules: normalizedSchedule,
             },
             { onConflict: 'profile_id' },
           );
         if (error) {
           throw error;
+        }
+
+        const { error: deleteSpecialtiesError } = await supabase
+          .from('staff_profile_specialties')
+          .delete()
+          .eq('profile_id', input.profileId)
+          .eq('org_id', input.orgId);
+        if (deleteSpecialtiesError) {
+          throw deleteSpecialtiesError;
+        }
+
+        if (specialties.length > 0) {
+          const { error: insertSpecialtiesError } = await supabase
+            .from('staff_profile_specialties')
+            .insert(
+              specialties.map((specialty) => ({
+                org_id: input.orgId,
+                profile_id: input.profileId,
+                specialty,
+              })),
+            );
+          if (insertSpecialtiesError) {
+            throw insertSpecialtiesError;
+          }
         }
 
         setSidebarData((prev) => {
@@ -262,6 +294,7 @@ export function SidebarShell({
                 department: input.department ?? null,
                 jobTitle: input.jobTitle ?? null,
                 workingHoursSchedule: normalizedAvailability,
+                specialties: specialties.length ? specialties : null,
               },
             },
           };
@@ -363,12 +396,6 @@ export function SidebarShell({
   },
   [supabase],
 );
-
-  const normalizeList = (values?: string[] | null) => {
-    const cleaned =
-      values?.map((value) => value.trim()).filter((value) => value) ?? [];
-    return Array.from(new Set(cleaned));
-  };
 
   const handleEducatorProfileSave = React.useCallback(
     async (input: EducatorProfileSaveInput) => {

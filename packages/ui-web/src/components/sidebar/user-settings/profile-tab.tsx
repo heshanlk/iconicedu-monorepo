@@ -54,7 +54,7 @@ type ProfileTabProps = {
 export type ProfileSaveInput = {
   profileId: string;
   orgId: string;
-  displayName: string;
+  displayName: string | null;
   firstName: string;
   lastName: string;
   bio?: string | null;
@@ -99,7 +99,6 @@ export function ProfileTab({
   const [displayNameValue, setDisplayNameValue] = React.useState(
     profileBlock.displayName ?? '',
   );
-  const [hasDisplayNameBeenEdited, setHasDisplayNameBeenEdited] = React.useState(false);
   const [bioValue, setBioValue] = React.useState(profileBlock.bio ?? '');
   const [saveError, setSaveError] = React.useState<string | null>(null);
   const [showRequiredErrors, setShowRequiredErrors] = React.useState(false);
@@ -161,7 +160,6 @@ export function ProfileTab({
     setFirstNameValue(profileBlock.firstName ?? '');
     setLastNameValue(profileBlock.lastName ?? '');
     setDisplayNameValue(profileBlock.displayName ?? '');
-    setHasDisplayNameBeenEdited(false);
     setBioValue(profileBlock.bio ?? '');
     setAvatarPreview(null);
     setAvatarRemoved(false);
@@ -171,20 +169,6 @@ export function ProfileTab({
     profileBlock.displayName,
     profileBlock.bio,
   ]);
-
-  const fillDisplayNameFromNames = React.useCallback(() => {
-    if (hasDisplayNameBeenEdited || displayNameValue.trim()) {
-      return;
-    }
-    const derivedName = `${firstNameValue.trim()} ${lastNameValue.trim()}`.trim();
-    if (derivedName) {
-      setDisplayNameValue(derivedName);
-    }
-  }, [displayNameValue, firstNameValue, lastNameValue, hasDisplayNameBeenEdited]);
-
-  React.useEffect(() => {
-    fillDisplayNameFromNames();
-  }, [fillDisplayNameFromNames]);
 
   const handleProfileSave = React.useCallback(
     async (afterSave?: () => void) => {
@@ -213,7 +197,7 @@ export function ProfileTab({
         await onProfileSave({
           profileId: profile.ids.id,
           orgId: profile.ids.orgId,
-          displayName: trimmedDisplayName || `${trimmedFirstName} ${trimmedLastName}`,
+          displayName: trimmedDisplayName || null,
           firstName: trimmedFirstName,
           lastName: trimmedLastName,
           bio: trimmedBio || null,
@@ -478,7 +462,6 @@ export function ProfileTab({
                   id="settings-display-name"
                   value={displayNameValue}
                   onChange={(event) => {
-                    setHasDisplayNameBeenEdited(true);
                     setDisplayNameValue(event.target.value);
                   }}
                   placeholder="Enter a display name"
@@ -553,7 +536,6 @@ export function ProfileTab({
                     onFocus={() => setIsLastFocused(true)}
                     onBlur={() => {
                       setIsLastFocused(false);
-                      fillDisplayNameFromNames();
                     }}
                     onChange={(event) => {
                       setLastNameValue(event.target.value);
