@@ -8,7 +8,7 @@ import {
   insertAccountForAuthUser,
   updateAccountAuthUserId,
   getAccountById,
-} from '../sidebar/user/queries/accounts.query';
+} from '../user/queries/accounts.query';
 import { findFamilyInviteForAccount, type FamilyLinkInviteRow } from '../family/invite';
 
 export async function getOrCreateAccount(

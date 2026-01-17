@@ -1,7 +1,7 @@
 'use server';
 
 import { createSupabaseServerClient } from '../../lib/supabase/server';
-import { getAccountByAuthUserId } from '../../lib/sidebar/user/queries/accounts.query';
+import { getAccountByAuthUserId } from '../../lib/user/queries/accounts.query';
 
 type RemoveFamilyMemberInput = {
   childAccountId: string;

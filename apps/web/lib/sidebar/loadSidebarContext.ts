@@ -10,7 +10,7 @@ import type { FamilyLinkInviteRow } from '@iconicedu/shared-types';
 
 import { acceptFamilyInvite } from '../family/invite';
 import { buildSidebarUser } from './user/buildSidebarUser';
-import { getAccountById } from './user/queries/accounts.query';
+import { getAccountById } from '../user/queries/accounts.query';
 
 export async function loadSidebarContext(
   supabase: SupabaseClient,

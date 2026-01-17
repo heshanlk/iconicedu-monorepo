@@ -84,11 +84,11 @@ export async function loadChildProfiles(
     );
     const child = childByProfileId.get(row.id);
     const grade = gradeByProfileId.get(row.id);
-  const gradeLevel: GradeLevel | null = grade
-    ? parseGradeLevel(grade.grade_id) ?? parseGradeLevel(grade.grade_label ?? grade.grade_id)
-    : null;
+    const gradeLevel: GradeLevel | null = grade
+      ? parseGradeLevel(grade.grade_id) ?? parseGradeLevel(grade.grade_label ?? grade.grade_id)
+      : null;
 
-      const account = accountById.get(row.account_id);
+    const account = accountById.get(row.account_id);
     return {
       ...baseProfile,
       kind: 'child',

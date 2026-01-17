@@ -3,8 +3,8 @@
 import type { AccountRow, ChildProfileVM } from '@iconicedu/shared-types';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { getFamilyInviteAdminClient, ensureFamilyForGuardian } from '../../lib/family/invite';
-import { loadChildProfiles } from '../../lib/sidebar/user/builders/load-child-profiles';
-import { getAccountByAuthUserId } from '../../lib/sidebar/user/queries/accounts.query';
+import { loadChildProfiles } from '../../lib/user/builders/load-child-profiles';
+import { getAccountByAuthUserId } from '../../lib/user/queries/accounts.query';
 import { createSupabaseServerClient } from '../../lib/supabase/server';
 
 const normalizeEmail = (value?: string | null) => value?.trim().toLowerCase() ?? null;
