@@ -302,6 +302,7 @@ export function SidebarLeft({
                     setOpenChildId(nextOpen ? child.ids.accountId : null)
                   }
                   activeChannelId={activeLearningSpaceId}
+                  isMobile={isMobile}
                 />
               ))
             )}

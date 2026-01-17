@@ -194,10 +194,13 @@ export function ProfileTab({
 
       setIsSaving(true);
       try {
+        const resolvedDisplayName =
+          trimmedDisplayName || `${trimmedFirstName} ${trimmedLastName}`.trim();
+
         await onProfileSave({
           profileId: profile.ids.id,
           orgId: profile.ids.orgId,
-          displayName: trimmedDisplayName || null,
+          displayName: resolvedDisplayName,
           firstName: trimmedFirstName,
           lastName: trimmedLastName,
           bio: trimmedBio || null,
@@ -589,7 +592,6 @@ export function ProfileTab({
           </UserSettingsTabSection>
         </div>
       </div>
-
     </div>
   );
 }

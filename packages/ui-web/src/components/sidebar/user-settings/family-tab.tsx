@@ -157,11 +157,13 @@ export function FamilyTab({
   const [newChildEmail, setNewChildEmail] = React.useState('');
   const [newChildEmailError, setNewChildEmailError] = React.useState<string | null>(null);
   const [isCreatingChild, setIsCreatingChild] = React.useState(false);
-  const [memberToRemove, setMemberToRemove] = React.useState<FamilyMemberItem | null>(null);
-  const [isRemoveDialogOpen, setIsRemoveDialogOpen] = React.useState(false);
-  const [removingMemberIds, setRemovingMemberIds] = React.useState<Record<string, boolean>>(
-    {},
+  const [memberToRemove, setMemberToRemove] = React.useState<FamilyMemberItem | null>(
+    null,
   );
+  const [isRemoveDialogOpen, setIsRemoveDialogOpen] = React.useState(false);
+  const [removingMemberIds, setRemovingMemberIds] = React.useState<
+    Record<string, boolean>
+  >({});
   const showToast = showOnboardingToast && !isToastDismissed;
   const INVITE_SAVE_ERROR = 'Unable to send invite right now. Please try again.';
   const INVITE_REMOVE_ERROR = 'Unable to remove invite right now. Please try again.';
@@ -854,7 +856,9 @@ export function FamilyTab({
                           }}
                           disabled={Boolean(removingMemberIds[member.id])}
                         >
-                          {removingMemberIds[member.id] ? 'Removing...' : 'Remove from family'}
+                          {removingMemberIds[member.id]
+                            ? 'Removing...'
+                            : 'Remove from family'}
                         </Button>
                       </div>
                     </div>
@@ -940,8 +944,8 @@ export function FamilyTab({
                 <AlertDialogTitle>Remove from family?</AlertDialogTitle>
                 <AlertDialogDescription>
                   This will unlink {memberToRemove?.name ?? 'the family member'} from your
-                  account. Their data and child profile will remain, but they will no longer
-                  be directly associated with this guardian.
+                  account. Their data and child profile will remain, but they will no
+                  longer be directly associated with this guardian.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter className="flex justify-end gap-2">
@@ -954,7 +958,9 @@ export function FamilyTab({
                   <Button
                     size="sm"
                     variant="destructive"
-                    disabled={Boolean(memberToRemove && removingMemberIds[memberToRemove.id])}
+                    disabled={Boolean(
+                      memberToRemove && removingMemberIds[memberToRemove.id],
+                    )}
                     onClick={() => handleConfirmRemove()}
                   >
                     {memberToRemove && removingMemberIds[memberToRemove.id]

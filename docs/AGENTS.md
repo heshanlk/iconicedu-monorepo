@@ -63,7 +63,11 @@
 - When modifying code, return either:
   - full updated file, or
   - a focused diff
-- Never return partial snippets without context.
-- Call out breaking changes explicitly.
-- Prefer existing patterns over inventing new ones.
-- Do not introduce new dependencies unless explicitly requested.
+  - Never return partial snippets without context.
+  - Call out breaking changes explicitly.
+  - Prefer existing patterns over inventing new ones.
+  - Do not introduce new dependencies unless explicitly requested.
+
+## 11. TODO Reference
+- Keep track of follow-up work, blockers, and reiteration items in `docs/TODO.md`.
+- Before making design/process changes, check `docs/TODO.md` to understand outstanding tickets and to avoid duplicate reminders; use that file as the single source for pending work descriptions.

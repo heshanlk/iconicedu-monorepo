@@ -52,27 +52,29 @@ const createFamilyInvitationHash = () => {
 
 type InvitedAccountKind = 'child' | 'guardian';
 
+const normalizeEmail = (value?: string | null) => value?.trim().toLowerCase() ?? '';
+
 async function ensureInvitedAccountForRole(options: {
-  supabase: SupabaseClient;
+  adminClient: SupabaseClient;
   orgId: string;
   invitedEmail: string;
   createdByAccountId: string;
   kind: InvitedAccountKind;
-}) {
-  const normalizedEmail = options.invitedEmail.trim().toLowerCase();
+}): Promise<AccountRow> {
+  const normalizedEmail = normalizeEmail(options.invitedEmail);
   if (!normalizedEmail) {
     throw new Error('Invited email is required.');
   }
 
   const existingAccount = await getAccountByEmail(
-    options.supabase,
+    options.adminClient,
     options.orgId,
     normalizedEmail,
   );
   const displayName =
     options.kind === 'child' ? 'Invited child' : 'Invited guardian';
   if (existingAccount) {
-    await upsertProfileForAccount(options.supabase, {
+    await upsertProfileForAccount(options.adminClient, {
       orgId: options.orgId,
       accountId: existingAccount.id,
       kind: options.kind,
@@ -89,7 +91,7 @@ async function ensureInvitedAccountForRole(options: {
   }
 
   const { data: insertedAccount, error: insertedError } = await insertInvitedAccount(
-    options.supabase,
+    options.adminClient,
     {
       orgId: options.orgId,
       email: normalizedEmail,
@@ -101,7 +103,7 @@ async function ensureInvitedAccountForRole(options: {
     throw insertedError ?? new Error('Unable to create invited account.');
   }
 
-  await upsertProfileForAccount(options.supabase, {
+  await upsertProfileForAccount(options.adminClient, {
     orgId: options.orgId,
     accountId: insertedAccount.id,
     kind: options.kind,
@@ -169,12 +171,13 @@ export async function ensureFamilyForGuardian(options: EnsureFamilyOptions) {
 }
 
 export async function createFamilyInvite(options: CreateFamilyInviteOptions) {
-  const normalizedEmail = options.invitedEmail.trim().toLowerCase();
+  const normalizedEmail = normalizeEmail(options.invitedEmail);
   const invitedKind: InvitedAccountKind =
     options.invitedRole === 'child' ? 'child' : 'guardian';
+  const adminClient = getFamilyInviteAdminClient();
 
-  await ensureInvitedAccountForRole({
-    supabase: options.supabase,
+  const invitedAccount = await ensureInvitedAccountForRole({
+    adminClient,
     orgId: options.orgId,
     invitedEmail: normalizedEmail,
     createdByAccountId: options.createdByAccountId,
@@ -187,13 +190,14 @@ export async function createFamilyInvite(options: CreateFamilyInviteOptions) {
     orgId: options.orgId,
   });
 
-  const adminClient = getFamilyInviteAdminClient();
-  const { error: inviteError } = await adminClient.auth.admin.inviteUserByEmail(
-    normalizedEmail,
-  );
+  if (!invitedAccount.auth_user_id) {
+    const { error: inviteError } = await adminClient.auth.admin.inviteUserByEmail(
+      normalizedEmail,
+    );
 
-  if (inviteError) {
-    throw inviteError;
+    if (inviteError) {
+      throw inviteError;
+    }
   }
 
   const expiresAt = new Date();
@@ -205,11 +209,11 @@ export async function createFamilyInvite(options: CreateFamilyInviteOptions) {
 
   const { data, error } = await options.supabase
     .from('family_link_invites')
-      .insert({
-        org_id: options.orgId,
-        family_id: familyId,
-        invited_role: options.invitedRole,
-        invited_email: normalizedEmail,
+    .insert({
+      org_id: options.orgId,
+      family_id: familyId,
+      invited_role: options.invitedRole,
+      invited_email: normalizedEmail,
       invited_phone_e164: options.invitedPhoneE164 ?? null,
       invite_code_hash: inviteCodeHash,
       created_by_account_id: options.createdByAccountId,

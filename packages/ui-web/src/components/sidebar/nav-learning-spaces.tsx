@@ -27,7 +27,6 @@ import {
   SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar,
 } from '../../ui/sidebar';
 import {
   DropdownMenu,
@@ -49,6 +48,7 @@ export function NavLearningSpaces({
   isOpen,
   onOpenChange,
   activeChannelId,
+  isMobile,
 }: {
   learningSpaces: LearningSpaceVM[];
   title: string;
@@ -56,9 +56,8 @@ export function NavLearningSpaces({
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   activeChannelId?: string | null;
+  isMobile: boolean;
 }) {
-  const { isMobile } = useSidebar();
-
   return (
     <SidebarGroup className="py-0 group-data-[collapsible=icon]:hidden">
       <Collapsible open={isOpen} onOpenChange={onOpenChange}>
@@ -86,7 +85,7 @@ export function NavLearningSpaces({
               <EmptyContent>
                 <div className="flex">
                   <Button size={'lg'}>
-                    <MessageSquarePlus /> Request a tutoring
+                    <MessageSquarePlus /> Request tutoring
                   </Button>
                 </div>
               </EmptyContent>

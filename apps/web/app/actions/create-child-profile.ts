@@ -1,10 +1,57 @@
 'use server';
 
-import type { ChildProfileVM } from '@iconicedu/shared-types';
+import type { AccountRow, ChildProfileVM } from '@iconicedu/shared-types';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { getFamilyInviteAdminClient, ensureFamilyForGuardian } from '../../lib/family/invite';
 import { loadChildProfiles } from '../../lib/sidebar/user/builders/load-child-profiles';
 import { getAccountByAuthUserId } from '../../lib/sidebar/user/queries/accounts.query';
 import { createSupabaseServerClient } from '../../lib/supabase/server';
+
+const normalizeEmail = (value?: string | null) => value?.trim().toLowerCase() ?? null;
+
+async function createOrLoadChildAccount(options: {
+  serviceClient: SupabaseClient;
+  orgId: string;
+  email?: string | null;
+  createdByAccountId: string;
+}): Promise<AccountRow> {
+  const normalizedEmail = normalizeEmail(options.email);
+
+  if (normalizedEmail) {
+    // TODO: revisit invite flow when child account exists with the same email so we don't silently skip needed updates.
+    const { data: existingAccount } = await options.serviceClient
+      .from('accounts')
+      .select('*')
+      .eq('org_id', options.orgId)
+      .ilike('email', normalizedEmail)
+      .is('deleted_at', null)
+      .limit(1)
+      .maybeSingle<AccountRow>();
+
+    if (existingAccount) {
+      return existingAccount;
+    }
+  }
+
+  const { data: childAccount, error: accountError } = await options.serviceClient
+    .from('accounts')
+    .insert({
+      org_id: options.orgId,
+      email: normalizedEmail,
+      preferred_contact_channels: ['email'],
+      status: 'active',
+      created_by: options.createdByAccountId,
+      updated_by: options.createdByAccountId,
+    })
+    .select('*')
+    .single<AccountRow>();
+
+  if (accountError || !childAccount) {
+    throw accountError ?? new Error('Unable to create child account');
+  }
+
+  return childAccount;
+}
 
 type CreateChildProfileInput = {
   orgId: string;
@@ -44,28 +91,19 @@ export async function createChildProfileAction(
   }
   const serviceClient = getFamilyInviteAdminClient();
 
-  const { data: childAccount, error: accountError } = await serviceClient
-    .from('accounts')
-    .insert({
-      org_id: guardianAccount.org_id,
-      email: input.email?.toLowerCase() ?? null,
-      preferred_contact_channels: ['email'],
-      status: 'active',
-      created_by: guardianAccount.id,
-      updated_by: guardianAccount.id,
-    })
-    .select('*')
-    .single();
-
-  if (accountError || !childAccount) {
-    throw accountError ?? new Error('Unable to create child account');
-  }
+  const childAccount = await createOrLoadChildAccount({
+    serviceClient,
+    orgId: guardianAccount.org_id,
+    email: input.email,
+    createdByAccountId: guardianAccount.id,
+  });
+  const displayNameValue = `${input.firstName.trim()} ${input.lastName.trim()}`.trim();
 
   const profilePayload = {
     org_id: guardianAccount.org_id,
     account_id: childAccount.id,
     kind: 'child',
-    display_name: input.displayName.trim(),
+    display_name: displayNameValue,
     first_name: input.firstName.trim(),
     last_name: input.lastName.trim(),
     avatar_source: 'seed',
@@ -84,7 +122,7 @@ export async function createChildProfileAction(
 
   const { data: profileRow, error: profileError } = await serviceClient
     .from('profiles')
-    .insert(profilePayload)
+    .upsert(profilePayload, { onConflict: 'org_id,account_id' })
     .select('*')
     .single();
 
@@ -98,40 +136,55 @@ export async function createChildProfileAction(
     orgId: guardianAccount.org_id,
   });
 
-  const { error: linkError } = await serviceClient.from('family_links').insert({
-    org_id: guardianAccount.org_id,
-    family_id: familyId,
-    guardian_account_id: guardianAccount.id,
-    child_account_id: childAccount.id,
-    relation: 'guardian',
-    created_by: guardianAccount.id,
-    updated_by: guardianAccount.id,
-  });
+  const { error: linkError } = await serviceClient
+    .from('family_links')
+    .upsert(
+      {
+        org_id: guardianAccount.org_id,
+        family_id: familyId,
+        guardian_account_id: guardianAccount.id,
+        child_account_id: childAccount.id,
+        relation: 'guardian',
+        created_by: guardianAccount.id,
+        updated_by: guardianAccount.id,
+      },
+      { onConflict: 'org_id,family_id,guardian_account_id,child_account_id' },
+    );
 
   if (linkError) {
     throw linkError;
   }
 
-  const { error: childProfileError } = await serviceClient.from('child_profiles').insert({
-    profile_id: profileRow.id,
-    org_id: guardianAccount.org_id,
-    birth_year: input.birthYear,
-    created_by: guardianAccount.id,
-    updated_by: guardianAccount.id,
-  });
+  const { error: childProfileError } = await serviceClient
+    .from('child_profiles')
+    .upsert(
+      {
+        profile_id: profileRow.id,
+        org_id: guardianAccount.org_id,
+        birth_year: input.birthYear,
+        created_by: guardianAccount.id,
+        updated_by: guardianAccount.id,
+      },
+      { onConflict: 'org_id,profile_id' },
+    );
 
   if (childProfileError) {
     throw childProfileError;
   }
 
-  const { error: gradeError } = await serviceClient.from('child_profile_grade_level').insert({
-    org_id: guardianAccount.org_id,
-    profile_id: profileRow.id,
-    grade_id: input.gradeLevel,
-    grade_label: input.gradeLevel,
-    created_by: guardianAccount.id,
-    updated_by: guardianAccount.id,
-  });
+  const { error: gradeError } = await serviceClient
+    .from('child_profile_grade_level')
+    .upsert(
+      {
+        org_id: guardianAccount.org_id,
+        profile_id: profileRow.id,
+        grade_id: input.gradeLevel,
+        grade_label: input.gradeLevel,
+        created_by: guardianAccount.id,
+        updated_by: guardianAccount.id,
+      },
+      { onConflict: 'org_id,profile_id' },
+    );
 
   if (gradeError) {
     throw gradeError;
