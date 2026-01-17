@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Briefcase, Clock, Moon, X } from 'lucide-react';
+import { Briefcase, Moon, X } from 'lucide-react';
 
 import type {
   StaffProfileSaveInput,
@@ -11,14 +11,8 @@ import type {
 import { Button } from '../../../ui/button';
 import { Input } from '../../../ui/input';
 import { Label } from '../../../ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../../../ui/select';
 import { Switch } from '../../../ui/switch';
+import { Item, ItemContent, ItemHeader } from '../../../ui/item';
 import { UserSettingsTabSection } from './components/user-settings-tab-section';
 import { cn } from '../../../lib/utils';
 
@@ -66,8 +60,8 @@ const formatTimeLabel = (value: string) => {
   return `${displayHour.toString().padStart(2, '0')}:${minuteString} ${period}`;
 };
 
-const TIME_OPTIONS = Array.from({ length: 24 * 4 }, (_, index) => {
-  const totalMinutes = index * 15;
+const TIME_OPTIONS = Array.from({ length: 24 * 2 }, (_, index) => {
+  const totalMinutes = index * 30;
   const hour = Math.floor(totalMinutes / 60);
   const minute = totalMinutes % 60;
   const value = `${hour.toString().padStart(2, '0')}:${minute
@@ -117,75 +111,74 @@ type DayRowProps = {
 };
 
 function DayRow({ row, onToggle, onChangeFrom, onChangeTo }: DayRowProps) {
-  const cardClass =
-    'flex h-10 items-center gap-2 rounded-[14px] border border-muted/30 bg-white px-4 text-sm font-semibold text-foreground shadow-sm';
 
   return (
-    <div className="flex items-center gap-3 rounded-3xl border border-border bg-muted/50 px-3 py-2">
-      <div className="flex items-center gap-3 min-w-[140px]">
-        <Switch
-          checked={row.enabled}
-          onCheckedChange={(checked) => onToggle(Boolean(checked))}
-          className="data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-purple-500 data-[state=checked]:to-purple-600 data-[state=unchecked]:bg-muted h-7 w-12 rounded-full border border-muted/40 shadow-sm"
-        />
-        <span
-          className={cn(
-            'text-sm font-medium',
-            row.enabled ? 'text-foreground' : 'text-muted-foreground',
-          )}
-        >
-          {row.label}
-        </span>
-      </div>
-      <div className="grid flex-1 grid-cols-[1fr_1fr] gap-2">
-        <div className="flex flex-col gap-1">
-          <span className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">From</span>
-          {row.enabled ? (
-            <Select value={row.from} onValueChange={(value) => onChangeFrom(value)}>
-              <SelectTrigger className={`relative ${cardClass} justify-between pl-10 text-base`}>
-                <Clock className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                <SelectValue className="text-left" />
-              </SelectTrigger>
-              <SelectContent className="max-h-60">
-                {TIME_OPTIONS.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          ) : (
-            <div className="flex h-10 items-center gap-2 rounded-[14px] border border-muted/40 bg-muted/50 px-4 text-sm font-semibold text-muted-foreground">
-              <Moon className="h-4 w-4" />
-              Closed
-            </div>
-          )}
+    <Item
+      size="sm"
+      variant="default"
+      className="gap-3 bg-transparent px-3 py-3 shadow-none"
+    >
+      <ItemHeader className="gap-3 px-0">
+        <div className="flex items-center gap-3">
+          <Switch
+            size="sm"
+            checked={row.enabled}
+            onCheckedChange={(checked) => onToggle(Boolean(checked))}
+            className="data-[state=checked]:bg-gradient-to-r data-[state=unchecked]:bg-muted h-5 w-9 rounded-full border border-muted/40 shadow-sm"
+          />
+          <span
+            className={cn(
+              'text-xs font-semibold uppercase tracking-[0.08em]',
+              row.enabled ? 'text-foreground' : 'text-muted-foreground',
+            )}
+          >
+            {row.label}
+          </span>
         </div>
-        <div className="flex flex-col gap-1">
-          <span className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">To</span>
-          {row.enabled ? (
-            <Select value={row.to} onValueChange={(value) => onChangeTo(value)}>
-              <SelectTrigger className={`relative ${cardClass} justify-between pl-10 text-base`}>
-                <Clock className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                <SelectValue className="text-left" />
-              </SelectTrigger>
-              <SelectContent className="max-h-60">
-                {TIME_OPTIONS.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          ) : (
-            <div className="flex h-10 items-center gap-2 rounded-[14px] border border-muted/40 bg-muted/50 px-4 text-sm font-semibold text-muted-foreground">
-              <Moon className="h-4 w-4" />
-              Closed
-            </div>
-          )}
+      </ItemHeader>
+      <ItemContent className="px-0 pt-0">
+        <div className="grid w-full grid-cols-[1fr_1fr] gap-2">
+          <div className="flex flex-col gap-1">
+            <span className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+              From
+            </span>
+            {row.enabled ? (
+              <Input
+                type="time"
+                value={row.from}
+                step={1800}
+                className="h-9 text-xs"
+                onChange={(event) => onChangeFrom(event.target.value)}
+              />
+            ) : (
+              <div className="flex h-10 items-center gap-2 rounded-[14px] border border-muted/40 bg-muted/50 px-4 text-sm font-semibold text-muted-foreground">
+                <Moon className="h-4 w-4" />
+                Offline
+              </div>
+            )}
+          </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+              To
+            </span>
+            {row.enabled ? (
+              <Input
+                type="time"
+                value={row.to}
+                step={1800}
+                className="h-9 text-xs"
+                onChange={(event) => onChangeTo(event.target.value)}
+              />
+            ) : (
+              <div className="flex h-10 items-center gap-2 rounded-[14px] border border-muted/40 bg-muted/50 px-4 text-sm font-semibold text-muted-foreground">
+                <Moon className="h-4 w-4" />
+                Offline
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-    </div>
+      </ItemContent>
+    </Item>
   );
 }
 
@@ -224,7 +217,10 @@ export function StaffProfileTab({ staffProfile, onSave }: StaffProfileTabProps) 
     initialJobTitleRef.current = staffProfile.jobTitle ?? '';
     const normalized = buildScheduleState(staffProfile.workingHoursSchedule);
     setSchedule(normalized);
-    if (staffProfile.workingHoursSchedule && staffProfile.workingHoursSchedule.length > 0) {
+    if (
+      staffProfile.workingHoursSchedule &&
+      staffProfile.workingHoursSchedule.length > 0
+    ) {
       initialScheduleRef.current = JSON.stringify(normalized);
     } else {
       initialScheduleRef.current = '';
@@ -253,19 +249,16 @@ export function StaffProfileTab({ staffProfile, onSave }: StaffProfileTabProps) 
     [specialties],
   );
 
-  const addSpecialty = React.useCallback(
-    (value: string) => {
-      const trimmed = value.trim();
-      if (!trimmed) {
-        return;
-      }
-      setSpecialties((current) =>
-        current.includes(trimmed) ? current : [...current, trimmed],
-      );
-      setSpecialtyInput('');
-    },
-    [],
-  );
+  const addSpecialty = React.useCallback((value: string) => {
+    const trimmed = value.trim();
+    if (!trimmed) {
+      return;
+    }
+    setSpecialties((current) =>
+      current.includes(trimmed) ? current : [...current, trimmed],
+    );
+    setSpecialtyInput('');
+  }, []);
 
   const removeSpecialty = React.useCallback((value: string) => {
     setSpecialties((current) => current.filter((item) => item !== value));

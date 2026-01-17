@@ -15,7 +15,7 @@ import {
   deleteFamilyInvite,
   getFamilyInviteAdminClient,
   mapFamilyLinkInviteRowToVM,
-} from '../../lib/family/invite';
+} from '../../lib/family/queries/invite.query';
 
 type ResolvedGuardianContext = {
   supabase: SupabaseClient;

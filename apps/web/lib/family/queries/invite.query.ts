@@ -8,11 +8,11 @@ import type {
   FamilyLinkInviteVM,
   FamilyRelation,
 } from '@iconicedu/shared-types';
-import { getProfileByAccountId, upsertProfileForAccount } from '../user/queries/profiles.query';
+import { getProfileByAccountId, upsertProfileForAccount } from '../../user/queries/profiles.query';
 import {
   getAccountByEmail,
   insertInvitedAccount,
-} from '../user/queries/accounts.query';
+} from '../../user/queries/accounts.query';
 
 export const FAMILY_INVITE_EXPIRATION_DAYS = 7;
 

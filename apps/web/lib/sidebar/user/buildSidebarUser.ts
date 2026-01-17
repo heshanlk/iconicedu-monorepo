@@ -35,7 +35,7 @@ import {
   findFamilyInviteForAccount,
   mapFamilyLinkInviteRowToVM,
   type FamilyLinkInviteRow,
-} from '../../family/invite';
+} from '../../family/queries/invite.query';
 
 export async function buildSidebarUser(
   supabase: SupabaseClient,

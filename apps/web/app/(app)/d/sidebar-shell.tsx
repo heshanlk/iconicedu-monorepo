@@ -246,8 +246,7 @@ export function SidebarShell({
               org_id: input.orgId,
               department: input.department ?? null,
               job_title: input.jobTitle ?? null,
-              working_hours_schedule: normalizedSchedule,
-              working_hours_rules: normalizedSchedule,
+                  working_hours_rules: normalizedSchedule,
             },
             { onConflict: 'profile_id' },
           );
@@ -370,10 +369,8 @@ export function SidebarShell({
               ...prev.user,
               profile: {
                 ...profile,
-                gradeLevel: {
-                  id: gradeId,
-                  label: input.gradeLabel ?? gradeId,
-                },
+                gradeLevel: gradeId,
+                gradeLabel: input.gradeLabel ?? gradeId,
                 birthYear: input.birthYear ?? null,
                 schoolName: input.schoolName ?? null,
                 schoolYear: input.schoolYear ?? null,

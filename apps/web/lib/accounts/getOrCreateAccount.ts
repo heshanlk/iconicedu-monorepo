@@ -9,7 +9,7 @@ import {
   updateAccountAuthUserId,
   getAccountById,
 } from '../user/queries/accounts.query';
-import { findFamilyInviteForAccount, type FamilyLinkInviteRow } from '../family/invite';
+import { findFamilyInviteForAccount, type FamilyLinkInviteRow } from '../family/queries/invite.query';
 
 export async function getOrCreateAccount(
   supabase: SupabaseClient,

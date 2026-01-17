@@ -8,7 +8,7 @@ import type {
 } from '@iconicedu/shared-types';
 import type { FamilyLinkInviteRow } from '@iconicedu/shared-types';
 
-import { acceptFamilyInvite } from '../family/invite';
+import { acceptFamilyInvite } from '../family/queries/invite.query';
 import { buildSidebarUser } from './user/buildSidebarUser';
 import { getAccountById } from '../user/queries/accounts.query';
 
