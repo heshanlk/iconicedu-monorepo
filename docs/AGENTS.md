@@ -83,3 +83,4 @@
 
 ## 14. Stability-first habits
 - Do not add novel folder layouts or structural patterns without agreement—extend the existing query/builder/mapping layout instead. Treat `packages/shared-types` as the single source for new data contracts and update related queries/mappers/builders before touching UI or API layers. Keeping this disciplined structure avoids hidden dependencies and ensures everyone can find the relevant pieces when extending an entity.
+- **Migrations mandate:** Never edit an existing migration once it has been committed; always author a new migration file that describes the change (timestamped in `supabase/migrations`) and references the triggering logic so the change history stays linear.
