@@ -13,7 +13,9 @@
   "private": true,
   "scripts": {
     "build": "tsc -p tsconfig.json && tailwindcss -c tailwind.config.ts -i ./src/styles/global.css -o ./dist/ui-web.css --minify",
-    "dev": "tsc -p tsconfig.json --watch & tailwindcss -c tailwind.config.ts -i ./src/styles/global.css -o ./dist/ui-web.css --watch",
+    "tailwind:build": "tailwindcss -c tailwind.config.ts -i ./src/styles/global.css -o ./dist/ui-web.css",
+    "tailwind:watch": "node ./scripts/watch-tailwind.js",
+    "dev": "tsc -p tsconfig.json --watch & pnpm run tailwind:watch",
     "shadcn:add": "pnpm dlx shadcn@latest add",
     "shadcn:mcp": "pnpm dlx shadcn@latest mcp"
   },
@@ -29,6 +31,7 @@
     "@types/react-dom": "^19.2.3",
     "postcss": "^8.5",
     "tailwindcss": "^4.1.17",
+    "chokidar": "^4.0.3",
     "tw-animate-css": "^1.3.3",
     "typescript": "^5"
   },

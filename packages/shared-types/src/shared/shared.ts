@@ -60,3 +60,13 @@ export type FamilyRelation =
   | 'caregiver'
   | 'relative'
   | 'other';
+
+export type OnboardingStep =
+  | 'account-phone'
+  | 'profile'
+  | 'preferences-timezone'
+  | 'location'
+  | 'family'
+  | 'student-profile'
+  | 'educator-profile'
+  | 'staff-profile';

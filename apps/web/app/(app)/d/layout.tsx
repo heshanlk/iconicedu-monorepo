@@ -28,8 +28,7 @@ export default async function Layout({ children }: { children: ReactNode }) {
       ? 'educator'
       : undefined;
 
-  const { sidebarData, needsNameCompletion, needsPhoneCompletion } =
-    await loadSidebarContext(supabase, {
+  const { sidebarData, onboardingStatus } = await loadSidebarContext(supabase, {
       authUser,
       account,
       familyInvite: invite,
@@ -41,8 +40,7 @@ export default async function Layout({ children }: { children: ReactNode }) {
     <SidebarProvider>
       <SidebarShell
         data={sidebarData}
-        forceProfileCompletion={needsNameCompletion}
-        forceAccountCompletion={!needsNameCompletion && needsPhoneCompletion}
+        initialOnboardingStatus={onboardingStatus}
       >
         {children}
       </SidebarShell>

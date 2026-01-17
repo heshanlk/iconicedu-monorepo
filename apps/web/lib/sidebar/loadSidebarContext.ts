@@ -4,6 +4,7 @@ import type {
   AccountRow,
   SidebarLeftDataVM,
   UserAccountVM,
+  UserOnboardingStatusVM,
   UserProfileVM,
 } from '@iconicedu/shared-types';
 import type { FamilyLinkInviteRow } from '@iconicedu/shared-types';
@@ -11,6 +12,12 @@ import type { FamilyLinkInviteRow } from '@iconicedu/shared-types';
 import { acceptFamilyInvite } from '../family/queries/invite.query';
 import { buildSidebarUser } from './user/buildSidebarUser';
 import { getAccountById } from '../user/queries/accounts.query';
+import { determineOnboardingStep } from '../onboarding/determineOnboardingStep';
+import {
+  getUserOnboardingStatusByProfileId,
+  upsertUserOnboardingStatus,
+} from '../onboarding/queries/status.query';
+import { mapUserOnboardingStatusRowToVM } from '../onboarding/mappers';
 
 export async function loadSidebarContext(
   supabase: SupabaseClient,
@@ -30,8 +37,7 @@ export async function loadSidebarContext(
   sidebarData: SidebarLeftDataVM;
   accountVM: UserAccountVM;
   profileVM: UserProfileVM;
-  needsNameCompletion: boolean;
-  needsPhoneCompletion: boolean;
+  onboardingStatus: UserOnboardingStatusVM | null;
 }> {
   await autoAcceptPendingInvites(supabase, input.account.id);
 
@@ -43,10 +49,39 @@ export async function loadSidebarContext(
     input.profileKindOverride,
   );
 
-  const needsNameCompletion =
-    !profileVM.profile.firstName?.trim() || !profileVM.profile.lastName?.trim();
-  const needsPhoneCompletion =
-    !accountVM.contacts.phoneE164?.trim() || !accountVM.contacts.phoneVerified;
+  const computedStep = determineOnboardingStep(profileVM, accountVM);
+  const statusResponse = await getUserOnboardingStatusByProfileId(
+    supabase,
+    profileVM.ids.id,
+  );
+
+  let onboardingStatus: UserOnboardingStatusVM | null = null;
+  if (statusResponse.data) {
+    onboardingStatus = mapUserOnboardingStatusRowToVM(statusResponse.data);
+  }
+
+  const shouldSyncOnboardingStatus =
+    (computedStep &&
+      (!onboardingStatus ||
+        onboardingStatus.currentStep !== computedStep ||
+        onboardingStatus.completed)) ||
+    (!computedStep && onboardingStatus && !onboardingStatus.completed);
+
+  if (shouldSyncOnboardingStatus) {
+    const { data, error } = await upsertUserOnboardingStatus(supabase, {
+      profileId: profileVM.ids.id,
+      orgId: profileVM.ids.orgId,
+      currentStep: computedStep,
+      lastCompletedStep: onboardingStatus?.currentStep ?? null,
+      completed: !computedStep,
+    });
+
+    if (data) {
+      onboardingStatus = mapUserOnboardingStatusRowToVM(data);
+    } else if (error) {
+      console.error('Unable to sync onboarding status', error);
+    }
+  }
 
   return {
     sidebarData: {
@@ -58,8 +93,7 @@ export async function loadSidebarContext(
     },
     accountVM,
     profileVM,
-    needsNameCompletion,
-    needsPhoneCompletion,
+    onboardingStatus,
   };
 }
 

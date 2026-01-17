@@ -60,6 +60,7 @@ import type {
   SidebarSecondaryItem,
   StaffProfileSaveInput,
   ThemeKey,
+  UserOnboardingStatusVM,
 } from '@iconicedu/shared-types';
 import { getProfileDisplayName } from '../../lib/display-name';
 
@@ -79,8 +80,8 @@ export function SidebarLeft({
   data,
   activePath,
   onLogout,
-  forceProfileCompletion,
-  forceAccountCompletion,
+  onboardingStatus,
+  onOnboardingComplete,
   onProfileSave,
   onChildProfileSave,
   onAccountUpdate,
@@ -101,8 +102,7 @@ export function SidebarLeft({
   data: SidebarLeftDataVM;
   activePath?: string | null;
   onLogout?: () => Promise<void> | void;
-  forceProfileCompletion?: boolean;
-  forceAccountCompletion?: boolean;
+  onboardingStatus?: UserOnboardingStatusVM | null;
   onProfileSave?: (input: ProfileSaveInput) => Promise<void> | void;
   onChildProfileSave?: (input: ChildProfileSaveInput) => Promise<void> | void;
   onAccountUpdate?: (input: {
@@ -166,6 +166,7 @@ export function SidebarLeft({
   onFamilyMemberRemove?: (input: { childAccountId: string }) => Promise<void> | void;
   onEducatorProfileSave?: (input: EducatorProfileSaveInput) => Promise<void> | void;
   onStaffProfileSave?: (input: StaffProfileSaveInput) => Promise<void> | void;
+  onOnboardingComplete?: () => void;
 }) {
   const navMain: SidebarNavItem[] = data.navigation.navMain.map((item) => ({
     ...item,
@@ -321,8 +322,8 @@ export function SidebarLeft({
           profile={data.user.profile}
           account={data.user.account}
           onLogout={onLogout}
-          forceProfileCompletion={forceProfileCompletion}
-          forceAccountCompletion={forceAccountCompletion}
+          onboardingStatus={onboardingStatus}
+          onOnboardingComplete={onOnboardingComplete}
           onProfileSave={onProfileSave}
           onChildProfileSave={onChildProfileSave}
           onAccountUpdate={onAccountUpdate}

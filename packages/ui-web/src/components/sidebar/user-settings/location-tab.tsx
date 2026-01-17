@@ -5,7 +5,6 @@ import { ArrowRight, MapPin, X } from 'lucide-react';
 
 import { Country, State } from 'country-state-city';
 import type { UserProfileVM } from '@iconicedu/shared-types';
-import { BorderBeam } from '../../../ui/border-beam';
 import { Button } from '../../../ui/button';
 import { Input } from '../../../ui/input';
 import { Label } from '../../../ui/label';
@@ -244,14 +243,7 @@ export function LocationTab({
               </div>
               <div className="text-muted-foreground">
                 Fields marked as{' '}
-                <span className="relative inline-flex items-center">
-                  <BorderBeam
-                    size={48}
-                    initialOffset={12}
-                    borderWidth={2}
-                    className="from-transparent via-pink-500 to-transparent"
-                    transition={{ type: 'spring', stiffness: 60, damping: 20 }}
-                  />
+                <span className="relative inline-flex items-center rounded-full bg-destructive/10 px-1.5 py-0.5 text-destructive">
                   <span className="relative z-10 text-destructive">*</span>
                 </span>{' '}
                 are required.
@@ -295,13 +287,7 @@ export function LocationTab({
                 </Label>
                 <div className="relative rounded-full">
                   {!countryValue && !isCountryFocused ? (
-                    <BorderBeam
-                      size={60}
-                      initialOffset={20}
-                      borderWidth={2}
-                      className="from-transparent via-pink-500 to-transparent"
-                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
-                    />
+                    <span className="pointer-events-none absolute inset-0 rounded-full border-2 border-destructive/40" />
                   ) : null}
                   <Select
                     value={countryValue}
@@ -345,13 +331,7 @@ export function LocationTab({
                 </Label>
                 <div className="relative rounded-full">
                   {!cityValue.trim() && !isCityFocused ? (
-                    <BorderBeam
-                      size={60}
-                      initialOffset={20}
-                      borderWidth={2}
-                      className="from-transparent via-pink-500 to-transparent"
-                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
-                    />
+                    <span className="pointer-events-none absolute inset-0 rounded-full border-2 border-destructive/40" />
                   ) : null}
                   <Input
                     id="settings-city"
@@ -379,13 +359,7 @@ export function LocationTab({
                 </Label>
                 <div className="relative rounded-full">
                   {!regionValue.trim() && !isRegionFocused ? (
-                    <BorderBeam
-                      size={60}
-                      initialOffset={20}
-                      borderWidth={2}
-                      className="from-transparent via-pink-500 to-transparent"
-                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
-                    />
+                    <span className="pointer-events-none absolute inset-0 rounded-full border-2 border-destructive/40" />
                   ) : null}
                   {showStateSelect ? (
                     <Select
@@ -437,13 +411,7 @@ export function LocationTab({
                 </Label>
                 <div className="relative rounded-full">
                   {!postalValue.trim() && !isPostalFocused ? (
-                    <BorderBeam
-                      size={60}
-                      initialOffset={20}
-                      borderWidth={2}
-                      className="from-transparent via-pink-500 to-transparent"
-                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
-                    />
+                    <span className="pointer-events-none absolute inset-0 rounded-full border-2 border-destructive/40" />
                   ) : null}
                   <Input
                     id="settings-postal"

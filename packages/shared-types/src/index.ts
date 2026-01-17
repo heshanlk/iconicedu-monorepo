@@ -12,5 +12,6 @@ export * from './vm/profile';
 export * from './vm/family-link-invite';
 export * from './vm/learning-space';
 export * from './vm/org';
+export * from './vm/onboarding';
 export * from './rows';
 export * from './shared/grades';

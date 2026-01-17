@@ -31,6 +31,7 @@ import { StaffProfileTab } from './staff-profile-tab';
 import { StudentProfileTab } from './student-profile-tab';
 import { EducatorProfileTab } from './educator-profile-tab';
 import {
+  OnboardingStep,
   PROFILE_THEME_OPTIONS,
   SETTINGS_TABS,
   type UserSettingsTab,
@@ -101,6 +102,8 @@ export type UserSettingsTabsProps = {
   onFamilyMemberRemove?: (input: { childAccountId: string }) => Promise<void> | void;
   onEducatorProfileSave?: (input: EducatorProfileSaveInput) => Promise<void> | void;
   onStaffProfileSave?: (input: StaffProfileSaveInput) => Promise<void> | void;
+  onboardingStep?: OnboardingStep | null;
+  scrollToken?: number;
 };
 
 export function UserSettingsTabs({
@@ -122,11 +125,12 @@ export function UserSettingsTabs({
   onChildThemeSave,
   onChildProfileCreate,
   onFamilyMemberRemove,
-  onEducatorProfileSave,
-  onStaffProfileSave,
+    onEducatorProfileSave,
+    onStaffProfileSave,
+    onboardingStep,
+    scrollToken = 0,
 }: UserSettingsTabsProps) {
   const { isMobile } = useSidebar();
-  const [scrollToken, setScrollToken] = React.useState(0);
   const profileBlock = profile.profile;
   const profileDisplayName = getProfileDisplayName(profileBlock);
   const prefs = profile.prefs;
@@ -148,10 +152,14 @@ export function UserSettingsTabs({
   const childProfile = profile.kind === 'child' ? profile : null;
   const educatorProfile = profile.kind === 'educator' ? profile : null;
   const staffProfile = profile.kind === 'staff' ? profile : null;
-  React.useEffect(() => {
-    setScrollToken((prev) => prev + 1);
-  }, [value]);
-
+  const isAccountPhoneOnboarding = onboardingStep === 'account-phone';
+  const isProfileOnboarding = onboardingStep === 'profile';
+  const isPreferencesTimezoneOnboarding = onboardingStep === 'preferences-timezone';
+  const isLocationOnboarding = onboardingStep === 'location';
+  const profileOnboardingHint =
+    profile.kind === 'educator' && isProfileOnboarding
+      ? 'Enter your own first and last name so families know who you are (not your child’s).'
+      : undefined;
   const togglePreferredChannel = React.useCallback(
     (channel: string, enabled: boolean) => {
       const nextChannels = enabled
@@ -313,8 +321,11 @@ export function UserSettingsTabs({
               profile={profile}
               profileBlock={profileBlock}
               staffProfile={staffProfile}
-              scrollToRequired={value === 'profile'}
+              scrollToRequired={value === 'profile' || isProfileOnboarding}
               scrollToken={scrollToken}
+              showProfileTaskToast={isProfileOnboarding}
+              primaryActionLabel={isProfileOnboarding ? 'Continue' : undefined}
+              onboardingHint={profileOnboardingHint}
               onProfileSave={onProfileSave}
               onAvatarUpload={onAvatarUpload}
               onAvatarRemove={onAvatarRemove}
@@ -350,7 +361,7 @@ export function UserSettingsTabs({
               email={email}
               preferredChannelSelections={preferredChannelSelections}
               togglePreferredChannel={togglePreferredChannel}
-              scrollToRequired={value === 'account'}
+              scrollToRequired={value === 'account' || isAccountPhoneOnboarding}
               scrollToken={scrollToken}
               accountId={account?.ids.id}
               orgId={account?.ids.orgId}
@@ -367,8 +378,9 @@ export function UserSettingsTabs({
               prefs={prefs}
               profileThemeOptions={PROFILE_THEME_OPTIONS}
               setProfileThemes={setProfileThemes}
-              scrollToRequired={value === 'preferences'}
+              scrollToRequired={value === 'preferences' || isPreferencesTimezoneOnboarding}
               scrollToken={scrollToken}
+              showOnboardingToast={isPreferencesTimezoneOnboarding}
               onPrefsSave={onPrefsSave}
             />
           </TabsContent>
@@ -376,7 +388,7 @@ export function UserSettingsTabs({
         <TabsContent value="location" className="mt-0 space-y-8 w-full px-1">
           <LocationTab
             location={location}
-            scrollToRequired={value === 'location'}
+            scrollToRequired={value === 'location' || isLocationOnboarding}
             scrollToken={scrollToken}
             onLocationContinue={onLocationContinue}
           />

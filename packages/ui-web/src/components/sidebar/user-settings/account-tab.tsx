@@ -4,7 +4,6 @@ import { BadgeCheck, ChevronRight, Info, Mail, MessageCircle, Phone, X } from 'l
 
 import type { UserAccountVM } from '@iconicedu/shared-types';
 import { Badge } from '../../../ui/badge';
-import { BorderBeam } from '../../../ui/border-beam';
 import { Button } from '../../../ui/button';
 import {
   Collapsible,
@@ -387,13 +386,7 @@ export function AccountTab({
                 <Label htmlFor="settings-account-whatsapp">WhatsApp</Label>
                 <div className="relative rounded-full">
                   {whatsappOpen && !whatsappInputValue.trim() && !isWhatsappFocused ? (
-                    <BorderBeam
-                      size={60}
-                      initialOffset={20}
-                      borderWidth={2}
-                      className="from-transparent via-pink-500 to-transparent"
-                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
-                    />
+                    <span className="pointer-events-none absolute inset-0 rounded-full border-2 border-primary/40" />
                   ) : null}
                   <InputGroup>
                     <InputGroupInput

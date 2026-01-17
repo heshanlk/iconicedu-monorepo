@@ -12,7 +12,6 @@ import {
 
 import { getAllTimezones } from 'countries-and-timezones';
 import type { ThemeKey, UserProfileVM } from '@iconicedu/shared-types';
-import { BorderBeam } from '../../../ui/border-beam';
 import { Button } from '../../../ui/button';
 import { Input } from '../../../ui/input';
 import { Label } from '../../../ui/label';
@@ -225,14 +224,7 @@ export function PreferencesTab({
               </div>
               <div className="text-muted-foreground">
                 Fields marked as{' '}
-                <span className="relative inline-flex items-center">
-                  <BorderBeam
-                    size={48}
-                    initialOffset={12}
-                    borderWidth={2}
-                    className="from-transparent via-pink-500 to-transparent"
-                    transition={{ type: 'spring', stiffness: 60, damping: 20 }}
-                  />
+                <span className="relative inline-flex items-center rounded-full bg-destructive/10 px-1.5 py-0.5 text-destructive">
                   <span className="relative z-10 text-destructive">*</span>
                 </span>{' '}
                 are required.

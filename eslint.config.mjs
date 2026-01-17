@@ -9,12 +9,18 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const base = {
-  ignores: ['**/node_modules/**', '**/dist/**', '**/.next/**'],
+  ignores: ['**/node_modules/**', '**/dist/**', '**/.next/**', 'apps/web/next-env.d.ts'],
   languageOptions: {
     parser: tsParser,
     parserOptions: {
       ecmaVersion: 2020,
       sourceType: 'module',
+    },
+    globals: {
+      window: 'readonly',
+      document: 'readonly',
+      process: 'readonly',
+      console: 'readonly',
     },
   },
   plugins: {
@@ -53,7 +59,7 @@ const withProject = (pattern, tsconfigPath) => ({
 
 export default [
   {
-    ignores: ['**/node_modules/**', '**/.next/**', '**/dist/**'],
+    ignores: ['**/node_modules/**', '**/.next/**', '**/dist/**', 'apps/web/next-env.d.ts'],
   },
   withProject(['**/*.{ts,tsx,js,jsx}'], path.join(__dirname, 'tsconfig.json')),
   withProject(

@@ -7,7 +7,6 @@ import type {
   StaffProfileVM,
   UserProfileVM,
 } from '@iconicedu/shared-types';
-import { BorderBeam } from '../../../ui/border-beam';
 import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
 import {
   AlertDialog,
@@ -49,6 +48,8 @@ type ProfileTabProps = {
   onProfileSave?: (input: ProfileSaveInput) => Promise<void> | void;
   onAvatarUpload?: (input: ProfileAvatarInput) => Promise<void> | void;
   onAvatarRemove?: (input: ProfileAvatarRemoveInput) => Promise<void> | void;
+  onboardingHint?: string;
+  showProfileTaskToast?: boolean;
 };
 
 export type ProfileSaveInput = {
@@ -84,6 +85,8 @@ export function ProfileTab({
   onProfileSave,
   onAvatarUpload,
   onAvatarRemove,
+  onboardingHint,
+  showProfileTaskToast,
 }: ProfileTabProps) {
   const [profileDetailsOpen, setProfileDetailsOpen] =
     React.useState(expandProfileDetails);
@@ -94,7 +97,7 @@ export function ProfileTab({
   const [lastNameValue, setLastNameValue] = React.useState(profileBlock.lastName ?? '');
   const [isFirstFocused, setIsFirstFocused] = React.useState(false);
   const [isLastFocused, setIsLastFocused] = React.useState(false);
-  const showProfileTaskToast = expandProfileDetails;
+  const showToast = showProfileTaskToast ?? expandProfileDetails;
   const [isProfileToastDismissed, setIsProfileToastDismissed] = React.useState(false);
   const [displayNameValue, setDisplayNameValue] = React.useState(
     profileBlock.displayName ?? '',
@@ -332,19 +335,13 @@ export function ProfileTab({
 
   return (
     <div className="space-y-8 w-full">
-      {showProfileTaskToast && !isProfileToastDismissed ? (
+      {showToast && !isProfileToastDismissed ? (
         <div className="rounded-2xl border border-primary/20 bg-primary/5 px-4 py-3 text-sm shadow-sm">
           <div className="flex items-start justify-between gap-3">
             <div className="space-y-1">
               <div className="font-medium text-foreground">
                 Please fill out{' '}
-                <span className="relative inline-flex items-center rounded-2xl px-2 py-1">
-                  <BorderBeam
-                    size={48}
-                    initialOffset={12}
-                    className="from-transparent via-pink-500 to-transparent"
-                    transition={{ type: 'spring', stiffness: 60, damping: 20 }}
-                  />
+                <span className="relative inline-flex items-center rounded-2xl bg-primary/10 px-2 py-1 text-primary">
                   <span className="relative z-10">required</span>
                 </span>{' '}
                 details to continue.
@@ -474,21 +471,14 @@ export function ProfileTab({
                 <Label htmlFor="settings-first-name">
                   First name <span className="text-destructive">*</span>
                 </Label>
+                {onboardingHint ? (
+                  <p className="text-xs text-muted-foreground">{onboardingHint}</p>
+                ) : null}
                 <div className="relative rounded-full">
                   {shouldHighlightRequired &&
                   !firstNameValue.trim() &&
                   !isFirstFocused ? (
-                    <BorderBeam
-                      size={60}
-                      initialOffset={20}
-                      borderWidth={2}
-                      className="from-transparent via-pink-500 to-transparent"
-                      transition={{
-                        type: 'spring',
-                        stiffness: 60,
-                        damping: 20,
-                      }}
-                    />
+                    <span className="pointer-events-none absolute inset-0 rounded-full border-2 border-destructive/40" />
                   ) : null}
                   <Input
                     id="settings-first-name"
@@ -517,17 +507,7 @@ export function ProfileTab({
                 </Label>
                 <div className="relative rounded-full">
                   {shouldHighlightRequired && !lastNameValue.trim() && !isLastFocused ? (
-                    <BorderBeam
-                      size={60}
-                      initialOffset={20}
-                      borderWidth={2}
-                      className="from-transparent via-pink-500 to-transparent"
-                      transition={{
-                        type: 'spring',
-                        stiffness: 60,
-                        damping: 20,
-                      }}
-                    />
+                    <span className="pointer-events-none absolute inset-0 rounded-full border-2 border-destructive/40" />
                   ) : null}
                   <Input
                     id="settings-last-name"

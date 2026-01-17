@@ -22,6 +22,7 @@ import type {
   FamilyLinkInviteVM,
   StaffProfileSaveInput,
   ThemeKey,
+  UserOnboardingStatusVM,
   UserAccountVM,
   UserProfileVM,
 } from '@iconicedu/shared-types';
@@ -41,7 +42,11 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '../../ui/sidebar';
-import { UserSettingsDialog, type UserSettingsTab } from './user-settings-dialog';
+import {
+  ONBOARDING_STEP_TO_TAB,
+  UserSettingsDialog,
+  type UserSettingsTab,
+} from './user-settings-dialog';
 import type {
   ProfileAvatarInput,
   ProfileAvatarRemoveInput,
@@ -52,8 +57,8 @@ export function NavUser({
   profile,
   account,
   onLogout,
-  forceProfileCompletion,
-  forceAccountCompletion,
+  onOnboardingComplete,
+  onboardingStatus,
   onProfileSave,
   onChildProfileSave,
   onAccountUpdate,
@@ -73,8 +78,7 @@ export function NavUser({
   profile: UserProfileVM;
   account?: UserAccountVM | null;
   onLogout?: () => Promise<void> | void;
-  forceProfileCompletion?: boolean;
-  forceAccountCompletion?: boolean;
+  onboardingStatus?: UserOnboardingStatusVM | null;
   onProfileSave?: (input: ProfileSaveInput) => Promise<void> | void;
   onChildProfileSave?: (input: ChildProfileSaveInput) => Promise<void> | void;
   onAccountUpdate?: (input: {
@@ -138,6 +142,7 @@ export function NavUser({
   onFamilyMemberRemove?: (input: { childAccountId: string }) => Promise<void> | void;
   onEducatorProfileSave?: (input: EducatorProfileSaveInput) => Promise<void> | void;
   onStaffProfileSave?: (input: StaffProfileSaveInput) => Promise<void> | void;
+  onOnboardingComplete?: () => void;
 }) {
   const { isMobile } = useSidebar();
   const profileDisplayName = getProfileDisplayName(profile.profile);
@@ -152,18 +157,6 @@ export function NavUser({
     setSettingsOpen(true);
   }, []);
 
-  React.useEffect(() => {
-    if (forceProfileCompletion) {
-      setSettingsTab('profile');
-      setSettingsOpen(true);
-      return;
-    }
-    if (forceAccountCompletion) {
-      setSettingsTab('account');
-      setSettingsOpen(true);
-    }
-  }, [forceProfileCompletion, forceAccountCompletion]);
-
   const handleLogout = React.useCallback(async () => {
     if (!onLogout) {
       return;
@@ -175,6 +168,18 @@ export function NavUser({
       setIsLoggingOut(false);
     }
   }, [onLogout]);
+
+  React.useEffect(() => {
+    const step = onboardingStatus?.currentStep;
+    if (!step) {
+      return;
+    }
+    const targetTab = ONBOARDING_STEP_TO_TAB[step];
+    if (targetTab) {
+      setSettingsTab(targetTab);
+    }
+    setSettingsOpen(true);
+  }, [onboardingStatus]);
 
   return (
     <SidebarMenu>
@@ -293,6 +298,8 @@ export function NavUser({
         onFamilyMemberRemove={onFamilyMemberRemove}
         onEducatorProfileSave={onEducatorProfileSave}
         onStaffProfileSave={onStaffProfileSave}
+        onboardingStep={onboardingStatus?.currentStep ?? null}
+        onOnboardingComplete={onOnboardingComplete}
       />
       </SidebarMenuItem>
     </SidebarMenu>

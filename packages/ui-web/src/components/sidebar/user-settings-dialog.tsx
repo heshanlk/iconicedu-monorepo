@@ -20,7 +20,18 @@ import type {
 } from './user-settings/profile-tab';
 import { ResponsiveDialog } from '../shared/responsive-dialog';
 import { UserSettingsTabs } from './user-settings/user-settings-tabs';
-import type { UserSettingsTab } from './user-settings/constants';
+import { OnboardingStep, type UserSettingsTab } from './user-settings/constants';
+
+export const ONBOARDING_STEP_TO_TAB: Record<OnboardingStep, UserSettingsTab> = {
+  'account-phone': 'account',
+  profile: 'profile',
+  'preferences-timezone': 'preferences',
+  location: 'location',
+  family: 'family',
+  'student-profile': 'student-profile',
+  'educator-profile': 'educator-profile',
+  'staff-profile': 'staff-profile',
+};
 export type { UserSettingsTab } from './user-settings/constants';
 
 
@@ -95,6 +106,8 @@ type UserSettingsDialogProps = {
   onFamilyMemberRemove?: (input: { childAccountId: string }) => Promise<void> | void;
   onEducatorProfileSave?: (input: EducatorProfileSaveInput) => Promise<void> | void;
   onStaffProfileSave?: (input: StaffProfileSaveInput) => Promise<void> | void;
+  onboardingStep?: OnboardingStep | null;
+  onOnboardingComplete?: () => void;
 };
 
 export function UserSettingsDialog({
@@ -120,6 +133,8 @@ export function UserSettingsDialog({
   onFamilyMemberRemove,
   onEducatorProfileSave,
   onStaffProfileSave,
+  onboardingStep,
+  onOnboardingComplete,
 }: UserSettingsDialogProps) {
   const handleLocationContinue = React.useCallback(
     (input: {
@@ -140,11 +155,59 @@ export function UserSettingsDialog({
     },
     [onLocationSave, profile.ids.id, profile.ids.orgId],
   );
+  const [scrollToken, setScrollToken] = React.useState(0);
+  const lastStepRef = React.useRef<OnboardingStep | null>(null);
+  const onboardingStartedRef = React.useRef(false);
+
+  React.useEffect(() => {
+    if (!open) {
+      onboardingStartedRef.current = false;
+      lastStepRef.current = null;
+      setScrollToken(0);
+      return;
+    }
+
+    if (!onboardingStep) {
+      return;
+    }
+
+    onboardingStartedRef.current = true;
+    if (lastStepRef.current !== onboardingStep) {
+      setScrollToken((prev) => prev + 1);
+      lastStepRef.current = onboardingStep;
+    }
+  }, [open, onboardingStep]);
+
+  React.useEffect(() => {
+    if (!open || !onboardingStartedRef.current) {
+      return;
+    }
+    if (!onboardingStep) {
+      onOpenChange(false);
+      onOnboardingComplete?.();
+      onboardingStartedRef.current = false;
+    }
+  }, [open, onboardingStep, onOpenChange, onOnboardingComplete]);
+
+  React.useEffect(() => {
+    if (!open || !onboardingStep) {
+      return;
+    }
+    const targetTab = ONBOARDING_STEP_TO_TAB[onboardingStep];
+    if (targetTab && targetTab !== activeTab) {
+      onTabChange(targetTab);
+    }
+  }, [activeTab, onboardingStep, onTabChange, open]);
+
+  const shouldBlockOnboarding = onboardingStartedRef.current && Boolean(onboardingStep);
   const handleOpenChange = React.useCallback(
     (nextOpen: boolean) => {
+      if (shouldBlockOnboarding && !nextOpen) {
+        return;
+      }
       onOpenChange(nextOpen);
     },
-    [onOpenChange],
+    [onOpenChange, shouldBlockOnboarding],
   );
 
   const content = (
@@ -169,6 +232,8 @@ export function UserSettingsDialog({
         onFamilyMemberRemove={onFamilyMemberRemove}
         onEducatorProfileSave={onEducatorProfileSave}
         onStaffProfileSave={onStaffProfileSave}
+        onboardingStep={onboardingStep}
+        scrollToken={scrollToken}
       />
   );
   const { isMobile } = useSidebar();
@@ -184,6 +249,7 @@ export function UserSettingsDialog({
       dialogHeaderClassName="p-6"
       drawerHeaderClassName="items-start"
       containerClassName="h-full"
+      dialogShowCloseButton={!shouldBlockOnboarding}
       bodyClassName={cn(isMobile ? 'px-4 pb-4' : 'px-6 pb-6')}
     >
       {content}

@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import type { ReactNode } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import type {
   ChildProfileSaveInput,
   EducatorProfileSaveInput,
@@ -11,6 +11,7 @@ import type {
   SidebarLeftDataVM,
   StaffProfileSaveInput,
   ThemeKey,
+  UserOnboardingStatusVM,
 } from '@iconicedu/shared-types';
 import { SidebarLeft, SidebarInset } from '@iconicedu/ui-web';
 import { toast } from 'sonner';
@@ -21,6 +22,8 @@ import {
 } from '../../actions/family-invite';
 import { removeFamilyMemberAction } from '../../actions/remove-family-member';
 import { createChildProfileAction } from '../../actions/create-child-profile';
+import { upsertUserOnboardingStatusAction } from '../../actions/onboarding-status';
+import { determineOnboardingStep } from '../../../lib/onboarding/determineOnboardingStep';
 
 const AVATAR_BUCKET = 'public-avatars';
 const AVATAR_SIGNED_URL_TTL = 60 * 60;
@@ -58,26 +61,82 @@ const getPreferenceSuccessMessage = (input: {
 export function SidebarShell({
   children,
   data,
-  forceProfileCompletion,
-  forceAccountCompletion,
+  initialOnboardingStatus,
 }: {
   children: ReactNode;
   data: SidebarLeftDataVM;
-  forceProfileCompletion?: boolean;
-  forceAccountCompletion?: boolean;
+  initialOnboardingStatus?: UserOnboardingStatusVM | null;
 }) {
   const pathname = usePathname();
   const supabase = React.useMemo(() => createSupabaseBrowserClient(), []);
+  const router = useRouter();
   const [sidebarData, setSidebarData] = React.useState(data);
+  const [onboardingStatus, setOnboardingStatus] = React.useState<UserOnboardingStatusVM | null>(
+    initialOnboardingStatus ?? null,
+  );
 
   React.useEffect(() => {
     setSidebarData(data);
   }, [data]);
 
+  React.useEffect(() => {
+    setOnboardingStatus(initialOnboardingStatus ?? null);
+  }, [initialOnboardingStatus]);
+
   const handleLogout = React.useCallback(async () => {
     await supabase.auth.signOut();
     window.location.assign('/login');
   }, [supabase]);
+
+  const handleOnboardingComplete = React.useCallback(() => {
+    void router.push('/d');
+  }, [router]);
+
+  const sidebarProfile = sidebarData.user.profile;
+  const sidebarAccount = sidebarData.user.account ?? null;
+
+  const computedOnboardingStep = React.useMemo(
+    () => determineOnboardingStep(sidebarProfile, sidebarAccount),
+    [sidebarProfile, sidebarAccount],
+  );
+
+  React.useEffect(() => {
+    if (!sidebarProfile.ids?.id || !sidebarProfile.ids?.orgId) {
+      return;
+    }
+
+    const nextStep = computedOnboardingStep;
+    const shouldUpdate =
+      (nextStep &&
+        (!onboardingStatus ||
+          onboardingStatus.currentStep !== nextStep ||
+          onboardingStatus.completed)) ||
+      (!nextStep && onboardingStatus && !onboardingStatus.completed);
+
+    if (!shouldUpdate) {
+      return;
+    }
+
+    let isMounted = true;
+    (async () => {
+      const updatedStatus = await upsertUserOnboardingStatusAction({
+        profileId: sidebarProfile.ids.id,
+        orgId: sidebarProfile.ids.orgId,
+        currentStep: nextStep,
+        completed: !nextStep,
+        lastCompletedStep: onboardingStatus?.currentStep ?? null,
+      });
+      if (isMounted) {
+        setOnboardingStatus(updatedStatus);
+      }
+    })().catch(() => {
+      // intentionally ignore errors in client-side sync
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [computedOnboardingStep, onboardingStatus, sidebarProfile]);
 
   const primaryProfileId = data.user.profile.ids.id;
 
@@ -173,52 +232,48 @@ export function SidebarShell({
 
   const handleChildThemeSave = React.useCallback(
     async (input: { profileId: string; orgId: string; themeKey: ThemeKey }) => {
-      try {
-        const { error } = await supabase
-          .from('profiles')
-          .update({
-            ui_theme_key: input.themeKey,
-          })
-          .eq('id', input.profileId)
-          .eq('org_id', input.orgId);
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          ui_theme_key: input.themeKey,
+        })
+        .eq('id', input.profileId)
+        .eq('org_id', input.orgId);
 
-        if (error) {
-          throw error;
-        }
-
-        setSidebarData((prev) => {
-          const profile = prev.user.profile;
-          if (profile.kind !== 'guardian' || !profile.children?.items) {
-            return prev;
-          }
-
-          return {
-            ...prev,
-            user: {
-              ...prev.user,
-              profile: {
-                ...profile,
-                children: {
-                  ...profile.children,
-                  items: profile.children.items.map((child) =>
-                    child.ids.id === input.profileId
-                      ? {
-                          ...child,
-                          ui: {
-                            ...child.ui,
-                            themeKey: input.themeKey,
-                          },
-                        }
-                      : child,
-                  ),
-                },
-              },
-            },
-          };
-        });
-      } catch (error) {
+      if (error) {
         throw error;
       }
+
+      setSidebarData((prev) => {
+        const profile = prev.user.profile;
+        if (profile.kind !== 'guardian' || !profile.children?.items) {
+          return prev;
+        }
+
+        return {
+          ...prev,
+          user: {
+            ...prev.user,
+            profile: {
+              ...profile,
+              children: {
+                ...profile.children,
+                items: profile.children.items.map((child) =>
+                  child.ids.id === input.profileId
+                    ? {
+                        ...child,
+                        ui: {
+                          ...child.ui,
+                          themeKey: input.themeKey,
+                        },
+                      }
+                    : child,
+                ),
+              },
+            },
+          },
+        };
+      });
     },
     [supabase],
   );
@@ -1144,8 +1199,8 @@ export function SidebarShell({
         data={sidebarData}
         activePath={pathname}
         onLogout={handleLogout}
-        forceProfileCompletion={forceProfileCompletion}
-        forceAccountCompletion={forceAccountCompletion}
+        onboardingStatus={onboardingStatus}
+        onOnboardingComplete={handleOnboardingComplete}
         onProfileSave={handleProfileSave}
         onChildProfileSave={handleChildProfileSave}
         onAccountUpdate={handleAccountUpdate}

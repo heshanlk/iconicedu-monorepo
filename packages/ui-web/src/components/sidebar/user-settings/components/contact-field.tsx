@@ -1,6 +1,5 @@
 import * as React from 'react';
 
-import { BorderBeam } from '../../../../ui/border-beam';
 import { Input } from '../../../../ui/input';
 import {
   InputGroup,
@@ -54,13 +53,7 @@ export const ContactField = React.forwardRef<HTMLInputElement, ContactFieldProps
         </Label>
         <div className="relative rounded-full">
           {highlight ? (
-            <BorderBeam
-              size={60}
-              initialOffset={20}
-              borderWidth={2}
-              className="from-transparent via-pink-500 to-transparent"
-              transition={{ type: 'spring', stiffness: 60, damping: 20 }}
-            />
+            <span className="pointer-events-none absolute inset-0 rounded-full border border-primary/50" />
           ) : null}
           <InputGroup>
             <InputGroupInput

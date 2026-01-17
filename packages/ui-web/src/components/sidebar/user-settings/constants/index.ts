@@ -10,6 +10,7 @@ import {
   Users,
 } from 'lucide-react';
 import type { ComponentType, SVGProps } from 'react';
+import type { OnboardingStep as SharedOnboardingStep } from '@iconicedu/shared-types';
 
 export type UserSettingsTab =
   | 'account'
@@ -22,13 +23,7 @@ export type UserSettingsTab =
   | 'family'
   | 'notifications';
 
-export type OnboardingStep =
-  | 'profile'
-  | 'account-phone'
-  | 'account-whatsapp'
-  | 'preferences-timezone'
-  | 'location'
-  | 'family';
+export type OnboardingStep = SharedOnboardingStep;
 
 export const SETTINGS_TABS: Array<{
   value: UserSettingsTab;
