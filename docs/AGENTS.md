@@ -71,3 +71,10 @@
 ## 11. TODO Reference
 - Keep track of follow-up work, blockers, and reiteration items in `docs/TODO.md`.
 - Before making design/process changes, check `docs/TODO.md` to understand outstanding tickets and to avoid duplicate reminders; use that file as the single source for pending work descriptions.
+
+## 12. Data & Structure Guidance
+- Stick to the established folder conventions: `lib/data` for fixtures, `lib/sidebar` for sidebar wiring, folders under `lib/<entity>/queries` for DB access, `lib/<entity>/mappers` for translating rows to VMs, and `lib/<entity>/builders` for composing higher-level structures. When working on an entity (org, class space, learning space, user, etc.), add your files under the matching bundle rather than inventing new organisation.
+- All row definitions, view models, and helpers tied to DB entities must land in `packages/shared-types` (extend rows, mappers, and shared helpers there before wiring them into apps). Mirror those shared types with the corresponding query/builder/mapping files so every entity follows the same pattern. This keeps future agents focused on predictable places for data contracts and reduces duplication.
+
+## 13. Stability-first habits
+- Do not add novel folder layouts or structural patterns without agreement—extend the existing query/builder/mapping layout instead. Treat `packages/shared-types` as the single source for new data contracts and update related queries/mappers/builders before touching UI or API layers. Keeping this disciplined structure avoids hidden dependencies and ensures everyone can find the relevant pieces when extending an entity.
