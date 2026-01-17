@@ -39,6 +39,8 @@
 ## 6. UI & Design System Rules
 - Use Tailwind CSS and shadcn/ui components consistently.
 - Prefer composition of shadcn primitives over custom components.
+- Reference the official shadcn component docs (https://ui.shadcn.com/docs/components) before recreating a UI pattern; strive to reuse those building blocks rather than invent new ones.
+- When a layout or interaction is repeated across views, add a shared, shadcn-friendly component inside `packages/ui-web/src/components` instead of duplicating markup in multiple files.
 - Theming uses `ThemeKey` and `theme-*` classes; avoid inline colors.
 - Keep mobile responsiveness in mind for all layouts.
 
@@ -72,9 +74,12 @@
 - Keep track of follow-up work, blockers, and reiteration items in `docs/TODO.md`.
 - Before making design/process changes, check `docs/TODO.md` to understand outstanding tickets and to avoid duplicate reminders; use that file as the single source for pending work descriptions.
 
-## 12. Data & Structure Guidance
+## 12. Shadcn MCP Server (new)
+- We now keep a pointer to the official MCP server workflow in `docs/SHADCN-MCP.md`. Use that guide when you want to launch the interactive component preview that ships with `shadcn/ui`. No need to add custom scripts beyond the ones described there; follow the `pnpm shadcn:mcp` helper in `packages/ui-web/package.json`.
+
+## 13. Data & Structure Guidance
 - Follow the existing `apps/web/lib` layout—do not introduce new folder patterns. Each entity (user, org, family, class-space, learning-space, etc.) deserves its own bundle with explicit `queries`, `mappers`, and `builders` subfolders under `apps/web/lib/<entity>`. Keep fixtures in `lib/data`, sidebar wiring in `lib/sidebar`, and keep the entity bundles focused on reusable data access or transformation logic.
 - Create or extend row definitions, view models, and helpers in `packages/shared-types` before using them in apps. Once the shared contract exists, mirror it under the matching `apps/web/lib/<entity>` bundle so every entity follows the same `queries`→`mappers`→`builders` pipeline. Treat the `apps/web/lib/user` bundle as the canonical pattern and replicate it when onboarding new domains.
 
-## 13. Stability-first habits
+## 14. Stability-first habits
 - Do not add novel folder layouts or structural patterns without agreement—extend the existing query/builder/mapping layout instead. Treat `packages/shared-types` as the single source for new data contracts and update related queries/mappers/builders before touching UI or API layers. Keeping this disciplined structure avoids hidden dependencies and ensures everyone can find the relevant pieces when extending an entity.

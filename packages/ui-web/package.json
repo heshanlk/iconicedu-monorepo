@@ -14,7 +14,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.json && tailwindcss -c tailwind.config.ts -i ./src/styles/global.css -o ./dist/ui-web.css --minify",
     "dev": "tsc -p tsconfig.json --watch & tailwindcss -c tailwind.config.ts -i ./src/styles/global.css -o ./dist/ui-web.css --watch",
-    "shadcn:add": "pnpm dlx shadcn@latest add"
+    "shadcn:add": "pnpm dlx shadcn@latest add",
+    "shadcn:mcp": "pnpm dlx shadcn@latest mcp"
   },
   "peerDependencies": {
     "react": "^19.1.1",
