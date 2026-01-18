@@ -1,7 +1,8 @@
 'use server';
 
 import { createSupabaseServerClient } from '../../lib/supabase/server';
-import { getAccountByAuthUserId } from '../../lib/user/queries/accounts.query';
+import { getAccountByAuthUserId, getAccountById } from '../../lib/user/queries/accounts.query';
+import { getFamilyInviteAdminClient } from '../../lib/family/queries/invite.query';
 
 type RemoveFamilyMemberInput = {
   childAccountId: string;
@@ -27,16 +28,51 @@ export async function removeFamilyMemberAction(
 
   const guardianAccount = accountResponse.data;
   const now = new Date().toISOString();
+  const serviceClient = getFamilyInviteAdminClient();
 
-  const { error } = await supabase
+  const accountResult = await getAccountById(serviceClient, input.childAccountId);
+  const childAccount = accountResult.data;
+  const shouldHardDeleteAccount =
+    Boolean(childAccount) &&
+    !childAccount.email_verified &&
+    !childAccount.auth_user_id;
+
+  const linkMatch = {
+    org_id: guardianAccount.org_id,
+    guardian_account_id: guardianAccount.id,
+    child_account_id: input.childAccountId,
+  };
+
+  if (shouldHardDeleteAccount) {
+    const { error: deleteLinkError } = await serviceClient
+      .from('family_links')
+      .delete()
+      .match(linkMatch)
+      .is('deleted_at', null);
+
+    if (deleteLinkError) {
+      throw deleteLinkError;
+    }
+
+    const { error: deleteAccountError } = await serviceClient
+      .from('accounts')
+      .delete()
+      .eq('id', input.childAccountId);
+
+    if (deleteAccountError) {
+      throw deleteAccountError;
+    }
+
+    return;
+  }
+
+  const { error } = await serviceClient
     .from('family_links')
     .update({
       deleted_at: now,
       deleted_by: guardianAccount.id,
     })
-    .eq('org_id', guardianAccount.org_id)
-    .eq('guardian_account_id', guardianAccount.id)
-    .eq('child_account_id', input.childAccountId)
+    .match(linkMatch)
     .is('deleted_at', null);
 
   if (error) {

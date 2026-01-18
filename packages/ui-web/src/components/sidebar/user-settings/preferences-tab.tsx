@@ -174,9 +174,11 @@ export function PreferencesTab({
   const isTimezoneDefaultOrMissing =
     !timezoneValueTrimmed || timezoneValueTrimmed === DEFAULT_TIMEZONE;
   const isTimezoneRequiredMissing = isTimezoneDefaultOrMissing;
-  const showTimezoneInputBeam = isTimezoneRequiredMissing;
-  const showPickTimezoneBeam = Boolean(browserTimezone && isTimezoneRequiredMissing);
-  const showSaveBeam = Boolean(!isTimezoneRequiredMissing && !isSaving);
+  const isTimezoneOnboarding = onboardingRequiredSection === 'timezone';
+  const showTimezoneInputBeam = isTimezoneRequiredMissing && isTimezoneOnboarding;
+  const showPickTimezoneBeam =
+    Boolean(browserTimezone && isTimezoneRequiredMissing) && isTimezoneOnboarding;
+  const showSaveBeam = Boolean(!isTimezoneRequiredMissing && !isSaving) && isTimezoneOnboarding;
 
   React.useEffect(() => {
     if (!scrollToRequired || !isTimezoneRequiredMissing) {

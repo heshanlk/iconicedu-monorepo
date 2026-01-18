@@ -379,7 +379,6 @@ export function FamilyTab({
       });
       toast.success('Child profile submitted');
       handleDialogReset();
-      setIsDialogOpen(false);
     } catch (error) {
       console.error(error);
       toast.error('Unable to create child profile');
@@ -516,22 +515,22 @@ export function FamilyTab({
                 }
               }}
             >
-              <DialogTrigger asChild>
-                <div className="relative inline-flex rounded-full">
-                  {familyMembers.length <= 1 ? (
-                    <BorderBeam
-                      size={48}
-                      borderWidth={2}
-                      className="from-primary/70 via-primary/30 to-transparent"
-                      transition={{ duration: 4, ease: 'linear' }}
-                    />
-                  ) : null}
-                  <Button variant="ghost" size="sm" className="relative z-10">
-                    <Plus className="size-4" />
-                    Add
-                  </Button>
-                </div>
-              </DialogTrigger>
+                <DialogTrigger asChild>
+                  <div className="relative inline-flex rounded-full">
+                    {showOnboardingToast ? (
+                      <BorderBeam
+                        size={52}
+                        borderWidth={2}
+                        className="from-primary/60 via-primary/30 to-transparent"
+                        transition={{ duration: 4, ease: 'linear' }}
+                      />
+                    ) : null}
+                    <Button variant="ghost" size="sm" className="relative z-10">
+                      <Plus className="size-4" />
+                      Add
+                    </Button>
+                  </div>
+                </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>Add a child profile</DialogTitle>

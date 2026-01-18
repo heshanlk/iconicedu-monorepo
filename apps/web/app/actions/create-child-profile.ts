@@ -329,11 +329,11 @@ export async function createChildProfileAction(
       data: existingChildProfile,
       error: existingChildProfileError,
     } = await serviceClient
-      .from('child_profiles')
-      .select('id')
-      .eq('org_id', guardianAccount.org_id)
-      .eq('profile_id', profileRow.id)
-      .maybeSingle();
+    .from('child_profiles')
+    .select('profile_id')
+    .eq('org_id', guardianAccount.org_id)
+    .eq('profile_id', profileRow.id)
+    .maybeSingle();
 
     if (existingChildProfileError) {
       throw existingChildProfileError;
@@ -371,8 +371,8 @@ export async function createChildProfileAction(
       data: existingGrade,
       error: existingGradeError,
     } = await serviceClient
-      .from('child_profile_grade_level')
-      .select('id')
+    .from('child_profile_grade_level')
+    .select('profile_id')
       .eq('org_id', guardianAccount.org_id)
       .eq('profile_id', profileRow.id)
       .maybeSingle();
