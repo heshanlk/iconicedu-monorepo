@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { Plus, ShieldAlert, UserPlus, X } from 'lucide-react';
+import { Plus, ShieldAlert, UserPlus } from 'lucide-react';
 
 import type { ThemeKey, UserProfileVM } from '@iconicedu/shared-types';
 import { normalizeCountryCode, optionsForCountry } from '@iconicedu/shared-types';
@@ -140,7 +140,6 @@ export function FamilyTab({
   guardianEmail,
   onFamilyMemberRemove,
 }: FamilyTabProps) {
-  const [isToastDismissed, setIsToastDismissed] = React.useState(false);
   const [isInviteOpen, setIsInviteOpen] = React.useState(false);
   const [inviteRole, setInviteRole] = React.useState<FamilyLinkInviteRole>('child');
   const [inviteEmail, setInviteEmail] = React.useState('');
@@ -188,7 +187,6 @@ export function FamilyTab({
       newChildFirstNameRef.current?.focus();
     });
   }, [isDialogOpen]);
-  const showToast = showOnboardingToast && !isToastDismissed;
   const INVITE_SAVE_ERROR = 'Unable to send invite right now. Please try again.';
   const INVITE_REMOVE_ERROR = 'Unable to remove invite right now. Please try again.';
 
@@ -493,32 +491,6 @@ export function FamilyTab({
 
   return (
     <div className="space-y-8 w-full">
-      {showToast ? (
-        <div className="rounded-2xl border border-primary/20 bg-primary/5 px-4 py-3 text-sm shadow-sm">
-          <div className="flex items-start justify-between gap-3">
-            <div className="space-y-1">
-              <div className="font-medium text-foreground">
-                Please fill out required details to continue.
-              </div>
-              <div className="text-muted-foreground">
-                Fields marked as{' '}
-                <span className="relative inline-flex items-center rounded-full bg-destructive/10 px-1.5 py-0.5 text-destructive">
-                  <span className="relative z-10 text-destructive">*</span>
-                </span>{' '}
-                are required.
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => setIsToastDismissed(true)}
-              className="inline-flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground"
-              aria-label="Dismiss"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
-      ) : null}
       <div className="space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="space-y-1">
@@ -569,53 +541,6 @@ export function FamilyTab({
                   </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4">
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between gap-2">
-                      <Label htmlFor="new-email">Email</Label>
-                      <span className="text-xs text-muted-foreground">Optional</span>
-                    </div>
-                    <Input
-                      id="new-email"
-                      type="email"
-                      value={newChildEmail}
-                      onChange={(event) => {
-                        setNewChildEmail(event.target.value);
-                        validateChildEmail(event.target.value);
-                      }}
-                      placeholder="child@example.com (optional)"
-                    />
-                    {newChildEmailError ? (
-                      <p className="text-xs text-destructive">{newChildEmailError}</p>
-                    ) : null}
-                    {newChildEmail.trim() ? (
-                      <div className="space-y-1 text-xs text-muted-foreground border p-2 rounded-xl">
-                        <p className="text-[11px]">
-                          <ShieldAlert className="inline-block mr-1 w-3 h-3" />
-                          If the student is 13 years or older, they can have their own
-                          account, communicate directly with the teacher to ask questions,
-                          and stay more engaged in their learning—while parents continue
-                          to monitor everything.
-                        </p>
-                        <p className="text-[11px]">
-                          If a student is under 13 but shows the maturity to handle things
-                          independently, parents may enable supervised direct
-                          communication with the teacher, while continuing to monitor all
-                          activity.
-                        </p>
-                        <Button
-                          variant="outline"
-                          size="xs"
-                          className="px-2 text-xs mt-1 font-medium text-primary underline-offset-4 hover:underline"
-                          onClick={() =>
-                            prepareInviteForEmail(newChildEmail.trim(), 'child')
-                          }
-                          type="button"
-                        >
-                          Click here to send them an invite to get started
-                        </Button>
-                      </div>
-                    ) : null}
-                  </div>
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-2">
                       <Label htmlFor="new-first-name">Child first name *</Label>
@@ -725,6 +650,53 @@ export function FamilyTab({
                         </Select>
                       </div>
                     </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <Label htmlFor="new-email">Email</Label>
+                      <span className="text-xs text-muted-foreground">Optional</span>
+                    </div>
+                    <Input
+                      id="new-email"
+                      type="email"
+                      value={newChildEmail}
+                      onChange={(event) => {
+                        setNewChildEmail(event.target.value);
+                        validateChildEmail(event.target.value);
+                      }}
+                      placeholder="child@example.com (optional)"
+                    />
+                    {newChildEmailError ? (
+                      <p className="text-xs text-destructive">{newChildEmailError}</p>
+                    ) : null}
+                    {newChildEmail.trim() ? (
+                      <div className="space-y-1 text-xs text-muted-foreground border p-2 rounded-xl">
+                        <p className="text-[11px]">
+                          <ShieldAlert className="inline-block mr-1 w-3 h-3" />
+                          If the student is 13 years or older, they can have their own
+                          account, communicate directly with the teacher to ask questions,
+                          and stay more engaged in their learning—while parents continue
+                          to monitor everything.
+                        </p>
+                        <p className="text-[11px]">
+                          If a student is under 13 but shows the maturity to handle things
+                          independently, parents may enable supervised direct
+                          communication with the teacher, while continuing to monitor all
+                          activity.
+                        </p>
+                        <Button
+                          variant="outline"
+                          size="xs"
+                          className="px-2 text-xs mt-1 font-medium text-primary underline-offset-4 hover:underline"
+                          onClick={() =>
+                            prepareInviteForEmail(newChildEmail.trim(), 'child')
+                          }
+                          type="button"
+                        >
+                          Click here to send them an invite to get started
+                        </Button>
+                      </div>
+                    ) : null}
                   </div>
                   <div className="text-xs text-muted-foreground">
                     Timezone: {timezone ?? 'inherited'}, Location: {location?.city ?? '—'}

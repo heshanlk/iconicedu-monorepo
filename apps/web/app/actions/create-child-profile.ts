@@ -1,6 +1,12 @@
 'use server';
 
-import type { AccountRow, ChildProfileVM, ProfileRow } from '@iconicedu/shared-types';
+import type {
+  AccountRow,
+  ChildProfileGradeLevelRow,
+  ChildProfileRow,
+  ChildProfileVM,
+  ProfileRow,
+} from '@iconicedu/shared-types';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { getFamilyInviteAdminClient, ensureFamilyForGuardian } from '../../lib/family/queries/invite.query';
 import { loadChildProfiles } from '../../lib/user/builders/load-child-profiles';
@@ -193,39 +199,86 @@ export async function createChildProfileAction(
     throw linkError;
   }
 
-  const { error: childProfileError } = await serviceClient
-    .from('child_profiles')
-    .upsert(
-      {
-        profile_id: profileRow.id,
-        org_id: guardianAccount.org_id,
-        birth_year: input.birthYear,
-        created_by: guardianAccount.id,
-        updated_by: guardianAccount.id,
-      },
-      { onConflict: 'org_id,profile_id' },
-    );
+  const childProfilePayload = {
+    profile_id: profileRow.id,
+    org_id: guardianAccount.org_id,
+    birth_year: input.birthYear,
+    created_by: guardianAccount.id,
+    updated_by: guardianAccount.id,
+  };
 
-  if (childProfileError) {
-    throw childProfileError;
+  const {
+    data: existingChildProfile,
+    error: existingChildProfileError,
+  } = await serviceClient
+    .from('child_profiles')
+    .select('id')
+    .eq('org_id', guardianAccount.org_id)
+    .eq('profile_id', profileRow.id)
+    .is('deleted_at', null)
+    .maybeSingle();
+
+  if (existingChildProfileError) {
+    throw existingChildProfileError;
   }
 
-  const { error: gradeError } = await serviceClient
-    .from('child_profile_grade_level')
-    .upsert(
-      {
-        org_id: guardianAccount.org_id,
-        profile_id: profileRow.id,
-        grade_id: input.gradeLevel,
-        grade_label: input.gradeLevel,
-        created_by: guardianAccount.id,
-        updated_by: guardianAccount.id,
-      },
-      { onConflict: 'org_id,profile_id' },
-    );
+  if (existingChildProfile) {
+    const { error } = await serviceClient
+      .from<ChildProfileRow>('child_profiles')
+      .update(childProfilePayload)
+      .eq('id', existingChildProfile.id);
 
-  if (gradeError) {
-    throw gradeError;
+    if (error) {
+      throw error;
+    }
+  } else {
+    const { error } = await serviceClient.from('child_profiles').insert(childProfilePayload);
+
+    if (error) {
+      throw error;
+    }
+  }
+
+  const childGradePayload = {
+    org_id: guardianAccount.org_id,
+    profile_id: profileRow.id,
+    grade_id: input.gradeLevel,
+    grade_label: input.gradeLevel,
+    created_by: guardianAccount.id,
+    updated_by: guardianAccount.id,
+  };
+
+  const {
+    data: existingGrade,
+    error: existingGradeError,
+  } = await serviceClient
+    .from('child_profile_grade_level')
+    .select('id')
+    .eq('org_id', guardianAccount.org_id)
+    .eq('profile_id', profileRow.id)
+    .maybeSingle();
+
+  if (existingGradeError) {
+    throw existingGradeError;
+  }
+
+  if (existingGrade) {
+    const { error } = await serviceClient
+      .from<ChildProfileGradeLevelRow>('child_profile_grade_level')
+      .update(childGradePayload)
+      .eq('id', existingGrade.id);
+
+    if (error) {
+      throw error;
+    }
+  } else {
+    const { error } = await serviceClient
+      .from('child_profile_grade_level')
+      .insert(childGradePayload);
+
+    if (error) {
+      throw error;
+    }
   }
 
   const children = await loadChildProfiles(

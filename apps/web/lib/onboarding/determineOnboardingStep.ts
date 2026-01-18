@@ -19,7 +19,7 @@ export function determineOnboardingStep(
     return 'profile';
   }
 
-  if (!profile.prefs.timezone?.trim()) {
+  if (!profile.prefs.timezone?.trim() || profile.prefs.timezone?.trim() === 'UTC') {
     return 'preferences-timezone';
   }
 

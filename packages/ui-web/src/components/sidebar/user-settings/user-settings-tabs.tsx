@@ -408,7 +408,6 @@ export function UserSettingsTabs({
             setProfileThemes={setProfileThemes}
             scrollToRequired={value === 'preferences' || isPreferencesTimezoneOnboarding}
             scrollToken={scrollToken}
-            showOnboardingToast={isPreferencesTimezoneOnboarding}
             onPrefsSave={onPrefsSave}
             onboardingRequiredSection={preferencesSectionKey}
             lockSections={Boolean(preferencesGuidance)}

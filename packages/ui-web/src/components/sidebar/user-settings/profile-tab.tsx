@@ -366,32 +366,6 @@ export function ProfileTab({
 
   return (
     <div className="space-y-8 w-full">
-      {showToast && !isProfileToastDismissed ? (
-        <div className="rounded-2xl border border-primary/20 bg-primary/5 px-4 py-3 text-sm shadow-sm">
-          <div className="flex items-start justify-between gap-3">
-            <div className="space-y-1">
-              <div className="font-medium text-foreground">
-                Please fill out{' '}
-                <span className="relative inline-flex items-center rounded-2xl bg-primary/10 px-2 py-1 text-primary">
-                  <span className="relative z-10">required</span>
-                </span>{' '}
-                details to continue.
-              </div>
-              <div className="text-muted-foreground">
-                Fields marked as <span className="text-destructive">*</span> are required.
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => setIsProfileToastDismissed(true)}
-              className="inline-flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground"
-              aria-label="Dismiss"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
-      ) : null}
       <div className="space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="space-y-1">
@@ -586,41 +560,41 @@ export function ProfileTab({
                   placeholder="Share a short bio to help others know you."
                 />
               </div>
-                <div className="sm:col-span-2 flex flex-wrap items-center justify-between gap-3">
-                  <div className="text-xs text-muted-foreground">
-                    {saveError ? (
-                      <span className="text-destructive">{saveError}</span>
-                    ) : null}
-                  </div>
-                  <div className="relative inline-flex">
-                    {showProfileActionBeam ? (
-                      <BorderBeam
-                        size={56}
-                        borderWidth={2}
-                        delay={0.2}
-                        transition={{ duration: 4, ease: 'linear' }}
-                        className="from-primary via-primary/80 to-transparent"
-                      />
-                    ) : null}
-                    <Button
-                      size="sm"
-                      className="relative"
-                      onClick={() => handleProfileSave(onPrimaryActionComplete)}
-                      disabled={isSaving || isPrimaryDisabled}
-                    >
-                      {isSaving ? (
-                        'Saving...'
-                      ) : primaryActionLabel === 'Continue' ? (
-                        <span className="inline-flex items-center gap-2">
-                          Continue
-                          <ArrowRight className="h-4 w-4" />
-                        </span>
-                      ) : (
-                        primaryActionLabel
-                      )}
-                    </Button>
-                  </div>
+              <div className="sm:col-span-2 flex flex-wrap items-center justify-between gap-3">
+                <div className="text-xs text-muted-foreground">
+                  {saveError ? (
+                    <span className="text-destructive">{saveError}</span>
+                  ) : null}
                 </div>
+                <div className="relative inline-flex">
+                  {showProfileActionBeam ? (
+                    <BorderBeam
+                      size={56}
+                      borderWidth={2}
+                      delay={0.2}
+                      transition={{ duration: 4, ease: 'linear' }}
+                      className="from-primary via-primary/80 to-transparent"
+                    />
+                  ) : null}
+                  <Button
+                    size="sm"
+                    className="relative"
+                    onClick={() => handleProfileSave(onPrimaryActionComplete)}
+                    disabled={isSaving || isPrimaryDisabled}
+                  >
+                    {isSaving ? (
+                      'Saving...'
+                    ) : primaryActionLabel === 'Continue' ? (
+                      <span className="inline-flex items-center gap-2">
+                        Continue
+                        <ArrowRight className="h-4 w-4" />
+                      </span>
+                    ) : (
+                      primaryActionLabel
+                    )}
+                  </Button>
+                </div>
+              </div>
             </div>
           </UserSettingsTabSection>
         </div>

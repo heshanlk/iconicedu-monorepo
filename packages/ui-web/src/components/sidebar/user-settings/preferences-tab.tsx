@@ -27,6 +27,12 @@ import { languageOptions, localeOptions } from './constants';
 import { useSequentialHighlight } from './hooks/use-sequential-highlight';
 import { BorderBeam } from '../../../ui/border-beam';
 
+const DEFAULT_TIMEZONE = 'UTC';
+const normalizeTimezone = (value?: string | null) => {
+  const next = value?.trim() ?? '';
+  return next === DEFAULT_TIMEZONE ? '' : next;
+};
+
 type TimezoneOption = {
   name: string;
   countryCode: string | null;
@@ -53,7 +59,6 @@ type PreferencesTabProps = {
   prefs: UserProfileVM['prefs'];
   profileThemeOptions: Array<{ value: string; label: string }>;
   setProfileThemes: React.Dispatch<React.SetStateAction<Record<string, ThemeKey>>>;
-  showOnboardingToast?: boolean;
   scrollToRequired?: boolean;
   scrollToken?: number;
   onPrefsSave?: (input: {
@@ -76,7 +81,6 @@ export function PreferencesTab({
   prefs,
   profileThemeOptions,
   setProfileThemes,
-  showOnboardingToast = false,
   scrollToRequired = false,
   scrollToken = 0,
   onPrefsSave,
@@ -84,16 +88,19 @@ export function PreferencesTab({
   lockSections = false,
 }: PreferencesTabProps) {
   const timezoneOptions = React.useMemo<TimezoneOption[]>(() => {
-    const options = Object.values(getAllTimezones()).reduce<TimezoneOption[]>((acc, timezone) => {
-      if (!timezone.name) {
+    const options = Object.values(getAllTimezones()).reduce<TimezoneOption[]>(
+      (acc, timezone) => {
+        if (!timezone.name) {
+          return acc;
+        }
+        acc.push({
+          name: timezone.name,
+          countryCode: timezone.countries?.[0] ?? null,
+        });
         return acc;
-      }
-      acc.push({
-        name: timezone.name,
-        countryCode: timezone.countries?.[0] ?? null,
-      });
-      return acc;
-    }, []);
+      },
+      [],
+    );
     return options.sort((a, b) =>
       a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }),
     );
@@ -106,11 +113,14 @@ export function PreferencesTab({
     return Intl.DateTimeFormat().resolvedOptions().timeZone ?? null;
   }, []);
 
-  const [timezoneValue, setTimezoneValue] = React.useState(
-    prefs.timezone?.trim() ?? browserTimezone ?? '',
-  );
-  const [isTimezoneFocused, setIsTimezoneFocused] = React.useState(false);
-  const [isToastDismissed, setIsToastDismissed] = React.useState(false);
+  const [timezoneValue, setTimezoneValue] = React.useState(() => {
+    const prefValue = normalizeTimezone(prefs.timezone);
+    if (prefValue) {
+      return prefValue;
+    }
+    const browserValue = normalizeTimezone(browserTimezone);
+    return browserValue;
+  });
   const [isSaving, setIsSaving] = React.useState(false);
   const timezoneInputRef = React.useRef<HTMLDivElement | null>(null);
   const [localeValue, setLocaleValue] = React.useState(prefs.locale ?? '');
@@ -120,25 +130,33 @@ export function PreferencesTab({
   const [isThemeSaving, setIsThemeSaving] = React.useState(false);
   const [isLocaleSaving, setIsLocaleSaving] = React.useState(false);
   const [isLanguagesSaving, setIsLanguagesSaving] = React.useState(false);
-  const [showTimezoneActionBeam, setShowTimezoneActionBeam] = React.useState(false);
   const sequentialTimezoneHighlight = useSequentialHighlight<'timezone'>({
     order: ['timezone'],
     satisfied: {
-      timezone: Boolean(timezoneValue.trim()),
+      timezone: Boolean(
+        timezoneValue.trim() && timezoneValue.trim() !== DEFAULT_TIMEZONE,
+      ),
     },
     enabled: Boolean(onboardingRequiredSection === 'timezone'),
   });
   const showTimezoneFieldBeam = sequentialTimezoneHighlight.isActive('timezone');
 
   React.useEffect(() => {
-    if (prefs.timezone?.trim()) {
-      setTimezoneValue(prefs.timezone);
+    const prefValue = normalizeTimezone(prefs.timezone);
+    if (prefValue) {
+      setTimezoneValue(prefValue);
       return;
     }
-    if (browserTimezone && timezoneOptions.some((option) => option.name === browserTimezone)) {
-      setTimezoneValue(browserTimezone);
+
+    const browserValue = normalizeTimezone(browserTimezone);
+    if (
+      browserValue &&
+      timezoneOptions.some((option) => option.name === browserValue)
+    ) {
+      setTimezoneValue(browserValue);
       return;
     }
+
     setTimezoneValue('');
   }, [browserTimezone, prefs.timezone, timezoneOptions]);
 
@@ -147,8 +165,21 @@ export function PreferencesTab({
     setLanguageValue(prefs.languagesSpoken ?? []);
   }, [prefs.locale, prefs.languagesSpoken]);
 
+  const shouldLockSections = Boolean(lockSections && onboardingRequiredSection);
+  const isAccentSectionActive = onboardingRequiredSection === 'accent';
+  const isTimezoneSectionActive = onboardingRequiredSection === 'timezone';
+  const isLocaleSectionActive = onboardingRequiredSection === 'locale';
+  const isLanguagesSectionActive = onboardingRequiredSection === 'languages';
+  const timezoneValueTrimmed = timezoneValue.trim();
+  const isTimezoneDefaultOrMissing =
+    !timezoneValueTrimmed || timezoneValueTrimmed === DEFAULT_TIMEZONE;
+  const isTimezoneRequiredMissing = isTimezoneDefaultOrMissing;
+  const showTimezoneInputBeam = isTimezoneRequiredMissing;
+  const showPickTimezoneBeam = Boolean(browserTimezone && isTimezoneRequiredMissing);
+  const showSaveBeam = Boolean(!isTimezoneRequiredMissing && !isSaving);
+
   React.useEffect(() => {
-    if (!scrollToRequired || timezoneValue.trim()) {
+    if (!scrollToRequired || !isTimezoneRequiredMissing) {
       return;
     }
     if (timezoneInputRef.current) {
@@ -159,21 +190,7 @@ export function PreferencesTab({
         });
       });
     }
-  }, [scrollToRequired, scrollToken, timezoneValue]);
-
-  const showToast = showOnboardingToast && !isToastDismissed;
-  const shouldLockSections = Boolean(lockSections && onboardingRequiredSection);
-  const isAccentSectionActive = onboardingRequiredSection === 'accent';
-  const isTimezoneSectionActive = onboardingRequiredSection === 'timezone';
-  const isLocaleSectionActive = onboardingRequiredSection === 'locale';
-  const isLanguagesSectionActive = onboardingRequiredSection === 'languages';
-  React.useEffect(() => {
-    setShowTimezoneActionBeam(
-      Boolean(isTimezoneSectionActive && timezoneValue.trim() && !isSaving),
-    );
-  }, [isSaving, isTimezoneSectionActive, timezoneValue]);
-
-  const isTimezoneRequiredMissing = !timezoneValue.trim();
+  }, [scrollToRequired, scrollToken, isTimezoneRequiredMissing]);
   const handleThemeSave = React.useCallback(async () => {
     if (!onPrefsSave) {
       return;
@@ -200,7 +217,8 @@ export function PreferencesTab({
       await onPrefsSave({
         profileId,
         orgId,
-        timezone: trimmed || undefined,
+        timezone:
+          trimmed && trimmed !== DEFAULT_TIMEZONE ? trimmed : undefined,
       });
     } finally {
       setIsSaving(false);
@@ -242,32 +260,6 @@ export function PreferencesTab({
 
   return (
     <div className="space-y-8 w-full">
-      {showToast ? (
-        <div className="rounded-2xl border border-primary/20 bg-primary/5 px-4 py-3 text-sm shadow-sm">
-          <div className="flex items-start justify-between gap-3">
-            <div className="space-y-1">
-              <div className="font-medium text-foreground">
-                Please fill out required details to continue.
-              </div>
-              <div className="text-muted-foreground">
-                Fields marked as{' '}
-                <span className="relative inline-flex items-center rounded-full bg-destructive/10 px-1.5 py-0.5 text-destructive">
-                  <span className="relative z-10 text-destructive">*</span>
-                </span>{' '}
-                are required.
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => setIsToastDismissed(true)}
-              className="inline-flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground"
-              aria-label="Dismiss"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
-      ) : null}
       <div className="space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="space-y-1">
@@ -351,6 +343,15 @@ export function PreferencesTab({
                       transition={{ type: 'spring', stiffness: 60, damping: 20 }}
                     />
                   ) : null}
+                  {showTimezoneInputBeam && !timezoneValue.trim() ? (
+                    <BorderBeam
+                      size={60}
+                      initialOffset={12}
+                      borderWidth={2}
+                      className="from-transparent via-primary/40 to-transparent"
+                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                    />
+                  ) : null}
                   {isTimezoneSectionActive && !timezoneValue.trim() ? (
                     <BorderBeam
                       size={56}
@@ -364,28 +365,23 @@ export function PreferencesTab({
                     value={timezoneValue}
                     onValueChange={(value) => setTimezoneValue(value)}
                   >
-                    <SelectTrigger
-                      id="settings-timezone"
-                      className="w-full"
-                      onFocus={() => setIsTimezoneFocused(true)}
-                      onBlur={() => setIsTimezoneFocused(false)}
-                    >
+                    <SelectTrigger id="settings-timezone" className="w-full">
                       <SelectValue placeholder="Select timezone" />
                     </SelectTrigger>
                     <SelectContent className="max-h-72 overflow-y-auto">
-                    {timezoneOptions.map((timezone) => {
-                      const flag = countryCodeToEmoji(timezone.countryCode);
-                      return (
-                        <SelectItem key={timezone.name} value={timezone.name}>
-                          <div className="flex items-center justify-between gap-2">
-                            <span className="break-words">{timezone.name}</span>
-                            {flag ? (
-                              <span className="text-sm opacity-80">{flag}</span>
-                            ) : null}
-                          </div>
-                        </SelectItem>
-                      );
-                    })}
+                      {timezoneOptions.map((timezone) => {
+                        const flag = countryCodeToEmoji(timezone.countryCode);
+                        return (
+                          <SelectItem key={timezone.name} value={timezone.name}>
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="break-words">{timezone.name}</span>
+                              {flag ? (
+                                <span className="text-sm opacity-80">{flag}</span>
+                              ) : null}
+                            </div>
+                          </SelectItem>
+                        );
+                      })}
                     </SelectContent>
                   </Select>
                 </div>
@@ -394,20 +390,31 @@ export function PreferencesTab({
                 ) : null}
               </div>
               <div className="sm:col-span-2 flex items-center justify-between">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => {
-                    if (browserTimezone) {
-                      setTimezoneValue(browserTimezone);
-                    }
-                  }}
-                  disabled={!browserTimezone}
-                >
-                  Pick timezone for me
-                </Button>
                 <div className="relative inline-flex">
-                  {showTimezoneActionBeam ? (
+                  {showPickTimezoneBeam ? (
+                    <BorderBeam
+                      size={64}
+                      borderWidth={2}
+                      className="from-primary/60 via-primary/40 to-transparent"
+                      transition={{ duration: 4, ease: 'linear' }}
+                    />
+                  ) : null}
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      if (browserTimezone) {
+                        setTimezoneValue(browserTimezone);
+                      }
+                    }}
+                    disabled={!browserTimezone}
+                    className="relative z-10"
+                  >
+                    Pick timezone for me
+                  </Button>
+                </div>
+                <div className="relative inline-flex">
+                  {showSaveBeam ? (
                     <BorderBeam
                       size={56}
                       borderWidth={2}
@@ -417,7 +424,7 @@ export function PreferencesTab({
                   ) : null}
                   <Button
                     size="sm"
-                    className="relative"
+                    className="relative z-10"
                     onClick={handleTimezoneSave}
                     disabled={isSaving || isTimezoneRequiredMissing}
                   >

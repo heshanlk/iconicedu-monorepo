@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { ArrowRight, MapPin, X } from 'lucide-react';
+import { ArrowRight, MapPin } from 'lucide-react';
 
 import { Country, State } from 'country-state-city';
 import type { UserProfileVM } from '@iconicedu/shared-types';
@@ -25,7 +25,6 @@ const LOCATION_REQUIRED_FIELDS: LocationRequiredField[] = ['city', 'region', 'po
 
 type LocationTabProps = {
   location?: UserProfileVM['location'] | null;
-  showOnboardingToast?: boolean;
   expandLocation?: boolean;
   scrollToRequired?: boolean;
   scrollToken?: number;
@@ -41,13 +40,11 @@ type LocationTabProps = {
 
 export function LocationTab({
   location,
-  showOnboardingToast = false,
   expandLocation = false,
   scrollToRequired = false,
   scrollToken = 0,
   onLocationContinue,
 }: LocationTabProps) {
-  const [isToastDismissed, setIsToastDismissed] = React.useState(false);
   const [cityValue, setCityValue] = React.useState(location?.city ?? '');
   const [regionValue, setRegionValue] = React.useState(location?.region ?? '');
   const [postalValue, setPostalValue] = React.useState(location?.postalCode ?? '');
@@ -69,7 +66,6 @@ export function LocationTab({
   const regionInputRef = React.useRef<HTMLInputElement | null>(null);
   const postalInputRef = React.useRef<HTMLInputElement | null>(null);
   const countryFieldRef = React.useRef<HTMLDivElement | null>(null);
-  const showToast = showOnboardingToast && !isToastDismissed;
 
   const countries = React.useMemo(() => {
     return Country.getAllCountries()
@@ -112,7 +108,8 @@ export function LocationTab({
   const postalPlaceholder =
     postalExamples[selectedCountry?.isoCode ?? ''] ?? 'Postal code';
 
-  const showPickLocationBeam = expandLocation && isLocationRequiredMissing && !isPickingLocation;
+  const showPickLocationBeam =
+    expandLocation && isLocationRequiredMissing && !isPickingLocation;
   const showContinueBeam = expandLocation && !isLocationRequiredMissing && !isSaving;
 
   React.useEffect(() => {
@@ -254,32 +251,6 @@ export function LocationTab({
 
   return (
     <div className="space-y-8 w-full">
-      {showToast ? (
-        <div className="rounded-2xl border border-primary/20 bg-primary/5 px-4 py-3 text-sm shadow-sm">
-          <div className="flex items-start justify-between gap-3">
-            <div className="space-y-1">
-              <div className="font-medium text-foreground">
-                Please fill out required details to continue.
-              </div>
-              <div className="text-muted-foreground">
-                Fields marked as{' '}
-                <span className="relative inline-flex items-center rounded-full bg-destructive/10 px-1.5 py-0.5 text-destructive">
-                  <span className="relative z-10 text-destructive">*</span>
-                </span>{' '}
-                are required.
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => setIsToastDismissed(true)}
-              className="inline-flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground"
-              aria-label="Dismiss"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
-      ) : null}
       <div className="space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="space-y-1">
