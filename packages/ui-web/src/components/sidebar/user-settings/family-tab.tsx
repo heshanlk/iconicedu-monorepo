@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { Plus, UserPlus, X } from 'lucide-react';
+import { Info, Plus, UserPlus, X } from 'lucide-react';
 
 import type { ThemeKey, UserProfileVM } from '@iconicedu/shared-types';
 import { normalizeCountryCode, optionsForCountry } from '@iconicedu/shared-types';
@@ -20,6 +20,7 @@ import {
   DialogTrigger,
 } from '../../../ui/dialog';
 import { UserSettingsTabSection } from './components/user-settings-tab-section';
+import { useSequentialHighlight } from './hooks/use-sequential-highlight';
 import { Input } from '../../../ui/input';
 import { Label } from '../../../ui/label';
 import {
@@ -65,6 +66,14 @@ type FamilyMemberItem = {
 };
 
 type EditableChildData = Record<string, { displayName: string; themeKey: ThemeKey }>;
+
+type ChildRegistrationField = 'firstName' | 'lastName' | 'grade' | 'birthYear';
+const CHILD_REGISTRATION_FIELDS: ChildRegistrationField[] = [
+  'firstName',
+  'lastName',
+  'grade',
+  'birthYear',
+];
 
 type FamilyTabProps = {
   orgId: string;
@@ -146,6 +155,7 @@ export function FamilyTab({
   const [newChildLastName, setNewChildLastName] = React.useState('');
   const [newChildGrade, setNewChildGrade] = React.useState('');
   const [newChildBirthYear, setNewChildBirthYear] = React.useState('');
+  const newChildFirstNameRef = React.useRef<HTMLInputElement | null>(null);
   const familyCountryCode = React.useMemo(
     () => normalizeCountryCode(location?.countryCode),
     [location?.countryCode],
@@ -169,6 +179,15 @@ export function FamilyTab({
       setIsDialogOpen(true);
     }
   }, [familyMembers.length, isDialogOpen]);
+
+  React.useEffect(() => {
+    if (!isDialogOpen) {
+      return;
+    }
+    requestAnimationFrame(() => {
+      newChildFirstNameRef.current?.focus();
+    });
+  }, [isDialogOpen]);
   const showToast = showOnboardingToast && !isToastDismissed;
   const INVITE_SAVE_ERROR = 'Unable to send invite right now. Please try again.';
   const INVITE_REMOVE_ERROR = 'Unable to remove invite right now. Please try again.';
@@ -308,6 +327,26 @@ export function FamilyTab({
     newChildLastName.trim() &&
     newChildGrade &&
     newChildBirthYear;
+
+  const shouldHighlightOnboardingFields = Boolean(showOnboardingToast && isDialogOpen);
+  const sequentialChildHighlight = useSequentialHighlight<ChildRegistrationField>({
+    order: CHILD_REGISTRATION_FIELDS,
+    satisfied: {
+      firstName: Boolean(newChildFirstName.trim()),
+      lastName: Boolean(newChildLastName.trim()),
+      grade: Boolean(newChildGrade),
+      birthYear: Boolean(newChildBirthYear),
+    },
+    enabled: shouldHighlightOnboardingFields,
+  });
+  const showFirstNameBeam = sequentialChildHighlight.isActive('firstName');
+  const showLastNameBeam = sequentialChildHighlight.isActive('lastName');
+  const showGradeBeam = sequentialChildHighlight.isActive('grade');
+  const showBirthYearBeam = sequentialChildHighlight.isActive('birthYear');
+  const showDialogBeam = shouldHighlightOnboardingFields;
+  const showCreateActionBeam = Boolean(
+    showDialogBeam && canSubmitChild && !isCreatingChild,
+  );
 
   const handleChildCreate = React.useCallback(async () => {
     if (!onChildProfileCreate) {
@@ -549,21 +588,24 @@ export function FamilyTab({
                       <p className="text-xs text-destructive">{newChildEmailError}</p>
                     ) : null}
                     {newChildEmail.trim() ? (
-                      <div className="space-y-1 text-xs text-muted-foreground">
-                        <p>
-                          Add their email so they can create their own login. After you
-                          submit the form you can send them an invite.
+                      <div className="space-y-1 text-xs text-muted-foreground border p-2 rounded-xl">
+                        <p className="text-[11px]">
+                          <Info className="inline-block mr-1 w-3 h-3" />
+                          If the student is 13 years or older, they can have their own
+                          account, communicate directly with the teacher to ask questions,
+                          and stay more engaged in their learning—while parents continue
+                          to monitor everything.
                         </p>
                         <Button
-                          variant="ghost"
+                          variant="outline"
                           size="xs"
-                          className="px-2 text-sm font-medium text-primary underline-offset-4 hover:underline"
+                          className="px-2 text-xs mt-1 font-medium text-primary underline-offset-4 hover:underline"
                           onClick={() =>
                             prepareInviteForEmail(newChildEmail.trim(), 'child')
                           }
                           type="button"
                         >
-                          Invite them to complete their own profile
+                          Click here to send them an invite to get started
                         </Button>
                       </div>
                     ) : null}
@@ -571,61 +613,111 @@ export function FamilyTab({
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-2">
                       <Label htmlFor="new-first-name">Child first name *</Label>
-                      <Input
-                        id="new-first-name"
-                        value={newChildFirstName}
-                        onChange={(event) => setNewChildFirstName(event.target.value)}
-                        placeholder="Child first name"
-                      />
+                      <div className="relative rounded-4xl overflow-hidden">
+                        {showFirstNameBeam ? (
+                          <BorderBeam
+                            size={60}
+                            initialOffset={12}
+                            borderWidth={2}
+                            className="from-transparent via-primary to-transparent"
+                            transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                          />
+                        ) : null}
+                        <Input
+                          id="new-first-name"
+                          value={newChildFirstName}
+                          onChange={(event) => setNewChildFirstName(event.target.value)}
+                          placeholder="Child first name"
+                          ref={newChildFirstNameRef}
+                          className="relative z-10"
+                        />
+                      </div>
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="new-last-name">Child last name *</Label>
-                      <Input
-                        id="new-last-name"
-                        value={newChildLastName}
-                        onChange={(event) => setNewChildLastName(event.target.value)}
-                        placeholder="Child last name"
-                      />
+                      <div className="relative rounded-4xl overflow-hidden">
+                        {showLastNameBeam ? (
+                          <BorderBeam
+                            size={60}
+                            initialOffset={12}
+                            borderWidth={2}
+                            className="from-transparent via-primary to-transparent"
+                            transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                          />
+                        ) : null}
+                        <Input
+                          id="new-last-name"
+                          value={newChildLastName}
+                          onChange={(event) => setNewChildLastName(event.target.value)}
+                          placeholder="Child last name"
+                          className="relative z-10"
+                        />
+                      </div>
                     </div>
                   </div>
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-2">
                       <Label htmlFor="new-grade">Grade level *</Label>
-                      <Select
-                        value={newChildGrade}
-                        onValueChange={(value) => setNewChildGrade(value)}
-                        required
-                      >
-                        <SelectTrigger id="new-grade" className="w-full">
-                          <SelectValue placeholder="Select grade" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {gradeOptions.map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <div className="relative w-full rounded-4xl overflow-hidden">
+                        {showGradeBeam ? (
+                          <BorderBeam
+                            size={60}
+                            initialOffset={12}
+                            borderWidth={2}
+                            className="from-transparent via-primary to-transparent"
+                            transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                          />
+                        ) : null}
+                        <Select
+                          value={newChildGrade}
+                          onValueChange={(value) => setNewChildGrade(value)}
+                          required
+                        >
+                          <SelectTrigger id="new-grade" className="relative z-10 w-full">
+                            <SelectValue placeholder="Select grade" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {gradeOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="new-birth-year">Birth year *</Label>
-                      <Select
-                        value={newChildBirthYear}
-                        onValueChange={(value) => setNewChildBirthYear(value)}
-                        required
-                      >
-                        <SelectTrigger id="new-birth-year" className="w-full">
-                          <SelectValue placeholder="Select year" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {BIRTH_YEAR_OPTIONS.map((year: number) => (
-                            <SelectItem key={year} value={String(year)}>
-                              {year}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <div className="relative w-full rounded-4xl overflow-hidden">
+                        {showBirthYearBeam ? (
+                          <BorderBeam
+                            size={60}
+                            initialOffset={12}
+                            borderWidth={2}
+                            className="from-transparent via-primary to-transparent"
+                            transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                          />
+                        ) : null}
+                        <Select
+                          value={newChildBirthYear}
+                          onValueChange={(value) => setNewChildBirthYear(value)}
+                          required
+                        >
+                          <SelectTrigger
+                            id="new-birth-year"
+                            className="relative z-10 w-full"
+                          >
+                            <SelectValue placeholder="Select year" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {BIRTH_YEAR_OPTIONS.map((year: number) => (
+                              <SelectItem key={year} value={String(year)}>
+                                {year}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
                   </div>
                   <div className="text-xs text-muted-foreground">
@@ -640,13 +732,24 @@ export function FamilyTab({
                       Cancel
                     </Button>
                   </DialogClose>
-                  <Button
-                    size="sm"
-                    onClick={handleChildCreate}
-                    disabled={isCreatingChild}
-                  >
-                    {isCreatingChild ? 'Creating…' : 'Create child profile'}
-                  </Button>
+                  <div className="relative inline-flex">
+                    {showCreateActionBeam ? (
+                      <BorderBeam
+                        size={56}
+                        borderWidth={2}
+                        className="from-primary/80 via-primary to-transparent"
+                        transition={{ duration: 4, ease: 'linear' }}
+                      />
+                    ) : null}
+                    <Button
+                      size="sm"
+                      onClick={handleChildCreate}
+                      disabled={isCreatingChild}
+                      className="relative z-10"
+                    >
+                      {isCreatingChild ? 'Creating…' : 'Create child profile'}
+                    </Button>
+                  </div>
                 </DialogFooter>
               </DialogContent>
             </Dialog>

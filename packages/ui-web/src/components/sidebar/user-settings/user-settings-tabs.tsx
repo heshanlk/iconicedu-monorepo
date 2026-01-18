@@ -170,6 +170,7 @@ export function UserSettingsTabs({
   const isProfileOnboarding = onboardingStep === 'profile';
   const isPreferencesTimezoneOnboarding = onboardingStep === 'preferences-timezone';
   const isLocationOnboarding = onboardingStep === 'location';
+  const isFamilyOnboarding = onboardingStep === 'family';
   const onboardingGuidance = onboardingStep ? ONBOARDING_SECTION_CONFIG[onboardingStep] : null;
   const accountGuidance = onboardingGuidance?.tab === 'account' ? onboardingGuidance : null;
   const profileGuidance = onboardingGuidance?.tab === 'profile' ? onboardingGuidance : null;
@@ -430,6 +431,7 @@ export function UserSettingsTabs({
             profileThemes={profileThemes}
             profileThemeOptions={PROFILE_THEME_OPTIONS}
             setProfileThemes={setProfileThemes}
+            showOnboardingToast={isFamilyOnboarding}
             initialInvites={
               profile.kind === 'guardian' ? profile.familyInvites ?? [] : []
             }
