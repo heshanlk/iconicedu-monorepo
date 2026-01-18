@@ -582,7 +582,7 @@ export function FamilyTab({
                         setNewChildEmail(event.target.value);
                         validateChildEmail(event.target.value);
                       }}
-                      placeholder="child@example.com"
+                      placeholder="child@example.com (optional)"
                     />
                     {newChildEmailError ? (
                       <p className="text-xs text-destructive">{newChildEmailError}</p>

@@ -1,6 +1,6 @@
 'use server';
 
-import type { AccountRow, ChildProfileVM } from '@iconicedu/shared-types';
+import type { AccountRow, ChildProfileVM, ProfileRow } from '@iconicedu/shared-types';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { getFamilyInviteAdminClient, ensureFamilyForGuardian } from '../../lib/family/queries/invite.query';
 import { loadChildProfiles } from '../../lib/user/builders/load-child-profiles';
@@ -120,14 +120,52 @@ export async function createChildProfileAction(
     updated_by: guardianAccount.id,
   };
 
-  const { data: profileRow, error: profileError } = await serviceClient
+  const {
+    data: existingProfile,
+    error: existingProfileError,
+  } = await serviceClient
     .from('profiles')
-    .upsert(profilePayload, { onConflict: 'org_id,account_id' })
-    .select('*')
-    .single();
+    .select('id')
+    .eq('org_id', guardianAccount.org_id)
+    .eq('account_id', childAccount.id)
+    .is('deleted_at', null)
+    .maybeSingle();
 
-  if (profileError || !profileRow) {
-    throw profileError ?? new Error('Unable to create child profile');
+  if (existingProfileError) {
+    throw existingProfileError;
+  }
+
+  let profileRow: ProfileRow | null = null;
+
+  if (existingProfile) {
+    const { data, error } = await serviceClient
+      .from<ProfileRow>('profiles')
+      .update(profilePayload)
+      .eq('id', existingProfile.id)
+      .select('*')
+      .single();
+
+    if (error || !data) {
+      throw error ?? new Error('Unable to update existing child profile');
+    }
+
+    profileRow = data;
+  } else {
+    const { data, error } = await serviceClient
+      .from<ProfileRow>('profiles')
+      .insert(profilePayload)
+      .select('*')
+      .single();
+
+    if (error || !data) {
+      throw error ?? new Error('Unable to create child profile');
+    }
+
+    profileRow = data;
+  }
+
+  if (!profileRow) {
+    throw new Error('Unable to resolve child profile record');
   }
 
   const familyId = await ensureFamilyForGuardian({
