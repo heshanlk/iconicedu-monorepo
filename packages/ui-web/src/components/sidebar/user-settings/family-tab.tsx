@@ -165,7 +165,7 @@ export function FamilyTab({
     Record<string, boolean>
   >({});
   React.useEffect(() => {
-    if (!familyMembers.length && !isDialogOpen) {
+    if (familyMembers.length <= 1 && !isDialogOpen) {
       setIsDialogOpen(true);
     }
   }, [familyMembers.length, isDialogOpen]);
@@ -507,7 +507,7 @@ export function FamilyTab({
             >
               <DialogTrigger asChild>
                 <div className="relative inline-flex rounded-full">
-                  {!familyMembers.length ? (
+                  {familyMembers.length <= 1 ? (
                     <BorderBeam
                       size={48}
                       borderWidth={2}
