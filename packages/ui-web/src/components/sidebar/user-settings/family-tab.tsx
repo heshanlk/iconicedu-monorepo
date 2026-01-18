@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { Info, Plus, UserPlus, X } from 'lucide-react';
+import { Plus, ShieldAlert, UserPlus, X } from 'lucide-react';
 
 import type { ThemeKey, UserProfileVM } from '@iconicedu/shared-types';
 import { normalizeCountryCode, optionsForCountry } from '@iconicedu/shared-types';
@@ -590,11 +590,17 @@ export function FamilyTab({
                     {newChildEmail.trim() ? (
                       <div className="space-y-1 text-xs text-muted-foreground border p-2 rounded-xl">
                         <p className="text-[11px]">
-                          <Info className="inline-block mr-1 w-3 h-3" />
+                          <ShieldAlert className="inline-block mr-1 w-3 h-3" />
                           If the student is 13 years or older, they can have their own
                           account, communicate directly with the teacher to ask questions,
                           and stay more engaged in their learning—while parents continue
                           to monitor everything.
+                        </p>
+                        <p className="text-[11px]">
+                          If a student is under 13 but shows the maturity to handle things
+                          independently, parents may enable supervised direct
+                          communication with the teacher, while continuing to monitor all
+                          activity.
                         </p>
                         <Button
                           variant="outline"
