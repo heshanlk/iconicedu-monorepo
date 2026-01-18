@@ -89,3 +89,6 @@
 - Required onboarding collapsibles must open by default while any other collapsible inside the same tab is disabled until the user completes the current required section to keep the flow focused.
 - Build onboarding guidance logic with reusable helpers/hooks (e.g., maintaining a shared guidance map per step in `UserSettingsTabs`) so the wiring stays maintainable and scalable without scattering ad-hoc state across the dialog.
 - Deliver production-grade implementations for these flows: reuse existing folder patterns, follow common React/Next.js practices (hooks, single-responsibility helpers, context if needed), and keep the data/UI layers decoupled to allow future iterations without rewriting the entire dialog.
+
+## 16. Entity operation safety
+- Every multi-table entity write must behave atomically: wrap the work in a database transaction when available, or implement explicit cleanup/rollback logic so either all inserts/updates succeed or any newly created rows are removed. Capture that strategy in the relevant code and document it when editing entity operations.

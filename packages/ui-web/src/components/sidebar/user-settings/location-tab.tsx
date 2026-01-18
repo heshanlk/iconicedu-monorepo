@@ -453,7 +453,7 @@ export function LocationTab({
                     <BorderBeam
                       size={56}
                       borderWidth={2}
-                      className="from-primary/50 via-primary to-transparent"
+                      className="from-primary/50 via-primary to-transparent rounded-4xl"
                       transition={{ duration: 4, ease: 'linear' }}
                     />
                   ) : null}

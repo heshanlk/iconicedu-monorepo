@@ -15,12 +15,94 @@ import { createSupabaseServerClient } from '../../lib/supabase/server';
 
 const normalizeEmail = (value?: string | null) => value?.trim().toLowerCase() ?? null;
 
+type CreationCleanupContext = {
+  serviceClient: SupabaseClient;
+  orgId: string;
+  guardianAccountId: string;
+  childAccountId: string;
+  accountCreated: boolean;
+  profileCreated: boolean;
+  profileId: string | null;
+  childProfileCreated: boolean;
+  childGradeCreated: boolean;
+  familyLinkCreated: boolean;
+  familyId: string | null;
+};
+
+async function cleanupCreatedRecords(context: CreationCleanupContext) {
+  const {
+    serviceClient,
+    orgId,
+    guardianAccountId,
+    childAccountId,
+    accountCreated,
+    profileCreated,
+    profileId,
+    childProfileCreated,
+    childGradeCreated,
+    familyLinkCreated,
+    familyId,
+  } = context;
+
+  const run = async (description: string, fn: () => Promise<void>) => {
+    try {
+      await fn();
+    } catch (error) {
+      console.error(`cleanup failed (${description})`, error);
+    }
+  };
+
+  if (childGradeCreated && profileId) {
+    await run('child grade', () =>
+      serviceClient
+        .from('child_profile_grade_level')
+        .delete()
+        .match({ org_id: orgId, profile_id: profileId }),
+    );
+  }
+
+  if (childProfileCreated && profileId) {
+    await run('child profile', () =>
+      serviceClient
+        .from('child_profiles')
+        .delete()
+        .match({ org_id: orgId, profile_id: profileId }),
+    );
+  }
+
+  if (familyLinkCreated && familyId) {
+    await run('family link', () =>
+      serviceClient
+        .from('family_links')
+        .delete()
+        .match({
+          org_id: orgId,
+          family_id: familyId,
+          guardian_account_id: guardianAccountId,
+          child_account_id: childAccountId,
+        }),
+    );
+  }
+
+  if (profileCreated && profileId) {
+    await run('profile', () =>
+      serviceClient.from('profiles').delete().eq('id', profileId),
+    );
+  }
+
+  if (accountCreated) {
+    await run('account', () =>
+      serviceClient.from('accounts').delete().eq('id', childAccountId),
+    );
+  }
+}
+
 async function createOrLoadChildAccount(options: {
   serviceClient: SupabaseClient;
   orgId: string;
   email?: string | null;
   createdByAccountId: string;
-}): Promise<AccountRow> {
+}): Promise<{ account: AccountRow; created: boolean }> {
   const normalizedEmail = normalizeEmail(options.email);
 
   if (normalizedEmail) {
@@ -35,7 +117,7 @@ async function createOrLoadChildAccount(options: {
       .maybeSingle<AccountRow>();
 
     if (existingAccount) {
-      return existingAccount;
+      return { account: existingAccount, created: false };
     }
   }
 
@@ -56,7 +138,7 @@ async function createOrLoadChildAccount(options: {
     throw accountError ?? new Error('Unable to create child account');
   }
 
-  return childAccount;
+  return { account: childAccount, created: true };
 }
 
 type CreateChildProfileInput = {
@@ -96,200 +178,243 @@ export async function createChildProfileAction(
     throw new Error('Organization mismatch');
   }
   const serviceClient = getFamilyInviteAdminClient();
-
-  const childAccount = await createOrLoadChildAccount({
+  const cleanupContext: CreationCleanupContext = {
     serviceClient,
     orgId: guardianAccount.org_id,
-    email: input.email,
-    createdByAccountId: guardianAccount.id,
-  });
-  const displayNameValue = `${input.firstName.trim()} ${input.lastName.trim()}`.trim();
-
-  const profilePayload = {
-    org_id: guardianAccount.org_id,
-    account_id: childAccount.id,
-    kind: 'child',
-    display_name: displayNameValue,
-    first_name: input.firstName.trim(),
-    last_name: input.lastName.trim(),
-    avatar_source: 'seed',
-    avatar_url: null,
-    avatar_seed: childAccount.id,
-    timezone: input.timezone ?? 'UTC',
-    locale: 'en-US',
-    status: 'active',
-    country_code: input.countryCode ?? null,
-    country_name: input.countryName ?? null,
-    region: input.region ?? null,
-    city: input.city ?? null,
-    created_by: guardianAccount.id,
-    updated_by: guardianAccount.id,
+    guardianAccountId: guardianAccount.id,
+    childAccountId: '',
+    accountCreated: false,
+    profileCreated: false,
+    profileId: null,
+    childProfileCreated: false,
+    childGradeCreated: false,
+    familyLinkCreated: false,
+    familyId: null,
   };
 
-  const {
-    data: existingProfile,
-    error: existingProfileError,
-  } = await serviceClient
-    .from('profiles')
-    .select('id')
-    .eq('org_id', guardianAccount.org_id)
-    .eq('account_id', childAccount.id)
-    .is('deleted_at', null)
-    .maybeSingle();
+  try {
+    const { account: childAccount, created: accountCreated } =
+      await createOrLoadChildAccount({
+        serviceClient,
+        orgId: guardianAccount.org_id,
+        email: input.email,
+        createdByAccountId: guardianAccount.id,
+      });
+    cleanupContext.childAccountId = childAccount.id;
+    cleanupContext.accountCreated = accountCreated;
+    const displayNameValue = `${input.firstName.trim()} ${input.lastName.trim()}`.trim();
 
-  if (existingProfileError) {
-    throw existingProfileError;
-  }
+    const profilePayload = {
+      org_id: guardianAccount.org_id,
+      account_id: childAccount.id,
+      kind: 'child',
+      display_name: displayNameValue,
+      first_name: input.firstName.trim(),
+      last_name: input.lastName.trim(),
+      avatar_source: 'seed',
+      avatar_url: null,
+      avatar_seed: childAccount.id,
+      timezone: input.timezone ?? 'UTC',
+      locale: 'en-US',
+      status: 'active',
+      country_code: input.countryCode ?? null,
+      country_name: input.countryName ?? null,
+      region: input.region ?? null,
+      city: input.city ?? null,
+      created_by: guardianAccount.id,
+      updated_by: guardianAccount.id,
+    };
 
-  let profileRow: ProfileRow | null = null;
+    const {
+      data: existingProfile,
+      error: existingProfileError,
+    } = await serviceClient
+      .from('profiles')
+      .select('id')
+      .eq('org_id', guardianAccount.org_id)
+      .eq('account_id', childAccount.id)
+      .maybeSingle();
 
-  if (existingProfile) {
-    const { data, error } = await serviceClient
-      .from<ProfileRow>('profiles')
-      .update(profilePayload)
-      .eq('id', existingProfile.id)
-      .select('*')
-      .single();
-
-    if (error || !data) {
-      throw error ?? new Error('Unable to update existing child profile');
+    if (existingProfileError) {
+      throw existingProfileError;
     }
 
-    profileRow = data;
-  } else {
-    const { data, error } = await serviceClient
-      .from<ProfileRow>('profiles')
-      .insert(profilePayload)
-      .select('*')
-      .single();
+    let profileRow: ProfileRow | null = null;
 
-    if (error || !data) {
-      throw error ?? new Error('Unable to create child profile');
+    if (existingProfile) {
+      const { data, error } = await serviceClient
+        .from<ProfileRow>('profiles')
+        .update(profilePayload)
+        .eq('id', existingProfile.id)
+        .select('*')
+        .single();
+
+      if (error || !data) {
+        throw error ?? new Error('Unable to update existing child profile');
+      }
+
+      profileRow = data;
+    } else {
+      const { data, error } = await serviceClient
+        .from<ProfileRow>('profiles')
+        .insert(profilePayload)
+        .select('*')
+        .single();
+
+      if (error || !data) {
+        throw error ?? new Error('Unable to create child profile');
+      }
+
+      profileRow = data;
+      cleanupContext.profileCreated = true;
     }
 
-    profileRow = data;
-  }
+    if (!profileRow) {
+      throw new Error('Unable to resolve child profile record');
+    }
 
-  if (!profileRow) {
-    throw new Error('Unable to resolve child profile record');
-  }
+    cleanupContext.profileId = profileRow.id;
 
-  const familyId = await ensureFamilyForGuardian({
-    supabase: serviceClient,
-    guardianAccountId: guardianAccount.id,
-    orgId: guardianAccount.org_id,
-  });
+    const familyId = await ensureFamilyForGuardian({
+      supabase: serviceClient,
+      guardianAccountId: guardianAccount.id,
+      orgId: guardianAccount.org_id,
+    });
 
-  const { error: linkError } = await serviceClient
-    .from('family_links')
-    .upsert(
-      {
-        org_id: guardianAccount.org_id,
-        family_id: familyId,
-        guardian_account_id: guardianAccount.id,
-        child_account_id: childAccount.id,
-        relation: 'guardian',
-        created_by: guardianAccount.id,
-        updated_by: guardianAccount.id,
-      },
-      { onConflict: 'org_id,family_id,guardian_account_id,child_account_id' },
+    cleanupContext.familyId = familyId;
+
+    const { data: existingFamilyLink, error: existingFamilyLinkError } = await serviceClient
+      .from('family_links')
+      .select('id')
+      .eq('org_id', guardianAccount.org_id)
+      .eq('family_id', familyId)
+      .eq('guardian_account_id', guardianAccount.id)
+      .eq('child_account_id', childAccount.id)
+      .maybeSingle();
+
+    if (existingFamilyLinkError) {
+      throw existingFamilyLinkError;
+    }
+
+    cleanupContext.familyLinkCreated = !existingFamilyLink;
+
+    const { error: linkError } = await serviceClient
+      .from('family_links')
+      .upsert(
+        {
+          org_id: guardianAccount.org_id,
+          family_id: familyId,
+          guardian_account_id: guardianAccount.id,
+          child_account_id: childAccount.id,
+          relation: 'guardian',
+          created_by: guardianAccount.id,
+          updated_by: guardianAccount.id,
+        },
+        { onConflict: 'org_id,family_id,guardian_account_id,child_account_id' },
+      );
+
+    if (linkError) {
+      throw linkError;
+    }
+
+    const childProfilePayload = {
+      profile_id: profileRow.id,
+      org_id: guardianAccount.org_id,
+      birth_year: input.birthYear,
+      created_by: guardianAccount.id,
+      updated_by: guardianAccount.id,
+    };
+
+    const {
+      data: existingChildProfile,
+      error: existingChildProfileError,
+    } = await serviceClient
+      .from('child_profiles')
+      .select('id')
+      .eq('org_id', guardianAccount.org_id)
+      .eq('profile_id', profileRow.id)
+      .maybeSingle();
+
+    if (existingChildProfileError) {
+      throw existingChildProfileError;
+    }
+
+    cleanupContext.childProfileCreated = !existingChildProfile;
+
+    if (existingChildProfile) {
+      const { error } = await serviceClient
+        .from<ChildProfileRow>('child_profiles')
+        .update(childProfilePayload)
+        .eq('id', existingChildProfile.id);
+
+      if (error) {
+        throw error;
+      }
+    } else {
+      const { error } = await serviceClient.from('child_profiles').insert(childProfilePayload);
+
+      if (error) {
+        throw error;
+      }
+    }
+
+    const childGradePayload = {
+      org_id: guardianAccount.org_id,
+      profile_id: profileRow.id,
+      grade_id: input.gradeLevel,
+      grade_label: input.gradeLevel,
+      created_by: guardianAccount.id,
+      updated_by: guardianAccount.id,
+    };
+
+    const {
+      data: existingGrade,
+      error: existingGradeError,
+    } = await serviceClient
+      .from('child_profile_grade_level')
+      .select('id')
+      .eq('org_id', guardianAccount.org_id)
+      .eq('profile_id', profileRow.id)
+      .maybeSingle();
+
+    if (existingGradeError) {
+      throw existingGradeError;
+    }
+
+    cleanupContext.childGradeCreated = !existingGrade;
+
+    if (existingGrade) {
+      const { error } = await serviceClient
+        .from<ChildProfileGradeLevelRow>('child_profile_grade_level')
+        .update(childGradePayload)
+        .eq('id', existingGrade.id);
+
+      if (error) {
+        throw error;
+      }
+    } else {
+      const { error } = await serviceClient
+        .from('child_profile_grade_level')
+        .insert(childGradePayload);
+
+      if (error) {
+        throw error;
+      }
+    }
+
+    const children = await loadChildProfiles(
+      serviceClient,
+      guardianAccount.org_id,
+      [childAccount.id],
     );
 
-  if (linkError) {
-    throw linkError;
-  }
-
-  const childProfilePayload = {
-    profile_id: profileRow.id,
-    org_id: guardianAccount.org_id,
-    birth_year: input.birthYear,
-    created_by: guardianAccount.id,
-    updated_by: guardianAccount.id,
-  };
-
-  const {
-    data: existingChildProfile,
-    error: existingChildProfileError,
-  } = await serviceClient
-    .from('child_profiles')
-    .select('id')
-    .eq('org_id', guardianAccount.org_id)
-    .eq('profile_id', profileRow.id)
-    .is('deleted_at', null)
-    .maybeSingle();
-
-  if (existingChildProfileError) {
-    throw existingChildProfileError;
-  }
-
-  if (existingChildProfile) {
-    const { error } = await serviceClient
-      .from<ChildProfileRow>('child_profiles')
-      .update(childProfilePayload)
-      .eq('id', existingChildProfile.id);
-
-    if (error) {
-      throw error;
+    if (!children.length) {
+      throw new Error('Unable to load child profile');
     }
-  } else {
-    const { error } = await serviceClient.from('child_profiles').insert(childProfilePayload);
 
-    if (error) {
-      throw error;
-    }
+    return children[0];
+  } catch (error) {
+    await cleanupCreatedRecords(cleanupContext);
+    throw error;
   }
-
-  const childGradePayload = {
-    org_id: guardianAccount.org_id,
-    profile_id: profileRow.id,
-    grade_id: input.gradeLevel,
-    grade_label: input.gradeLevel,
-    created_by: guardianAccount.id,
-    updated_by: guardianAccount.id,
-  };
-
-  const {
-    data: existingGrade,
-    error: existingGradeError,
-  } = await serviceClient
-    .from('child_profile_grade_level')
-    .select('id')
-    .eq('org_id', guardianAccount.org_id)
-    .eq('profile_id', profileRow.id)
-    .maybeSingle();
-
-  if (existingGradeError) {
-    throw existingGradeError;
-  }
-
-  if (existingGrade) {
-    const { error } = await serviceClient
-      .from<ChildProfileGradeLevelRow>('child_profile_grade_level')
-      .update(childGradePayload)
-      .eq('id', existingGrade.id);
-
-    if (error) {
-      throw error;
-    }
-  } else {
-    const { error } = await serviceClient
-      .from('child_profile_grade_level')
-      .insert(childGradePayload);
-
-    if (error) {
-      throw error;
-    }
-  }
-
-  const children = await loadChildProfiles(
-    serviceClient,
-    guardianAccount.org_id,
-    [childAccount.id],
-  );
-
-  if (!children.length) {
-    throw new Error('Unable to load child profile');
-  }
-
-  return children[0];
 }
