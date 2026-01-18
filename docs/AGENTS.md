@@ -84,3 +84,8 @@
 ## 14. Stability-first habits
 - Do not add novel folder layouts or structural patterns without agreement—extend the existing query/builder/mapping layout instead. Treat `packages/shared-types` as the single source for new data contracts and update related queries/mappers/builders before touching UI or API layers. Keeping this disciplined structure avoids hidden dependencies and ensures everyone can find the relevant pieces when extending an entity.
 - **Migrations mandate:** Never edit an existing migration once it has been committed; always author a new migration file that describes the change (timestamped in `supabase/migrations`) and references the triggering logic so the change history stays linear.
+
+## 15. Onboarding guidance
+- Required onboarding collapsibles must open by default while any other collapsible inside the same tab is disabled until the user completes the current required section to keep the flow focused.
+- Build onboarding guidance logic with reusable helpers/hooks (e.g., maintaining a shared guidance map per step in `UserSettingsTabs`) so the wiring stays maintainable and scalable without scattering ad-hoc state across the dialog.
+- Deliver production-grade implementations for these flows: reuse existing folder patterns, follow common React/Next.js practices (hooks, single-responsibility helpers, context if needed), and keep the data/UI layers decoupled to allow future iterations without rewriting the entire dialog.

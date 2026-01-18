@@ -1,15 +1,10 @@
 import * as React from 'react';
 import { AsYouType, parsePhoneNumberFromString } from 'libphonenumber-js';
-import { BadgeCheck, ChevronRight, Info, Mail, MessageCircle, Phone, X } from 'lucide-react';
+import { BadgeCheck, Info, Mail, MessageCircle, Phone, X } from 'lucide-react';
 
 import type { UserAccountVM } from '@iconicedu/shared-types';
 import { Badge } from '../../../ui/badge';
 import { Button } from '../../../ui/button';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '../../../ui/collapsible';
 import { Input } from '../../../ui/input';
 import {
   InputGroup,
@@ -19,9 +14,12 @@ import {
 import { Label } from '../../../ui/label';
 import { Switch } from '../../../ui/switch';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../../../ui/tooltip';
-import { ContactField } from './components/contact-field';
 import { UserSettingsTabSection } from './components/user-settings-tab-section';
 import { Checkbox } from '../../../ui/checkbox';
+import { BorderBeam } from '../../../ui/border-beam';
+import { useSequentialHighlight } from './hooks/use-sequential-highlight';
+
+export type AccountSectionKey = 'email' | 'phone' | 'whatsapp';
 
 type AccountTabProps = {
   contacts?: UserAccountVM['contacts'] | null;
@@ -39,6 +37,8 @@ type AccountTabProps = {
     whatsappE164?: string | null;
     preferredContactChannels?: string[] | null;
   }) => Promise<void> | void;
+  onboardingRequiredSection?: AccountSectionKey | null;
+  lockSections?: boolean;
 };
 
 export function AccountTab({
@@ -51,6 +51,8 @@ export function AccountTab({
   accountId,
   orgId,
   onAccountUpdate,
+  onboardingRequiredSection = null,
+  lockSections = false,
 }: AccountTabProps) {
   const [phoneValue, setPhoneValue] = React.useState('');
   const [isPhoneFocused, setIsPhoneFocused] = React.useState(false);
@@ -109,6 +111,7 @@ export function AccountTab({
     !accountId ||
     !orgId ||
     usePhoneForWhatsapp;
+  const [showPhoneActionBeam, setShowPhoneActionBeam] = React.useState(false);
   const [emailOpen, setEmailOpen] = React.useState(false);
   React.useEffect(() => {
     if (!usePhoneForWhatsapp || !phoneInputValue.trim()) {
@@ -122,6 +125,22 @@ export function AccountTab({
   React.useEffect(() => {
     setEmailInputValue(email);
   }, [email]);
+
+  const shouldLockSections = Boolean(lockSections && onboardingRequiredSection);
+  const isEmailSectionActive = onboardingRequiredSection === 'email';
+  const isPhoneSectionActive = onboardingRequiredSection === 'phone';
+  const isWhatsappSectionActive = onboardingRequiredSection === 'whatsapp';
+  const emailDisabled = shouldLockSections && !isEmailSectionActive;
+  const phoneDisabled = shouldLockSections && !isPhoneSectionActive;
+  const whatsappDisabled = shouldLockSections && !isWhatsappSectionActive;
+  const sequentialPhoneHighlight = useSequentialHighlight<'phone'>({
+    order: ['phone'],
+    satisfied: {
+      phone: Boolean(phoneInputValue.trim()),
+    },
+    enabled: Boolean(onboardingRequiredSection === 'phone'),
+  });
+  const showPhoneFieldBeam = sequentialPhoneHighlight.isActive('phone');
 
   React.useEffect(() => {
     setPhoneValue(formatPhoneInput(contacts?.phoneE164 ?? ''));
@@ -155,6 +174,12 @@ export function AccountTab({
     const nextValue = shouldUsePhone ? contactPhone : contactWhatsapp;
     setWhatsappValue(formatPhoneInput(nextValue));
   }, [contacts?.phoneE164, contacts?.whatsappE164, formatPhoneInput]);
+
+  React.useEffect(() => {
+    setShowPhoneActionBeam(
+      Boolean(isPhoneSectionActive && phoneInputValue.trim() && !isPhoneSaving),
+    );
+  }, [isPhoneSaving, isPhoneSectionActive, phoneInputValue]);
 
   const handlePhoneSave = React.useCallback(async () => {
     if (!onAccountUpdate || !accountId || !orgId) {
@@ -220,8 +245,14 @@ export function AccountTab({
             title="Email"
             subtitle={contacts?.email ?? 'Not provided'}
             open={emailOpen}
-            onOpenChange={(open) => setEmailOpen(open)}
+            onOpenChange={(open) => {
+              if (emailDisabled) {
+                return;
+              }
+              setEmailOpen(open);
+            }}
             badgeIcon={renderVerificationBadge(emailVerified, emailVerifiedAt)}
+            disabled={emailDisabled}
           >
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2 sm:col-span-2">
@@ -286,11 +317,13 @@ export function AccountTab({
             icon={<Phone className="h-5 w-5" />}
             title="Phone"
             subtitle={phoneDisplay}
-          badgeIcon={renderVerificationBadge(
-            Boolean(contacts?.phoneVerified),
-            contacts?.phoneVerifiedAt,
-          )}
-        >
+            badgeIcon={renderVerificationBadge(
+              Boolean(contacts?.phoneVerified),
+              contacts?.phoneVerifiedAt,
+            )}
+            defaultOpen={isPhoneSectionActive}
+            disabled={phoneDisabled}
+          >
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2 sm:col-span-2">
                 <Label htmlFor="settings-account-phone">
@@ -301,6 +334,24 @@ export function AccountTab({
                   </div>
                 </Label>
                 <div className="relative rounded-full">
+                  {showPhoneFieldBeam && !phoneInputValue.trim() && !isPhoneFocused ? (
+                    <BorderBeam
+                      size={60}
+                      initialOffset={12}
+                      borderWidth={2}
+                      className="from-transparent via-primary to-transparent"
+                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                    />
+                  ) : null}
+                  {isPhoneSectionActive && !phoneInputValue.trim() ? (
+                    <BorderBeam
+                      size={56}
+                      initialOffset={8}
+                      borderWidth={2}
+                      className="from-transparent via-primary to-transparent"
+                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                    />
+                  ) : null}
                   <InputGroup>
                     <InputGroupInput
                       id="settings-account-phone"
@@ -357,13 +408,24 @@ export function AccountTab({
                 </div>
               ) : null}
               <div className="sm:col-span-2 flex justify-end">
-                <Button
-                  size="sm"
-                  onClick={handlePhoneSave}
-                  disabled={isPhoneSaveDisabled}
-                >
-                  {isPhoneSaving ? 'Saving...' : 'Save'}
-                </Button>
+                <div className="relative inline-flex">
+                  {showPhoneActionBeam ? (
+                    <BorderBeam
+                      size={56}
+                      borderWidth={2}
+                      className="from-primary/70 via-primary to-transparent"
+                      transition={{ duration: 4, ease: 'linear' }}
+                    />
+                  ) : null}
+                  <Button
+                    size="sm"
+                    className="relative"
+                    onClick={handlePhoneSave}
+                    disabled={isPhoneSaveDisabled}
+                  >
+                    {isPhoneSaving ? 'Saving...' : 'Save'}
+                  </Button>
+                </div>
               </div>
             </div>
           </UserSettingsTabSection>
@@ -374,12 +436,18 @@ export function AccountTab({
             title="WhatsApp"
             subtitle={whatsappDisplay}
             open={whatsappOpen}
-            onOpenChange={(open) => setWhatsappOpen(open)}
+            onOpenChange={(open) => {
+              if (whatsappDisabled) {
+                return;
+              }
+              setWhatsappOpen(open);
+            }}
             badgeIcon={renderVerificationBadge(
               Boolean(contacts?.whatsappVerified),
               contacts?.whatsappVerifiedAt,
             )}
             showSeparator={false}
+            disabled={whatsappDisabled}
           >
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2 sm:col-span-2">

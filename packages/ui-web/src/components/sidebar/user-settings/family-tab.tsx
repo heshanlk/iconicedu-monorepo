@@ -7,6 +7,7 @@ import type { ThemeKey, UserProfileVM } from '@iconicedu/shared-types';
 import { normalizeCountryCode, optionsForCountry } from '@iconicedu/shared-types';
 import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
 import { Badge } from '../../../ui/badge';
+import { BorderBeam } from '../../../ui/border-beam';
 import { Button } from '../../../ui/button';
 import {
   Dialog,
@@ -163,6 +164,11 @@ export function FamilyTab({
   const [removingMemberIds, setRemovingMemberIds] = React.useState<
     Record<string, boolean>
   >({});
+  React.useEffect(() => {
+    if (!familyMembers.length && !isDialogOpen) {
+      setIsDialogOpen(true);
+    }
+  }, [familyMembers.length, isDialogOpen]);
   const showToast = showOnboardingToast && !isToastDismissed;
   const INVITE_SAVE_ERROR = 'Unable to send invite right now. Please try again.';
   const INVITE_REMOVE_ERROR = 'Unable to remove invite right now. Please try again.';
@@ -500,10 +506,20 @@ export function FamilyTab({
               }}
             >
               <DialogTrigger asChild>
-                <Button variant="ghost" size="sm">
-                  <Plus className="size-4" />
-                  Add
-                </Button>
+                <div className="relative inline-flex rounded-full">
+                  {!familyMembers.length ? (
+                    <BorderBeam
+                      size={48}
+                      borderWidth={2}
+                      className="from-primary/70 via-primary/30 to-transparent"
+                      transition={{ duration: 4, ease: 'linear' }}
+                    />
+                  ) : null}
+                  <Button variant="ghost" size="sm" className="relative z-10">
+                    <Plus className="size-4" />
+                    Add
+                  </Button>
+                </div>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>

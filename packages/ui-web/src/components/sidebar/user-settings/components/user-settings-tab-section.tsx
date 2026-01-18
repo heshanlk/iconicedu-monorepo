@@ -22,6 +22,7 @@ type UserSettingsTabSectionProps = {
   showSeparator?: boolean;
   className?: string;
   contentClassName?: string;
+  disabled?: boolean;
 };
 
 export function UserSettingsTabSection({
@@ -37,16 +38,28 @@ export function UserSettingsTabSection({
   showSeparator = true,
   className,
   contentClassName,
+  disabled = false,
 }: UserSettingsTabSectionProps) {
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (disabled) {
+      return;
+    }
+    onOpenChange?.(nextOpen);
+  };
+
   return (
     <>
       <Collapsible
         className={`rounded-2xl w-full ${className ?? ''}`}
         open={open}
         defaultOpen={defaultOpen}
-        onOpenChange={onOpenChange}
+        onOpenChange={handleOpenChange}
       >
-        <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
+        <CollapsibleTrigger
+          disabled={disabled}
+          aria-disabled={disabled}
+          className={`group flex w-full items-center gap-3 py-3 text-left transition ${disabled ? 'cursor-not-allowed opacity-70' : ''}`}
+        >
           <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
             {icon}
           </span>
@@ -61,7 +74,11 @@ export function UserSettingsTabSection({
             <ChevronRight className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
           </div>
         </CollapsibleTrigger>
-        <CollapsibleContent className={`py-4 w-full ${contentClassName ?? ''}`}>
+        <CollapsibleContent
+          className={`py-4 w-full ${contentClassName ?? ''} ${
+            disabled ? 'pointer-events-none opacity-60' : ''
+          }`}
+        >
           {children}
           {footer ? <div className="pt-4">{footer}</div> : null}
         </CollapsibleContent>

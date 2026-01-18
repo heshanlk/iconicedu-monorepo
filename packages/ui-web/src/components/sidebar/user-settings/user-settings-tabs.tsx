@@ -16,11 +16,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../ui/tabs';
 import { useSidebar } from '../../../ui/sidebar';
 import { cn } from '@iconicedu/ui-web/lib/utils';
 import { getProfileDisplayName } from '../../../lib/display-name';
-import { AccountTab } from './account-tab';
+import { AccountTab, type AccountSectionKey } from './account-tab';
 import { FamilyTab } from './family-tab';
 import { LocationTab } from './location-tab';
 import { NotificationsTab } from './notifications-tab';
-import { PreferencesTab } from './preferences-tab';
+import { PreferencesTab, type PreferencesSectionKey } from './preferences-tab';
 import {
   ProfileTab,
   type ProfileAvatarInput,
@@ -106,6 +106,20 @@ export type UserSettingsTabsProps = {
   scrollToken?: number;
 };
 
+const ONBOARDING_SECTION_CONFIG: Record<
+  OnboardingStep,
+  { tab: UserSettingsTab; sectionKey?: string }
+> = {
+  'account-phone': { tab: 'account', sectionKey: 'phone' },
+  profile: { tab: 'profile', sectionKey: 'profile-details' },
+  'preferences-timezone': { tab: 'preferences', sectionKey: 'timezone' },
+  location: { tab: 'location', sectionKey: 'address' },
+  family: { tab: 'family', sectionKey: 'family' },
+  'student-profile': { tab: 'student-profile', sectionKey: 'student-profile' },
+  'educator-profile': { tab: 'educator-profile', sectionKey: 'educator-profile' },
+  'staff-profile': { tab: 'staff-profile', sectionKey: 'staff-profile' },
+};
+
 export function UserSettingsTabs({
   value,
   onValueChange,
@@ -156,6 +170,16 @@ export function UserSettingsTabs({
   const isProfileOnboarding = onboardingStep === 'profile';
   const isPreferencesTimezoneOnboarding = onboardingStep === 'preferences-timezone';
   const isLocationOnboarding = onboardingStep === 'location';
+  const onboardingGuidance = onboardingStep ? ONBOARDING_SECTION_CONFIG[onboardingStep] : null;
+  const accountGuidance = onboardingGuidance?.tab === 'account' ? onboardingGuidance : null;
+  const profileGuidance = onboardingGuidance?.tab === 'profile' ? onboardingGuidance : null;
+  const preferencesGuidance =
+    onboardingGuidance?.tab === 'preferences' ? onboardingGuidance : null;
+  const locationGuidance =
+    onboardingGuidance?.tab === 'location' ? onboardingGuidance : null;
+  const accountSectionKey = accountGuidance?.sectionKey as AccountSectionKey | undefined;
+  const preferencesSectionKey =
+    preferencesGuidance?.sectionKey as PreferencesSectionKey | undefined;
   const profileOnboardingHint =
     profile.kind === 'educator' && isProfileOnboarding
       ? 'Enter your own first and last name so families know who you are (not your child’s).'
@@ -325,6 +349,7 @@ export function UserSettingsTabs({
               scrollToken={scrollToken}
               showProfileTaskToast={isProfileOnboarding}
               primaryActionLabel={isProfileOnboarding ? 'Continue' : undefined}
+              expandProfileDetails={Boolean(profileGuidance)}
               onboardingHint={profileOnboardingHint}
               onProfileSave={onProfileSave}
               onAvatarUpload={onAvatarUpload}
@@ -366,24 +391,28 @@ export function UserSettingsTabs({
               accountId={account?.ids.id}
               orgId={account?.ids.orgId}
               onAccountUpdate={onAccountUpdate}
+              onboardingRequiredSection={accountSectionKey}
+              lockSections={Boolean(accountGuidance)}
             />
           </TabsContent>
 
-          <TabsContent value="preferences" className="mt-0 space-y-8 w-full px-1">
-            <PreferencesTab
-              currentThemeKey={currentThemeKey}
-              currentThemeLabel={currentThemeLabel}
-              profileId={profile.ids.id}
-              orgId={profile.ids.orgId}
-              prefs={prefs}
-              profileThemeOptions={PROFILE_THEME_OPTIONS}
-              setProfileThemes={setProfileThemes}
-              scrollToRequired={value === 'preferences' || isPreferencesTimezoneOnboarding}
-              scrollToken={scrollToken}
-              showOnboardingToast={isPreferencesTimezoneOnboarding}
-              onPrefsSave={onPrefsSave}
-            />
-          </TabsContent>
+        <TabsContent value="preferences" className="mt-0 space-y-8 w-full px-1">
+          <PreferencesTab
+            currentThemeKey={currentThemeKey}
+            currentThemeLabel={currentThemeLabel}
+            profileId={profile.ids.id}
+            orgId={profile.ids.orgId}
+            prefs={prefs}
+            profileThemeOptions={PROFILE_THEME_OPTIONS}
+            setProfileThemes={setProfileThemes}
+            scrollToRequired={value === 'preferences' || isPreferencesTimezoneOnboarding}
+            scrollToken={scrollToken}
+            showOnboardingToast={isPreferencesTimezoneOnboarding}
+            onPrefsSave={onPrefsSave}
+            onboardingRequiredSection={preferencesSectionKey}
+            lockSections={Boolean(preferencesGuidance)}
+          />
+        </TabsContent>
 
         <TabsContent value="location" className="mt-0 space-y-8 w-full px-1">
           <LocationTab
@@ -391,6 +420,7 @@ export function UserSettingsTabs({
             scrollToRequired={value === 'location' || isLocationOnboarding}
             scrollToken={scrollToken}
             onLocationContinue={onLocationContinue}
+            expandLocation={Boolean(locationGuidance)}
           />
         </TabsContent>
 

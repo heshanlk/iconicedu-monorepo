@@ -17,6 +17,11 @@ import {
 } from '../../../ui/select';
 import { UserSettingsTabSection } from './components/user-settings-tab-section';
 import { postalExamples } from './constants';
+import { BorderBeam } from '../../../ui/border-beam';
+import { useSequentialHighlight } from './hooks/use-sequential-highlight';
+
+type LocationRequiredField = 'city' | 'region' | 'postal';
+const LOCATION_REQUIRED_FIELDS: LocationRequiredField[] = ['city', 'region', 'postal'];
 
 type LocationTabProps = {
   location?: UserProfileVM['location'] | null;
@@ -77,6 +82,20 @@ export function LocationTab({
     }
     return 'US';
   });
+  const isLocationRequiredMissing =
+    !countryValue || !cityValue.trim() || !regionValue.trim() || !postalValue.trim();
+  const sequentialHighlight = useSequentialHighlight<LocationRequiredField>({
+    order: LOCATION_REQUIRED_FIELDS,
+    satisfied: {
+      city: Boolean(cityValue.trim()),
+      region: Boolean(regionValue.trim()),
+      postal: Boolean(postalValue.trim()),
+    },
+    enabled: expandLocation,
+  });
+  const showCityBeam = sequentialHighlight.isActive('city');
+  const showRegionBeam = sequentialHighlight.isActive('region');
+  const showPostalBeam = sequentialHighlight.isActive('postal');
   const selectedCountry = React.useMemo(() => {
     return (
       countries.find((entry) => entry.isoCode === countryValue) ?? countries[0] ?? null
@@ -92,8 +111,9 @@ export function LocationTab({
   }, [countryValue]);
   const postalPlaceholder =
     postalExamples[selectedCountry?.isoCode ?? ''] ?? 'Postal code';
-  const isLocationRequiredMissing =
-    !countryValue || !cityValue.trim() || !regionValue.trim() || !postalValue.trim();
+
+  const showPickLocationBeam = expandLocation && isLocationRequiredMissing && !isPickingLocation;
+  const showContinueBeam = expandLocation && !isLocationRequiredMissing && !isSaving;
 
   React.useEffect(() => {
     setCityValue(location?.city ?? '');
@@ -285,7 +305,7 @@ export function LocationTab({
                 <Label htmlFor="settings-country">
                   Country <span className="text-destructive">*</span>
                 </Label>
-                <div className="relative rounded-full">
+                <div className="relative rounded-full border border-border/60">
                   {!countryValue && !isCountryFocused ? (
                     <span className="pointer-events-none absolute inset-0 rounded-full border-2 border-destructive/40" />
                   ) : null}
@@ -313,6 +333,7 @@ export function LocationTab({
                   <p className="text-xs text-destructive">{fieldErrors.country}</p>
                 ) : null}
               </div>
+
               <div className="space-y-2 sm:col-span-2">
                 <div className="flex items-center justify-between gap-2">
                   <Label htmlFor="settings-street">Street address</Label>
@@ -325,13 +346,20 @@ export function LocationTab({
                   placeholder="123 Example St"
                 />
               </div>
+
               <div className="space-y-2 sm:col-span-2">
                 <Label htmlFor="settings-city">
                   City <span className="text-destructive">*</span>
                 </Label>
-                <div className="relative rounded-full">
-                  {!cityValue.trim() && !isCityFocused ? (
-                    <span className="pointer-events-none absolute inset-0 rounded-full border-2 border-destructive/40" />
+                <div className="relative rounded-full border border-border/60">
+                  {showCityBeam && !cityValue.trim() && !isCityFocused ? (
+                    <BorderBeam
+                      size={60}
+                      initialOffset={12}
+                      borderWidth={2}
+                      className="from-transparent via-pink-500 to-transparent"
+                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                    />
                   ) : null}
                   <Input
                     id="settings-city"
@@ -353,13 +381,20 @@ export function LocationTab({
                   <p className="text-xs text-destructive">{fieldErrors.city}</p>
                 ) : null}
               </div>
+
               <div className="space-y-2 sm:col-span-1">
                 <Label htmlFor="settings-region">
                   State <span className="text-destructive">*</span>
                 </Label>
-                <div className="relative rounded-full">
-                  {!regionValue.trim() && !isRegionFocused ? (
-                    <span className="pointer-events-none absolute inset-0 rounded-full border-2 border-destructive/40" />
+                <div className="relative rounded-full border border-border/60">
+                  {showRegionBeam && !regionValue.trim() && !isRegionFocused ? (
+                    <BorderBeam
+                      size={60}
+                      initialOffset={12}
+                      borderWidth={2}
+                      className="from-transparent via-primary to-transparent"
+                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                    />
                   ) : null}
                   {showStateSelect ? (
                     <Select
@@ -405,13 +440,20 @@ export function LocationTab({
                   <p className="text-xs text-destructive">{fieldErrors.region}</p>
                 ) : null}
               </div>
+
               <div className="space-y-2 sm:col-span-1">
                 <Label htmlFor="settings-postal">
                   Zip <span className="text-destructive">*</span>
                 </Label>
-                <div className="relative rounded-full">
-                  {!postalValue.trim() && !isPostalFocused ? (
-                    <span className="pointer-events-none absolute inset-0 rounded-full border-2 border-destructive/40" />
+                <div className="relative rounded-full border border-border/60">
+                  {showPostalBeam && !postalValue.trim() && !isPostalFocused ? (
+                    <BorderBeam
+                      size={60}
+                      initialOffset={12}
+                      borderWidth={2}
+                      className="from-transparent via-primary to-transparent"
+                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                    />
                   ) : null}
                   <Input
                     id="settings-postal"
@@ -433,39 +475,73 @@ export function LocationTab({
                   <p className="text-xs text-destructive">{fieldErrors.postalCode}</p>
                 ) : null}
               </div>
+
               <div className="sm:col-span-2 flex flex-wrap items-center justify-between gap-2">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={handlePickLocation}
-                  disabled={isPickingLocation}
-                >
-                  {isPickingLocation ? 'Picking location…' : 'Pick location for me'}
-                </Button>
+                <div className="relative inline-flex">
+                  {showPickLocationBeam ? (
+                    <BorderBeam
+                      size={56}
+                      borderWidth={2}
+                      className="from-primary/50 via-primary to-transparent"
+                      transition={{ duration: 4, ease: 'linear' }}
+                    />
+                  ) : null}
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="relative"
+                    onClick={handlePickLocation}
+                    disabled={isPickingLocation}
+                  >
+                    {isPickingLocation ? 'Picking location…' : 'Pick location for me'}
+                  </Button>
+                </div>
                 <div className="flex gap-2">
                   {expandLocation && onLocationContinue ? (
-                    <Button
-                      size="sm"
-                      onClick={handleLocationContinue}
-                      disabled={isSaving || isLocationRequiredMissing}
-                    >
-                      {isSaving ? (
-                        'Saving...'
-                      ) : (
-                        <span className="inline-flex items-center gap-2">
-                          Continue
-                          <ArrowRight className="h-4 w-4" />
-                        </span>
-                      )}
-                    </Button>
+                    <div className="relative inline-flex">
+                      {showContinueBeam ? (
+                        <BorderBeam
+                          size={56}
+                          borderWidth={2}
+                          className="from-primary/80 via-primary to-transparent"
+                          transition={{ duration: 4, ease: 'linear' }}
+                        />
+                      ) : null}
+                      <Button
+                        size="sm"
+                        className="relative"
+                        onClick={handleLocationContinue}
+                        disabled={isSaving || isLocationRequiredMissing}
+                      >
+                        {isSaving ? (
+                          'Saving...'
+                        ) : (
+                          <span className="inline-flex items-center gap-2">
+                            Continue
+                            <ArrowRight className="h-4 w-4" />
+                          </span>
+                        )}
+                      </Button>
+                    </div>
                   ) : (
-                    <Button
-                      size="sm"
-                      onClick={handleLocationContinue}
-                      disabled={isSaving || isLocationRequiredMissing}
-                    >
-                      {isSaving ? 'Saving...' : 'Save'}
-                    </Button>
+                    <div className="relative inline-flex">
+                      {showContinueBeam ? (
+                        <BorderBeam
+                          size={56}
+                          borderWidth={2}
+                          className="from-primary/80 via-primary to-transparent"
+                          transition={{ duration: 4, ease: 'linear' }}
+                        />
+                      ) : null}
+                      <Button
+                        size="sm"
+                        className="relative"
+                        onClick={handleLocationContinue}
+                        disabled={isSaving || isLocationRequiredMissing}
+                      >
+                        {isSaving ? 'Saving...' : 'Save'}
+                      </Button>
+                    </div>
                   )}
                 </div>
               </div>

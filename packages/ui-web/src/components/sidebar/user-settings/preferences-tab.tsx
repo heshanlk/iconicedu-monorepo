@@ -24,6 +24,8 @@ import {
 } from '../../../ui/select';
 import { UserSettingsTabSection } from './components/user-settings-tab-section';
 import { languageOptions, localeOptions } from './constants';
+import { useSequentialHighlight } from './hooks/use-sequential-highlight';
+import { BorderBeam } from '../../../ui/border-beam';
 
 type TimezoneOption = {
   name: string;
@@ -40,6 +42,8 @@ const countryCodeToEmoji = (code?: string | null) => {
     .map((char) => String.fromCodePoint(char.charCodeAt(0) + 127397))
     .join('');
 };
+
+export type PreferencesSectionKey = 'accent' | 'timezone' | 'locale' | 'languages';
 
 type PreferencesTabProps = {
   currentThemeKey: ThemeKey;
@@ -60,6 +64,8 @@ type PreferencesTabProps = {
     languagesSpoken?: string[] | null;
     themeKey?: string | null;
   }) => Promise<void> | void;
+  onboardingRequiredSection?: PreferencesSectionKey | null;
+  lockSections?: boolean;
 };
 
 export function PreferencesTab({
@@ -74,6 +80,8 @@ export function PreferencesTab({
   scrollToRequired = false,
   scrollToken = 0,
   onPrefsSave,
+  onboardingRequiredSection = null,
+  lockSections = false,
 }: PreferencesTabProps) {
   const timezoneOptions = React.useMemo<TimezoneOption[]>(() => {
     const options = Object.values(getAllTimezones()).reduce<TimezoneOption[]>((acc, timezone) => {
@@ -112,6 +120,15 @@ export function PreferencesTab({
   const [isThemeSaving, setIsThemeSaving] = React.useState(false);
   const [isLocaleSaving, setIsLocaleSaving] = React.useState(false);
   const [isLanguagesSaving, setIsLanguagesSaving] = React.useState(false);
+  const [showTimezoneActionBeam, setShowTimezoneActionBeam] = React.useState(false);
+  const sequentialTimezoneHighlight = useSequentialHighlight<'timezone'>({
+    order: ['timezone'],
+    satisfied: {
+      timezone: Boolean(timezoneValue.trim()),
+    },
+    enabled: Boolean(onboardingRequiredSection === 'timezone'),
+  });
+  const showTimezoneFieldBeam = sequentialTimezoneHighlight.isActive('timezone');
 
   React.useEffect(() => {
     if (prefs.timezone?.trim()) {
@@ -145,6 +162,16 @@ export function PreferencesTab({
   }, [scrollToRequired, scrollToken, timezoneValue]);
 
   const showToast = showOnboardingToast && !isToastDismissed;
+  const shouldLockSections = Boolean(lockSections && onboardingRequiredSection);
+  const isAccentSectionActive = onboardingRequiredSection === 'accent';
+  const isTimezoneSectionActive = onboardingRequiredSection === 'timezone';
+  const isLocaleSectionActive = onboardingRequiredSection === 'locale';
+  const isLanguagesSectionActive = onboardingRequiredSection === 'languages';
+  React.useEffect(() => {
+    setShowTimezoneActionBeam(
+      Boolean(isTimezoneSectionActive && timezoneValue.trim() && !isSaving),
+    );
+  }, [isSaving, isTimezoneSectionActive, timezoneValue]);
 
   const isTimezoneRequiredMissing = !timezoneValue.trim();
   const handleThemeSave = React.useCallback(async () => {
@@ -255,6 +282,8 @@ export function PreferencesTab({
             icon={<Palette className="h-5 w-5" />}
             title="Accent color"
             subtitle={currentThemeLabel}
+            defaultOpen={isAccentSectionActive}
+            disabled={shouldLockSections && !isAccentSectionActive}
           >
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2 sm:col-span-2">
@@ -300,6 +329,8 @@ export function PreferencesTab({
             icon={<Clock className="h-5 w-5" />}
             title="Timezone"
             subtitle={prefs.timezone}
+            defaultOpen={isTimezoneSectionActive}
+            disabled={shouldLockSections && !isTimezoneSectionActive}
           >
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2 sm:col-span-2">
@@ -311,6 +342,24 @@ export function PreferencesTab({
                   </div>
                 </Label>
                 <div className="relative rounded-full" ref={timezoneInputRef}>
+                  {showTimezoneFieldBeam && !timezoneValue.trim() ? (
+                    <BorderBeam
+                      size={60}
+                      initialOffset={12}
+                      borderWidth={2}
+                      className="from-transparent via-primary to-transparent"
+                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                    />
+                  ) : null}
+                  {isTimezoneSectionActive && !timezoneValue.trim() ? (
+                    <BorderBeam
+                      size={56}
+                      initialOffset={12}
+                      borderWidth={2}
+                      className="from-transparent via-primary to-transparent"
+                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                    />
+                  ) : null}
                   <Select
                     value={timezoneValue}
                     onValueChange={(value) => setTimezoneValue(value)}
@@ -357,13 +406,24 @@ export function PreferencesTab({
                 >
                   Pick timezone for me
                 </Button>
-                <Button
-                  size="sm"
-                  onClick={handleTimezoneSave}
-                  disabled={isSaving || isTimezoneRequiredMissing}
-                >
-                  {isSaving ? 'Saving...' : 'Save'}
-                </Button>
+                <div className="relative inline-flex">
+                  {showTimezoneActionBeam ? (
+                    <BorderBeam
+                      size={56}
+                      borderWidth={2}
+                      className="from-primary/80 via-primary to-transparent"
+                      transition={{ duration: 4, ease: 'linear' }}
+                    />
+                  ) : null}
+                  <Button
+                    size="sm"
+                    className="relative"
+                    onClick={handleTimezoneSave}
+                    disabled={isSaving || isTimezoneRequiredMissing}
+                  >
+                    {isSaving ? 'Saving...' : 'Save'}
+                  </Button>
+                </div>
               </div>
             </div>
           </UserSettingsTabSection>
@@ -373,6 +433,8 @@ export function PreferencesTab({
             icon={<Globe className="h-5 w-5" />}
             title="Locale"
             subtitle={prefs.locale ?? 'Auto'}
+            defaultOpen={isLocaleSectionActive}
+            disabled={shouldLockSections && !isLocaleSectionActive}
           >
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2 sm:col-span-2">
@@ -410,6 +472,8 @@ export function PreferencesTab({
             icon={<Languages className="h-5 w-5" />}
             title="Languages spoken"
             subtitle={languageValue.length ? languageValue.join(', ') : 'Not set'}
+            defaultOpen={isLanguagesSectionActive}
+            disabled={shouldLockSections && !isLanguagesSectionActive}
           >
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-3 sm:col-span-2">

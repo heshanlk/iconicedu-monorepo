@@ -8,6 +8,7 @@ import type {
   UserProfileVM,
 } from '@iconicedu/shared-types';
 import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
+import { BorderBeam } from '../../../ui/border-beam';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -34,6 +35,7 @@ import {
   SelectValue,
 } from '../../../ui/select';
 import { ChevronIcon } from './components/chevron-icon';
+import { useSequentialHighlight } from './hooks/use-sequential-highlight';
 
 type ProfileTabProps = {
   profile: UserProfileVM;
@@ -95,6 +97,16 @@ export function ProfileTab({
     profileBlock.firstName ?? '',
   );
   const [lastNameValue, setLastNameValue] = React.useState(profileBlock.lastName ?? '');
+  const sequentialProfileHighlight = useSequentialHighlight<'first' | 'last'>({
+    order: ['first', 'last'],
+    satisfied: {
+      first: Boolean(firstNameValue.trim()),
+      last: Boolean(lastNameValue.trim()),
+    },
+    enabled: shouldHighlightRequired,
+  });
+  const showFirstNameBeam = sequentialProfileHighlight.isActive('first');
+  const showLastNameBeam = sequentialProfileHighlight.isActive('last');
   const [isFirstFocused, setIsFirstFocused] = React.useState(false);
   const [isLastFocused, setIsLastFocused] = React.useState(false);
   const showToast = showProfileTaskToast ?? expandProfileDetails;
@@ -105,6 +117,7 @@ export function ProfileTab({
   const [bioValue, setBioValue] = React.useState(profileBlock.bio ?? '');
   const [saveError, setSaveError] = React.useState<string | null>(null);
   const [showRequiredErrors, setShowRequiredErrors] = React.useState(false);
+  const [showProfileActionBeam, setShowProfileActionBeam] = React.useState(false);
   const [isSaving, setIsSaving] = React.useState(false);
   const [avatarPreview, setAvatarPreview] = React.useState<string | null>(null);
   const [avatarUploadError, setAvatarUploadError] = React.useState<string | null>(null);
@@ -134,14 +147,31 @@ export function ProfileTab({
   }, [expandProfileDetails]);
 
   React.useEffect(() => {
-    if (!expandProfileDetails) {
+    if (!shouldHighlightRequired) {
+      setShowProfileActionBeam(false);
       return;
     }
+
+    const isReady = Boolean(firstNameValue.trim() && lastNameValue.trim());
+    setShowProfileActionBeam(Boolean(isReady && !isSaving));
+  }, [firstNameValue, lastNameValue, shouldHighlightRequired, isSaving]);
+
+  const hasFocusedProfileDetailRef = React.useRef(false);
+
+  React.useEffect(() => {
+    if (!expandProfileDetails) {
+      hasFocusedProfileDetailRef.current = false;
+      return;
+    }
+    if (hasFocusedProfileDetailRef.current) {
+      return;
+    }
+    hasFocusedProfileDetailRef.current = true;
     const target = !firstNameValue.trim() ? firstNameRef.current : lastNameRef.current;
     if (target) {
       requestAnimationFrame(() => target.focus());
     }
-  }, [expandProfileDetails, firstNameValue, lastNameValue]);
+  }, [expandProfileDetails, firstNameValue]);
 
   React.useEffect(() => {
     if (!scrollToRequired) {
@@ -216,6 +246,7 @@ export function ProfileTab({
         throw error;
       } finally {
         setIsSaving(false);
+        setShowProfileActionBeam(false);
       }
     },
     [
@@ -475,10 +506,14 @@ export function ProfileTab({
                   <p className="text-xs text-muted-foreground">{onboardingHint}</p>
                 ) : null}
                 <div className="relative rounded-full">
-                  {shouldHighlightRequired &&
-                  !firstNameValue.trim() &&
-                  !isFirstFocused ? (
-                    <span className="pointer-events-none absolute inset-0 rounded-full border-2 border-destructive/40" />
+                  {showFirstNameBeam && !firstNameValue.trim() && !isFirstFocused ? (
+                    <BorderBeam
+                      size={60}
+                      initialOffset={12}
+                      borderWidth={2}
+                      className="from-transparent via-pink-500 to-transparent"
+                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                    />
                   ) : null}
                   <Input
                     id="settings-first-name"
@@ -506,8 +541,14 @@ export function ProfileTab({
                   Last name <span className="text-destructive">*</span>
                 </Label>
                 <div className="relative rounded-full">
-                  {shouldHighlightRequired && !lastNameValue.trim() && !isLastFocused ? (
-                    <span className="pointer-events-none absolute inset-0 rounded-full border-2 border-destructive/40" />
+                  {showLastNameBeam && !lastNameValue.trim() && !isLastFocused ? (
+                    <BorderBeam
+                      size={60}
+                      initialOffset={12}
+                      borderWidth={2}
+                      className="from-transparent via-pink-500 to-transparent"
+                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                    />
                   ) : null}
                   <Input
                     id="settings-last-name"
@@ -545,29 +586,41 @@ export function ProfileTab({
                   placeholder="Share a short bio to help others know you."
                 />
               </div>
-              <div className="sm:col-span-2 flex flex-wrap items-center justify-between gap-3">
-                <div className="text-xs text-muted-foreground">
-                  {saveError ? (
-                    <span className="text-destructive">{saveError}</span>
-                  ) : null}
+                <div className="sm:col-span-2 flex flex-wrap items-center justify-between gap-3">
+                  <div className="text-xs text-muted-foreground">
+                    {saveError ? (
+                      <span className="text-destructive">{saveError}</span>
+                    ) : null}
+                  </div>
+                  <div className="relative inline-flex">
+                    {showProfileActionBeam ? (
+                      <BorderBeam
+                        size={56}
+                        borderWidth={2}
+                        delay={0.2}
+                        transition={{ duration: 4, ease: 'linear' }}
+                        className="from-primary via-primary/80 to-transparent"
+                      />
+                    ) : null}
+                    <Button
+                      size="sm"
+                      className="relative"
+                      onClick={() => handleProfileSave(onPrimaryActionComplete)}
+                      disabled={isSaving || isPrimaryDisabled}
+                    >
+                      {isSaving ? (
+                        'Saving...'
+                      ) : primaryActionLabel === 'Continue' ? (
+                        <span className="inline-flex items-center gap-2">
+                          Continue
+                          <ArrowRight className="h-4 w-4" />
+                        </span>
+                      ) : (
+                        primaryActionLabel
+                      )}
+                    </Button>
+                  </div>
                 </div>
-                <Button
-                  size="sm"
-                  onClick={() => handleProfileSave(onPrimaryActionComplete)}
-                  disabled={isSaving || isPrimaryDisabled}
-                >
-                  {isSaving ? (
-                    'Saving...'
-                  ) : primaryActionLabel === 'Continue' ? (
-                    <span className="inline-flex items-center gap-2">
-                      Continue
-                      <ArrowRight className="h-4 w-4" />
-                    </span>
-                  ) : (
-                    primaryActionLabel
-                  )}
-                </Button>
-              </div>
             </div>
           </UserSettingsTabSection>
         </div>
