@@ -297,20 +297,29 @@ export function SidebarLeft({
                 </SidebarGroupContent>
               </SidebarGroup>
             ) : (
-              learningSpacesByChild.map(({ child, learningSpaces }) => (
-                <NavLearningSpaces
-                  key={child.ids.accountId}
-                  title={getProfileDisplayName(child.profile)}
-                  child={child}
-                  learningSpaces={learningSpaces}
-                  isOpen={openChildId === child.ids.accountId}
-                  onOpenChange={(nextOpen) =>
-                    setOpenChildId(nextOpen ? child.ids.accountId : null)
-                  }
-                  activeChannelId={activeLearningSpaceId}
-                  isMobile={isMobile}
-                />
-              ))
+              learningSpacesByChild.map(({ child, learningSpaces }) => {
+                const hasLearningSpaces = learningSpaces.length > 0;
+                const shouldOpenForChild = hasLearningSpaces
+                  ? openChildId === child.ids.accountId
+                  : true;
+                return (
+                  <NavLearningSpaces
+                    key={child.ids.accountId}
+                    title={getProfileDisplayName(child.profile)}
+                    child={child}
+                    learningSpaces={learningSpaces}
+                    isOpen={shouldOpenForChild}
+                    onOpenChange={(nextOpen) => {
+                      if (!hasLearningSpaces) {
+                        return;
+                      }
+                      setOpenChildId(nextOpen ? child.ids.accountId : null);
+                    }}
+                    activeChannelId={activeLearningSpaceId}
+                    isMobile={isMobile}
+                  />
+                );
+              })
             )}
           </>
         ) : null}
