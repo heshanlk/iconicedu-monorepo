@@ -449,7 +449,7 @@ export function AccountTab({
                 <Label htmlFor="settings-account-whatsapp">WhatsApp</Label>
                 <div className="relative rounded-full">
                   {whatsappOpen && !whatsappInputValue.trim() && !isWhatsappFocused ? (
-                    <span className="pointer-events-none absolute inset-0 rounded-full border-2 border-primary/40" />
+                    <span className="pointer-events-none absolute inset-0" />
                   ) : null}
                   <InputGroup>
                     <InputGroupInput
