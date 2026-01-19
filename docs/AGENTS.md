@@ -91,5 +91,10 @@
 - Build onboarding guidance logic with reusable helpers/hooks (e.g., maintaining a shared guidance map per step in `UserSettingsTabs`) so the wiring stays maintainable and scalable without scattering ad-hoc state across the dialog.
 - Deliver production-grade implementations for these flows: reuse existing folder patterns, follow common React/Next.js practices (hooks, single-responsibility helpers, context if needed), and keep the data/UI layers decoupled to allow future iterations without rewriting the entire dialog.
 
+## 16. Adding new onboarding-required fields
+- When a new field becomes required (job title, weekly availability, etc.), update the shared onboarding map in `UserSettingsTabs`/`user-settings-dialog` and the server-visible onboarding status logic (e.g., `determineOnboardingStep`) so the step stays active until every required field is filled.
+- Use the `useSequentialHighlight` hook alongside `BorderBeam` in the target section to show a subtle animation on the required inputs/buttons; keep the beam small (`size=26` for buttons, `size=52` for inputs) and use the `from-transparent via-amber-700 to-transparent` gradient for consistency.
+- Only show the beam during onboarding (guard with the `enabled` flag) and base the `satisfied` map on the same validation checks used in the backend (e.g., trimmed text or non-empty availability arrays). Keep required collapsibles open by default via `defaultOpen` and disable other sections until the user completes the required flow.
+
 ## 16. Entity operation safety
 - Every multi-table entity write must behave atomically: wrap the work in a database transaction when available, or implement explicit cleanup/rollback logic so either all inserts/updates succeed or any newly created rows are removed. Capture that strategy in the relevant code and document it when editing entity operations.

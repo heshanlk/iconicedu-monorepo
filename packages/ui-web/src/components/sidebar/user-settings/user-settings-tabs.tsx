@@ -180,6 +180,7 @@ export function UserSettingsTabs({
   const isFamilyOnboarding = onboardingStep === 'family';
   const isStudentProfileOnboarding = onboardingStep === 'student-profile';
   const isEducatorProfileOnboarding = onboardingStep === 'educator-profile';
+  const isStaffOnboarding = onboardingStep === 'staff-profile';
   const onboardingGuidance = onboardingStep ? ONBOARDING_SECTION_CONFIG[onboardingStep] : null;
   const accountGuidance = onboardingGuidance?.tab === 'account' ? onboardingGuidance : null;
   const profileGuidance = onboardingGuidance?.tab === 'profile' ? onboardingGuidance : null;
@@ -365,7 +366,11 @@ export function UserSettingsTabs({
           </TabsContent>
           {staffProfile ? (
             <TabsContent value="staff-profile" className="mt-0 space-y-8 w-full px-1">
-              <StaffProfileTab staffProfile={staffProfile} onSave={onStaffProfileSave} />
+              <StaffProfileTab
+                staffProfile={staffProfile}
+                isStaffOnboarding={isStaffOnboarding}
+                onSave={onStaffProfileSave}
+              />
             </TabsContent>
           ) : null}
           {educatorProfile ? (

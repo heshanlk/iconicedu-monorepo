@@ -12,6 +12,8 @@ import { Input } from '../../../ui/input';
 import { Label } from '../../../ui/label';
 import { UserSettingsTabSection } from './components/user-settings-tab-section';
 import { AvailabilityScheduler } from '../../shared/availability-scheduler';
+import { BorderBeam } from '../../../ui/border-beam';
+import { useSequentialHighlight } from './hooks/use-sequential-highlight';
 
 const SPECIALTY_OPTIONS = [
   'Scheduling',
@@ -46,10 +48,15 @@ const formatHourLabel = (hour: number) => {
 
 type StaffProfileTabProps = {
   staffProfile: StaffProfileVM;
+  isStaffOnboarding?: boolean;
   onSave?: (input: StaffProfileSaveInput) => Promise<void> | void;
 };
 
-export function StaffProfileTab({ staffProfile, onSave }: StaffProfileTabProps) {
+export function StaffProfileTab({
+  staffProfile,
+  isStaffOnboarding = false,
+  onSave,
+}: StaffProfileTabProps) {
   const [department, setDepartment] = React.useState(staffProfile.department ?? '');
   const [jobTitle, setJobTitle] = React.useState(staffProfile.jobTitle ?? '');
   const [specialties, setSpecialties] = React.useState<string[]>(() =>
@@ -103,6 +110,21 @@ export function StaffProfileTab({ staffProfile, onSave }: StaffProfileTabProps) 
         : [...current, value],
     );
   }, []);
+
+  const hasWeeklyAvailability = React.useMemo(
+    () =>
+      Boolean(availability) &&
+      DAY_KEYS.some((day) => (availability[day]?.length ?? 0) > 0),
+    [availability],
+  );
+  const sequentialStaffHighlight = useSequentialHighlight<'availability'>({
+    order: ['availability'],
+    satisfied: {
+      availability: hasWeeklyAvailability,
+    },
+    enabled: isStaffOnboarding,
+  });
+  const showAvailabilityBeam = sequentialStaffHighlight.isActive('availability');
 
   const availabilitySubtitle = React.useMemo(() => {
     return (
@@ -227,12 +249,30 @@ export function StaffProfileTab({ staffProfile, onSave }: StaffProfileTabProps) 
         title="Weekly availability"
         subtitle={availabilitySubtitle}
         icon={<Briefcase className="h-5 w-5" />}
-        defaultOpen
+        defaultOpen={isStaffOnboarding}
         footer={
-          <div className="flex justify-end">
-            <Button onClick={handleSave} disabled={isSaving} className="rounded-full">
-              Save
-            </Button>
+          <div className="flex flex-col gap-2">
+            <div className="flex justify-end">
+              <div className="relative inline-flex rounded-full">
+                {showAvailabilityBeam ? (
+                  <BorderBeam
+                    size={26}
+                    initialOffset={8}
+                    borderWidth={2}
+                    className="from-transparent via-amber-700 to-transparent"
+                    transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                  />
+                ) : null}
+                <Button
+                  size="sm"
+                  onClick={handleSave}
+                  disabled={isSaving}
+                  className="relative z-10 rounded-full"
+                >
+                  Save
+                </Button>
+              </div>
+            </div>
           </div>
         }
         showSeparator={false}
