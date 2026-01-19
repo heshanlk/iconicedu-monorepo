@@ -4,10 +4,7 @@ import * as React from 'react';
 import {
   CalendarDays,
   Check,
-  Clock,
-  Moon,
   SlidersHorizontal,
-  Sun,
   User,
   Users,
   X,
@@ -19,6 +16,12 @@ import { Slider } from '../../../ui/slider';
 import { Label } from '../../../ui/label';
 import { UserSettingsTabSection } from './components/user-settings-tab-section';
 import { cn } from '@iconicedu/ui-web/lib/utils';
+import {
+  AvailabilityScheduler,
+  DayAvailability,
+  DAYS,
+  EMPTY_DAY_AVAILABILITY,
+} from '../../shared/availability-scheduler';
 
 const CLASS_TYPE_OPTIONS = [
   { value: 'one-one', label: 'One-on-one', icon: User },
@@ -27,32 +30,6 @@ const CLASS_TYPE_OPTIONS = [
 
 type ClassTypeOption = (typeof CLASS_TYPE_OPTIONS)[number];
 type ClassTypeValue = ClassTypeOption['value'];
-
-const DAYS = [
-  { key: 'Mon', label: 'MON' },
-  { key: 'Tue', label: 'TUE' },
-  { key: 'Wed', label: 'WED' },
-  { key: 'Thu', label: 'THU' },
-  { key: 'Fri', label: 'FRI' },
-  { key: 'Sat', label: 'SAT' },
-  { key: 'Sun', label: 'SUN' },
-] as const;
-
-type DayKey = (typeof DAYS)[number]['key'];
-export type DayAvailability = Record<DayKey, number[]>;
-
-const MORNING_HOURS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
-const AFTERNOON_HOURS = [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
-
-const DEFAULT_AVAILABILITY: DayAvailability = {
-  Mon: [9, 10, 11, 14, 15, 16],
-  Tue: [9, 10, 11, 14, 15, 16],
-  Wed: [14, 15, 16],
-  Thu: [9, 10, 11],
-  Fri: [14, 15, 16, 17],
-  Sat: [],
-  Sun: [],
-};
 
 interface CommitmentSegment {
   label: 'Light' | 'Moderate' | 'Substantial' | 'Full-time';
@@ -93,176 +70,6 @@ const COMMITMENT_SEGMENTS: CommitmentSegment[] = [
   },
 ];
 
-type AvailabilitySchedulerProps = {
-  value?: DayAvailability;
-  onChange?: (value: DayAvailability) => void;
-};
-
-function AvailabilityScheduler({ value, onChange }: AvailabilitySchedulerProps) {
-  const [selectedDay, setSelectedDay] = React.useState<DayKey>('Mon');
-  const [availability, setAvailability] = React.useState<DayAvailability>(
-    value ?? DEFAULT_AVAILABILITY,
-  );
-
-  React.useEffect(() => {
-    setAvailability(value ?? DEFAULT_AVAILABILITY);
-  }, [value]);
-
-  const updateAvailability = React.useCallback(
-    (next: DayAvailability) => {
-      setAvailability(next);
-      onChange?.(next);
-    },
-    [onChange],
-  );
-
-  const toggleHour = React.useCallback(
-    (hour: number) => {
-      const dayHours = availability[selectedDay] ?? [];
-      const nextHours = dayHours.includes(hour)
-        ? dayHours.filter((item) => item !== hour)
-        : [...dayHours, hour].sort((a, b) => a - b);
-      updateAvailability({
-        ...availability,
-        [selectedDay]: nextHours,
-      });
-    },
-    [availability, selectedDay, updateAvailability],
-  );
-
-  const isHourSelected = React.useCallback(
-    (hour: number) => availability[selectedDay]?.includes(hour) ?? false,
-    [availability, selectedDay],
-  );
-
-  const getDayIndicator = React.useCallback(
-    (day: DayKey) => {
-      const hours = availability[day] ?? [];
-      const morningCount = hours.filter((hour) => hour < 12).length;
-      const afternoonCount = hours.filter((hour) => hour >= 12).length;
-      return { morning: morningCount, afternoon: afternoonCount };
-    },
-    [availability],
-  );
-
-  const formatHour = (hour: number) => `${hour.toString().padStart(2, '0')}:00`;
-
-  return (
-    <div className="space-y-6">
-      <div className="flex justify-between gap-1 sm:gap-2">
-        {DAYS.map(({ key, label }) => {
-          const indicator = getDayIndicator(key);
-          const isSelected = selectedDay === key;
-          const hasAvailability = indicator.morning > 0 || indicator.afternoon > 0;
-
-          return (
-            <button
-              key={key}
-              type="button"
-              onClick={() => setSelectedDay(key)}
-              className={cn(
-                'flex-1 flex flex-col items-center gap-1.5 py-2 px-1 rounded-lg transition-colors',
-                isSelected ? 'bg-muted' : 'hover:bg-muted/50',
-              )}
-            >
-              <span
-                className={cn(
-                  'text-xs sm:text-sm font-medium',
-                  isSelected ? 'text-foreground' : 'text-muted-foreground',
-                )}
-              >
-                {label}
-              </span>
-              <div className="flex gap-0.5 h-4 items-end">
-                <div
-                  className={cn(
-                    'w-1.5 sm:w-2 rounded-sm transition-all',
-                    hasAvailability ? 'bg-primary/60' : 'bg-muted-foreground/20',
-                  )}
-                  style={{
-                    height:
-                      indicator.morning > 0
-                        ? `${Math.min(4 + indicator.morning * 1.5, 16)}px`
-                        : '4px',
-                  }}
-                />
-                <div
-                  className={cn(
-                    'w-1.5 sm:w-2 rounded-sm transition-all',
-                    hasAvailability ? 'bg-primary/40' : 'bg-muted-foreground/20',
-                  )}
-                  style={{
-                    height:
-                      indicator.afternoon > 0
-                        ? `${Math.min(4 + indicator.afternoon * 1.5, 16)}px`
-                        : '4px',
-                  }}
-                />
-              </div>
-            </button>
-          );
-        })}
-      </div>
-
-      <div className="space-y-3">
-        <div className="flex items-center justify-center gap-2 text-muted-foreground text-sm">
-          <Sun className="size-4" />
-          <span className="font-medium">Morning</span>
-        </div>
-        <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
-          {MORNING_HOURS.map((hour) => {
-            const selected = isHourSelected(hour);
-            return (
-              <Button
-                key={`morning-${hour}`}
-                size="sm"
-                variant={selected ? 'default' : 'ghost'}
-                className={cn(
-                  'h-9 text-sm font-normal rounded-full transition-all',
-                  selected
-                    ? 'bg-primary text-primary-foreground shadow-sm'
-                    : 'bg-transparent text-muted-foreground hover:bg-muted hover:text-foreground',
-                )}
-                onClick={() => toggleHour(hour)}
-              >
-                {formatHour(hour)}
-              </Button>
-            );
-          })}
-        </div>
-      </div>
-
-      <div className="space-y-3">
-        <div className="flex items-center justify-center gap-2 text-muted-foreground text-sm">
-          <Moon className="size-4" />
-          <span className="font-medium">Afternoon/Evening</span>
-        </div>
-        <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
-          {AFTERNOON_HOURS.map((hour) => {
-            const selected = isHourSelected(hour);
-            return (
-              <Button
-                key={`afternoon-${hour}`}
-                size="sm"
-                variant={selected ? 'default' : 'ghost'}
-                className={cn(
-                  'h-9 text-sm font-normal rounded-full transition-all',
-                  selected
-                    ? 'bg-primary text-primary-foreground shadow-sm'
-                    : 'bg-transparent text-muted-foreground hover:bg-muted hover:text-foreground',
-                )}
-                onClick={() => toggleHour(hour)}
-              >
-                {formatHour(hour)}
-              </Button>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export type EducatorAvailabilityInput = {
   classTypes: Array<ClassTypeValue>;
   weeklyCommitment: number;
@@ -287,7 +94,7 @@ export function EducatorAvailabilityTab({
   >(initialClassTypes ?? []);
   const [weeklyCommitment, setWeeklyCommitment] = React.useState(initialWeeklyCommitment);
   const [availability, setAvailability] = React.useState<DayAvailability>(
-    initialAvailability ?? DEFAULT_AVAILABILITY,
+    initialAvailability ?? EMPTY_DAY_AVAILABILITY,
   );
   const [isSaving, setIsSaving] = React.useState(false);
 
@@ -353,13 +160,34 @@ export function EducatorAvailabilityTab({
     const classSummary =
       selectedClassTypes
         .map(
-          (value) =>
-            CLASS_TYPE_OPTIONS.find((option) => option.value === value)?.label,
+          (value) => CLASS_TYPE_OPTIONS.find((option) => option.value === value)?.label,
         )
         .filter(Boolean)
         .join(', ') || 'Class types not set';
     return `${classSummary} · ${weeklyCommitment} hrs/week`;
   }, [selectedClassTypes, weeklyCommitment]);
+
+  const availabilitySubtitle = React.useMemo(() => {
+    return (
+      <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+        {DAYS.map(({ key, label }) => {
+          const hasSlots = Boolean(availability[key]?.length);
+          const Icon = hasSlots ? Check : X;
+          return (
+            <span key={key} className="inline-flex items-center gap-1">
+              <Icon
+                className={cn(
+                  'size-3',
+                  hasSlots ? 'text-primary' : 'text-destructive',
+                )}
+              />
+              {label}
+            </span>
+          );
+        })}
+      </div>
+    );
+  }, [availability]);
 
   return (
     <div className="space-y-4">
@@ -367,7 +195,6 @@ export function EducatorAvailabilityTab({
         title="Class preferences"
         subtitle={classPreferencesSubtitle}
         icon={<SlidersHorizontal className="h-5 w-5" />}
-        defaultOpen
         footer={
           <div className="flex justify-end">
             <Button
@@ -518,8 +345,9 @@ export function EducatorAvailabilityTab({
       </UserSettingsTabSection>
       <UserSettingsTabSection
         title="Weekly availability"
-        subtitle="Map the time blocks you can teach"
+        subtitle={availabilitySubtitle}
         icon={<CalendarDays className="h-5 w-5" />}
+        showSeparator={false}
         footer={
           <div className="flex justify-end">
             <Button size="sm" onClick={handleSave} disabled={!onSave || isSaving}>
@@ -529,10 +357,6 @@ export function EducatorAvailabilityTab({
         }
       >
         <div className="space-y-4">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Clock className="size-4" />
-            <span>Pick specific hours per day</span>
-          </div>
           <AvailabilityScheduler value={availability} onChange={setAvailability} />
         </div>
       </UserSettingsTabSection>
