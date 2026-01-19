@@ -291,10 +291,7 @@ export function SidebarShell({
     async (input: StaffProfileSaveInput) => {
       try {
         const specialties = normalizeList(input.specialties);
-        const normalizedSchedule =
-          input.workingHoursSchedule && input.workingHoursSchedule.length > 0
-            ? input.workingHoursSchedule
-            : null;
+        const normalizedAvailability = input.weeklyAvailability ?? null;
 
         const { error } = await supabase
           .from('staff_profiles')
@@ -304,7 +301,7 @@ export function SidebarShell({
               org_id: input.orgId,
               department: input.department ?? null,
               job_title: input.jobTitle ?? null,
-                  working_hours_rules: normalizedSchedule,
+              weekly_availability: normalizedAvailability,
             },
             { onConflict: 'profile_id' },
           );
@@ -341,7 +338,6 @@ export function SidebarShell({
           if (profile.ids.id !== input.profileId || profile.kind !== 'staff') {
             return prev;
           }
-          const normalizedAvailability = normalizedSchedule;
           return {
             ...prev,
             user: {
@@ -350,7 +346,7 @@ export function SidebarShell({
                 ...profile,
                 department: input.department ?? null,
                 jobTitle: input.jobTitle ?? null,
-                workingHoursSchedule: normalizedAvailability,
+                weeklyAvailability: normalizedAvailability,
                 specialties: specialties.length ? specialties : null,
               },
             },

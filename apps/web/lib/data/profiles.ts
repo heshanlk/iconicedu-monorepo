@@ -1,4 +1,14 @@
 import type { UserProfileVM } from '@iconicedu/shared-types';
+
+const STAFF_SUPPORT_WEEKLY_AVAILABILITY = {
+  Mon: [9, 10, 11, 12, 13, 14, 15, 16],
+  Tue: [9, 10, 11, 12, 13, 14, 15, 16],
+  Wed: [9, 10, 11, 12, 13, 14, 15, 16],
+  Thu: [9, 10, 11, 12, 13, 14, 15, 16],
+  Fri: [9, 10, 11, 12, 13, 14, 15, 16],
+  Sat: [],
+  Sun: [],
+};
 import { ACCOUNT_IDS, ORG_ID, PROFILE_IDS } from './ids';
 
 export const SYSTEM_PROFILE: UserProfileVM = {
@@ -771,15 +781,7 @@ export const STAFF_SUPPORT_PROFILE: UserProfileVM = {
   specialties: ['Scheduling', 'Billing', 'Onboarding'],
   jobTitle: 'Support Specialist',
   permissionsScope: 'standard',
-  workingHoursSchedule: [
-    { day: 'monday', enabled: true, from: '09:00', to: '17:00' },
-    { day: 'tuesday', enabled: true, from: '09:00', to: '17:00' },
-    { day: 'wednesday', enabled: true, from: '09:00', to: '17:00' },
-    { day: 'thursday', enabled: true, from: '09:00', to: '17:00' },
-    { day: 'friday', enabled: true, from: '09:00', to: '17:00' },
-    { day: 'saturday', enabled: false },
-    { day: 'sunday', enabled: false },
-  ],
+  weeklyAvailability: STAFF_SUPPORT_WEEKLY_AVAILABILITY,
 };
 
 export const PROFILES: UserProfileVM[] = [

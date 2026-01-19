@@ -3,19 +3,16 @@ import { Briefcase, Check } from 'lucide-react';
 
 import type {
   DayAvailability,
-  DayKey,
   StaffProfileSaveInput,
   StaffProfileVM,
-  Weekday,
-  WorkingHoursEntry,
-  WorkingHoursSchedule,
 } from '@iconicedu/shared-types';
 import { Button } from '../../../ui/button';
 import { Input } from '../../../ui/input';
 import { Label } from '../../../ui/label';
 import { UserSettingsTabSection } from './components/user-settings-tab-section';
 import { AvailabilityScheduler } from '../../shared/availability-scheduler';
-import { DAY_KEYS, EMPTY_DAY_AVAILABILITY } from '@iconicedu/shared-types';
+import { summarizeAvailability } from '../../shared/availability-utils';
+import { EMPTY_DAY_AVAILABILITY } from '@iconicedu/shared-types';
 
 const SPECIALTY_OPTIONS = [
   'Scheduling',
@@ -32,74 +29,6 @@ const SPECIALTY_OPTIONS = [
 const normalizeSpecialties = (values?: string[] | null) =>
   Array.from(new Set((values ?? []).map((value) => value.trim()).filter(Boolean)));
 
-const WEEKDAY_TO_DAY_KEY: Record<Weekday, DayKey> = {
-  monday: 'Mon',
-  tuesday: 'Tue',
-  wednesday: 'Wed',
-  thursday: 'Thu',
-  friday: 'Fri',
-  saturday: 'Sat',
-  sunday: 'Sun',
-};
-
-const DAY_KEY_TO_WEEKDAY = Object.entries(WEEKDAY_TO_DAY_KEY).reduce((acc, [key, value]) => {
-  acc[value as DayKey] = key as Weekday;
-  return acc;
-}, {} as Record<DayKey, Weekday>);
-
-const formatHourLabel = (hour: number) => {
-  const period = hour >= 12 ? 'PM' : 'AM';
-  const displayHour = hour % 12 === 0 ? 12 : hour % 12;
-  return `${displayHour.toString().padStart(2, '0')}:00 ${period}`;
-};
-
-const buildAvailabilityFromSchedule = (
-  schedule?: WorkingHoursSchedule | null,
-): DayAvailability => {
-  const availability: DayAvailability = { ...EMPTY_DAY_AVAILABILITY };
-  schedule?.forEach((entry) => {
-    if (!entry.enabled || !entry.from || !entry.to) {
-      return;
-    }
-    const mappedDay = WEEKDAY_TO_DAY_KEY[entry.day];
-    if (!mappedDay) {
-      return;
-    }
-    const [fromHourStr] = entry.from.split(':');
-    const [toHourStr] = entry.to.split(':');
-    const fromHour = Number(fromHourStr);
-    const toHour = Number(toHourStr);
-
-    if (Number.isNaN(fromHour) || Number.isNaN(toHour) || toHour <= fromHour) {
-      return;
-    }
-
-    availability[mappedDay] = Array.from(
-      { length: toHour - fromHour },
-      (_, index) => fromHour + index,
-    );
-  });
-  return availability;
-};
-
-const availabilityToWorkingHours = (availability: DayAvailability): WorkingHoursEntry[] => {
-  return DAY_KEYS.map((day) => {
-    const hours = availability[day] ?? [];
-    if (!hours.length) {
-      return { day: DAY_KEY_TO_WEEKDAY[day], enabled: false, from: null, to: null };
-    }
-
-    const startHour = Math.min(...hours);
-    const endHour = Math.max(...hours) + 1;
-    return {
-      day: DAY_KEY_TO_WEEKDAY[day],
-      enabled: true,
-      from: `${startHour.toString().padStart(2, '0')}:00`,
-      to: `${Math.min(endHour, 24).toString().padStart(2, '0')}:00`,
-    };
-  });
-};
-
 type StaffProfileTabProps = {
   staffProfile: StaffProfileVM;
   onSave?: (input: StaffProfileSaveInput) => Promise<void> | void;
@@ -112,7 +41,7 @@ export function StaffProfileTab({ staffProfile, onSave }: StaffProfileTabProps) 
     normalizeSpecialties(staffProfile.specialties),
   );
   const [availability, setAvailability] = React.useState<DayAvailability>(() =>
-    buildAvailabilityFromSchedule(staffProfile.workingHoursSchedule),
+    staffProfile.weeklyAvailability ?? EMPTY_DAY_AVAILABILITY,
   );
   const [isSaving, setIsSaving] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
@@ -123,7 +52,7 @@ export function StaffProfileTab({ staffProfile, onSave }: StaffProfileTabProps) 
   );
   const initialAvailabilityRef = React.useRef<string>(
     JSON.stringify(
-      buildAvailabilityFromSchedule(staffProfile.workingHoursSchedule),
+      staffProfile.weeklyAvailability ?? EMPTY_DAY_AVAILABILITY,
     ),
   );
 
@@ -132,14 +61,12 @@ export function StaffProfileTab({ staffProfile, onSave }: StaffProfileTabProps) 
     setJobTitle(staffProfile.jobTitle ?? '');
     initialDepartmentRef.current = staffProfile.department ?? '';
     initialJobTitleRef.current = staffProfile.jobTitle ?? '';
-    const normalizedAvailability = buildAvailabilityFromSchedule(
-      staffProfile.workingHoursSchedule,
-    );
-    setAvailability(normalizedAvailability);
-    initialAvailabilityRef.current = JSON.stringify(normalizedAvailability);
     const normalizedSpecialties = normalizeSpecialties(staffProfile.specialties);
     setSpecialties(normalizedSpecialties);
     initialSpecialtiesRef.current = JSON.stringify(normalizedSpecialties);
+    const normalizedAvailability = staffProfile.weeklyAvailability ?? EMPTY_DAY_AVAILABILITY;
+    setAvailability(normalizedAvailability);
+    initialAvailabilityRef.current = JSON.stringify(normalizedAvailability);
   }, [staffProfile]);
 
   const departmentRoleDescription = React.useMemo(() => {
@@ -163,24 +90,7 @@ export function StaffProfileTab({ staffProfile, onSave }: StaffProfileTabProps) 
     );
   }, []);
 
-  const summary = React.useMemo(() => {
-    const entries = DAY_KEYS.filter((day) => (availability[day] ?? []).length);
-    if (!entries.length) {
-      return 'No working hours shared yet';
-    }
-    const formatDayLabel = (key: string) =>
-      key[0].toUpperCase() + key.slice(1, 3).toLowerCase();
-    return entries
-      .map((day) => {
-        const dayHours = availability[day] ?? [];
-        const start = Math.min(...dayHours);
-        const end = Math.max(...dayHours) + 1;
-        return `${formatDayLabel(day)}: ${formatHourLabel(start)} – ${formatHourLabel(
-          Math.min(end, 24),
-        )}`;
-      })
-      .join(', ');
-  }, [availability]);
+  const summary = React.useMemo(() => summarizeAvailability(availability), [availability]);
 
   const isDirty = React.useMemo(() => {
     return (
@@ -203,7 +113,7 @@ export function StaffProfileTab({ staffProfile, onSave }: StaffProfileTabProps) 
         orgId: staffProfile.ids.orgId,
         department: department || null,
         jobTitle: jobTitle || null,
-        workingHoursSchedule: availabilityToWorkingHours(availability),
+        weeklyAvailability: availability,
         specialties: specialties.length ? specialties : null,
       });
     } catch (error) {
@@ -269,7 +179,7 @@ export function StaffProfileTab({ staffProfile, onSave }: StaffProfileTabProps) 
           </div>
           <p className="text-xs text-muted-foreground">{departmentRoleDescription}</p>
           <div className="flex flex-col gap-3">
-            <Label htmlFor="staff-specialties">Specialties</Label>
+            <Label>Specialties</Label>
             <div className="relative w-full rounded-xl border border-transparent">
               <div className="grid gap-2 sm:grid-cols-2">
                 {SPECIALTY_OPTIONS.map((option) => {

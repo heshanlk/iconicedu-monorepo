@@ -22,6 +22,6 @@ export async function buildStaffProfile(
     jobTitle: staff.data?.job_title ?? null,
     permissionsScope: staff.data?.permissions_scope ?? null,
     specialties: specialties.data?.map((row) => row.specialty) ?? null,
-    workingHoursSchedule: staff.data?.working_hours_rules ?? null,
+    weeklyAvailability: staff.data?.weekly_availability ?? null,
   };
 }

@@ -8,7 +8,7 @@ import type {
   UUID,
 } from '../shared/shared';
 import type { GradeLevel } from '../shared/grades';
-import type { WorkingHoursSchedule } from '../shared/working-hours';
+import type { DayAvailability } from '../shared/availability';
 import type { EducatorAvailabilityVM } from './availability';
 import type { FamilyLinkInviteVM } from './family-link-invite';
 
@@ -199,7 +199,7 @@ export interface StaffProfileVM extends BaseUserProfileVM {
 
   permissionsScope?: 'limited' | 'standard' | 'elevated' | null;
 
-  workingHoursSchedule?: WorkingHoursSchedule | null;
+  weeklyAvailability?: DayAvailability | null;
 }
 
 export interface SystemProfileVM extends BaseUserProfileVM {
@@ -238,6 +238,6 @@ export type StaffProfileSaveInput = {
   orgId: UUID;
   department?: string | null;
   jobTitle?: string | null;
-  workingHoursSchedule?: WorkingHoursSchedule | null;
+  weeklyAvailability?: DayAvailability | null;
   specialties?: string[] | null;
 };

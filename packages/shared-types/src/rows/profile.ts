@@ -1,5 +1,6 @@
 import type { AccountStatus, FamilyRelation, ISODateTime, UUID } from '../shared/shared';
 import type { GradeLevel } from '../shared/grades';
+import type { DayAvailability } from '../shared/availability';
 import type { WorkingHoursSchedule } from '../shared/working-hours';
 
 export type ProfileKindRow = 'educator' | 'guardian' | 'child' | 'staff' | 'system';
@@ -89,6 +90,7 @@ export interface StaffProfileRow {
   permissions_scope?: string | null;
   working_hours_rules?: WorkingHoursSchedule | null;
   working_hours_schedule?: WorkingHoursSchedule | null;
+  weekly_availability?: DayAvailability | null;
   created_at?: ISODateTime | null;
   updated_at?: ISODateTime | null;
   deleted_at?: ISODateTime | null;
