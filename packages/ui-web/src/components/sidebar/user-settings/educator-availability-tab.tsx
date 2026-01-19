@@ -188,27 +188,29 @@ export function EducatorAvailabilityTab({
     return `${classSummary} · ${weeklyCommitment} hrs/week`;
   }, [selectedClassTypes, weeklyCommitment]);
 
-  const availabilitySubtitle = React.useMemo(() => {
-    return (
-      <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
-        {AVAILABILITY_DAY_OPTIONS.map(({ key, label }) => {
-          const hasSlots = Boolean(availability[key]?.length);
-          const Icon = hasSlots ? Check : X;
-          return (
-            <span key={key} className="inline-flex items-center gap-1">
-              <Icon
-                className={cn(
-                  'size-3',
-                  hasSlots ? 'text-primary' : 'text-destructive',
-                )}
-              />
-              {label}
-            </span>
-          );
-        })}
-      </div>
-    );
-  }, [availability]);
+  const formatHourLabel = React.useCallback((hour: number) => {
+    const period = hour >= 12 ? 'PM' : 'AM';
+    const displayHour = hour % 12 === 0 ? 12 : hour % 12;
+    return `${displayHour.toString().padStart(2, '0')}:00 ${period}`;
+  }, []);
+
+  const availabilitySummary = React.useMemo(() => {
+    const entries = DAY_KEYS.filter((day) => (availability[day]?.length ?? 0) > 0);
+    if (!entries.length) {
+      return 'No availability shared yet';
+    }
+    const formatDayLabel = (day: string) => day;
+    return entries
+      .map((day) => {
+        const hours = availability[day] ?? [];
+        const startHour = Math.min(...hours);
+        const endHour = Math.max(...hours) + 1;
+        return `${formatDayLabel(day)}: ${formatHourLabel(startHour)} – ${formatHourLabel(
+          Math.min(endHour, 24),
+        )}`;
+      })
+      .join(', ');
+  }, [availability, formatHourLabel]);
 
   return (
     <div className="space-y-4">
@@ -366,7 +368,7 @@ export function EducatorAvailabilityTab({
       </UserSettingsTabSection>
       <UserSettingsTabSection
         title="Weekly availability"
-        subtitle={availabilitySubtitle}
+        subtitle={availabilitySummary}
         icon={<CalendarDays className="h-5 w-5" />}
         showSeparator={false}
         footer={

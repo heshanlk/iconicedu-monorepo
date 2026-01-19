@@ -1,7 +1,9 @@
 import * as React from 'react';
-import { Briefcase, Moon, X } from 'lucide-react';
+import { Briefcase, Check } from 'lucide-react';
 
 import type {
+  DayAvailability,
+  DayKey,
   StaffProfileSaveInput,
   StaffProfileVM,
   Weekday,
@@ -11,30 +13,9 @@ import type {
 import { Button } from '../../../ui/button';
 import { Input } from '../../../ui/input';
 import { Label } from '../../../ui/label';
-import { Switch } from '../../../ui/switch';
-import { Item, ItemContent, ItemHeader } from '../../../ui/item';
 import { UserSettingsTabSection } from './components/user-settings-tab-section';
-import { cn } from '../../../lib/utils';
-
-const WORKING_DAYS: ReadonlyArray<{ day: Weekday; label: string }> = [
-  { day: 'monday', label: 'Monday' },
-  { day: 'tuesday', label: 'Tuesday' },
-  { day: 'wednesday', label: 'Wednesday' },
-  { day: 'thursday', label: 'Thursday' },
-  { day: 'friday', label: 'Friday' },
-  { day: 'saturday', label: 'Saturday' },
-  { day: 'sunday', label: 'Sunday' },
-];
-
-const DEFAULT_FROM = '09:00';
-const DEFAULT_TO = '17:30';
-const DEFAULT_WEEKDAYS = new Set<Weekday>([
-  'monday',
-  'tuesday',
-  'wednesday',
-  'thursday',
-  'friday',
-]);
+import { AvailabilityScheduler } from '../../shared/availability-scheduler';
+import { DAY_KEYS, EMPTY_DAY_AVAILABILITY } from '@iconicedu/shared-types';
 
 const SPECIALTY_OPTIONS = [
   'Scheduling',
@@ -51,136 +32,73 @@ const SPECIALTY_OPTIONS = [
 const normalizeSpecialties = (values?: string[] | null) =>
   Array.from(new Set((values ?? []).map((value) => value.trim()).filter(Boolean)));
 
-const formatTimeLabel = (value: string) => {
-  const [hourString, minuteString] = value.split(':');
-  const hour = Number(hourString);
-  const minute = Number(minuteString);
+const WEEKDAY_TO_DAY_KEY: Record<Weekday, DayKey> = {
+  monday: 'Mon',
+  tuesday: 'Tue',
+  wednesday: 'Wed',
+  thursday: 'Thu',
+  friday: 'Fri',
+  saturday: 'Sat',
+  sunday: 'Sun',
+};
+
+const DAY_KEY_TO_WEEKDAY = Object.entries(WEEKDAY_TO_DAY_KEY).reduce((acc, [key, value]) => {
+  acc[value as DayKey] = key as Weekday;
+  return acc;
+}, {} as Record<DayKey, Weekday>);
+
+const formatHourLabel = (hour: number) => {
   const period = hour >= 12 ? 'PM' : 'AM';
   const displayHour = hour % 12 === 0 ? 12 : hour % 12;
-  return `${displayHour.toString().padStart(2, '0')}:${minuteString} ${period}`;
+  return `${displayHour.toString().padStart(2, '0')}:00 ${period}`;
 };
 
-const TIME_OPTIONS = Array.from({ length: 24 * 2 }, (_, index) => {
-  const totalMinutes = index * 30;
-  const hour = Math.floor(totalMinutes / 60);
-  const minute = totalMinutes % 60;
-  const value = `${hour.toString().padStart(2, '0')}:${minute
-    .toString()
-    .padStart(2, '0')}`;
-  return { value, label: formatTimeLabel(value) };
-});
+const buildAvailabilityFromSchedule = (
+  schedule?: WorkingHoursSchedule | null,
+): DayAvailability => {
+  const availability: DayAvailability = { ...EMPTY_DAY_AVAILABILITY };
+  schedule?.forEach((entry) => {
+    if (!entry.enabled || !entry.from || !entry.to) {
+      return;
+    }
+    const mappedDay = WEEKDAY_TO_DAY_KEY[entry.day];
+    if (!mappedDay) {
+      return;
+    }
+    const [fromHourStr] = entry.from.split(':');
+    const [toHourStr] = entry.to.split(':');
+    const fromHour = Number(fromHourStr);
+    const toHour = Number(toHourStr);
 
-type WorkingHoursRowState = {
-  day: Weekday;
-  label: string;
-  enabled: boolean;
-  from: string;
-  to: string;
+    if (Number.isNaN(fromHour) || Number.isNaN(toHour) || toHour <= fromHour) {
+      return;
+    }
+
+    availability[mappedDay] = Array.from(
+      { length: toHour - fromHour },
+      (_, index) => fromHour + index,
+    );
+  });
+  return availability;
 };
 
-const buildScheduleState = (
-  source?: WorkingHoursSchedule | null,
-): WorkingHoursRowState[] => {
-  const lookup = new Map(source?.map((entry) => [entry.day, entry]));
-  return WORKING_DAYS.map(({ day, label }) => {
-    const entry = lookup.get(day);
+const availabilityToWorkingHours = (availability: DayAvailability): WorkingHoursEntry[] => {
+  return DAY_KEYS.map((day) => {
+    const hours = availability[day] ?? [];
+    if (!hours.length) {
+      return { day: DAY_KEY_TO_WEEKDAY[day], enabled: false, from: null, to: null };
+    }
+
+    const startHour = Math.min(...hours);
+    const endHour = Math.max(...hours) + 1;
     return {
-      day,
-      label,
-      enabled: entry?.enabled ?? DEFAULT_WEEKDAYS.has(day),
-      from: entry?.from ?? DEFAULT_FROM,
-      to: entry?.to ?? DEFAULT_TO,
+      day: DAY_KEY_TO_WEEKDAY[day],
+      enabled: true,
+      from: `${startHour.toString().padStart(2, '0')}:00`,
+      to: `${Math.min(endHour, 24).toString().padStart(2, '0')}:00`,
     };
   });
 };
-
-const serializeSchedule = (rows: WorkingHoursRowState[]): WorkingHoursEntry[] => {
-  return rows.map((row) => ({
-    day: row.day,
-    enabled: row.enabled,
-    from: row.enabled ? row.from : null,
-    to: row.enabled ? row.to : null,
-  }));
-};
-
-type DayRowProps = {
-  row: WorkingHoursRowState;
-  onToggle: (enabled: boolean) => void;
-  onChangeFrom: (value: string) => void;
-  onChangeTo: (value: string) => void;
-};
-
-function DayRow({ row, onToggle, onChangeFrom, onChangeTo }: DayRowProps) {
-
-  return (
-    <Item
-      size="sm"
-      variant="default"
-      className="gap-3 bg-transparent px-3 py-3 shadow-none"
-    >
-      <ItemHeader className="gap-3 px-0">
-        <div className="flex items-center gap-3">
-          <Switch
-            size="sm"
-            checked={row.enabled}
-            onCheckedChange={(checked) => onToggle(Boolean(checked))}
-            className="data-[state=checked]:bg-gradient-to-r data-[state=unchecked]:bg-muted h-5 w-9 rounded-full border border-muted/40 shadow-sm"
-          />
-          <span
-            className={cn(
-              'text-xs font-semibold uppercase tracking-[0.08em]',
-              row.enabled ? 'text-foreground' : 'text-muted-foreground',
-            )}
-          >
-            {row.label}
-          </span>
-        </div>
-      </ItemHeader>
-      <ItemContent className="px-0 pt-0">
-        <div className="grid w-full grid-cols-[1fr_1fr] gap-2">
-          <div className="flex flex-col gap-1">
-            <span className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
-              From
-            </span>
-            {row.enabled ? (
-              <Input
-                type="time"
-                value={row.from}
-                step={1800}
-                className="h-9 text-xs"
-                onChange={(event) => onChangeFrom(event.target.value)}
-              />
-            ) : (
-              <div className="flex h-10 items-center gap-2 rounded-[14px] border border-muted/40 bg-muted/50 px-4 text-sm font-semibold text-muted-foreground">
-                <Moon className="h-4 w-4" />
-                Offline
-              </div>
-            )}
-          </div>
-          <div className="flex flex-col gap-1">
-            <span className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
-              To
-            </span>
-            {row.enabled ? (
-              <Input
-                type="time"
-                value={row.to}
-                step={1800}
-                className="h-9 text-xs"
-                onChange={(event) => onChangeTo(event.target.value)}
-              />
-            ) : (
-              <div className="flex h-10 items-center gap-2 rounded-[14px] border border-muted/40 bg-muted/50 px-4 text-sm font-semibold text-muted-foreground">
-                <Moon className="h-4 w-4" />
-                Offline
-              </div>
-            )}
-          </div>
-        </div>
-      </ItemContent>
-    </Item>
-  );
-}
 
 type StaffProfileTabProps = {
   staffProfile: StaffProfileVM;
@@ -193,21 +111,20 @@ export function StaffProfileTab({ staffProfile, onSave }: StaffProfileTabProps) 
   const [specialties, setSpecialties] = React.useState<string[]>(() =>
     normalizeSpecialties(staffProfile.specialties),
   );
-  const [specialtyInput, setSpecialtyInput] = React.useState('');
-  const [schedule, setSchedule] = React.useState<WorkingHoursRowState[]>(() =>
-    buildScheduleState(staffProfile.workingHoursSchedule),
+  const [availability, setAvailability] = React.useState<DayAvailability>(() =>
+    buildAvailabilityFromSchedule(staffProfile.workingHoursSchedule),
   );
   const [isSaving, setIsSaving] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
-  const hasExistingSchedule =
-    staffProfile.workingHoursSchedule && staffProfile.workingHoursSchedule.length > 0;
-  const initialScheduleRef = React.useRef<string>(
-    hasExistingSchedule ? JSON.stringify(schedule) : '',
-  );
   const initialDepartmentRef = React.useRef(staffProfile.department ?? '');
   const initialJobTitleRef = React.useRef(staffProfile.jobTitle ?? '');
   const initialSpecialtiesRef = React.useRef<string>(
     JSON.stringify(normalizeSpecialties(staffProfile.specialties)),
+  );
+  const initialAvailabilityRef = React.useRef<string>(
+    JSON.stringify(
+      buildAvailabilityFromSchedule(staffProfile.workingHoursSchedule),
+    ),
   );
 
   React.useEffect(() => {
@@ -215,20 +132,14 @@ export function StaffProfileTab({ staffProfile, onSave }: StaffProfileTabProps) 
     setJobTitle(staffProfile.jobTitle ?? '');
     initialDepartmentRef.current = staffProfile.department ?? '';
     initialJobTitleRef.current = staffProfile.jobTitle ?? '';
-    const normalized = buildScheduleState(staffProfile.workingHoursSchedule);
-    setSchedule(normalized);
-    if (
-      staffProfile.workingHoursSchedule &&
-      staffProfile.workingHoursSchedule.length > 0
-    ) {
-      initialScheduleRef.current = JSON.stringify(normalized);
-    } else {
-      initialScheduleRef.current = '';
-    }
+    const normalizedAvailability = buildAvailabilityFromSchedule(
+      staffProfile.workingHoursSchedule,
+    );
+    setAvailability(normalizedAvailability);
+    initialAvailabilityRef.current = JSON.stringify(normalizedAvailability);
     const normalizedSpecialties = normalizeSpecialties(staffProfile.specialties);
     setSpecialties(normalizedSpecialties);
     initialSpecialtiesRef.current = JSON.stringify(normalizedSpecialties);
-    setSpecialtyInput('');
   }, [staffProfile]);
 
   const departmentRoleDescription = React.useMemo(() => {
@@ -244,57 +155,41 @@ export function StaffProfileTab({ staffProfile, onSave }: StaffProfileTabProps) 
     return `Role: ${jobTitle}.`;
   }, [department, jobTitle]);
 
-  const specialtySuggestions = React.useMemo(
-    () => SPECIALTY_OPTIONS.filter((option) => !specialties.includes(option)),
-    [specialties],
-  );
-
-  const addSpecialty = React.useCallback((value: string) => {
-    const trimmed = value.trim();
-    if (!trimmed) {
-      return;
-    }
+  const toggleSpecialty = React.useCallback((value: string) => {
     setSpecialties((current) =>
-      current.includes(trimmed) ? current : [...current, trimmed],
+      current.includes(value)
+        ? current.filter((existing) => existing !== value)
+        : [...current, value],
     );
-    setSpecialtyInput('');
   }, []);
-
-  const removeSpecialty = React.useCallback((value: string) => {
-    setSpecialties((current) => current.filter((item) => item !== value));
-  }, []);
-
-  const handleSpecialtyKeyDown = React.useCallback(
-    (event: React.KeyboardEvent<HTMLInputElement>) => {
-      if (event.key === 'Enter') {
-        event.preventDefault();
-        addSpecialty(specialtyInput);
-      }
-    },
-    [addSpecialty, specialtyInput],
-  );
 
   const summary = React.useMemo(() => {
-    const activeRows = schedule.filter((row) => row.enabled);
-    if (!activeRows.length) {
+    const entries = DAY_KEYS.filter((day) => (availability[day] ?? []).length);
+    if (!entries.length) {
       return 'No working hours shared yet';
     }
-    return activeRows
-      .map(
-        (row) =>
-          `${row.label}: ${formatTimeLabel(row.from)} – ${formatTimeLabel(row.to)}`,
-      )
+    const formatDayLabel = (key: string) =>
+      key[0].toUpperCase() + key.slice(1, 3).toLowerCase();
+    return entries
+      .map((day) => {
+        const dayHours = availability[day] ?? [];
+        const start = Math.min(...dayHours);
+        const end = Math.max(...dayHours) + 1;
+        return `${formatDayLabel(day)}: ${formatHourLabel(start)} – ${formatHourLabel(
+          Math.min(end, 24),
+        )}`;
+      })
       .join(', ');
-  }, [schedule]);
+  }, [availability]);
 
   const isDirty = React.useMemo(() => {
     return (
       department !== initialDepartmentRef.current ||
       jobTitle !== initialJobTitleRef.current ||
-      JSON.stringify(schedule) !== initialScheduleRef.current ||
+      JSON.stringify(availability) !== initialAvailabilityRef.current ||
       JSON.stringify(specialties) !== initialSpecialtiesRef.current
     );
-  }, [department, jobTitle, schedule, specialties]);
+  }, [department, jobTitle, availability, specialties]);
 
   const handleSave = React.useCallback(async () => {
     if (!onSave) {
@@ -308,7 +203,7 @@ export function StaffProfileTab({ staffProfile, onSave }: StaffProfileTabProps) 
         orgId: staffProfile.ids.orgId,
         department: department || null,
         jobTitle: jobTitle || null,
-        workingHoursSchedule: serializeSchedule(schedule),
+        workingHoursSchedule: availabilityToWorkingHours(availability),
         specialties: specialties.length ? specialties : null,
       });
     } catch (error) {
@@ -323,16 +218,11 @@ export function StaffProfileTab({ staffProfile, onSave }: StaffProfileTabProps) 
     onSave,
     department,
     jobTitle,
-    schedule,
+    availability,
     specialties,
     staffProfile.ids.id,
     staffProfile.ids.orgId,
   ]);
-
-  const updateRow = (day: Weekday, changes: Partial<WorkingHoursRowState>) =>
-    setSchedule((current) =>
-      current.map((row) => (row.day === day ? { ...row, ...changes } : row)),
-    );
 
   return (
     <div className="space-y-3">
@@ -342,6 +232,7 @@ export function StaffProfileTab({ staffProfile, onSave }: StaffProfileTabProps) 
       </div>
       <UserSettingsTabSection
         title="Department & role"
+        subtitle={departmentRoleDescription}
         icon={<Briefcase className="h-5 w-5" />}
         footer={
           <div className="flex justify-end">
@@ -379,64 +270,33 @@ export function StaffProfileTab({ staffProfile, onSave }: StaffProfileTabProps) 
           <p className="text-xs text-muted-foreground">{departmentRoleDescription}</p>
           <div className="flex flex-col gap-3">
             <Label htmlFor="staff-specialties">Specialties</Label>
-            <div className="flex flex-wrap gap-2">
-              {specialties.map((value) => (
-                <span
-                  key={value}
-                  className="flex items-center gap-1 rounded-full border border-border/70 bg-muted/30 px-3 py-1 text-xs font-medium text-foreground"
-                >
-                  {value}
-                  <button
-                    type="button"
-                    onClick={() => removeSpecialty(value)}
-                    className="flex h-4 w-4 items-center justify-center rounded-full text-muted-foreground hover:text-foreground"
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                </span>
-              ))}
-              {!specialties.length && (
-                <span className="text-xs text-muted-foreground">
-                  Add specialties to describe your focus
-                </span>
-              )}
-            </div>
-            <div className="flex items-center gap-2">
-              <Input
-                id="staff-specialties"
-                value={specialtyInput}
-                onChange={(event) => setSpecialtyInput(event.target.value)}
-                onKeyDown={handleSpecialtyKeyDown}
-                placeholder="Add specialties"
-                className="w-full"
-              />
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => addSpecialty(specialtyInput)}
-                className="rounded-full"
-              >
-                Add
-              </Button>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {specialtySuggestions.map((option) => (
-                <Button
-                  key={option}
-                  variant="outline"
-                  size="xs"
-                  className="rounded-full"
-                  onClick={() => addSpecialty(option)}
-                >
-                  {option}
-                </Button>
-              ))}
+            <div className="relative w-full rounded-xl border border-transparent">
+              <div className="grid gap-2 sm:grid-cols-2">
+                {SPECIALTY_OPTIONS.map((option) => {
+                  const isSelected = specialties.includes(option);
+                  return (
+                    <button
+                      key={option}
+                      type="button"
+                      onClick={() => toggleSpecialty(option)}
+                      className={`flex items-center justify-between rounded-xl border px-3 py-2 text-sm transition ${
+                        isSelected
+                          ? 'border-primary bg-primary/5 text-primary'
+                          : 'border-border hover:border-foreground/60'
+                      }`}
+                    >
+                      <span>{option}</span>
+                      {isSelected ? <Check className="h-4 w-4 text-primary" /> : null}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
       </UserSettingsTabSection>
       <UserSettingsTabSection
-        title="Working hours & availability"
+        title="Weekly availability"
         subtitle={summary}
         icon={<Briefcase className="h-5 w-5" />}
         footer={
@@ -452,17 +312,7 @@ export function StaffProfileTab({ staffProfile, onSave }: StaffProfileTabProps) 
         }
         showSeparator={false}
       >
-        <div className="space-y-3">
-          {schedule.map((row) => (
-            <DayRow
-              key={row.day}
-              row={row}
-              onToggle={(enabled) => updateRow(row.day, { enabled })}
-              onChangeFrom={(value) => updateRow(row.day, { from: value })}
-              onChangeTo={(value) => updateRow(row.day, { to: value })}
-            />
-          ))}
-        </div>
+        <AvailabilityScheduler value={availability} onChange={setAvailability} />
         {errorMessage ? (
           <p className="mt-2 text-xs text-destructive">{errorMessage}</p>
         ) : null}
