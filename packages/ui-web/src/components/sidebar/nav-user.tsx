@@ -4,6 +4,7 @@ import * as React from 'react';
 import {
   BadgeCheck,
   Bell,
+  CalendarDays,
   ChevronsUpDown,
   CreditCard,
   Lightbulb,
@@ -253,6 +254,12 @@ export function NavUser({
                 <DropdownMenuItem onSelect={() => openSettings('educator-profile')}>
                   <Lightbulb />
                   Educator profile
+                </DropdownMenuItem>
+              ) : null}
+              {profile.kind === 'educator' ? (
+                <DropdownMenuItem onSelect={() => openSettings('educator-availability')}>
+                  <CalendarDays />
+                  Availability
                 </DropdownMenuItem>
               ) : null}
               <DropdownMenuItem onSelect={() => openSettings('preferences')}>

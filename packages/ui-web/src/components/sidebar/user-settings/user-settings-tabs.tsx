@@ -31,6 +31,7 @@ import {
 import { StaffProfileTab } from './staff-profile-tab';
 import { StudentProfileTab } from './student-profile-tab';
 import { EducatorProfileTab } from './educator-profile-tab';
+import { EducatorAvailabilityTab } from './educator-availability-tab';
 import {
   OnboardingStep,
   PROFILE_THEME_OPTIONS,
@@ -297,6 +298,9 @@ export function UserSettingsTabs({
     if (tab.value === 'educator-profile') {
       return profile.kind === 'educator';
     }
+    if (tab.value === 'educator-availability') {
+      return profile.kind === 'educator';
+    }
     if (tab.value === 'staff-profile') {
       return profile.kind === 'staff';
     }
@@ -369,6 +373,11 @@ export function UserSettingsTabs({
                 onSave={onEducatorProfileSave}
                 isEducatorOnboarding={isEducatorProfileOnboarding}
               />
+            </TabsContent>
+          ) : null}
+          {educatorProfile ? (
+            <TabsContent value="educator-availability" className="mt-0 space-y-8 w-full px-1">
+              <EducatorAvailabilityTab />
             </TabsContent>
           ) : null}
             {childProfile ? (

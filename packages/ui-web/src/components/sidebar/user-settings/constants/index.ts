@@ -3,6 +3,7 @@ import {
   Bell,
   BookOpen,
   Briefcase,
+  CalendarDays,
   Lightbulb,
   MapPin,
   SlidersHorizontal,
@@ -17,6 +18,7 @@ export type UserSettingsTab =
   | 'profile'
   | 'staff-profile'
   | 'educator-profile'
+  | 'educator-availability'
   | 'student-profile'
   | 'preferences'
   | 'location'
@@ -34,6 +36,7 @@ export const SETTINGS_TABS: Array<{
   { value: 'profile', label: 'Profile', icon: User },
   { value: 'staff-profile', label: 'Staff profile', icon: Briefcase },
   { value: 'educator-profile', label: 'Educator profile', icon: Lightbulb },
+  { value: 'educator-availability', label: 'Availability', icon: CalendarDays },
   { value: 'student-profile', label: 'Student profile', icon: BookOpen },
   { value: 'preferences', label: 'Preferences', icon: SlidersHorizontal },
   { value: 'location', label: 'Location', icon: MapPin },
