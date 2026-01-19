@@ -37,8 +37,12 @@ export function determineOnboardingStep(
     return 'student-profile';
   }
 
-  if (profile.kind === 'educator' && !profile.headline?.trim()) {
-    return 'educator-profile';
+  if (profile.kind === 'educator') {
+    const hasSubjects = Boolean(profile.subjects?.length);
+    const hasGrades = Boolean(profile.gradesSupported?.length);
+    if (!hasSubjects || !hasGrades) {
+      return 'educator-profile';
+    }
   }
 
   if (

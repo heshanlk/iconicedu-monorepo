@@ -147,12 +147,13 @@ export function StudentProfileTab({
   const [childProfileError, setChildProfileError] = React.useState<string | null>(null);
   const [isSavingChildProfile, setIsSavingChildProfile] = React.useState(false);
   const [basicInfoOpen, setBasicInfoOpen] = React.useState(onboardingRequired);
-  const otherSectionsDisabled = onboardingRequired;
+  const isBasicInfoComplete = Boolean(gradeSelection && birthYearSelection);
+  const otherSectionsDisabled = onboardingRequired && !isBasicInfoComplete;
   React.useEffect(() => {
-    if (onboardingRequired) {
+    if (onboardingRequired && !isBasicInfoComplete) {
       setBasicInfoOpen(true);
     }
-  }, [onboardingRequired]);
+  }, [onboardingRequired, isBasicInfoComplete]);
 
   const toggleSelection = React.useCallback(
     (value: string, setter: React.Dispatch<React.SetStateAction<string[]>>) => {
@@ -167,12 +168,12 @@ export function StudentProfileTab({
 
   const handleBasicInfoOpenChange = React.useCallback(
     (nextOpen: boolean) => {
-      if (onboardingRequired && !nextOpen) {
+      if (onboardingRequired && !isBasicInfoComplete && !nextOpen) {
         return;
       }
       setBasicInfoOpen(nextOpen);
     },
-    [onboardingRequired],
+    [onboardingRequired, isBasicInfoComplete],
   );
 
   const sequentialHighlight = useSequentialHighlight<'grade' | 'birthYear'>({

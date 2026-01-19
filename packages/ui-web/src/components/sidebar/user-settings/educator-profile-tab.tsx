@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { Briefcase, SlidersHorizontal, User } from 'lucide-react';
+import { Briefcase, Check, SlidersHorizontal, User, X } from 'lucide-react';
 
 import type {
   CountryCode,
@@ -15,6 +15,8 @@ import { Input } from '../../../ui/input';
 import { Textarea } from '../../../ui/textarea';
 import { Label } from '../../../ui/label';
 import { UserSettingsTabSection } from './components/user-settings-tab-section';
+import { BorderBeam } from '../../../ui/border-beam';
+import { useSequentialHighlight } from './hooks/use-sequential-highlight';
 import {
   GRADE_META,
   gradeLabel,
@@ -75,18 +77,18 @@ type EducatorProfileTabProps = {
   educatorProfile: EducatorProfileVM;
   fallbackCountryCode?: string | null;
   onSave?: (input: EducatorProfileSaveInput) => Promise<void> | void;
+  isEducatorOnboarding?: boolean;
 };
 
 export function EducatorProfileTab({
   educatorProfile,
   fallbackCountryCode,
   onSave,
+  isEducatorOnboarding = false,
 }: EducatorProfileTabProps) {
   const educatorCountryCode = React.useMemo<CountryCode>(
     () =>
-      normalizeCountryCode(
-        educatorProfile.location?.countryCode ?? fallbackCountryCode,
-      ),
+      normalizeCountryCode(educatorProfile.location?.countryCode ?? fallbackCountryCode),
     [educatorProfile.location?.countryCode, fallbackCountryCode],
   );
   const gradeOptions = React.useMemo(
@@ -131,6 +133,44 @@ export function EducatorProfileTab({
   );
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
   const [isSaving, setIsSaving] = React.useState(false);
+  const [basicInfoOpen, setBasicInfoOpen] = React.useState(Boolean(isEducatorOnboarding));
+  const sequentialEducatorHighlight = useSequentialHighlight<
+    'headline' | 'subjects' | 'grades'
+  >({
+    order: ['headline', 'subjects', 'grades'],
+    satisfied: {
+      headline: Boolean(headlineValue.trim()),
+      subjects: selectedSubjects.length > 0,
+      grades: selectedGrades.length > 0,
+    },
+    enabled: isEducatorOnboarding,
+  });
+  const showHeadlineBeam = sequentialEducatorHighlight.isActive('headline');
+  const showSubjectsBeam = sequentialEducatorHighlight.isActive('subjects');
+  const showGradesBeam = sequentialEducatorHighlight.isActive('grades');
+  const showEducatorActionBeam =
+    isEducatorOnboarding &&
+    selectedSubjects.length > 0 &&
+    selectedGrades.length > 0 &&
+    !isSaving;
+  const isBasicInfoComplete = selectedSubjects.length > 0 && selectedGrades.length > 0;
+  const areAdditionalSectionsDisabled = isEducatorOnboarding && !isBasicInfoComplete;
+
+  React.useEffect(() => {
+    if (isEducatorOnboarding && !isBasicInfoComplete) {
+      setBasicInfoOpen(true);
+    }
+  }, [isBasicInfoComplete, isEducatorOnboarding]);
+
+  const handleBasicInfoOpenChange = React.useCallback(
+    (nextOpen: boolean) => {
+      if (isEducatorOnboarding && !isBasicInfoComplete && !nextOpen) {
+        return;
+      }
+      setBasicInfoOpen(nextOpen);
+    },
+    [isBasicInfoComplete, isEducatorOnboarding],
+  );
 
   React.useEffect(() => {
     setHeadlineValue(educatorProfile.headline ?? '');
@@ -240,16 +280,15 @@ export function EducatorProfileTab({
             : 'Subjects and grades not set'
         }
         icon={<User className="h-5 w-5" />}
+        open={basicInfoOpen}
+        onOpenChange={handleBasicInfoOpenChange}
         footer={
           <div className="flex justify-end">
             <Button
               size="sm"
               onClick={handleSave}
               disabled={
-                isSaving ||
-                !onSave ||
-                !selectedSubjects.length ||
-                !selectedGrades.length
+                isSaving || !onSave || !selectedSubjects.length || !selectedGrades.length
               }
             >
               {isSaving ? 'Saving...' : 'Save'}
@@ -275,21 +314,58 @@ export function EducatorProfileTab({
             {!selectedSubjects.length ? (
               <p className="text-xs text-destructive">Select at least one subject.</p>
             ) : null}
-            <div className="grid gap-2 sm:grid-cols-2">
-              {SUBJECT_OPTIONS.map((option) => (
-                <label
-                  key={option}
-                  className="flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition hover:border-primary"
+            <div className="flex flex-wrap gap-2">
+              {selectedSubjects.map((subject) => (
+                <span
+                  key={subject}
+                  className="inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-medium"
                 >
-                  <Checkbox
-                    checked={selectedSubjects.includes(option)}
-                    onCheckedChange={() =>
-                      toggleSelection(option, setSelectedSubjects)
+                  {subject}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setSelectedSubjects((prev) =>
+                        prev.filter((entry) => entry !== subject),
+                      )
                     }
-                  />
-                  {option}
-                </label>
+                    aria-label={`Remove ${subject}`}
+                    className="text-muted-foreground hover:text-destructive"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </span>
               ))}
+            </div>
+            <div className="relative w-full rounded-xl overflow-hidden">
+              {showSubjectsBeam ? (
+                <BorderBeam
+                  size={52}
+                  initialOffset={8}
+                  borderWidth={2}
+                  className="from-transparent via-amber-700 to-transparent"
+                  transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                />
+              ) : null}
+              <div className="grid gap-2 sm:grid-cols-2">
+                {SUBJECT_OPTIONS.map((option) => {
+                  const isSelected = selectedSubjects.includes(option);
+                  return (
+                    <button
+                      key={option}
+                      type="button"
+                      className={`flex items-center justify-between rounded-xl border px-3 py-2 text-sm transition ${
+                        isSelected
+                          ? 'border-primary bg-primary/5 text-primary'
+                          : 'border-border hover:border-foreground/60'
+                      }`}
+                      onClick={() => toggleSelection(option, setSelectedSubjects)}
+                    >
+                      <span>{option}</span>
+                      {isSelected ? <Check className="h-4 w-4" /> : null}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
           <div className="space-y-2 sm:col-span-2">
@@ -300,21 +376,56 @@ export function EducatorProfileTab({
             {!selectedGrades.length ? (
               <p className="text-xs text-destructive">Select at least one grade.</p>
             ) : null}
-            <div className="grid gap-2">
-              {gradeOptions.map((option) => (
-                <label
-                  key={option.value}
-                  className="flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition hover:border-primary"
+            <div className="flex flex-wrap gap-2">
+              {selectedGrades.map((grade, index) => (
+                <span
+                  key={grade}
+                  className="inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-medium"
                 >
-                  <Checkbox
-                    checked={selectedGrades.includes(option.value)}
-                    onCheckedChange={() =>
-                      toggleSelection(option.value, setSelectedGrades)
+                  {selectedGradeLabels[index] ?? grade}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setSelectedGrades((prev) => prev.filter((entry) => entry !== grade))
                     }
-                  />
-                  {option.label}
-                </label>
+                    aria-label={`Remove ${selectedGradeLabels[index] ?? grade}`}
+                    className="text-muted-foreground hover:text-destructive"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </span>
               ))}
+            </div>
+            <div className="relative w-full rounded-xl overflow-hidden">
+              {showGradesBeam ? (
+                <BorderBeam
+                  size={52}
+                  initialOffset={8}
+                  borderWidth={2}
+                  className="from-transparent via-amber-700 to-transparent"
+                  transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                />
+              ) : null}
+              <div className="grid gap-2 sm:grid-cols-2">
+                {gradeOptions.map((option) => {
+                  const isSelected = selectedGrades.includes(option.value);
+                  return (
+                    <button
+                      key={option.value}
+                      type="button"
+                      className={`flex items-center justify-between rounded-xl border px-3 py-2 text-sm transition ${
+                        isSelected
+                          ? 'border-primary bg-primary/5 text-primary'
+                          : 'border-border hover:border-foreground/60'
+                      }`}
+                      onClick={() => toggleSelection(option.value, setSelectedGrades)}
+                    >
+                      <span>{option.label}</span>
+                      {isSelected ? <Check className="h-4 w-4" /> : null}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
           <div className="space-y-2 sm:col-span-2">
@@ -336,18 +447,16 @@ export function EducatorProfileTab({
             : 'Years of experience not set'
         }
         icon={<Briefcase className="h-5 w-5" />}
+        disabled={areAdditionalSectionsDisabled}
         footer={
           <div className="flex justify-end">
-              <Button
-                size="sm"
-                onClick={handleSave}
-                disabled={
-                  isSaving ||
-                  !onSave ||
-                  !selectedSubjects.length ||
-                  !selectedGrades.length
-                }
-              >
+            <Button
+              size="sm"
+              onClick={handleSave}
+              disabled={
+                isSaving || !onSave || !selectedSubjects.length || !selectedGrades.length
+              }
+            >
               {isSaving ? 'Saving...' : 'Save'}
             </Button>
           </div>
@@ -403,6 +512,7 @@ export function EducatorProfileTab({
             .join(' · ') || 'Not set'
         }
         icon={<SlidersHorizontal className="h-5 w-5" />}
+        disabled={areAdditionalSectionsDisabled}
         showSeparator={false}
         footer={
           <div className="flex justify-end">
@@ -410,10 +520,7 @@ export function EducatorProfileTab({
               size="sm"
               onClick={handleSave}
               disabled={
-                isSaving ||
-                !onSave ||
-                !selectedSubjects.length ||
-                !selectedGrades.length
+                isSaving || !onSave || !selectedSubjects.length || !selectedGrades.length
               }
             >
               {isSaving ? 'Saving...' : 'Save'}
@@ -424,40 +531,94 @@ export function EducatorProfileTab({
         <div className="space-y-4">
           <div className="space-y-3">
             <Label>Age groups comfortable with</Label>
-            <div className="grid gap-2 sm:grid-cols-2">
-              {AGE_GROUP_OPTIONS.map((option) => (
-                <label
-                  key={option}
-                  className="flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition hover:border-primary"
+            <div className="flex flex-wrap gap-2">
+              {selectedAgeGroups.map((group) => (
+                <span
+                  key={group}
+                  className="inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-medium"
                 >
-                  <Checkbox
-                    checked={selectedAgeGroups.includes(option)}
-                    onCheckedChange={() =>
-                      toggleSelection(option, setSelectedAgeGroups)
+                  {group}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setSelectedAgeGroups((prev) =>
+                        prev.filter((entry) => entry !== group),
+                      )
                     }
-                  />
-                  {option}
-                </label>
+                    aria-label={`Remove ${group}`}
+                    className="text-muted-foreground hover:text-destructive"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </span>
               ))}
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              {AGE_GROUP_OPTIONS.map((option) => {
+                const isSelected = selectedAgeGroups.includes(option);
+                return (
+                  <button
+                    key={option}
+                    type="button"
+                    className={`flex items-center justify-between rounded-xl border px-3 py-2 text-sm transition ${
+                      isSelected
+                        ? 'border-primary bg-primary/5 text-primary'
+                        : 'border-border hover:border-foreground/60'
+                    }`}
+                    onClick={() => toggleSelection(option, setSelectedAgeGroups)}
+                  >
+                    <span>{option}</span>
+                    {isSelected ? <Check className="h-4 w-4" /> : null}
+                  </button>
+                );
+              })}
             </div>
           </div>
           <div className="space-y-3">
             <Label>Curriculum tags</Label>
-            <div className="grid gap-2 sm:grid-cols-2">
-              {CURRICULUM_TAG_OPTIONS.map((option) => (
-                <label
-                  key={option}
-                  className="flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition hover:border-primary"
+            <div className="flex flex-wrap gap-2">
+              {selectedCurriculumTags.map((tag) => (
+                <span
+                  key={tag}
+                  className="inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-medium"
                 >
-                  <Checkbox
-                    checked={selectedCurriculumTags.includes(option)}
-                    onCheckedChange={() =>
+                  {tag}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setSelectedCurriculumTags((prev) =>
+                        prev.filter((entry) => entry !== tag),
+                      )
+                    }
+                    aria-label={`Remove ${tag}`}
+                    className="text-muted-foreground hover:text-destructive"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </span>
+              ))}
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              {CURRICULUM_TAG_OPTIONS.map((option) => {
+                const isSelected = selectedCurriculumTags.includes(option);
+                return (
+                  <button
+                    key={option}
+                    type="button"
+                    className={`flex items-center justify-between rounded-xl border px-3 py-2 text-sm transition ${
+                      isSelected
+                        ? 'border-primary bg-primary/5 text-primary'
+                        : 'border-border hover:border-foreground/60'
+                    }`}
+                    onClick={() =>
                       toggleSelection(option, setSelectedCurriculumTags)
                     }
-                  />
-                  {option}
-                </label>
-              ))}
+                  >
+                    <span>{option}</span>
+                    {isSelected ? <Check className="h-4 w-4" /> : null}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>

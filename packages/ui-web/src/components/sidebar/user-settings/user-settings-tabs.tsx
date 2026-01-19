@@ -175,6 +175,7 @@ export function UserSettingsTabs({
   const isLocationOnboarding = onboardingStep === 'location';
   const isFamilyOnboarding = onboardingStep === 'family';
   const isStudentProfileOnboarding = onboardingStep === 'student-profile';
+  const isEducatorProfileOnboarding = onboardingStep === 'educator-profile';
   const onboardingGuidance = onboardingStep ? ONBOARDING_SECTION_CONFIG[onboardingStep] : null;
   const accountGuidance = onboardingGuidance?.tab === 'account' ? onboardingGuidance : null;
   const profileGuidance = onboardingGuidance?.tab === 'profile' ? onboardingGuidance : null;
@@ -366,6 +367,7 @@ export function UserSettingsTabs({
                 educatorProfile={educatorProfile}
                 fallbackCountryCode={profile.location?.countryCode}
                 onSave={onEducatorProfileSave}
+                isEducatorOnboarding={isEducatorProfileOnboarding}
               />
             </TabsContent>
           ) : null}
