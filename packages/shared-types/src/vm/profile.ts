@@ -9,6 +9,7 @@ import type {
 } from '../shared/shared';
 import type { GradeLevel } from '../shared/grades';
 import type { WorkingHoursSchedule } from '../shared/working-hours';
+import type { EducatorAvailabilityVM } from './availability';
 import type { FamilyLinkInviteVM } from './family-link-invite';
 
 export interface AvatarVM {
@@ -131,6 +132,7 @@ export interface EducatorProfileVM extends BaseUserProfileVM {
 
   curriculumTags?: string[] | null;
   badges?: string[] | null;
+  availability?: EducatorAvailabilityVM | null;
 
   averageRating?: number | null;
   totalReviews?: number | null;

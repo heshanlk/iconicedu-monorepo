@@ -4,6 +4,7 @@ import { LogOut } from 'lucide-react';
 import type {
   ChildProfileSaveInput,
   ChildProfileVM,
+  EducatorAvailabilityInput,
   EducatorProfileSaveInput,
   FamilyLinkInviteRole,
   FamilyLinkInviteVM,
@@ -105,6 +106,7 @@ export type UserSettingsTabsProps = {
   }) => Promise<ChildProfileVM> | void;
   onFamilyMemberRemove?: (input: { childAccountId: string }) => Promise<void> | void;
   onEducatorProfileSave?: (input: EducatorProfileSaveInput) => Promise<void> | void;
+  onEducatorAvailabilitySave?: (input: EducatorAvailabilityInput) => Promise<void> | void;
   onStaffProfileSave?: (input: StaffProfileSaveInput) => Promise<void> | void;
   onboardingStep?: OnboardingStep | null;
   scrollToken?: number;
@@ -143,10 +145,11 @@ export function UserSettingsTabs({
   onChildThemeSave,
   onChildProfileCreate,
   onFamilyMemberRemove,
-    onEducatorProfileSave,
-    onStaffProfileSave,
-    onboardingStep,
-    scrollToken = 0,
+  onEducatorProfileSave,
+  onEducatorAvailabilitySave,
+  onStaffProfileSave,
+  onboardingStep,
+  scrollToken = 0,
 }: UserSettingsTabsProps) {
   const { isMobile } = useSidebar();
   const profileBlock = profile.profile;
@@ -377,7 +380,12 @@ export function UserSettingsTabs({
           ) : null}
           {educatorProfile ? (
             <TabsContent value="educator-availability" className="mt-0 space-y-8 w-full px-1">
-              <EducatorAvailabilityTab />
+              <EducatorAvailabilityTab
+                initialClassTypes={educatorProfile.availability?.classTypes ?? undefined}
+                initialWeeklyCommitment={educatorProfile.availability?.weeklyCommitment ?? undefined}
+                initialAvailability={educatorProfile.availability?.availability ?? undefined}
+                onSave={onEducatorAvailabilitySave}
+              />
             </TabsContent>
           ) : null}
             {childProfile ? (

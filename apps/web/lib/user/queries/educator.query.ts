@@ -1,6 +1,8 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 import type {
+  DayAvailability,
+  EducatorAvailabilityRow,
   EducatorProfileBadgeRow,
   EducatorProfileCurriculumTagRow,
   EducatorProfileGradeLevelRow,
@@ -9,6 +11,7 @@ import type {
 } from '@iconicedu/shared-types';
 
 import {
+  EDUCATOR_AVAILABILITY_SELECT,
   EDUCATOR_BADGES_SELECT,
   EDUCATOR_CURRICULUM_TAGS_SELECT,
   EDUCATOR_GRADE_LEVELS_SELECT,
@@ -74,4 +77,48 @@ export async function getEducatorBadges(
     .eq('profile_id', profileId)
     .is('deleted_at', null)
     .returns<EducatorProfileBadgeRow[]>();
+}
+
+export async function getEducatorAvailability(
+  supabase: SupabaseClient,
+  profileId: string,
+) {
+  return supabase
+    .from('educator_availabilities')
+    .select(EDUCATOR_AVAILABILITY_SELECT)
+    .eq('profile_id', profileId)
+    .is('deleted_at', null)
+    .maybeSingle<EducatorAvailabilityRow>();
+}
+
+export type EducatorAvailabilityUpsertInput = {
+  profileId: string;
+  orgId: string;
+  classTypes?: string[] | null;
+  weeklyCommitment?: number | null;
+  availability?: DayAvailability | null;
+  createdBy?: string | null;
+  updatedBy?: string | null;
+};
+
+export async function upsertEducatorAvailability(
+  supabase: SupabaseClient,
+  input: EducatorAvailabilityUpsertInput,
+) {
+  return supabase
+    .from('educator_availabilities')
+    .upsert(
+      {
+        profile_id: input.profileId,
+        org_id: input.orgId,
+        class_types: input.classTypes ?? null,
+        weekly_commitment: input.weeklyCommitment ?? null,
+        availability: input.availability ?? null,
+        created_by: input.createdBy ?? null,
+        updated_by: input.updatedBy ?? null,
+      },
+      { onConflict: 'profile_id' },
+    )
+    .select(EDUCATOR_AVAILABILITY_SELECT)
+    .maybeSingle<EducatorAvailabilityRow>();
 }

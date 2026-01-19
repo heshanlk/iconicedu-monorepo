@@ -6,6 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import type {
   ChildProfileSaveInput,
   ChildProfileVM,
+  EducatorAvailabilityInput,
   EducatorProfileSaveInput,
   FamilyLinkInviteRole,
   GradeLevel,
@@ -23,6 +24,7 @@ import {
 } from '../../actions/family-invite';
 import { removeFamilyMemberAction } from '../../actions/remove-family-member';
 import { createChildProfileAction } from '../../actions/create-child-profile';
+import { saveEducatorAvailabilityAction } from '../../actions/educator-availability';
 import { upsertUserOnboardingStatusAction } from '../../actions/onboarding-status';
 import { determineOnboardingStep } from '../../../lib/onboarding/determineOnboardingStep';
 
@@ -727,6 +729,52 @@ export function SidebarShell({
     [setSidebarData],
   );
 
+  const handleEducatorAvailabilitySave = React.useCallback(
+    async (input: EducatorAvailabilityInput) => {
+      if (sidebarProfile.kind !== 'educator') {
+        throw new Error('Educator profile not available');
+      }
+      try {
+        const savedAvailability = await saveEducatorAvailabilityAction({
+          profileId: sidebarProfile.ids.id,
+          orgId: sidebarProfile.ids.orgId,
+          classTypes: input.classTypes ?? null,
+          weeklyCommitment: input.weeklyCommitment ?? null,
+          availability: input.availability ?? null,
+        });
+
+        setSidebarData((prev) => {
+          const profile = prev.user.profile;
+          if (profile.kind !== 'educator') {
+            return prev;
+          }
+          return {
+            ...prev,
+            user: {
+              ...prev.user,
+              profile: {
+                ...profile,
+                availability: savedAvailability,
+              },
+            },
+          };
+        });
+
+        showSuccessToast('Availability saved');
+      } catch (error) {
+        showErrorToast('Unable to save availability', error);
+        throw error;
+      }
+    },
+    [
+      saveEducatorAvailabilityAction,
+      setSidebarData,
+      sidebarProfile.ids.id,
+      sidebarProfile.ids.orgId,
+      sidebarProfile.kind,
+    ],
+  );
+
   const handleAccountUpdate = React.useCallback(
     async (input: {
       accountId: string;
@@ -1218,6 +1266,7 @@ export function SidebarShell({
         onChildProfileCreate={handleChildProfileCreate}
         onFamilyMemberRemove={handleFamilyMemberRemove}
         onEducatorProfileSave={handleEducatorProfileSave}
+        onEducatorAvailabilitySave={handleEducatorAvailabilitySave}
         onStaffProfileSave={handleStaffProfileSave}
       />
       <SidebarInset>{children}</SidebarInset>

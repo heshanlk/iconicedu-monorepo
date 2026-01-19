@@ -4,42 +4,25 @@ import * as React from 'react';
 import { Button } from '../../ui/button';
 import { Check, Moon, Sun } from 'lucide-react';
 import { cn } from '@iconicedu/ui-web/lib/utils';
-
-export const DAYS = [
-  { key: 'Mon', label: 'MON' },
-  { key: 'Tue', label: 'TUE' },
-  { key: 'Wed', label: 'WED' },
-  { key: 'Thu', label: 'THU' },
-  { key: 'Fri', label: 'FRI' },
-  { key: 'Sat', label: 'SAT' },
-  { key: 'Sun', label: 'SUN' },
-] as const;
-
-type DayKey = (typeof DAYS)[number]['key'];
-export type DayAvailability = Record<DayKey, number[]>;
+import {
+  DAY_KEYS,
+  DayAvailability,
+  DayKey,
+  EMPTY_DAY_AVAILABILITY,
+} from '@iconicedu/shared-types';
 
 const MORNING_HOURS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 const AFTERNOON_HOURS = [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
 
-export const EMPTY_DAY_AVAILABILITY: DayAvailability = {
-  Mon: [],
-  Tue: [],
-  Wed: [],
-  Thu: [],
-  Fri: [],
-  Sat: [],
-  Sun: [],
-};
+const DAY_OPTIONS = DAY_KEYS.map((key) => ({ key, label: key }));
 
 type AvailabilitySchedulerProps = {
   value?: DayAvailability;
   onChange?: (value: DayAvailability) => void;
 };
 
-export function AvailabilityScheduler({
-  value,
-  onChange,
-}: AvailabilitySchedulerProps) {
+export function AvailabilityScheduler({ value, onChange }: AvailabilitySchedulerProps) {
+  console.log('Rendering AvailabilityScheduler with value:', value);
   const [selectedDay, setSelectedDay] = React.useState<DayKey>('Mon');
   const [availability, setAvailability] = React.useState<DayAvailability>(
     value ?? EMPTY_DAY_AVAILABILITY,
@@ -91,7 +74,7 @@ export function AvailabilityScheduler({
   return (
     <div className="space-y-6">
       <div className="flex justify-between gap-1 sm:gap-2">
-        {DAYS.map(({ key, label }) => {
+        {DAY_OPTIONS.map(({ key, label }) => {
           const indicator = getDayIndicator(key);
           const isSelected = selectedDay === key;
           const hasAvailability = indicator.morning > 0 || indicator.afternoon > 0;

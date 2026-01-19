@@ -16,12 +16,14 @@ import { Slider } from '../../../ui/slider';
 import { Label } from '../../../ui/label';
 import { UserSettingsTabSection } from './components/user-settings-tab-section';
 import { cn } from '@iconicedu/ui-web/lib/utils';
+import { AvailabilityScheduler } from '../../shared/availability-scheduler';
 import {
-  AvailabilityScheduler,
-  DayAvailability,
-  DAYS,
+  DAY_KEYS,
   EMPTY_DAY_AVAILABILITY,
-} from '../../shared/availability-scheduler';
+  type DayAvailability,
+  type EducatorAvailabilityInput,
+  type EducatorAvailabilityVM,
+} from '@iconicedu/shared-types';
 
 const CLASS_TYPE_OPTIONS = [
   { value: 'one-one', label: 'One-on-one', icon: User },
@@ -30,6 +32,8 @@ const CLASS_TYPE_OPTIONS = [
 
 type ClassTypeOption = (typeof CLASS_TYPE_OPTIONS)[number];
 type ClassTypeValue = ClassTypeOption['value'];
+
+const AVAILABILITY_DAY_OPTIONS = DAY_KEYS.map((key) => ({ key, label: key }));
 
 interface CommitmentSegment {
   label: 'Light' | 'Moderate' | 'Substantial' | 'Full-time';
@@ -70,16 +74,10 @@ const COMMITMENT_SEGMENTS: CommitmentSegment[] = [
   },
 ];
 
-export type EducatorAvailabilityInput = {
-  classTypes: Array<ClassTypeValue>;
-  weeklyCommitment: number;
-  availability: DayAvailability;
-};
-
 type EducatorAvailabilityTabProps = {
-  initialClassTypes?: EducatorAvailabilityInput['classTypes'];
-  initialWeeklyCommitment?: number;
-  initialAvailability?: DayAvailability;
+  initialClassTypes?: EducatorAvailabilityVM['classTypes'];
+  initialWeeklyCommitment?: EducatorAvailabilityVM['weeklyCommitment'];
+  initialAvailability?: EducatorAvailabilityVM['availability'];
   onSave?: (input: EducatorAvailabilityInput) => Promise<void> | void;
 };
 
@@ -89,14 +87,37 @@ export function EducatorAvailabilityTab({
   initialAvailability,
   onSave,
 }: EducatorAvailabilityTabProps) {
+  const normalizeClassTypes = React.useCallback(
+    (values?: EducatorAvailabilityVM['classTypes']): ClassTypeValue[] => {
+      return (values ?? [])
+        .filter((value): value is ClassTypeValue =>
+          CLASS_TYPE_OPTIONS.some((option) => option.value === value),
+        );
+    },
+    [],
+  );
+
   const [selectedClassTypes, setSelectedClassTypes] = React.useState<
-    Array<ClassTypeValue>
-  >(initialClassTypes ?? []);
-  const [weeklyCommitment, setWeeklyCommitment] = React.useState(initialWeeklyCommitment);
+    ClassTypeValue[]
+  >(normalizeClassTypes(initialClassTypes));
+  const [weeklyCommitment, setWeeklyCommitment] = React.useState(
+    initialWeeklyCommitment ?? 10,
+  );
   const [availability, setAvailability] = React.useState<DayAvailability>(
     initialAvailability ?? EMPTY_DAY_AVAILABILITY,
   );
   const [isSaving, setIsSaving] = React.useState(false);
+
+  React.useEffect(() => {
+    setSelectedClassTypes(normalizeClassTypes(initialClassTypes));
+    setWeeklyCommitment(initialWeeklyCommitment ?? 10);
+    setAvailability(initialAvailability ?? EMPTY_DAY_AVAILABILITY);
+  }, [
+    initialAvailability,
+    initialClassTypes,
+    initialWeeklyCommitment,
+    normalizeClassTypes,
+  ]);
 
   const toggleClassType = React.useCallback((value: ClassTypeValue) => {
     setSelectedClassTypes((prev) =>
@@ -170,7 +191,7 @@ export function EducatorAvailabilityTab({
   const availabilitySubtitle = React.useMemo(() => {
     return (
       <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
-        {DAYS.map(({ key, label }) => {
+        {AVAILABILITY_DAY_OPTIONS.map(({ key, label }) => {
           const hasSlots = Boolean(availability[key]?.length);
           const Icon = hasSlots ? Check : X;
           return (

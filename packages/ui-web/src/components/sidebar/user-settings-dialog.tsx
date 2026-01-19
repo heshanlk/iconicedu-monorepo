@@ -4,6 +4,7 @@ import * as React from 'react';
 import type {
   ChildProfileSaveInput,
   ChildProfileVM,
+  EducatorAvailabilityInput,
   EducatorProfileSaveInput,
   FamilyLinkInviteRole,
   FamilyLinkInviteVM,
@@ -108,6 +109,7 @@ type UserSettingsDialogProps = {
   }) => Promise<ChildProfileVM> | void;
   onFamilyMemberRemove?: (input: { childAccountId: string }) => Promise<void> | void;
   onEducatorProfileSave?: (input: EducatorProfileSaveInput) => Promise<void> | void;
+  onEducatorAvailabilitySave?: (input: EducatorAvailabilityInput) => Promise<void> | void;
   onStaffProfileSave?: (input: StaffProfileSaveInput) => Promise<void> | void;
   onboardingStep?: OnboardingStep | null;
   onOnboardingComplete?: () => void;
@@ -135,6 +137,7 @@ export function UserSettingsDialog({
   onChildProfileCreate,
   onFamilyMemberRemove,
   onEducatorProfileSave,
+  onEducatorAvailabilitySave,
   onStaffProfileSave,
   onboardingStep,
   onOnboardingComplete,
@@ -238,6 +241,7 @@ export function UserSettingsDialog({
         onChildProfileCreate={onChildProfileCreate}
         onFamilyMemberRemove={onFamilyMemberRemove}
         onEducatorProfileSave={onEducatorProfileSave}
+        onEducatorAvailabilitySave={onEducatorAvailabilitySave}
         onStaffProfileSave={onStaffProfileSave}
         onboardingStep={onboardingStep}
         scrollToken={scrollToken}

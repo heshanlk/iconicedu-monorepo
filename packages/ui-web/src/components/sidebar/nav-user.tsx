@@ -19,6 +19,7 @@ import { AvatarWithStatus } from '../shared/avatar-with-status';
 import type {
   ChildProfileSaveInput,
   ChildProfileVM,
+  EducatorAvailabilityInput,
   EducatorProfileSaveInput,
   FamilyLinkInviteRole,
   FamilyLinkInviteVM,
@@ -75,6 +76,7 @@ export function NavUser({
   onChildProfileCreate,
   onFamilyMemberRemove,
   onEducatorProfileSave,
+  onEducatorAvailabilitySave,
   onStaffProfileSave,
 }: {
   profile: UserProfileVM;
@@ -144,6 +146,7 @@ export function NavUser({
   }) => Promise<ChildProfileVM> | void;
   onFamilyMemberRemove?: (input: { childAccountId: string }) => Promise<void> | void;
   onEducatorProfileSave?: (input: EducatorProfileSaveInput) => Promise<void> | void;
+  onEducatorAvailabilitySave?: (input: EducatorAvailabilityInput) => Promise<void> | void;
   onStaffProfileSave?: (input: StaffProfileSaveInput) => Promise<void> | void;
   onOnboardingComplete?: () => void;
 }) {
@@ -306,6 +309,7 @@ export function NavUser({
         onChildProfileCreate={onChildProfileCreate}
         onFamilyMemberRemove={onFamilyMemberRemove}
         onEducatorProfileSave={onEducatorProfileSave}
+        onEducatorAvailabilitySave={onEducatorAvailabilitySave}
         onStaffProfileSave={onStaffProfileSave}
         onboardingStep={onboardingStatus?.currentStep ?? null}
         onOnboardingComplete={onOnboardingComplete}

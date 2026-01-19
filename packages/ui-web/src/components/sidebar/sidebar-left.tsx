@@ -53,6 +53,7 @@ import { EmptyContent } from '../../ui/empty';
 import type {
   ChildProfileSaveInput,
   ChildProfileVM,
+  EducatorAvailabilityInput,
   EducatorProfileSaveInput,
   FamilyLinkInviteRole,
   FamilyLinkInviteVM,
@@ -97,6 +98,7 @@ export function SidebarLeft({
   onChildProfileCreate,
   onFamilyMemberRemove,
   onEducatorProfileSave,
+  onEducatorAvailabilitySave,
   onStaffProfileSave,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
@@ -167,6 +169,7 @@ export function SidebarLeft({
   onFamilyInviteRemove?: (input: { inviteId: string }) => Promise<void> | void;
   onFamilyMemberRemove?: (input: { childAccountId: string }) => Promise<void> | void;
   onEducatorProfileSave?: (input: EducatorProfileSaveInput) => Promise<void> | void;
+  onEducatorAvailabilitySave?: (input: EducatorAvailabilityInput) => Promise<void> | void;
   onStaffProfileSave?: (input: StaffProfileSaveInput) => Promise<void> | void;
   onOnboardingComplete?: () => void;
 }) {
@@ -340,6 +343,7 @@ export function SidebarLeft({
           onChildProfileCreate={onChildProfileCreate}
           onFamilyMemberRemove={onFamilyMemberRemove}
           onEducatorProfileSave={onEducatorProfileSave}
+          onEducatorAvailabilitySave={onEducatorAvailabilitySave}
           onStaffProfileSave={onStaffProfileSave}
         />
       </SidebarFooter>

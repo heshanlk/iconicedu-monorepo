@@ -78,6 +78,8 @@ export const EDUCATOR_SUBJECTS_SELECT = 'subject';
 export const EDUCATOR_GRADE_LEVELS_SELECT = 'grade_id, grade_label';
 export const EDUCATOR_CURRICULUM_TAGS_SELECT = 'tag';
 export const EDUCATOR_BADGES_SELECT = 'badge';
+export const EDUCATOR_AVAILABILITY_SELECT =
+  'profile_id, org_id, class_types, weekly_commitment, availability, created_at, created_by, updated_at, updated_by, deleted_at, deleted_by';
 
 export const CHILD_PROFILE_SELECT = [
   'birth_year',

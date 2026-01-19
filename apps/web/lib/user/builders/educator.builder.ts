@@ -1,8 +1,9 @@
-import type { EducatorProfileVM, GradeLevel, UserProfileVM } from '@iconicedu/shared-types';
+import type { EducatorAvailabilityVM, EducatorProfileVM, GradeLevel, UserProfileVM } from '@iconicedu/shared-types';
 import type { ProfileRow } from '@iconicedu/shared-types';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 import {
+  getEducatorAvailability,
   getEducatorBadges,
   getEducatorCurriculumTags,
   getEducatorGradeLevels,
@@ -16,18 +17,28 @@ export async function buildEducatorProfile(
   baseProfile: Omit<UserProfileVM, 'kind'>,
   profileRow: ProfileRow,
 ): Promise<EducatorProfileVM> {
-  const [educator, subjects, grades, tags, badges] = await Promise.all([
-    getEducatorProfile(supabase, profileRow.id),
-    getEducatorSubjects(supabase, profileRow.id),
-    getEducatorGradeLevels(supabase, profileRow.id),
-    getEducatorCurriculumTags(supabase, profileRow.id),
-    getEducatorBadges(supabase, profileRow.id),
-  ]);
+  const [educator, subjects, grades, tags, badges, availabilityResponse] =
+    await Promise.all([
+      getEducatorProfile(supabase, profileRow.id),
+      getEducatorSubjects(supabase, profileRow.id),
+      getEducatorGradeLevels(supabase, profileRow.id),
+      getEducatorCurriculumTags(supabase, profileRow.id),
+      getEducatorBadges(supabase, profileRow.id),
+      getEducatorAvailability(supabase, profileRow.id),
+    ]);
 
   const gradeLevels: GradeLevel[] | null = grades.data
     ? grades.data
         .map((row) => parseGradeLevel(row.grade_id) ?? parseGradeLevel(row.grade_label))
         .filter((item): item is GradeLevel => Boolean(item))
+    : null;
+
+  const availability: EducatorAvailabilityVM | null = availabilityResponse.data
+    ? {
+        classTypes: availabilityResponse.data.class_types ?? null,
+        weeklyCommitment: availabilityResponse.data.weekly_commitment ?? null,
+        availability: availabilityResponse.data.availability ?? null,
+      }
     : null;
 
   return {
@@ -47,5 +58,6 @@ export async function buildEducatorProfile(
     averageRating: educator.data?.average_rating ?? null,
     totalReviews: educator.data?.total_reviews ?? null,
     featuredVideoIntroUrl: educator.data?.featured_video_intro_url ?? null,
+    availability,
   };
 }

@@ -1,6 +1,7 @@
 export * from './vm/message';
 export * from './vm/sidebar';
 export * from './shared/shared';
+export * from './shared/availability';
 export * from './shared/working-hours';
 export * from './vm/class-schedule';
 export * from './vm/channel';
@@ -13,5 +14,6 @@ export * from './vm/family-link-invite';
 export * from './vm/learning-space';
 export * from './vm/org';
 export * from './vm/onboarding';
+export * from './vm/availability';
 export * from './rows';
 export * from './shared/grades';

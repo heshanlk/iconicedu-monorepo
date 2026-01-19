@@ -28,6 +28,7 @@
 - Never use service role keys in client apps.
 - Realtime is allowed only via Supabase channels with RLS policies in place.
 - Avoid client-side direct DB mutations; use API contracts.
+- When data must be fetched or mutated during onboarding or user settings flows, prefer server actions (e.g., `app/actions/*`) so the browser never talks directly to Supabase and we keep auth/cleanup logic centralized.
 
 ## 5. TypeScript & API Design Rules
 - Use strict typing and prefer explicit interfaces/types.
