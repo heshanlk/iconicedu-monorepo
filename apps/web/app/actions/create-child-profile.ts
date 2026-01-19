@@ -6,6 +6,7 @@ import type {
   ChildProfileRow,
   ChildProfileVM,
   ProfileRow,
+  ThemeKey,
 } from '@iconicedu/shared-types';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { getFamilyInviteAdminClient, ensureFamilyForGuardian } from '../../lib/family/queries/invite.query';
@@ -155,6 +156,7 @@ type CreateChildProfileInput = {
   countryCode?: string | null;
   countryName?: string | null;
   postalCode?: string | null;
+  themeKey?: ThemeKey | null;
 };
 
 export async function createChildProfileAction(
@@ -223,6 +225,7 @@ export async function createChildProfileAction(
       region: input.region ?? null,
       city: input.city ?? null,
       postal_code: input.postalCode ?? null,
+      ui_theme_key: input.themeKey ?? null,
       created_by: guardianAccount.id,
       updated_by: guardianAccount.id,
     };

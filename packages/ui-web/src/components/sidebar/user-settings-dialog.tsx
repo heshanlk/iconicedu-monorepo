@@ -103,6 +103,7 @@ type UserSettingsDialogProps = {
     countryCode?: string | null;
     countryName?: string | null;
     postalCode?: string | null;
+    themeKey?: ThemeKey | null;
   }) => Promise<void> | void;
   onFamilyMemberRemove?: (input: { childAccountId: string }) => Promise<void> | void;
   onEducatorProfileSave?: (input: EducatorProfileSaveInput) => Promise<void> | void;

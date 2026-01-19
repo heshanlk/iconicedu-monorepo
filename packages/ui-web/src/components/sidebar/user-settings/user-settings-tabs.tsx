@@ -99,6 +99,7 @@ export type UserSettingsTabsProps = {
     countryCode?: string | null;
     countryName?: string | null;
     postalCode?: string | null;
+    themeKey?: ThemeKey | null;
   }) => Promise<void> | void;
   onFamilyMemberRemove?: (input: { childAccountId: string }) => Promise<void> | void;
   onEducatorProfileSave?: (input: EducatorProfileSaveInput) => Promise<void> | void;
@@ -448,6 +449,7 @@ export function UserSettingsTabs({
             guardianEmail={contacts?.email ?? null}
             onChildProfileCreate={onChildProfileCreate}
             onFamilyMemberRemove={onFamilyMemberRemove}
+            guardianThemeKey={profile.ui?.themeKey ?? 'teal'}
           />
         </TabsContent>
 

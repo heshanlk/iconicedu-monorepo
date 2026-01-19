@@ -651,6 +651,7 @@ export function SidebarShell({
       countryCode?: string | null;
       countryName?: string | null;
       postalCode?: string | null;
+      themeKey?: ThemeKey | null;
     }) => {
       try {
         const child = await createChildProfileAction(input);

@@ -103,6 +103,7 @@ type FamilyTabProps = {
     orgId: string;
     themeKey: ThemeKey;
   }) => Promise<void> | void;
+  guardianThemeKey?: ThemeKey | null;
   onChildProfileCreate?: (input: {
     orgId: string;
     displayName: string;
@@ -117,6 +118,7 @@ type FamilyTabProps = {
     countryCode?: string | null;
     countryName?: string | null;
     postalCode?: string | null;
+    themeKey?: ThemeKey | null;
   }) => Promise<void> | void;
   onFamilyMemberRemove?: (input: { childAccountId: string }) => Promise<void> | void;
   guardianEmail?: string | null;
@@ -140,7 +142,25 @@ export function FamilyTab({
   guardianAccountId,
   guardianEmail,
   onFamilyMemberRemove,
+  guardianThemeKey,
 }: FamilyTabProps) {
+  const getNextChildThemeKey = React.useCallback((): ThemeKey => {
+    if (!profileThemeOptions.length) {
+      return 'teal';
+    }
+    const baseKey = guardianThemeKey ?? 'teal';
+    let baseIndex = profileThemeOptions.findIndex((option) => option.value === baseKey);
+    if (baseIndex === -1) {
+      baseIndex = profileThemeOptions.findIndex((option) => option.value === 'teal');
+      if (baseIndex === -1) {
+        baseIndex = 0;
+      }
+    }
+    const childCount = familyMembers.length;
+    const index = (baseIndex + childCount) % profileThemeOptions.length;
+    const value = profileThemeOptions[index]?.value;
+    return (value ?? 'teal') as ThemeKey;
+  }, [familyMembers, guardianThemeKey, profileThemeOptions]);
   const [isInviteOpen, setIsInviteOpen] = React.useState(false);
   const [inviteRole, setInviteRole] = React.useState<FamilyLinkInviteRole>('child');
   const [inviteEmail, setInviteEmail] = React.useState('');
@@ -378,6 +398,7 @@ export function FamilyTab({
         countryCode: location?.countryCode ?? null,
         countryName: location?.countryName ?? null,
         postalCode: location?.postalCode ?? null,
+        themeKey: getNextChildThemeKey(),
       });
       toast.success('Child profile submitted');
       handleDialogReset();
@@ -390,7 +411,6 @@ export function FamilyTab({
     }
   }, [
     canSubmitChild,
-    familyMembers,
     handleDialogReset,
     location?.city,
     location?.countryCode,
@@ -406,6 +426,7 @@ export function FamilyTab({
     setIsDialogOpen,
     timezone,
     orgId,
+    getNextChildThemeKey,
   ]);
 
   const handleDisplayNameSave = React.useCallback(
