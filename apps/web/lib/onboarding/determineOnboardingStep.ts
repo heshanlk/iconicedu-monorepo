@@ -44,7 +44,7 @@ export function determineOnboardingStep(
     if (!hasSubjects || !hasGrades) {
       return 'educator-profile';
     }
-    console.log(profile);
+
     const hasAvailability =
       Boolean(profile.availability?.availability) &&
       DAY_KEYS.some(

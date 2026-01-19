@@ -183,6 +183,7 @@ export function UserSettingsTabs({
   const isFamilyOnboarding = onboardingStep === 'family';
   const isStudentProfileOnboarding = onboardingStep === 'student-profile';
   const isEducatorProfileOnboarding = onboardingStep === 'educator-profile';
+  const isEducatorAvailabilityOnboarding = onboardingStep === 'educator-availability';
   const isStaffOnboarding = onboardingStep === 'staff-profile';
   const onboardingGuidance = onboardingStep
     ? ONBOARDING_SECTION_CONFIG[onboardingStep]
@@ -421,16 +422,17 @@ export function UserSettingsTabs({
               value="educator-availability"
               className="mt-0 space-y-8 w-full px-1"
             >
-              <EducatorAvailabilityTab
-                initialClassTypes={educatorProfile.availability?.classTypes ?? undefined}
-                initialWeeklyCommitment={
-                  educatorProfile.availability?.weeklyCommitment ?? undefined
-                }
-                initialAvailability={
-                  educatorProfile.availability?.availability ?? undefined
-                }
-                onSave={onEducatorAvailabilitySave}
-              />
+            <EducatorAvailabilityTab
+              initialClassTypes={educatorProfile.availability?.classTypes ?? undefined}
+              initialWeeklyCommitment={
+                educatorProfile.availability?.weeklyCommitment ?? undefined
+              }
+              initialAvailability={
+                educatorProfile.availability?.availability ?? undefined
+              }
+              onSave={onEducatorAvailabilitySave}
+              isEducatorAvailabilityOnboarding={isEducatorAvailabilityOnboarding}
+            />
             </TabsContent>
           ) : null}
           {childProfile ? (

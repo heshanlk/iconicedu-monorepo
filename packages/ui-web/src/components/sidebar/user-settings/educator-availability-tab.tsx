@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { CalendarDays, Check, SlidersHorizontal, User, Users, X } from 'lucide-react';
 
+import { BorderBeam } from '../../../ui/border-beam';
 import { Button } from '../../../ui/button';
 import { Input } from '../../../ui/input';
 import { Slider } from '../../../ui/slider';
@@ -17,6 +18,7 @@ import {
   type EducatorAvailabilityInput,
   type EducatorAvailabilityVM,
 } from '@iconicedu/shared-types';
+import { useSequentialHighlight } from './hooks/use-sequential-highlight';
 
 const CLASS_TYPE_OPTIONS = [
   { value: 'one-one', label: 'One-on-one', icon: User },
@@ -72,6 +74,7 @@ type EducatorAvailabilityTabProps = {
   initialWeeklyCommitment?: EducatorAvailabilityVM['weeklyCommitment'];
   initialAvailability?: EducatorAvailabilityVM['availability'];
   onSave?: (input: EducatorAvailabilityInput) => Promise<void> | void;
+  isEducatorAvailabilityOnboarding?: boolean;
 };
 
 export function EducatorAvailabilityTab({
@@ -79,6 +82,7 @@ export function EducatorAvailabilityTab({
   initialWeeklyCommitment = 10,
   initialAvailability,
   onSave,
+  isEducatorAvailabilityOnboarding = false,
 }: EducatorAvailabilityTabProps) {
   const normalizeClassTypes = React.useCallback(
     (values?: EducatorAvailabilityVM['classTypes']): ClassTypeValue[] => {
@@ -99,6 +103,20 @@ export function EducatorAvailabilityTab({
     initialAvailability ?? EMPTY_DAY_AVAILABILITY,
   );
   const [isSaving, setIsSaving] = React.useState(false);
+  const hasAvailability = React.useMemo(
+    () => DAY_KEYS.some((day) => Boolean(availability[day]?.length)),
+    [availability],
+  );
+  const sequentialAvailabilityHighlight = useSequentialHighlight<'availability'>({
+    order: ['availability'],
+    satisfied: {
+      availability: hasAvailability,
+    },
+    enabled: isEducatorAvailabilityOnboarding,
+  });
+  const showAvailabilityBeam = sequentialAvailabilityHighlight.isActive('availability');
+  const isTeachingPreferencesDisabled =
+    isEducatorAvailabilityOnboarding && !hasAvailability;
 
   React.useEffect(() => {
     setSelectedClassTypes(normalizeClassTypes(initialClassTypes));
@@ -205,6 +223,7 @@ export function EducatorAvailabilityTab({
         title="Teaching Preferences"
         subtitle={classPreferencesSubtitle}
         icon={<SlidersHorizontal className="h-5 w-5" />}
+        disabled={isTeachingPreferencesDisabled}
         footer={
           <div className="flex justify-end">
             <Button
@@ -357,17 +376,39 @@ export function EducatorAvailabilityTab({
         title="Teaching Availability"
         subtitle={availabilitySubtitle}
         icon={<CalendarDays className="h-5 w-5" />}
+        defaultOpen={isEducatorAvailabilityOnboarding}
         showSeparator={false}
         footer={
           <div className="flex justify-end">
-            <Button size="sm" onClick={handleSave} disabled={!onSave || isSaving}>
-              {isSaving ? 'Saving...' : 'Save'}
-            </Button>
+            <div className="relative inline-flex rounded-full">
+              {showAvailabilityBeam ? (
+                <BorderBeam
+                  size={26}
+                  initialOffset={8}
+                  borderWidth={2}
+                  className="from-transparent via-amber-700 to-transparent"
+                  transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                />
+              ) : null}
+              <Button
+                size="sm"
+                onClick={handleSave}
+                disabled={!onSave || isSaving}
+                className="relative z-10"
+              >
+                {isSaving ? 'Saving...' : 'Save'}
+              </Button>
+            </div>
           </div>
         }
       >
         <div className="space-y-4">
-          <AvailabilityScheduler value={availability} onChange={setAvailability} />
+          <div className="space-y-2">
+            <p className="text-xs text-muted-foreground">
+              Click a day to select when you’re available to teach. You can update this anytime.
+            </p>
+            <AvailabilityScheduler value={availability} onChange={setAvailability} />
+          </div>
         </div>
       </UserSettingsTabSection>
     </div>
