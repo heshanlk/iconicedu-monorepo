@@ -139,6 +139,7 @@ export function SidebarLeft({
     region?: string | null;
     countryCode?: string | null;
     countryName?: string | null;
+    postalCode?: string | null;
   }) => Promise<void> | void;
   onLocationSave?: (input: {
     profileId: string;

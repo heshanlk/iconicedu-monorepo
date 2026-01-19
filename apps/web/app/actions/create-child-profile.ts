@@ -154,6 +154,7 @@ type CreateChildProfileInput = {
   region?: string | null;
   countryCode?: string | null;
   countryName?: string | null;
+  postalCode?: string | null;
 };
 
 export async function createChildProfileAction(
@@ -221,6 +222,7 @@ export async function createChildProfileAction(
       country_name: input.countryName ?? null,
       region: input.region ?? null,
       city: input.city ?? null,
+      postal_code: input.postalCode ?? null,
       created_by: guardianAccount.id,
       updated_by: guardianAccount.id,
     };
