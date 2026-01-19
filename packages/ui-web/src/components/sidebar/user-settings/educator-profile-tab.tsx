@@ -283,17 +283,29 @@ export function EducatorProfileTab({
         open={basicInfoOpen}
         onOpenChange={handleBasicInfoOpenChange}
         footer={
-          <div className="flex justify-end">
-            <Button
-              size="sm"
-              onClick={handleSave}
-              disabled={
-                isSaving || !onSave || !selectedSubjects.length || !selectedGrades.length
-              }
-            >
-              {isSaving ? 'Saving...' : 'Save'}
-            </Button>
-          </div>
+            <div className="flex justify-end">
+              <div className="relative inline-flex rounded-full">
+                {showEducatorActionBeam ? (
+                  <BorderBeam
+                    size={26}
+                    initialOffset={8}
+                    borderWidth={2}
+                    className="from-transparent via-amber-700 to-transparent"
+                    transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                  />
+                ) : null}
+                <Button
+                  size="sm"
+                  className="relative z-10"
+                  onClick={handleSave}
+                  disabled={
+                    isSaving || !onSave || !selectedSubjects.length || !selectedGrades.length
+                  }
+                >
+                  {isSaving ? 'Saving...' : 'Save'}
+                </Button>
+              </div>
+            </div>
         }
       >
         <div className="grid gap-4 sm:grid-cols-2">

@@ -1,14 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import {
-  CalendarDays,
-  Check,
-  SlidersHorizontal,
-  User,
-  Users,
-  X,
-} from 'lucide-react';
+import { CalendarDays, Check, SlidersHorizontal, User, Users, X } from 'lucide-react';
 
 import { Button } from '../../../ui/button';
 import { Input } from '../../../ui/input';
@@ -89,17 +82,16 @@ export function EducatorAvailabilityTab({
 }: EducatorAvailabilityTabProps) {
   const normalizeClassTypes = React.useCallback(
     (values?: EducatorAvailabilityVM['classTypes']): ClassTypeValue[] => {
-      return (values ?? [])
-        .filter((value): value is ClassTypeValue =>
-          CLASS_TYPE_OPTIONS.some((option) => option.value === value),
-        );
+      return (values ?? []).filter((value): value is ClassTypeValue =>
+        CLASS_TYPE_OPTIONS.some((option) => option.value === value),
+      );
     },
     [],
   );
 
-  const [selectedClassTypes, setSelectedClassTypes] = React.useState<
-    ClassTypeValue[]
-  >(normalizeClassTypes(initialClassTypes));
+  const [selectedClassTypes, setSelectedClassTypes] = React.useState<ClassTypeValue[]>(
+    normalizeClassTypes(initialClassTypes),
+  );
   const [weeklyCommitment, setWeeklyCommitment] = React.useState(
     initialWeeklyCommitment ?? 10,
   );
@@ -197,10 +189,7 @@ export function EducatorAvailabilityTab({
           return (
             <span key={key} className="inline-flex items-center gap-1">
               <Icon
-                className={cn(
-                  'size-3',
-                  hasSlots ? 'text-primary' : 'text-destructive',
-                )}
+                className={cn('size-3', hasSlots ? 'text-primary' : 'text-destructive')}
               />
               {label}
             </span>
@@ -213,7 +202,7 @@ export function EducatorAvailabilityTab({
   return (
     <div className="space-y-4">
       <UserSettingsTabSection
-        title="Class preferences"
+        title="Teaching Preferences"
         subtitle={classPreferencesSubtitle}
         icon={<SlidersHorizontal className="h-5 w-5" />}
         footer={
@@ -365,7 +354,7 @@ export function EducatorAvailabilityTab({
         </div>
       </UserSettingsTabSection>
       <UserSettingsTabSection
-        title="Weekly availability"
+        title="Teaching Availability"
         subtitle={availabilitySubtitle}
         icon={<CalendarDays className="h-5 w-5" />}
         showSeparator={false}

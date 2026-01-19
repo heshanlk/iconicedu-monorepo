@@ -14,6 +14,7 @@ import type {
   UserProfileVM,
 } from '@iconicedu/shared-types';
 import { ScrollArea } from '../../../ui/scroll-area';
+import { Separator } from '../../../ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../ui/tabs';
 import { useSidebar } from '../../../ui/sidebar';
 import { cn } from '@iconicedu/ui-web/lib/utils';
@@ -125,6 +126,7 @@ const ONBOARDING_SECTION_CONFIG: Record<
   'student-profile': { tab: 'student-profile', sectionKey: 'student-profile' },
   'educator-profile': { tab: 'educator-profile', sectionKey: 'educator-profile' },
   'staff-profile': { tab: 'staff-profile', sectionKey: 'staff-profile' },
+  'educator-availability': { tab: 'educator-availability', sectionKey: 'availability' },
 };
 
 export function UserSettingsTabs({
@@ -152,13 +154,6 @@ export function UserSettingsTabs({
   onboardingStep,
   scrollToken = 0,
 }: UserSettingsTabsProps) {
-  const handleLogoutClick = React.useCallback(() => {
-    if (!onLogout) {
-      return;
-    }
-    void onLogout();
-  }, [onLogout]);
-
   const { isMobile } = useSidebar();
   const profileBlock = profile.profile;
   const profileDisplayName = getProfileDisplayName(profileBlock);
@@ -189,16 +184,21 @@ export function UserSettingsTabs({
   const isStudentProfileOnboarding = onboardingStep === 'student-profile';
   const isEducatorProfileOnboarding = onboardingStep === 'educator-profile';
   const isStaffOnboarding = onboardingStep === 'staff-profile';
-  const onboardingGuidance = onboardingStep ? ONBOARDING_SECTION_CONFIG[onboardingStep] : null;
-  const accountGuidance = onboardingGuidance?.tab === 'account' ? onboardingGuidance : null;
-  const profileGuidance = onboardingGuidance?.tab === 'profile' ? onboardingGuidance : null;
+  const onboardingGuidance = onboardingStep
+    ? ONBOARDING_SECTION_CONFIG[onboardingStep]
+    : null;
+  const accountGuidance =
+    onboardingGuidance?.tab === 'account' ? onboardingGuidance : null;
+  const profileGuidance =
+    onboardingGuidance?.tab === 'profile' ? onboardingGuidance : null;
   const preferencesGuidance =
     onboardingGuidance?.tab === 'preferences' ? onboardingGuidance : null;
   const locationGuidance =
     onboardingGuidance?.tab === 'location' ? onboardingGuidance : null;
   const accountSectionKey = accountGuidance?.sectionKey as AccountSectionKey | undefined;
-  const preferencesSectionKey =
-    preferencesGuidance?.sectionKey as PreferencesSectionKey | undefined;
+  const preferencesSectionKey = preferencesGuidance?.sectionKey as
+    | PreferencesSectionKey
+    | undefined;
   const togglePreferredChannel = React.useCallback(
     (channel: string, enabled: boolean) => {
       const nextChannels = enabled
@@ -319,6 +319,13 @@ export function UserSettingsTabs({
     return true;
   });
 
+  const handleLogoutClick = React.useCallback(() => {
+    if (!onLogout) {
+      return;
+    }
+    void onLogout();
+  }, [onLogout]);
+
   return (
     <Tabs
       value={value}
@@ -335,44 +342,43 @@ export function UserSettingsTabs({
       >
         <div className="flex flex-col">
           <TabsList
-          variant="line"
-          className={cn(
-            'bg-transparent p-0',
-            isMobile
-              ? 'w-full flex-nowrap justify-start gap-2 overflow-x-auto sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/70'
-              : 'w-full flex-col items-stretch',
-          )}
-        >
-          {availableTabs.map((tab) => {
-            const Icon = tab.icon;
-            return (
-              <TabsTrigger
-                key={tab.value}
-                value={tab.value}
-                className="gap-2 after:hidden data-[state=active]:bg-muted/50"
-              >
-                <Icon className="size-4" />
-                {tab.label}
-              </TabsTrigger>
-            );
-          })}
+            variant="line"
+            className={cn(
+              'bg-transparent p-0',
+              isMobile
+                ? 'w-full flex-nowrap justify-start gap-2 overflow-x-auto sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/70'
+                : 'w-full flex-col items-stretch',
+            )}
+          >
+            {availableTabs.map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <TabsTrigger
+                  key={tab.value}
+                  value={tab.value}
+                  className="gap-2 after:hidden data-[state=active]:bg-muted/50"
+                >
+                  <Icon className="size-4" />
+                  {tab.label}
+                </TabsTrigger>
+              );
+            })}
           </TabsList>
           {Boolean(onboardingStep) ? (
-            <div className="px-2 pt-3">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-full justify-start gap-2 text-xs font-semibold"
-                onClick={handleLogoutClick}
-                disabled={!onLogout}
-              >
-                <LogOut className="size-4" />
-                Log out
-              </Button>
-              <p className="mt-1 text-[11px] text-muted-foreground">
-                Need to pause onboarding? Logging out allows you to resume later.
-              </p>
-            </div>
+            <>
+              <Separator className="my-2" />
+              <div className="px-2">
+                <button
+                  type="button"
+                  className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm font-semibold text-foreground transition hover:bg-muted"
+                  onClick={handleLogoutClick}
+                  disabled={!onLogout}
+                >
+                  <LogOut className="size-4 flex-none" />
+                  Log out
+                </button>
+              </div>
+            </>
           ) : null}
         </div>
 
@@ -387,9 +393,9 @@ export function UserSettingsTabs({
               showProfileTaskToast={isProfileOnboarding}
               expandProfileDetails={Boolean(profileGuidance)}
               onProfileSave={onProfileSave}
-                onAvatarUpload={onAvatarUpload}
-                onAvatarRemove={onAvatarRemove}
-              />
+              onAvatarUpload={onAvatarUpload}
+              onAvatarRemove={onAvatarRemove}
+            />
           </TabsContent>
           {staffProfile ? (
             <TabsContent value="staff-profile" className="mt-0 space-y-8 w-full px-1">
@@ -411,25 +417,32 @@ export function UserSettingsTabs({
             </TabsContent>
           ) : null}
           {educatorProfile ? (
-            <TabsContent value="educator-availability" className="mt-0 space-y-8 w-full px-1">
+            <TabsContent
+              value="educator-availability"
+              className="mt-0 space-y-8 w-full px-1"
+            >
               <EducatorAvailabilityTab
                 initialClassTypes={educatorProfile.availability?.classTypes ?? undefined}
-                initialWeeklyCommitment={educatorProfile.availability?.weeklyCommitment ?? undefined}
-                initialAvailability={educatorProfile.availability?.availability ?? undefined}
+                initialWeeklyCommitment={
+                  educatorProfile.availability?.weeklyCommitment ?? undefined
+                }
+                initialAvailability={
+                  educatorProfile.availability?.availability ?? undefined
+                }
                 onSave={onEducatorAvailabilitySave}
               />
             </TabsContent>
           ) : null}
-            {childProfile ? (
-              <TabsContent value="student-profile" className="mt-0 space-y-8 w-full px-1">
-                <StudentProfileTab
-                  childProfile={childProfile}
-                  fallbackCountryCode={profile.location?.countryCode}
-                  onChildProfileSave={onChildProfileSave}
-                  onboardingRequired={isStudentProfileOnboarding}
-                />
-              </TabsContent>
-            ) : null}
+          {childProfile ? (
+            <TabsContent value="student-profile" className="mt-0 space-y-8 w-full px-1">
+              <StudentProfileTab
+                childProfile={childProfile}
+                fallbackCountryCode={profile.location?.countryCode}
+                onChildProfileSave={onChildProfileSave}
+                onboardingRequired={isStudentProfileOnboarding}
+              />
+            </TabsContent>
+          ) : null}
 
           <TabsContent value="account" className="mt-0 space-y-8 w-full px-1">
             <AccountTab
@@ -448,59 +461,61 @@ export function UserSettingsTabs({
             />
           </TabsContent>
 
-        <TabsContent value="preferences" className="mt-0 space-y-8 w-full px-1">
-          <PreferencesTab
-            currentThemeKey={currentThemeKey}
-            currentThemeLabel={currentThemeLabel}
-            profileId={profile.ids.id}
-            orgId={profile.ids.orgId}
-            prefs={prefs}
-            profileThemeOptions={PROFILE_THEME_OPTIONS}
-            setProfileThemes={setProfileThemes}
-            scrollToRequired={value === 'preferences' || isPreferencesTimezoneOnboarding}
-            scrollToken={scrollToken}
-            onPrefsSave={onPrefsSave}
-            onboardingRequiredSection={preferencesSectionKey}
-            lockSections={Boolean(preferencesGuidance)}
-          />
-        </TabsContent>
+          <TabsContent value="preferences" className="mt-0 space-y-8 w-full px-1">
+            <PreferencesTab
+              currentThemeKey={currentThemeKey}
+              currentThemeLabel={currentThemeLabel}
+              profileId={profile.ids.id}
+              orgId={profile.ids.orgId}
+              prefs={prefs}
+              profileThemeOptions={PROFILE_THEME_OPTIONS}
+              setProfileThemes={setProfileThemes}
+              scrollToRequired={
+                value === 'preferences' || isPreferencesTimezoneOnboarding
+              }
+              scrollToken={scrollToken}
+              onPrefsSave={onPrefsSave}
+              onboardingRequiredSection={preferencesSectionKey}
+              lockSections={Boolean(preferencesGuidance)}
+            />
+          </TabsContent>
 
-        <TabsContent value="location" className="mt-0 space-y-8 w-full px-1">
-          <LocationTab
-            location={location}
-            scrollToRequired={value === 'location' || isLocationOnboarding}
-            scrollToken={scrollToken}
-            onLocationContinue={onLocationContinue}
-            expandLocation={Boolean(locationGuidance)}
-          />
-        </TabsContent>
+          <TabsContent value="location" className="mt-0 space-y-8 w-full px-1">
+            <LocationTab
+              location={location}
+              scrollToRequired={value === 'location' || isLocationOnboarding}
+              scrollToken={scrollToken}
+              onLocationContinue={onLocationContinue}
+              expandLocation={Boolean(locationGuidance)}
+            />
+          </TabsContent>
 
-        <TabsContent value="family" className="mt-0 space-y-8 w-full px-1">
-          <FamilyTab
-            familyMembers={familyMembers}
-            profileThemes={profileThemes}
-            profileThemeOptions={PROFILE_THEME_OPTIONS}
-            setProfileThemes={setProfileThemes}
-            showOnboardingToast={isFamilyOnboarding}
-            initialInvites={
-              profile.kind === 'guardian' ? profile.familyInvites ?? [] : []
-            }
-            onInviteCreate={onFamilyInviteCreate}
-            onInviteRemove={onFamilyInviteRemove}
-            onProfileSave={onProfileSave}
-            onChildThemeSave={onChildThemeSave}
-            timezone={prefs.timezone ?? undefined}
-            location={profile.location ?? null}
-            orgId={profile.ids.orgId}
-            guardianAccountId={profile.ids.accountId}
-            guardianEmail={contacts?.email ?? null}
-            onChildProfileCreate={onChildProfileCreate}
-            onFamilyMemberRemove={onFamilyMemberRemove}
-            guardianThemeKey={profile.ui?.themeKey ?? 'teal'}
-          />
-        </TabsContent>
+          <TabsContent value="family" className="mt-0 space-y-8 w-full px-1">
+            <FamilyTab
+              familyMembers={familyMembers}
+              profileThemes={profileThemes}
+              profileThemeOptions={PROFILE_THEME_OPTIONS}
+              setProfileThemes={setProfileThemes}
+              showOnboardingToast={isFamilyOnboarding}
+              initialInvites={
+                profile.kind === 'guardian' ? (profile.familyInvites ?? []) : []
+              }
+              onInviteCreate={onFamilyInviteCreate}
+              onInviteRemove={onFamilyInviteRemove}
+              onProfileSave={onProfileSave}
+              onChildThemeSave={onChildThemeSave}
+              timezone={prefs.timezone ?? undefined}
+              location={profile.location ?? null}
+              orgId={profile.ids.orgId}
+              guardianAccountId={profile.ids.accountId}
+              guardianEmail={contacts?.email ?? null}
+              onChildProfileCreate={onChildProfileCreate}
+              onFamilyMemberRemove={onFamilyMemberRemove}
+              guardianThemeKey={profile.ui?.themeKey ?? 'teal'}
+            />
+          </TabsContent>
 
-        <TabsContent value="notifications" className="mt-0 space-y-8 w-full px-1">
+          <TabsContent value="notifications" className="mt-0 space-y-8 w-full px-1">
             <NotificationsTab
               isGuardianOrAdmin={isGuardianOrAdmin}
               notificationChannels={notificationChannels}

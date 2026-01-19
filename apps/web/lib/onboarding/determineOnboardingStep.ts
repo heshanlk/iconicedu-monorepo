@@ -44,6 +44,16 @@ export function determineOnboardingStep(
     if (!hasSubjects || !hasGrades) {
       return 'educator-profile';
     }
+    console.log(profile);
+    const hasAvailability =
+      Boolean(profile.availability?.availability) &&
+      DAY_KEYS.some(
+        (day) => (profile.availability?.availability?.[day]?.length ?? 0) > 0,
+      );
+
+    if (!hasAvailability) {
+      return 'educator-availability';
+    }
   }
 
   if (profile.kind === 'staff') {

@@ -33,9 +33,9 @@ export const ONBOARDING_STEP_TO_TAB: Record<OnboardingStep, UserSettingsTab> = {
   'student-profile': 'student-profile',
   'educator-profile': 'educator-profile',
   'staff-profile': 'staff-profile',
+  'educator-availability': 'educator-availability',
 };
 export type { UserSettingsTab } from './user-settings/constants';
-
 
 type UserSettingsDialogProps = {
   open: boolean;
@@ -221,31 +221,31 @@ export function UserSettingsDialog({
   );
 
   const content = (
-      <UserSettingsTabs
-        value={activeTab}
-        onValueChange={onTabChange}
-        profile={profile}
-        account={account}
-        onLogout={onLogout}
-        onProfileSave={onProfileSave}
-        onChildProfileSave={onChildProfileSave}
-        onAvatarUpload={onAvatarUpload}
-        onAvatarRemove={onAvatarRemove}
-        onPrefsSave={onPrefsSave}
-        onChildThemeSave={onChildThemeSave}
-        onNotificationPreferenceSave={onNotificationPreferenceSave}
-        onLocationContinue={handleLocationContinue}
-        onAccountUpdate={onAccountUpdate}
-        onFamilyInviteCreate={onFamilyInviteCreate}
-        onFamilyInviteRemove={onFamilyInviteRemove}
-        onChildProfileCreate={onChildProfileCreate}
-        onFamilyMemberRemove={onFamilyMemberRemove}
-        onEducatorProfileSave={onEducatorProfileSave}
-        onEducatorAvailabilitySave={onEducatorAvailabilitySave}
-        onStaffProfileSave={onStaffProfileSave}
-        onboardingStep={onboardingStep}
-        scrollToken={scrollToken}
-      />
+    <UserSettingsTabs
+      value={activeTab}
+      onValueChange={onTabChange}
+      profile={profile}
+      account={account}
+      onLogout={onLogout}
+      onProfileSave={onProfileSave}
+      onChildProfileSave={onChildProfileSave}
+      onAvatarUpload={onAvatarUpload}
+      onAvatarRemove={onAvatarRemove}
+      onPrefsSave={onPrefsSave}
+      onChildThemeSave={onChildThemeSave}
+      onNotificationPreferenceSave={onNotificationPreferenceSave}
+      onLocationContinue={handleLocationContinue}
+      onAccountUpdate={onAccountUpdate}
+      onFamilyInviteCreate={onFamilyInviteCreate}
+      onFamilyInviteRemove={onFamilyInviteRemove}
+      onChildProfileCreate={onChildProfileCreate}
+      onFamilyMemberRemove={onFamilyMemberRemove}
+      onEducatorProfileSave={onEducatorProfileSave}
+      onEducatorAvailabilitySave={onEducatorAvailabilitySave}
+      onStaffProfileSave={onStaffProfileSave}
+      onboardingStep={onboardingStep}
+      scrollToken={scrollToken}
+    />
   );
   const { isMobile } = useSidebar();
 

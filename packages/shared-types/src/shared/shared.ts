@@ -69,4 +69,5 @@ export type OnboardingStep =
   | 'family'
   | 'student-profile'
   | 'educator-profile'
-  | 'staff-profile';
+  | 'staff-profile'
+  | 'educator-availability';
