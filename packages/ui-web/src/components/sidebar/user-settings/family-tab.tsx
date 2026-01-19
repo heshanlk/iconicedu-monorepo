@@ -32,6 +32,7 @@ import {
 } from '../../../ui/select';
 import { Separator } from '../../../ui/separator';
 import { toast } from 'sonner';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../../../ui/tooltip';
 
 import type { FamilyLinkInviteRole, FamilyLinkInviteVM } from '@iconicedu/shared-types';
 import type { ProfileSaveInput } from './profile-tab';
@@ -373,6 +374,7 @@ export function FamilyTab({
   const showCreateActionBeam = Boolean(
     showDialogBeam && canSubmitChild && !isCreatingChild,
   );
+  const showPostOnboardingTooltips = !showOnboardingToast;
 
   const handleChildCreate = React.useCallback(async () => {
     if (!onChildProfileCreate) {
@@ -553,23 +555,50 @@ export function FamilyTab({
                 }
               }}
             >
-              <DialogTrigger asChild>
-                <div className="relative inline-flex rounded-full">
-                  {showOnboardingToast ? (
-                    <BorderBeam
-                      size={26}
-                      initialOffset={8}
-                      borderWidth={2}
-                      className="from-transparent via-amber-700 to-transparent"
-                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
-                    />
-                  ) : null}
-                  <Button variant="ghost" size="sm" className="relative z-10">
-                    <Plus className="size-4" />
-                    Add
-                  </Button>
-                </div>
-              </DialogTrigger>
+              {showPostOnboardingTooltips ? (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <DialogTrigger asChild>
+                      <div className="relative inline-flex rounded-full">
+                        {showOnboardingToast ? (
+                          <BorderBeam
+                            size={26}
+                            initialOffset={8}
+                            borderWidth={2}
+                            className="from-transparent via-amber-700 to-transparent"
+                            transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                          />
+                        ) : null}
+                        <Button variant="ghost" size="sm" className="relative z-10">
+                          <Plus className="size-4" />
+                          Add
+                        </Button>
+                      </div>
+                    </DialogTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent className="text-xs text-muted-foreground">
+                    Add more kids to keep their learning profiles aligned and monitored in one place.
+                  </TooltipContent>
+                </Tooltip>
+              ) : (
+                <DialogTrigger asChild>
+                  <div className="relative inline-flex rounded-full">
+                    {showOnboardingToast ? (
+                      <BorderBeam
+                        size={26}
+                        initialOffset={8}
+                        borderWidth={2}
+                        className="from-transparent via-amber-700 to-transparent"
+                        transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                      />
+                    ) : null}
+                    <Button variant="ghost" size="sm" className="relative z-10">
+                      <Plus className="size-4" />
+                      Add
+                    </Button>
+                  </div>
+                </DialogTrigger>
+              )}
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>Add a child profile</DialogTitle>
@@ -708,7 +737,7 @@ export function FamilyTab({
                       <p className="text-xs text-destructive">{newChildEmailError}</p>
                     ) : null}
                     {newChildEmail.trim() ? (
-                      <div className="space-y-1 text-xs text-muted-foreground border p-2 rounded-xl">
+                    <div className="space-y-1 text-xs text-foreground border p-2 rounded-xl">
                         <p className="text-[11px]">
                           <ShieldAlert className="inline-block mr-1 w-3 h-3" />
                           If the student is 13 years or older, they can have their own
@@ -743,11 +772,26 @@ export function FamilyTab({
                   </div>
                 </div>
                 <DialogFooter className="mt-4 flex justify-end gap-2">
+                {showPostOnboardingTooltips ? (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <DialogClose asChild>
+                        <Button size="sm" variant="ghost">
+                          Cancel
+                        </Button>
+                      </DialogClose>
+                    </TooltipTrigger>
+                    <TooltipContent className="text-xs text-muted-foreground">
+                      Click here to return to the dashboard once you’re done.
+                    </TooltipContent>
+                  </Tooltip>
+                ) : (
                   <DialogClose asChild>
                     <Button size="sm" variant="ghost">
                       Cancel
                     </Button>
                   </DialogClose>
+                )}
                   <div className="relative inline-flex rounded-full">
                     {showCreateActionBeam ? (
                       <BorderBeam
@@ -829,11 +873,26 @@ export function FamilyTab({
                   </div>
                 </div>
                 <DialogFooter className="mt-4 flex justify-end gap-2">
+                {showPostOnboardingTooltips ? (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <DialogClose asChild>
+                        <Button type="button" size="sm" variant="ghost">
+                          Cancel
+                        </Button>
+                      </DialogClose>
+                    </TooltipTrigger>
+                    <TooltipContent className="text-xs text-muted-foreground">
+                      Click here to return to the family dashboard at any time.
+                    </TooltipContent>
+                  </Tooltip>
+                ) : (
                   <DialogClose asChild>
                     <Button type="button" size="sm" variant="ghost">
                       Cancel
                     </Button>
                   </DialogClose>
+                )}
                   <Button size="sm" onClick={handleInviteSave} disabled={isInviteSaving}>
                     {isInviteSaving ? 'Sending...' : 'Send invite'}
                   </Button>
