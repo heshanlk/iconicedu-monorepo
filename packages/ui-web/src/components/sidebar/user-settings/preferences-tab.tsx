@@ -335,28 +335,28 @@ export function PreferencesTab({
                 <div className="relative rounded-full" ref={timezoneInputRef}>
                   {showTimezoneFieldBeam && !timezoneValue.trim() ? (
                     <BorderBeam
-                      size={60}
-                      initialOffset={12}
+                      size={52}
+                      initialOffset={8}
                       borderWidth={2}
-                      className="from-transparent via-primary to-transparent"
+                      className="from-transparent via-amber-700 to-transparent"
                       transition={{ type: 'spring', stiffness: 60, damping: 20 }}
                     />
                   ) : null}
                   {showTimezoneInputBeam && !timezoneValue.trim() ? (
                     <BorderBeam
-                      size={60}
-                      initialOffset={12}
+                      size={52}
+                      initialOffset={8}
                       borderWidth={2}
-                      className="from-transparent via-primary/40 to-transparent"
+                      className="from-transparent via-amber-700 to-transparent"
                       transition={{ type: 'spring', stiffness: 60, damping: 20 }}
                     />
                   ) : null}
                   {isTimezoneSectionActive && !timezoneValue.trim() ? (
                     <BorderBeam
-                      size={56}
-                      initialOffset={12}
+                      size={52}
+                      initialOffset={8}
                       borderWidth={2}
-                      className="from-transparent via-primary to-transparent"
+                      className="from-transparent via-amber-700 to-transparent"
                       transition={{ type: 'spring', stiffness: 60, damping: 20 }}
                     />
                   ) : null}
@@ -392,10 +392,11 @@ export function PreferencesTab({
                 <div className="relative inline-flex rounded-full">
                   {showPickTimezoneBeam ? (
                     <BorderBeam
-                      size={64}
+                      size={26}
+                      initialOffset={8}
                       borderWidth={2}
-                      className="from-primary/60 via-primary/40 to-transparent"
-                      transition={{ duration: 4, ease: 'linear' }}
+                      className="from-transparent via-amber-700 to-transparent"
+                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
                     />
                   ) : null}
                   <Button
@@ -415,10 +416,11 @@ export function PreferencesTab({
                 <div className="relative inline-flex rounded-full">
                   {showSaveBeam ? (
                     <BorderBeam
-                      size={56}
+                      size={26}
+                      initialOffset={8}
                       borderWidth={2}
-                      className="from-primary/80 via-primary to-transparent"
-                      transition={{ duration: 4, ease: 'linear' }}
+                      className="from-transparent via-amber-700 to-transparent"
+                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
                     />
                   ) : null}
                   <Button

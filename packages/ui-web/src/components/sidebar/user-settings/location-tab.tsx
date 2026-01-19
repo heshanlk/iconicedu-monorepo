@@ -325,10 +325,10 @@ export function LocationTab({
                 <div className="relative rounded-full border border-border/60">
                   {showCityBeam && !cityValue.trim() && !isCityFocused ? (
                     <BorderBeam
-                      size={60}
-                      initialOffset={12}
+                      size={52}
+                      initialOffset={8}
                       borderWidth={2}
-                      className="from-transparent via-pink-500 to-transparent"
+                      className="from-transparent via-amber-700 to-transparent"
                       transition={{ type: 'spring', stiffness: 60, damping: 20 }}
                     />
                   ) : null}
@@ -360,10 +360,10 @@ export function LocationTab({
                 <div className="relative rounded-full border border-border/60">
                   {showRegionBeam && !regionValue.trim() && !isRegionFocused ? (
                     <BorderBeam
-                      size={60}
-                      initialOffset={12}
+                      size={52}
+                      initialOffset={8}
                       borderWidth={2}
-                      className="from-transparent via-primary to-transparent"
+                      className="from-transparent via-amber-700 to-transparent"
                       transition={{ type: 'spring', stiffness: 60, damping: 20 }}
                     />
                   ) : null}
@@ -419,10 +419,10 @@ export function LocationTab({
                 <div className="relative rounded-full border border-border/60">
                   {showPostalBeam && !postalValue.trim() && !isPostalFocused ? (
                     <BorderBeam
-                      size={60}
-                      initialOffset={12}
+                      size={52}
+                      initialOffset={8}
                       borderWidth={2}
-                      className="from-transparent via-primary to-transparent"
+                      className="from-transparent via-amber-700 to-transparent"
                       transition={{ type: 'spring', stiffness: 60, damping: 20 }}
                     />
                   ) : null}
@@ -451,10 +451,11 @@ export function LocationTab({
                 <div className="relative inline-flex rounded-full">
                   {showPickLocationBeam ? (
                     <BorderBeam
-                      size={56}
+                      size={26}
+                      initialOffset={8}
                       borderWidth={2}
-                      className="from-primary/50 via-primary to-transparent rounded-4xl"
-                      transition={{ duration: 4, ease: 'linear' }}
+                      className="from-transparent via-amber-700 to-transparent"
+                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
                     />
                   ) : null}
                   <Button
@@ -472,11 +473,12 @@ export function LocationTab({
                     <div className="relative inline-flex rounded-full">
                       {showContinueBeam ? (
                         <BorderBeam
-                          size={56}
-                          borderWidth={2}
-                          className="from-primary/80 via-primary to-transparent"
-                          transition={{ duration: 4, ease: 'linear' }}
-                        />
+                      size={26}
+                      initialOffset={8}
+                      borderWidth={2}
+                      className="from-transparent via-amber-700 to-transparent"
+                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                    />
                       ) : null}
                       <Button
                         size="sm"
@@ -495,11 +497,12 @@ export function LocationTab({
                     <div className="relative inline-flex rounded-full">
                       {showContinueBeam ? (
                         <BorderBeam
-                          size={56}
-                          borderWidth={2}
-                          className="from-primary/80 via-primary to-transparent"
-                          transition={{ duration: 4, ease: 'linear' }}
-                        />
+                      size={26}
+                      initialOffset={8}
+                      borderWidth={2}
+                      className="from-transparent via-amber-700 to-transparent"
+                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                    />
                       ) : null}
                       <Button
                         size="sm"

@@ -479,10 +479,10 @@ export function ProfileTab({
                 <div className="relative rounded-full">
                   {showFirstNameBeam && !firstNameValue.trim() && !isFirstFocused ? (
                     <BorderBeam
-                      size={60}
-                      initialOffset={12}
+                      size={52}
+                      initialOffset={8}
                       borderWidth={2}
-                      className="from-transparent via-pink-500 to-transparent"
+                      className="from-transparent via-amber-700 to-transparent"
                       transition={{ type: 'spring', stiffness: 60, damping: 20 }}
                     />
                   ) : null}
@@ -514,10 +514,10 @@ export function ProfileTab({
                 <div className="relative rounded-full">
                   {showLastNameBeam && !lastNameValue.trim() && !isLastFocused ? (
                     <BorderBeam
-                      size={60}
-                      initialOffset={12}
+                      size={52}
+                      initialOffset={8}
                       borderWidth={2}
-                      className="from-transparent via-pink-500 to-transparent"
+                      className="from-transparent via-amber-700 to-transparent"
                       transition={{ type: 'spring', stiffness: 60, damping: 20 }}
                     />
                   ) : null}
@@ -566,11 +566,11 @@ export function ProfileTab({
                 <div className="relative inline-flex rounded-full">
                   {showProfileActionBeam ? (
                     <BorderBeam
-                      size={56}
+                      size={26}
+                      initialOffset={8}
                       borderWidth={2}
-                      delay={0.2}
-                      transition={{ duration: 4, ease: 'linear' }}
-                      className="from-primary via-primary/80 to-transparent"
+                      className="from-transparent via-amber-700 to-transparent"
+                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
                     />
                   ) : null}
                   <Button

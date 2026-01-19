@@ -557,10 +557,11 @@ export function FamilyTab({
                 <div className="relative inline-flex rounded-full">
                   {showOnboardingToast ? (
                     <BorderBeam
-                      size={52}
+                      size={26}
+                      initialOffset={8}
                       borderWidth={2}
-                      className="from-primary/60 via-primary/30 to-transparent"
-                      transition={{ duration: 4, ease: 'linear' }}
+                      className="from-transparent via-amber-700 to-transparent"
+                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
                     />
                   ) : null}
                   <Button variant="ghost" size="sm" className="relative z-10">
@@ -580,16 +581,16 @@ export function FamilyTab({
                 <div className="space-y-4">
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-2">
-                      <Label htmlFor="new-first-name">Child first name *</Label>
+                      <Label htmlFor="new-first-name">First name *</Label>
                       <div className="relative rounded-full overflow-hidden">
                         {showFirstNameBeam ? (
                           <BorderBeam
-                            size={60}
-                            initialOffset={12}
-                            borderWidth={2}
-                            className="from-transparent via-primary to-transparent"
-                            transition={{ type: 'spring', stiffness: 60, damping: 20 }}
-                          />
+                      size={52}
+                      initialOffset={8}
+                      borderWidth={2}
+                      className="from-transparent via-amber-700 to-transparent"
+                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                    />
                         ) : null}
                         <Input
                           id="new-first-name"
@@ -602,16 +603,16 @@ export function FamilyTab({
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="new-last-name">Child last name *</Label>
+                      <Label htmlFor="new-last-name">Last name *</Label>
                       <div className="relative rounded-full overflow-hidden">
                         {showLastNameBeam ? (
                           <BorderBeam
-                            size={60}
-                            initialOffset={12}
-                            borderWidth={2}
-                            className="from-transparent via-primary to-transparent"
-                            transition={{ type: 'spring', stiffness: 60, damping: 20 }}
-                          />
+                      size={52}
+                      initialOffset={8}
+                      borderWidth={2}
+                      className="from-transparent via-amber-700 to-transparent"
+                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                    />
                         ) : null}
                         <Input
                           id="new-last-name"
@@ -629,12 +630,12 @@ export function FamilyTab({
                       <div className="relative w-full rounded-full overflow-hidden">
                         {showGradeBeam ? (
                           <BorderBeam
-                            size={60}
-                            initialOffset={12}
-                            borderWidth={2}
-                            className="from-transparent via-primary to-transparent"
-                            transition={{ type: 'spring', stiffness: 60, damping: 20 }}
-                          />
+                      size={52}
+                      initialOffset={8}
+                      borderWidth={2}
+                      className="from-transparent via-amber-700 to-transparent"
+                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                    />
                         ) : null}
                         <Select
                           value={newChildGrade}
@@ -659,12 +660,12 @@ export function FamilyTab({
                       <div className="relative w-full rounded-full overflow-hidden">
                         {showBirthYearBeam ? (
                           <BorderBeam
-                            size={60}
-                            initialOffset={12}
-                            borderWidth={2}
-                            className="from-transparent via-primary to-transparent"
-                            transition={{ type: 'spring', stiffness: 60, damping: 20 }}
-                          />
+                      size={52}
+                      initialOffset={8}
+                      borderWidth={2}
+                      className="from-transparent via-amber-700 to-transparent"
+                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                    />
                         ) : null}
                         <Select
                           value={newChildBirthYear}
@@ -750,11 +751,12 @@ export function FamilyTab({
                   <div className="relative inline-flex rounded-full">
                     {showCreateActionBeam ? (
                       <BorderBeam
-                        size={56}
-                        borderWidth={2}
-                        className="from-primary/80 via-primary to-transparent"
-                        transition={{ duration: 4, ease: 'linear' }}
-                      />
+                      size={26}
+                      initialOffset={8}
+                      borderWidth={2}
+                      className="from-transparent via-amber-700 to-transparent"
+                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                    />
                     ) : null}
                     <Button
                       size="sm"

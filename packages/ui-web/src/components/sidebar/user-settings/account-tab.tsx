@@ -331,21 +331,12 @@ export function AccountTab({
                   </div>
                 </Label>
                 <div className="relative rounded-full">
-                  {showPhoneFieldBeam && !phoneInputValue.trim() && !isPhoneFocused ? (
-                    <BorderBeam
-                      size={60}
-                      initialOffset={12}
-                      borderWidth={2}
-                      className="from-transparent via-primary to-transparent"
-                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
-                    />
-                  ) : null}
                   {isPhoneSectionActive && !phoneInputValue.trim() ? (
                     <BorderBeam
-                      size={56}
+                      size={52}
                       initialOffset={8}
                       borderWidth={2}
-                      className="from-transparent via-primary to-transparent"
+                      className="from-transparent via-amber-700 to-transparent"
                       transition={{ type: 'spring', stiffness: 60, damping: 20 }}
                     />
                   ) : null}
@@ -406,10 +397,11 @@ export function AccountTab({
                 <div className="relative inline-flex rounded-full">
                   {showPhoneActionBeam ? (
                     <BorderBeam
-                      size={56}
+                      size={26}
+                      initialOffset={8}
                       borderWidth={2}
-                      className="from-primary/70 via-primary to-transparent"
-                      transition={{ duration: 4, ease: 'linear' }}
+                      className="from-transparent via-amber-700 to-transparent"
+                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
                     />
                   ) : null}
                   <Button
