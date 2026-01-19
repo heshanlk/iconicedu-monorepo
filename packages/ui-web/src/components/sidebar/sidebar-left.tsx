@@ -52,6 +52,7 @@ import { Empty } from '../../ui/empty';
 import { EmptyContent } from '../../ui/empty';
 import type {
   ChildProfileSaveInput,
+  ChildProfileVM,
   EducatorProfileSaveInput,
   FamilyLinkInviteRole,
   FamilyLinkInviteVM,
@@ -140,7 +141,7 @@ export function SidebarLeft({
     countryCode?: string | null;
     countryName?: string | null;
     postalCode?: string | null;
-  }) => Promise<void> | void;
+  }) => Promise<ChildProfileVM> | void;
   onLocationSave?: (input: {
     profileId: string;
     orgId: string;

@@ -17,6 +17,7 @@ import {
 import { AvatarWithStatus } from '../shared/avatar-with-status';
 import type {
   ChildProfileSaveInput,
+  ChildProfileVM,
   EducatorProfileSaveInput,
   FamilyLinkInviteRole,
   FamilyLinkInviteVM,
@@ -139,7 +140,7 @@ export function NavUser({
     countryCode?: string | null;
     countryName?: string | null;
     postalCode?: string | null;
-  }) => Promise<void> | void;
+  }) => Promise<ChildProfileVM> | void;
   onFamilyMemberRemove?: (input: { childAccountId: string }) => Promise<void> | void;
   onEducatorProfileSave?: (input: EducatorProfileSaveInput) => Promise<void> | void;
   onStaffProfileSave?: (input: StaffProfileSaveInput) => Promise<void> | void;

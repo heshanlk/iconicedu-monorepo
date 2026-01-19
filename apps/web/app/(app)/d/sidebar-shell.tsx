@@ -5,6 +5,7 @@ import type { ReactNode } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import type {
   ChildProfileSaveInput,
+  ChildProfileVM,
   EducatorProfileSaveInput,
   FamilyLinkInviteRole,
   GradeLevel,
@@ -652,7 +653,7 @@ export function SidebarShell({
       countryName?: string | null;
       postalCode?: string | null;
       themeKey?: ThemeKey | null;
-    }) => {
+    }): Promise<ChildProfileVM> => {
       try {
         const child = await createChildProfileAction(input);
         setSidebarData((prev) => {

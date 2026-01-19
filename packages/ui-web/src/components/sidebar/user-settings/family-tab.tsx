@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { Plus, ShieldAlert, UserPlus } from 'lucide-react';
 
-import type { ThemeKey, UserProfileVM } from '@iconicedu/shared-types';
+import type { ChildProfileVM, ThemeKey, UserProfileVM } from '@iconicedu/shared-types';
 import { normalizeCountryCode, optionsForCountry } from '@iconicedu/shared-types';
 import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
 import { Badge } from '../../../ui/badge';
@@ -119,7 +119,7 @@ type FamilyTabProps = {
     countryName?: string | null;
     postalCode?: string | null;
     themeKey?: ThemeKey | null;
-  }) => Promise<void> | void;
+  }) => Promise<ChildProfileVM> | void;
   onFamilyMemberRemove?: (input: { childAccountId: string }) => Promise<void> | void;
   guardianEmail?: string | null;
 };
@@ -194,6 +194,9 @@ export function FamilyTab({
   const [removingMemberIds, setRemovingMemberIds] = React.useState<
     Record<string, boolean>
   >({});
+  const [expandedChildSections, setExpandedChildSections] = React.useState<
+    Record<string, boolean>
+  >({});
   React.useEffect(() => {
     if (familyMembers.length <= 1 && !isDialogOpen) {
       setIsDialogOpen(true);
@@ -230,6 +233,13 @@ export function FamilyTab({
       return true;
     },
     [normalizedGuardianEmail],
+  );
+
+  const handleSectionToggle = React.useCallback(
+    (memberId: string, nextOpen: boolean) => {
+      setExpandedChildSections((prev) => ({ ...prev, [memberId]: nextOpen }));
+    },
+    [],
   );
 
   const handleInviteSave = React.useCallback(async () => {
@@ -384,7 +394,7 @@ export function FamilyTab({
     try {
       const displayNameValue =
         `${newChildFirstName.trim()} ${newChildLastName.trim()}`.trim();
-      await onChildProfileCreate({
+      const createdChild = await onChildProfileCreate({
         orgId,
         displayName: displayNameValue,
         firstName: newChildFirstName.trim(),
@@ -402,6 +412,12 @@ export function FamilyTab({
       });
       toast.success('Child profile submitted');
       handleDialogReset();
+      if (createdChild?.ids?.id) {
+        setExpandedChildSections((prev) => ({
+          ...prev,
+          [createdChild.ids.id]: true,
+        }));
+      }
       setIsDialogOpen(false);
     } catch (error) {
       console.error(error);
@@ -874,6 +890,19 @@ export function FamilyTab({
                   badgeIcon={<Badge variant="secondary">{member.roleLabel}</Badge>}
                   showSeparator={
                     index < familyMembers.length - 1 || Boolean(invites.length)
+                  }
+                  open={
+                    Object.prototype.hasOwnProperty.call(
+                      expandedChildSections,
+                      member.id,
+                    )
+                      ? expandedChildSections[member.id]
+                      : undefined
+                  }
+                  onOpenChange={
+                    isChildMember
+                      ? (nextOpen) => handleSectionToggle(member.id, nextOpen)
+                      : undefined
                   }
                 >
                   {isSelf ? null : (
