@@ -72,7 +72,7 @@ export function AvailabilityScheduler({ value, onChange }: AvailabilityScheduler
   const formatHour = (hour: number) => `${hour.toString().padStart(2, '0')}:00`;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 border border-border/50 rounded-lg p-4">
       <div className="flex justify-between gap-1 sm:gap-2">
         {DAY_OPTIONS.map(({ key, label }) => {
           const indicator = getDayIndicator(key);
