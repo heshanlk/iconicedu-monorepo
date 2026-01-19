@@ -183,11 +183,15 @@ export function UserSettingsDialog({
       return;
     }
     if (!onboardingStep) {
-      onOpenChange(false);
+      const stayOpenOnFamilyTab = activeTab === 'family';
       onOnboardingComplete?.();
       onboardingStartedRef.current = false;
+      if (stayOpenOnFamilyTab) {
+        return;
+      }
+      onOpenChange(false);
     }
-  }, [open, onboardingStep, onOpenChange, onOnboardingComplete]);
+  }, [activeTab, open, onboardingStep, onOpenChange, onOnboardingComplete]);
 
   React.useEffect(() => {
     if (!open || !onboardingStep) {

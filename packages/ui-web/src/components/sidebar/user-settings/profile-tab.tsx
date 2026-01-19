@@ -45,7 +45,6 @@ type ProfileTabProps = {
   expandProfileDetails?: boolean;
   scrollToRequired?: boolean;
   scrollToken?: number;
-  primaryActionLabel?: string;
   onPrimaryActionComplete?: () => void;
   onProfileSave?: (input: ProfileSaveInput) => Promise<void> | void;
   onAvatarUpload?: (input: ProfileAvatarInput) => Promise<void> | void;
@@ -82,7 +81,6 @@ export function ProfileTab({
   expandProfileDetails = false,
   scrollToRequired = false,
   scrollToken = 0,
-  primaryActionLabel = 'Save',
   onPrimaryActionComplete,
   onProfileSave,
   onAvatarUpload,
@@ -136,9 +134,8 @@ export function ProfileTab({
   );
   const firstNameRef = React.useRef<HTMLInputElement | null>(null);
   const lastNameRef = React.useRef<HTMLInputElement | null>(null);
-  const isPrimaryDisabled =
-    primaryActionLabel === 'Continue' &&
-    (!firstNameValue.trim() || !lastNameValue.trim());
+  const requiredProfileFieldsMissing = !firstNameValue.trim() || !lastNameValue.trim();
+  const isPrimaryDisabled = shouldHighlightRequired && requiredProfileFieldsMissing;
 
   React.useEffect(() => {
     if (expandProfileDetails) {
@@ -584,13 +581,8 @@ export function ProfileTab({
                   >
                     {isSaving ? (
                       'Saving...'
-                    ) : primaryActionLabel === 'Continue' ? (
-                      <span className="inline-flex items-center gap-2">
-                        Continue
-                        <ArrowRight className="h-4 w-4" />
-                      </span>
                     ) : (
-                      primaryActionLabel
+                      <span className="inline-flex items-center gap-2">Save</span>
                     )}
                   </Button>
                 </div>

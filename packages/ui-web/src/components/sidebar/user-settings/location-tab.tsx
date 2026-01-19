@@ -487,10 +487,7 @@ export function LocationTab({
                         {isSaving ? (
                           'Saving...'
                         ) : (
-                          <span className="inline-flex items-center gap-2">
-                            Continue
-                            <ArrowRight className="h-4 w-4" />
-                          </span>
+                          <span className="inline-flex items-center gap-2">Save</span>
                         )}
                       </Button>
                     </div>

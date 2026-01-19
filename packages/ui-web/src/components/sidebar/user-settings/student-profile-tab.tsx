@@ -12,6 +12,7 @@ import {
   optionsForCountry,
 } from '@iconicedu/shared-types';
 import { Button } from '../../../ui/button';
+import { BorderBeam } from '../../../ui/border-beam';
 import {
   Collapsible,
   CollapsibleContent,
@@ -19,10 +20,17 @@ import {
 } from '../../../ui/collapsible';
 import { Input } from '../../../ui/input';
 import { Label } from '../../../ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../../../ui/select';
 import { Separator } from '../../../ui/separator';
 import { Checkbox } from '../../../ui/checkbox';
 import { ChevronIcon } from './components/chevron-icon';
+import { useSequentialHighlight } from './hooks/use-sequential-highlight';
 
 export const BIRTH_YEAR_OPTIONS = (() => {
   const currentYear = new Date().getFullYear();
@@ -86,6 +94,7 @@ type StudentProfileTabProps = {
   childProfile: ChildProfileVM;
   fallbackCountryCode?: string | null;
   onChildProfileSave?: (input: ChildProfileSaveInput) => Promise<void> | void;
+  onboardingRequired?: boolean;
 };
 
 const resolveGradeSelection = (profile: ChildProfileVM): GradeLevel | '' =>
@@ -95,6 +104,7 @@ export function StudentProfileTab({
   childProfile,
   fallbackCountryCode,
   onChildProfileSave,
+  onboardingRequired = false,
 }: StudentProfileTabProps) {
   const studentCountryCode = React.useMemo(
     () =>
@@ -135,6 +145,13 @@ export function StudentProfileTab({
   );
   const [childProfileError, setChildProfileError] = React.useState<string | null>(null);
   const [isSavingChildProfile, setIsSavingChildProfile] = React.useState(false);
+  const [basicInfoOpen, setBasicInfoOpen] = React.useState(onboardingRequired);
+  const otherSectionsDisabled = onboardingRequired;
+  React.useEffect(() => {
+    if (onboardingRequired) {
+      setBasicInfoOpen(true);
+    }
+  }, [onboardingRequired]);
 
   const toggleSelection = React.useCallback(
     (value: string, setter: React.Dispatch<React.SetStateAction<string[]>>) => {
@@ -147,6 +164,30 @@ export function StudentProfileTab({
 
   const isSaveDisabled =
     isSavingChildProfile || !gradeSelection || !birthYearSelection;
+
+  const handleBasicInfoOpenChange = React.useCallback(
+    (nextOpen: boolean) => {
+      if (onboardingRequired && !nextOpen) {
+        return;
+      }
+      setBasicInfoOpen(nextOpen);
+    },
+    [onboardingRequired],
+  );
+
+  const sequentialHighlight = useSequentialHighlight<'grade' | 'birthYear'>({
+    order: ['grade', 'birthYear'],
+    satisfied: {
+      grade: Boolean(gradeSelection),
+      birthYear: Boolean(birthYearSelection),
+    },
+    enabled: onboardingRequired,
+  });
+  const showGradeBeam = sequentialHighlight.isActive('grade');
+  const showBirthYearBeam = sequentialHighlight.isActive('birthYear');
+  const showSaveActionBeam =
+    onboardingRequired &&
+    Boolean(gradeSelection && birthYearSelection && !isSavingChildProfile);
 
   React.useEffect(() => {
     setGradeSelection(resolveGradeSelection(childProfile));
@@ -236,7 +277,11 @@ export function StudentProfileTab({
         </div>
       </div>
       <div className="space-y-1 w-full">
-        <Collapsible className="rounded-2xl w-full">
+        <Collapsible
+          className="rounded-2xl w-full"
+          open={basicInfoOpen}
+          onOpenChange={handleBasicInfoOpenChange}
+        >
           <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
             <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
               <User className="h-5 w-5" />
@@ -252,71 +297,113 @@ export function StudentProfileTab({
             <ChevronIcon />
           </CollapsibleTrigger>
           <CollapsibleContent className="py-4 w-full">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="settings-grade">
-                  Grade level <span className="text-destructive">*</span>
-                </Label>
-                <Select
-                  value={gradeSelection}
-                  onValueChange={(value) => setGradeSelection(value as GradeLevel)}
-                >
-                  <SelectTrigger id="settings-grade" className="w-full">
-                    <SelectValue placeholder="Select grade" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {gradeOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="settings-birth-year">
-                  Birth year <span className="text-destructive">*</span>
-                </Label>
-                <Select
-                  value={birthYearSelection}
-                  onValueChange={(value) => setBirthYearSelection(value)}
-                >
-                  <SelectTrigger
-                    id="settings-birth-year"
-                    aria-required="true"
-                    className="w-full"
-                  >
-                    <SelectValue placeholder="Select year" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {BIRTH_YEAR_OPTIONS.map((year) => (
-                      <SelectItem key={year} value={String(year)}>
-                        {year}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="sm:col-span-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <p className="text-xs text-destructive min-h-[1em]">
-                  {childProfileError ?? ''}
-                </p>
-                <Button
-                  size="sm"
-                  onClick={() => {
-                    void handleChildProfileSave();
-                  }}
-                  disabled={isSaveDisabled}
-                >
-                  {isSavingChildProfile ? 'Saving...' : 'Save'}
-                </Button>
-              </div>
-            </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="settings-grade">
+                      Grade level <span className="text-destructive">*</span>
+                    </Label>
+                    <div className="relative w-full rounded-4xl overflow-hidden">
+                      {showGradeBeam ? (
+                        <BorderBeam
+                          size={60}
+                          initialOffset={12}
+                          borderWidth={2}
+                          className="from-transparent via-primary to-transparent"
+                          transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                        />
+                      ) : null}
+                      <Select
+                        value={gradeSelection}
+                        onValueChange={(value) => setGradeSelection(value as GradeLevel)}
+                      >
+                        <SelectTrigger
+                          id="settings-grade"
+                          className="relative z-10 w-full rounded-4xl"
+                        >
+                          <SelectValue placeholder="Select grade" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {gradeOptions.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="settings-birth-year">
+                      Birth year <span className="text-destructive">*</span>
+                    </Label>
+                    <div className="relative w-full rounded-4xl overflow-hidden">
+                      {showBirthYearBeam ? (
+                        <BorderBeam
+                          size={60}
+                          initialOffset={12}
+                          borderWidth={2}
+                          className="from-transparent via-primary to-transparent"
+                          transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                        />
+                      ) : null}
+                      <Select
+                        value={birthYearSelection}
+                        onValueChange={(value) => setBirthYearSelection(value)}
+                      >
+                        <SelectTrigger
+                          id="settings-birth-year"
+                          aria-required="true"
+                          className="relative z-10 w-full rounded-4xl"
+                        >
+                          <SelectValue placeholder="Select year" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {BIRTH_YEAR_OPTIONS.map((year) => (
+                            <SelectItem key={year} value={String(year)}>
+                              {year}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <div className="sm:col-span-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                    <p className="text-xs text-destructive min-h-[1em]">
+                      {childProfileError ?? ''}
+                    </p>
+                    <div className="relative inline-flex">
+                      {showSaveActionBeam ? (
+                        <BorderBeam
+                          size={56}
+                          borderWidth={2}
+                          className="from-primary/80 via-primary to-transparent"
+                          transition={{ duration: 4, ease: 'linear' }}
+                        />
+                      ) : null}
+                      <Button
+                        size="sm"
+                        onClick={() => {
+                          void handleChildProfileSave();
+                        }}
+                        disabled={isSaveDisabled}
+                        className="relative z-10"
+                      >
+                        {isSavingChildProfile ? 'Saving...' : 'Save'}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
           </CollapsibleContent>
         </Collapsible>
         <Separator />
         <Collapsible className="rounded-2xl w-full">
-          <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
+          <CollapsibleTrigger
+            disabled={otherSectionsDisabled}
+            aria-disabled={otherSectionsDisabled}
+            className={`group flex w-full items-center gap-3 py-3 text-left ${
+              otherSectionsDisabled ? 'cursor-not-allowed opacity-70' : ''
+            }`}
+          >
             <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
               <BookOpen className="h-5 w-5" />
             </span>
@@ -328,7 +415,9 @@ export function StudentProfileTab({
             </div>
             <ChevronIcon />
           </CollapsibleTrigger>
-          <CollapsibleContent className="py-4 w-full">
+          <CollapsibleContent
+            className={`py-4 w-full ${otherSectionsDisabled ? 'pointer-events-none opacity-60' : ''}`}
+          >
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2 sm:col-span-2">
                 <Label htmlFor="settings-school">School name</Label>
@@ -364,7 +453,13 @@ export function StudentProfileTab({
         </Collapsible>
         <Separator />
         <Collapsible className="rounded-2xl w-full">
-          <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
+          <CollapsibleTrigger
+            disabled={otherSectionsDisabled}
+            aria-disabled={otherSectionsDisabled}
+            className={`group flex w-full items-center gap-3 py-3 text-left ${
+              otherSectionsDisabled ? 'cursor-not-allowed opacity-70' : ''
+            }`}
+          >
             <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
               <Lightbulb className="h-5 w-5" />
             </span>
@@ -378,7 +473,9 @@ export function StudentProfileTab({
             </div>
             <ChevronIcon />
           </CollapsibleTrigger>
-          <CollapsibleContent className="py-4 w-full">
+          <CollapsibleContent
+            className={`py-4 w-full ${otherSectionsDisabled ? 'pointer-events-none opacity-60' : ''}`}
+          >
             <div className="space-y-4">
               <div className="space-y-3">
                 <Label>Interests</Label>
@@ -430,7 +527,13 @@ export function StudentProfileTab({
         </Collapsible>
         <Separator />
         <Collapsible className="rounded-2xl w-full">
-          <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
+          <CollapsibleTrigger
+            disabled={otherSectionsDisabled}
+            aria-disabled={otherSectionsDisabled}
+            className={`group flex w-full items-center gap-3 py-3 text-left ${
+              otherSectionsDisabled ? 'cursor-not-allowed opacity-70' : ''
+            }`}
+          >
             <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
               <SlidersHorizontal className="h-5 w-5" />
             </span>
@@ -444,7 +547,9 @@ export function StudentProfileTab({
             </div>
             <ChevronIcon />
           </CollapsibleTrigger>
-          <CollapsibleContent className="py-4 w-full">
+          <CollapsibleContent
+            className={`py-4 w-full ${otherSectionsDisabled ? 'pointer-events-none opacity-60' : ''}`}
+          >
             <div className="space-y-4">
               <div className="space-y-3">
                 <Label>Learning preferences</Label>
@@ -500,7 +605,13 @@ export function StudentProfileTab({
         </Collapsible>
         <Separator />
         <Collapsible className="rounded-2xl w-full">
-          <CollapsibleTrigger className="group flex w-full items-center gap-3 py-3 text-left">
+          <CollapsibleTrigger
+            disabled={otherSectionsDisabled}
+            aria-disabled={otherSectionsDisabled}
+            className={`group flex w-full items-center gap-3 py-3 text-left ${
+              otherSectionsDisabled ? 'cursor-not-allowed opacity-70' : ''
+            }`}
+          >
             <span className="flex h-10 w-10 items-center justify-center rounded-full border bg-muted/40 text-foreground">
               <Users className="h-5 w-5" />
             </span>
@@ -517,7 +628,9 @@ export function StudentProfileTab({
             </div>
             <ChevronIcon />
           </CollapsibleTrigger>
-          <CollapsibleContent className="py-4 w-full">
+          <CollapsibleContent
+            className={`py-4 w-full ${otherSectionsDisabled ? 'pointer-events-none opacity-60' : ''}`}
+          >
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2 sm:col-span-2">
                 <Label htmlFor="settings-confidence">Confidence level</Label>

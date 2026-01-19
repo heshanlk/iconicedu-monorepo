@@ -6,11 +6,7 @@ import type { UserAccountVM } from '@iconicedu/shared-types';
 import { Badge } from '../../../ui/badge';
 import { Button } from '../../../ui/button';
 import { Input } from '../../../ui/input';
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from '../../../ui/input-group';
+import { InputGroup, InputGroupAddon, InputGroupInput } from '../../../ui/input-group';
 import { Label } from '../../../ui/label';
 import { Switch } from '../../../ui/switch';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../../../ui/tooltip';
@@ -39,6 +35,7 @@ type AccountTabProps = {
   }) => Promise<void> | void;
   onboardingRequiredSection?: AccountSectionKey | null;
   lockSections?: boolean;
+  isChildAccount?: boolean;
 };
 
 export function AccountTab({
@@ -53,6 +50,7 @@ export function AccountTab({
   onAccountUpdate,
   onboardingRequiredSection = null,
   lockSections = false,
+  isChildAccount = false,
 }: AccountTabProps) {
   const [phoneValue, setPhoneValue] = React.useState('');
   const [isPhoneFocused, setIsPhoneFocused] = React.useState(false);
@@ -76,10 +74,7 @@ export function AccountTab({
   const formattedWhatsappFromContacts = contacts?.whatsappE164
     ? formatPhoneInput(contacts.whatsappE164)
     : '';
-  const renderVerificationBadge = (
-    isVerified: boolean,
-    verifiedAt?: string | null,
-  ) =>
+  const renderVerificationBadge = (isVerified: boolean, verifiedAt?: string | null) =>
     isVerified ? (
       <Tooltip>
         <TooltipTrigger asChild>
@@ -103,14 +98,9 @@ export function AccountTab({
   const whatsappDisplay =
     whatsappInputValue.trim() || formattedWhatsappFromContacts || 'Not provided';
   const shouldScrollToPhone = !phoneInputValue.trim();
-  const isPhoneSaveDisabled =
-    isPhoneSaving || !onAccountUpdate || !accountId || !orgId;
+  const isPhoneSaveDisabled = isPhoneSaving || !onAccountUpdate || !accountId || !orgId;
   const isWhatsappSaveDisabled =
-    isWhatsappSaving ||
-    !onAccountUpdate ||
-    !accountId ||
-    !orgId ||
-    usePhoneForWhatsapp;
+    isWhatsappSaving || !onAccountUpdate || !accountId || !orgId || usePhoneForWhatsapp;
   const [showPhoneActionBeam, setShowPhoneActionBeam] = React.useState(false);
   const [emailOpen, setEmailOpen] = React.useState(false);
   React.useEffect(() => {
@@ -163,8 +153,7 @@ export function AccountTab({
   React.useEffect(() => {
     const contactWhatsapp = contacts?.whatsappE164 ?? '';
     const contactPhone = contacts?.phoneE164 ?? '';
-    const shouldUsePhone =
-      !contactWhatsapp || contactWhatsapp === contactPhone;
+    const shouldUsePhone = !contactWhatsapp || contactWhatsapp === contactPhone;
     setUsePhoneForWhatsapp((prev) => (prev === shouldUsePhone ? prev : shouldUsePhone));
 
     if (isWhatsappFocused) {
@@ -185,12 +174,13 @@ export function AccountTab({
     if (!onAccountUpdate || !accountId || !orgId) {
       return;
     }
-    const parsed = parsePhoneNumberFromString(phoneInputValue);
-    if (!phoneInputValue.trim()) {
+    const trimmedPhone = phoneInputValue.trim();
+    const parsed = trimmedPhone ? parsePhoneNumberFromString(trimmedPhone) : undefined;
+    if (!trimmedPhone && !isChildAccount) {
       setPhoneError('Please enter your phone number.');
       return;
     }
-    if (phoneInputValue.trim() && !parsed?.isValid()) {
+    if (trimmedPhone && !parsed?.isValid()) {
       setPhoneError('Enter a valid international number (e.g. +1 415 555 0100).');
       return;
     }
@@ -205,7 +195,14 @@ export function AccountTab({
     } finally {
       setIsPhoneSaving(false);
     }
-  }, [accountId, orgId, onAccountUpdate, phoneInputValue, usePhoneForWhatsapp]);
+  }, [
+    accountId,
+    orgId,
+    onAccountUpdate,
+    phoneInputValue,
+    usePhoneForWhatsapp,
+    isChildAccount,
+  ]);
 
   const handleWhatsappSave = React.useCallback(async () => {
     if (!onAccountUpdate || !accountId || !orgId) {
@@ -221,7 +218,7 @@ export function AccountTab({
       await onAccountUpdate({
         accountId,
         orgId,
-      whatsappE164: parsed?.number ?? null,
+        whatsappE164: parsed?.number ?? null,
       });
     } finally {
       setIsWhatsappSaving(false);
@@ -267,7 +264,9 @@ export function AccountTab({
                           <Info className="h-3 w-3" />
                         </span>
                       </TooltipTrigger>
-                      <TooltipContent>Contact support to change your email.</TooltipContent>
+                      <TooltipContent>
+                        Contact support to change your email.
+                      </TooltipContent>
                     </Tooltip>
                   </div>
                 </Label>
@@ -303,9 +302,7 @@ export function AccountTab({
                 </div>
                 <Switch
                   checked={preferredChannelSelections.includes('email')}
-                  onCheckedChange={(checked) =>
-                    togglePreferredChannel('email', checked)
-                  }
+                  onCheckedChange={(checked) => togglePreferredChannel('email', checked)}
                   aria-label="Receive notifications by email"
                 />
               </div>
@@ -384,8 +381,8 @@ export function AccountTab({
                   </InputGroup>
                 </div>
                 <div className="text-xs text-muted-foreground">
-                  We’ll send a verification code by text. Include your country code
-                  (e.g. +1, +44, +61).
+                  We’ll send a verification code by text. Include your country code (e.g.
+                  +1, +44, +61).
                 </div>
               </div>
               {contacts?.phoneVerified ? (
@@ -400,15 +397,13 @@ export function AccountTab({
                   </div>
                   <Switch
                     checked={preferredChannelSelections.includes('sms')}
-                    onCheckedChange={(checked) =>
-                      togglePreferredChannel('sms', checked)
-                    }
+                    onCheckedChange={(checked) => togglePreferredChannel('sms', checked)}
                     aria-label="Receive notifications by phone"
                   />
                 </div>
               ) : null}
               <div className="sm:col-span-2 flex justify-end">
-                <div className="relative inline-flex">
+                <div className="relative inline-flex rounded-full">
                   {showPhoneActionBeam ? (
                     <BorderBeam
                       size={56}
@@ -525,17 +520,19 @@ export function AccountTab({
                   <Checkbox
                     id="use-phone-for-whatsapp"
                     checked={usePhoneForWhatsapp}
-                    onCheckedChange={(checked) => setUsePhoneForWhatsapp(Boolean(checked))}
+                    onCheckedChange={(checked) =>
+                      setUsePhoneForWhatsapp(Boolean(checked))
+                    }
                   />
                   Use phone number
                 </label>
-                  <Button
-                    size="sm"
-                    onClick={handleWhatsappSave}
-                    disabled={isWhatsappSaveDisabled}
-                  >
-                    {isWhatsappSaving ? 'Saving...' : 'Save'}
-                  </Button>
+                <Button
+                  size="sm"
+                  onClick={handleWhatsappSave}
+                  disabled={isWhatsappSaveDisabled}
+                >
+                  {isWhatsappSaving ? 'Saving...' : 'Save'}
+                </Button>
               </div>
             </div>
           </UserSettingsTabSection>

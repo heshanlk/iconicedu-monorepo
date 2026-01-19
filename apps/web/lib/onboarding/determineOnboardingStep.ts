@@ -9,7 +9,8 @@ export function determineOnboardingStep(
   account?: UserAccountVM | null,
 ): OnboardingStep | null {
   const hasPhone = Boolean(account?.contacts?.phoneE164?.trim());
-  if (!hasPhone) {
+  const requiresPhone = profile.kind !== 'child';
+  if (!hasPhone && requiresPhone) {
     return 'account-phone';
   }
 

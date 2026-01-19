@@ -171,6 +171,7 @@ export function UserSettingsTabs({
   const isPreferencesTimezoneOnboarding = onboardingStep === 'preferences-timezone';
   const isLocationOnboarding = onboardingStep === 'location';
   const isFamilyOnboarding = onboardingStep === 'family';
+  const isStudentProfileOnboarding = onboardingStep === 'student-profile';
   const onboardingGuidance = onboardingStep ? ONBOARDING_SECTION_CONFIG[onboardingStep] : null;
   const accountGuidance = onboardingGuidance?.tab === 'account' ? onboardingGuidance : null;
   const profileGuidance = onboardingGuidance?.tab === 'profile' ? onboardingGuidance : null;
@@ -342,20 +343,19 @@ export function UserSettingsTabs({
 
         <ScrollArea className={cn('min-h-0 flex-1 w-full min-w-0', isMobile && 'flex-1')}>
           <TabsContent value="profile" className="mt-0 space-y-8 w-full px-1">
-            <ProfileTab
-              profile={profile}
-              profileBlock={profileBlock}
-              staffProfile={staffProfile}
-              scrollToRequired={value === 'profile' || isProfileOnboarding}
-              scrollToken={scrollToken}
-              showProfileTaskToast={isProfileOnboarding}
-              primaryActionLabel={isProfileOnboarding ? 'Continue' : undefined}
-              expandProfileDetails={Boolean(profileGuidance)}
-              onboardingHint={profileOnboardingHint}
-              onProfileSave={onProfileSave}
-              onAvatarUpload={onAvatarUpload}
-              onAvatarRemove={onAvatarRemove}
-            />
+              <ProfileTab
+                profile={profile}
+                profileBlock={profileBlock}
+                staffProfile={staffProfile}
+                scrollToRequired={value === 'profile' || isProfileOnboarding}
+                scrollToken={scrollToken}
+                showProfileTaskToast={isProfileOnboarding}
+                expandProfileDetails={Boolean(profileGuidance)}
+                onboardingHint={profileOnboardingHint}
+                onProfileSave={onProfileSave}
+                onAvatarUpload={onAvatarUpload}
+                onAvatarRemove={onAvatarRemove}
+              />
           </TabsContent>
           {staffProfile ? (
             <TabsContent value="staff-profile" className="mt-0 space-y-8 w-full px-1">
@@ -371,15 +371,16 @@ export function UserSettingsTabs({
               />
             </TabsContent>
           ) : null}
-          {childProfile ? (
-            <TabsContent value="student-profile" className="mt-0 space-y-8 w-full px-1">
-              <StudentProfileTab
-                childProfile={childProfile}
-                fallbackCountryCode={profile.location?.countryCode}
-                onChildProfileSave={onChildProfileSave}
-              />
-            </TabsContent>
-          ) : null}
+            {childProfile ? (
+              <TabsContent value="student-profile" className="mt-0 space-y-8 w-full px-1">
+                <StudentProfileTab
+                  childProfile={childProfile}
+                  fallbackCountryCode={profile.location?.countryCode}
+                  onChildProfileSave={onChildProfileSave}
+                  onboardingRequired={isStudentProfileOnboarding}
+                />
+              </TabsContent>
+            ) : null}
 
           <TabsContent value="account" className="mt-0 space-y-8 w-full px-1">
             <AccountTab
@@ -394,6 +395,7 @@ export function UserSettingsTabs({
               onAccountUpdate={onAccountUpdate}
               onboardingRequiredSection={accountSectionKey}
               lockSections={Boolean(accountGuidance)}
+              isChildAccount={profile.kind === 'child'}
             />
           </TabsContent>
 
