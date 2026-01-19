@@ -149,10 +149,7 @@ export function PreferencesTab({
     }
 
     const browserValue = normalizeTimezone(browserTimezone);
-    if (
-      browserValue &&
-      timezoneOptions.some((option) => option.name === browserValue)
-    ) {
+    if (browserValue && timezoneOptions.some((option) => option.name === browserValue)) {
       setTimezoneValue(browserValue);
       return;
     }
@@ -178,7 +175,8 @@ export function PreferencesTab({
   const showTimezoneInputBeam = isTimezoneRequiredMissing && isTimezoneOnboarding;
   const showPickTimezoneBeam =
     Boolean(browserTimezone && isTimezoneRequiredMissing) && isTimezoneOnboarding;
-  const showSaveBeam = Boolean(!isTimezoneRequiredMissing && !isSaving) && isTimezoneOnboarding;
+  const showSaveBeam =
+    Boolean(!isTimezoneRequiredMissing && !isSaving) && isTimezoneOnboarding;
 
   React.useEffect(() => {
     if (!scrollToRequired || !isTimezoneRequiredMissing) {
@@ -219,8 +217,7 @@ export function PreferencesTab({
       await onPrefsSave({
         profileId,
         orgId,
-        timezone:
-          trimmed && trimmed !== DEFAULT_TIMEZONE ? trimmed : undefined,
+        timezone: trimmed && trimmed !== DEFAULT_TIMEZONE ? trimmed : undefined,
       });
     } finally {
       setIsSaving(false);
@@ -392,7 +389,7 @@ export function PreferencesTab({
                 ) : null}
               </div>
               <div className="sm:col-span-2 flex items-center justify-between">
-                <div className="relative inline-flex">
+                <div className="relative inline-flex rounded-full">
                   {showPickTimezoneBeam ? (
                     <BorderBeam
                       size={64}
@@ -415,7 +412,7 @@ export function PreferencesTab({
                     Pick timezone for me
                   </Button>
                 </div>
-                <div className="relative inline-flex">
+                <div className="relative inline-flex rounded-full">
                   {showSaveBeam ? (
                     <BorderBeam
                       size={56}

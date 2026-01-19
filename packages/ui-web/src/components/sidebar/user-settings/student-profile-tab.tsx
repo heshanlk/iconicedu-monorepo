@@ -107,10 +107,7 @@ export function StudentProfileTab({
   onboardingRequired = false,
 }: StudentProfileTabProps) {
   const studentCountryCode = React.useMemo(
-    () =>
-      normalizeCountryCode(
-        childProfile.location?.countryCode ?? fallbackCountryCode,
-      ),
+    () => normalizeCountryCode(childProfile.location?.countryCode ?? fallbackCountryCode),
     [childProfile.location?.countryCode, fallbackCountryCode],
   );
   const gradeOptions = React.useMemo(
@@ -123,23 +120,27 @@ export function StudentProfileTab({
   const [birthYearSelection, setBirthYearSelection] = React.useState(
     childProfile.birthYear != null ? String(childProfile.birthYear) : '',
   );
-  const [schoolNameValue, setSchoolNameValue] = React.useState(childProfile.schoolName ?? '');
-  const [schoolYearValue, setSchoolYearValue] = React.useState(childProfile.schoolYear ?? '');
+  const [schoolNameValue, setSchoolNameValue] = React.useState(
+    childProfile.schoolName ?? '',
+  );
+  const [schoolYearValue, setSchoolYearValue] = React.useState(
+    childProfile.schoolYear ?? '',
+  );
   const [selectedInterests, setSelectedInterests] = React.useState<string[]>(
     childProfile.interests ?? [],
   );
   const [selectedStrengths, setSelectedStrengths] = React.useState<string[]>(
     childProfile.strengths ?? [],
   );
-  const [selectedLearningPreferences, setSelectedLearningPreferences] = React.useState<string[]>(
-    childProfile.learningPreferences ?? [],
-  );
-  const [selectedMotivationStyles, setSelectedMotivationStyles] = React.useState<string[]>(
-    childProfile.motivationStyles ?? [],
-  );
-  const [selectedCommunicationStyles, setSelectedCommunicationStyles] = React.useState<string[]>(
-    childProfile.communicationStyles ?? [],
-  );
+  const [selectedLearningPreferences, setSelectedLearningPreferences] = React.useState<
+    string[]
+  >(childProfile.learningPreferences ?? []);
+  const [selectedMotivationStyles, setSelectedMotivationStyles] = React.useState<
+    string[]
+  >(childProfile.motivationStyles ?? []);
+  const [selectedCommunicationStyles, setSelectedCommunicationStyles] = React.useState<
+    string[]
+  >(childProfile.communicationStyles ?? []);
   const [selectedConfidenceLevel, setSelectedConfidenceLevel] = React.useState<string>(
     childProfile.confidenceLevel ?? '',
   );
@@ -162,8 +163,7 @@ export function StudentProfileTab({
     [],
   );
 
-  const isSaveDisabled =
-    isSavingChildProfile || !gradeSelection || !birthYearSelection;
+  const isSaveDisabled = isSavingChildProfile || !gradeSelection || !birthYearSelection;
 
   const handleBasicInfoOpenChange = React.useCallback(
     (nextOpen: boolean) => {
@@ -218,9 +218,7 @@ export function StudentProfileTab({
     setIsSavingChildProfile(true);
     const gradeForSave = gradeSelection || null;
     const gradeLabelValue =
-      gradeForSave !== null
-        ? gradeLabel(gradeForSave, studentCountryCode)
-        : null;
+      gradeForSave !== null ? gradeLabel(gradeForSave, studentCountryCode) : null;
     try {
       await onChildProfileSave({
         profileId: childProfile.ids.id,
@@ -297,102 +295,102 @@ export function StudentProfileTab({
             <ChevronIcon />
           </CollapsibleTrigger>
           <CollapsibleContent className="py-4 w-full">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="settings-grade">
-                      Grade level <span className="text-destructive">*</span>
-                    </Label>
-                    <div className="relative w-full rounded-4xl overflow-hidden">
-                      {showGradeBeam ? (
-                        <BorderBeam
-                          size={60}
-                          initialOffset={12}
-                          borderWidth={2}
-                          className="from-transparent via-primary to-transparent"
-                          transition={{ type: 'spring', stiffness: 60, damping: 20 }}
-                        />
-                      ) : null}
-                      <Select
-                        value={gradeSelection}
-                        onValueChange={(value) => setGradeSelection(value as GradeLevel)}
-                      >
-                        <SelectTrigger
-                          id="settings-grade"
-                          className="relative z-10 w-full rounded-4xl"
-                        >
-                          <SelectValue placeholder="Select grade" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {gradeOptions.map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="settings-birth-year">
-                      Birth year <span className="text-destructive">*</span>
-                    </Label>
-                    <div className="relative w-full rounded-4xl overflow-hidden">
-                      {showBirthYearBeam ? (
-                        <BorderBeam
-                          size={60}
-                          initialOffset={12}
-                          borderWidth={2}
-                          className="from-transparent via-primary to-transparent"
-                          transition={{ type: 'spring', stiffness: 60, damping: 20 }}
-                        />
-                      ) : null}
-                      <Select
-                        value={birthYearSelection}
-                        onValueChange={(value) => setBirthYearSelection(value)}
-                      >
-                        <SelectTrigger
-                          id="settings-birth-year"
-                          aria-required="true"
-                          className="relative z-10 w-full rounded-4xl"
-                        >
-                          <SelectValue placeholder="Select year" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {BIRTH_YEAR_OPTIONS.map((year) => (
-                            <SelectItem key={year} value={String(year)}>
-                              {year}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                  <div className="sm:col-span-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                    <p className="text-xs text-destructive min-h-[1em]">
-                      {childProfileError ?? ''}
-                    </p>
-                    <div className="relative inline-flex">
-                      {showSaveActionBeam ? (
-                        <BorderBeam
-                          size={56}
-                          borderWidth={2}
-                          className="from-primary/80 via-primary to-transparent"
-                          transition={{ duration: 4, ease: 'linear' }}
-                        />
-                      ) : null}
-                      <Button
-                        size="sm"
-                        onClick={() => {
-                          void handleChildProfileSave();
-                        }}
-                        disabled={isSaveDisabled}
-                        className="relative z-10"
-                      >
-                        {isSavingChildProfile ? 'Saving...' : 'Save'}
-                      </Button>
-                    </div>
-                  </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="settings-grade">
+                  Grade level <span className="text-destructive">*</span>
+                </Label>
+                <div className="relative w-full rounded-full overflow-hidden">
+                  {showGradeBeam ? (
+                    <BorderBeam
+                      size={60}
+                      initialOffset={12}
+                      borderWidth={2}
+                      className="from-transparent via-primary to-transparent"
+                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                    />
+                  ) : null}
+                  <Select
+                    value={gradeSelection}
+                    onValueChange={(value) => setGradeSelection(value as GradeLevel)}
+                  >
+                    <SelectTrigger
+                      id="settings-grade"
+                      className="relative z-10 w-full rounded-4xl"
+                    >
+                      <SelectValue placeholder="Select grade" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {gradeOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="settings-birth-year">
+                  Birth year <span className="text-destructive">*</span>
+                </Label>
+                <div className="relative w-full rounded-full overflow-hidden">
+                  {showBirthYearBeam ? (
+                    <BorderBeam
+                      size={60}
+                      initialOffset={12}
+                      borderWidth={2}
+                      className="from-transparent via-primary to-transparent"
+                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                    />
+                  ) : null}
+                  <Select
+                    value={birthYearSelection}
+                    onValueChange={(value) => setBirthYearSelection(value)}
+                  >
+                    <SelectTrigger
+                      id="settings-birth-year"
+                      aria-required="true"
+                      className="relative z-10 w-full rounded-4xl"
+                    >
+                      <SelectValue placeholder="Select year" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {BIRTH_YEAR_OPTIONS.map((year) => (
+                        <SelectItem key={year} value={String(year)}>
+                          {year}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div className="sm:col-span-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <p className="text-xs text-destructive min-h-[1em]">
+                  {childProfileError ?? ''}
+                </p>
+                <div className="relative inline-flex rounded-full">
+                  {showSaveActionBeam ? (
+                    <BorderBeam
+                      size={56}
+                      borderWidth={2}
+                      className="from-primary/80 via-primary to-transparent"
+                      transition={{ duration: 4, ease: 'linear' }}
+                    />
+                  ) : null}
+                  <Button
+                    size="sm"
+                    onClick={() => {
+                      void handleChildProfileSave();
+                    }}
+                    disabled={isSaveDisabled}
+                    className="relative z-10"
+                  >
+                    {isSavingChildProfile ? 'Saving...' : 'Save'}
+                  </Button>
+                </div>
+              </div>
+            </div>
           </CollapsibleContent>
         </Collapsible>
         <Separator />
@@ -487,7 +485,9 @@ export function StudentProfileTab({
                     >
                       <Checkbox
                         checked={selectedInterests.includes(option)}
-                        onCheckedChange={() => toggleSelection(option, setSelectedInterests)}
+                        onCheckedChange={() =>
+                          toggleSelection(option, setSelectedInterests)
+                        }
                       />
                       {option}
                     </label>
@@ -504,7 +504,9 @@ export function StudentProfileTab({
                     >
                       <Checkbox
                         checked={selectedStrengths.includes(option)}
-                        onCheckedChange={() => toggleSelection(option, setSelectedStrengths)}
+                        onCheckedChange={() =>
+                          toggleSelection(option, setSelectedStrengths)
+                        }
                       />
                       {option}
                     </label>

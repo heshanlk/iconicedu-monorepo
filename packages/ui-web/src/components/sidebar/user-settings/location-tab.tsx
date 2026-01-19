@@ -448,7 +448,7 @@ export function LocationTab({
               </div>
 
               <div className="sm:col-span-2 flex flex-wrap items-center justify-between gap-2">
-                <div className="relative inline-flex">
+                <div className="relative inline-flex rounded-full">
                   {showPickLocationBeam ? (
                     <BorderBeam
                       size={56}
@@ -469,7 +469,7 @@ export function LocationTab({
                 </div>
                 <div className="flex gap-2">
                   {expandLocation && onLocationContinue ? (
-                    <div className="relative inline-flex">
+                    <div className="relative inline-flex rounded-full">
                       {showContinueBeam ? (
                         <BorderBeam
                           size={56}
@@ -492,7 +492,7 @@ export function LocationTab({
                       </Button>
                     </div>
                   ) : (
-                    <div className="relative inline-flex">
+                    <div className="relative inline-flex rounded-full">
                       {showContinueBeam ? (
                         <BorderBeam
                           size={56}

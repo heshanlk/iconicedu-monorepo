@@ -235,12 +235,9 @@ export function FamilyTab({
     [normalizedGuardianEmail],
   );
 
-  const handleSectionToggle = React.useCallback(
-    (memberId: string, nextOpen: boolean) => {
-      setExpandedChildSections((prev) => ({ ...prev, [memberId]: nextOpen }));
-    },
-    [],
-  );
+  const handleSectionToggle = React.useCallback((memberId: string, nextOpen: boolean) => {
+    setExpandedChildSections((prev) => ({ ...prev, [memberId]: nextOpen }));
+  }, []);
 
   const handleInviteSave = React.useCallback(async () => {
     if (isInviteSaving) {
@@ -584,7 +581,7 @@ export function FamilyTab({
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-2">
                       <Label htmlFor="new-first-name">Child first name *</Label>
-                      <div className="relative rounded-4xl overflow-hidden">
+                      <div className="relative rounded-full overflow-hidden">
                         {showFirstNameBeam ? (
                           <BorderBeam
                             size={60}
@@ -606,7 +603,7 @@ export function FamilyTab({
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="new-last-name">Child last name *</Label>
-                      <div className="relative rounded-4xl overflow-hidden">
+                      <div className="relative rounded-full overflow-hidden">
                         {showLastNameBeam ? (
                           <BorderBeam
                             size={60}
@@ -629,7 +626,7 @@ export function FamilyTab({
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-2">
                       <Label htmlFor="new-grade">Grade level *</Label>
-                      <div className="relative w-full rounded-4xl overflow-hidden">
+                      <div className="relative w-full rounded-full overflow-hidden">
                         {showGradeBeam ? (
                           <BorderBeam
                             size={60}
@@ -659,7 +656,7 @@ export function FamilyTab({
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="new-birth-year">Birth year *</Label>
-                      <div className="relative w-full rounded-4xl overflow-hidden">
+                      <div className="relative w-full rounded-full overflow-hidden">
                         {showBirthYearBeam ? (
                           <BorderBeam
                             size={60}
@@ -750,7 +747,7 @@ export function FamilyTab({
                       Cancel
                     </Button>
                   </DialogClose>
-                  <div className="relative inline-flex">
+                  <div className="relative inline-flex rounded-full">
                     {showCreateActionBeam ? (
                       <BorderBeam
                         size={56}
@@ -892,10 +889,7 @@ export function FamilyTab({
                     index < familyMembers.length - 1 || Boolean(invites.length)
                   }
                   open={
-                    Object.prototype.hasOwnProperty.call(
-                      expandedChildSections,
-                      member.id,
-                    )
+                    Object.prototype.hasOwnProperty.call(expandedChildSections, member.id)
                       ? expandedChildSections[member.id]
                       : undefined
                   }

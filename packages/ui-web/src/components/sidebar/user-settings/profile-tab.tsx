@@ -563,7 +563,7 @@ export function ProfileTab({
                     <span className="text-destructive">{saveError}</span>
                   ) : null}
                 </div>
-                <div className="relative inline-flex">
+                <div className="relative inline-flex rounded-full">
                   {showProfileActionBeam ? (
                     <BorderBeam
                       size={56}
