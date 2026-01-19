@@ -1,18 +1,17 @@
 import * as React from 'react';
-import { Briefcase, Check } from 'lucide-react';
+import { Briefcase, Check, X } from 'lucide-react';
 
-import type {
-  DayAvailability,
-  StaffProfileSaveInput,
-  StaffProfileVM,
+import {
+  DAY_KEYS,
+  type DayAvailability,
+  type StaffProfileSaveInput,
+  type StaffProfileVM,
 } from '@iconicedu/shared-types';
 import { Button } from '../../../ui/button';
 import { Input } from '../../../ui/input';
 import { Label } from '../../../ui/label';
 import { UserSettingsTabSection } from './components/user-settings-tab-section';
 import { AvailabilityScheduler } from '../../shared/availability-scheduler';
-import { summarizeAvailability } from '../../shared/availability-utils';
-import { EMPTY_DAY_AVAILABILITY } from '@iconicedu/shared-types';
 
 const SPECIALTY_OPTIONS = [
   'Scheduling',
@@ -29,6 +28,22 @@ const SPECIALTY_OPTIONS = [
 const normalizeSpecialties = (values?: string[] | null) =>
   Array.from(new Set((values ?? []).map((value) => value.trim()).filter(Boolean)));
 
+const AVAILABILITY_DAY_OPTIONS = DAY_KEYS.map((key) => ({ key, label: key }));
+
+const DEFAULT_WORKING_HOURS = Array.from({ length: 9 }, (_, index) => 9 + index);
+const createDefaultAvailability = (): DayAvailability => {
+  return DAY_KEYS.reduce<DayAvailability>((acc, day) => {
+    acc[day] = [...DEFAULT_WORKING_HOURS];
+    return acc;
+  }, {} as DayAvailability);
+};
+
+const formatHourLabel = (hour: number) => {
+  const period = hour >= 12 ? 'PM' : 'AM';
+  const displayHour = hour % 12 === 0 ? 12 : hour % 12;
+  return `${displayHour.toString().padStart(2, '0')}:00 ${period}`;
+};
+
 type StaffProfileTabProps = {
   staffProfile: StaffProfileVM;
   onSave?: (input: StaffProfileSaveInput) => Promise<void> | void;
@@ -40,8 +55,8 @@ export function StaffProfileTab({ staffProfile, onSave }: StaffProfileTabProps) 
   const [specialties, setSpecialties] = React.useState<string[]>(() =>
     normalizeSpecialties(staffProfile.specialties),
   );
-  const [availability, setAvailability] = React.useState<DayAvailability>(() =>
-    staffProfile.weeklyAvailability ?? EMPTY_DAY_AVAILABILITY,
+  const [availability, setAvailability] = React.useState<DayAvailability>(
+    () => staffProfile.weeklyAvailability ?? createDefaultAvailability(),
   );
   const [isSaving, setIsSaving] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
@@ -51,9 +66,7 @@ export function StaffProfileTab({ staffProfile, onSave }: StaffProfileTabProps) 
     JSON.stringify(normalizeSpecialties(staffProfile.specialties)),
   );
   const initialAvailabilityRef = React.useRef<string>(
-    JSON.stringify(
-      staffProfile.weeklyAvailability ?? EMPTY_DAY_AVAILABILITY,
-    ),
+    JSON.stringify(staffProfile.weeklyAvailability ?? createDefaultAvailability()),
   );
 
   React.useEffect(() => {
@@ -64,7 +77,8 @@ export function StaffProfileTab({ staffProfile, onSave }: StaffProfileTabProps) 
     const normalizedSpecialties = normalizeSpecialties(staffProfile.specialties);
     setSpecialties(normalizedSpecialties);
     initialSpecialtiesRef.current = JSON.stringify(normalizedSpecialties);
-    const normalizedAvailability = staffProfile.weeklyAvailability ?? EMPTY_DAY_AVAILABILITY;
+    const normalizedAvailability =
+      staffProfile.weeklyAvailability ?? createDefaultAvailability();
     setAvailability(normalizedAvailability);
     initialAvailabilityRef.current = JSON.stringify(normalizedAvailability);
   }, [staffProfile]);
@@ -90,16 +104,24 @@ export function StaffProfileTab({ staffProfile, onSave }: StaffProfileTabProps) 
     );
   }, []);
 
-  const summary = React.useMemo(() => summarizeAvailability(availability), [availability]);
-
-  const isDirty = React.useMemo(() => {
+  const availabilitySubtitle = React.useMemo(() => {
     return (
-      department !== initialDepartmentRef.current ||
-      jobTitle !== initialJobTitleRef.current ||
-      JSON.stringify(availability) !== initialAvailabilityRef.current ||
-      JSON.stringify(specialties) !== initialSpecialtiesRef.current
+      <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+        {AVAILABILITY_DAY_OPTIONS.map(({ key, label }) => {
+          const hasSlots = Boolean(availability[key]?.length);
+          const Icon = hasSlots ? Check : X;
+          return (
+            <span key={key} className="inline-flex items-center gap-1">
+              <Icon
+                className={hasSlots ? 'size-3 text-primary' : 'size-3 text-destructive'}
+              />
+              {label}
+            </span>
+          );
+        })}
+      </div>
     );
-  }, [department, jobTitle, availability, specialties]);
+  }, [availability]);
 
   const handleSave = React.useCallback(async () => {
     if (!onSave) {
@@ -146,11 +168,7 @@ export function StaffProfileTab({ staffProfile, onSave }: StaffProfileTabProps) 
         icon={<Briefcase className="h-5 w-5" />}
         footer={
           <div className="flex justify-end">
-            <Button
-              onClick={handleSave}
-              disabled={!isDirty || isSaving}
-              className="rounded-full"
-            >
+            <Button onClick={handleSave} disabled={isSaving} className="rounded-full">
               Save
             </Button>
           </div>
@@ -207,15 +225,12 @@ export function StaffProfileTab({ staffProfile, onSave }: StaffProfileTabProps) 
       </UserSettingsTabSection>
       <UserSettingsTabSection
         title="Weekly availability"
-        subtitle={summary}
+        subtitle={availabilitySubtitle}
         icon={<Briefcase className="h-5 w-5" />}
+        defaultOpen
         footer={
           <div className="flex justify-end">
-            <Button
-              onClick={handleSave}
-              disabled={!isDirty || isSaving}
-              className="rounded-full"
-            >
+            <Button onClick={handleSave} disabled={isSaving} className="rounded-full">
               Save
             </Button>
           </div>

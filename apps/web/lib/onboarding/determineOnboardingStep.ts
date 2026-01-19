@@ -1,4 +1,5 @@
-import type {
+import {
+  DAY_KEYS,
   OnboardingStep,
   UserAccountVM,
   UserProfileVM,
@@ -45,11 +46,14 @@ export function determineOnboardingStep(
     }
   }
 
-  if (
-    profile.kind === 'staff' &&
-    !(profile.department?.trim() || profile.jobTitle?.trim())
-  ) {
-    return 'staff-profile';
+  if (profile.kind === 'staff') {
+    const requiresJobTitle = !profile.jobTitle?.trim();
+    const hasAvailability =
+      Boolean(profile.weeklyAvailability) &&
+      DAY_KEYS.some((day) => (profile.weeklyAvailability?.[day]?.length ?? 0) > 0);
+    if (requiresJobTitle || !hasAvailability) {
+      return 'staff-profile';
+    }
   }
 
   return null;
