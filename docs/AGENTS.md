@@ -98,3 +98,8 @@
 
 ## 16. Entity operation safety
 - Every multi-table entity write must behave atomically: wrap the work in a database transaction when available, or implement explicit cleanup/rollback logic so either all inserts/updates succeed or any newly created rows are removed. Capture that strategy in the relevant code and document it when editing entity operations.
+
+## 17. Adding new onboarding-required sections or tabs
+- When a required collapsible, field, or entire tab is added to the onboarding flow, update both the UI guidance and the server-side step tracking simultaneously. Extend `OnboardingStep`, `ONBOARDING_SECTION_CONFIG`, and `determineOnboardingStep` (and any related helpers) so the new step is discoverable and the dialog knows which tab/section to open.
+- Wrap the new controls with `useSequentialHighlight`/`BorderBeam` (size 26 for buttons, 52 for inputs/selects) to reuse the existing onboarding highlight pattern, keeping the `enabled` flag tied to the new step and the `satisfied` map aligned with backend validation (e.g., trimmed text or non-empty arrays).
+- Keep the required section open by default (`defaultOpen`) and disable other collapsibles until the current one is complete. Document the gating logic in this file so future agents know the hook order, beam styling, and how to wire the guidance map in `UserSettingsTabs`.
