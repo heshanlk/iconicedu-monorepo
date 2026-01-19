@@ -18,6 +18,7 @@ export default function CallbackPage() {
       | 'invitation'
       | 'signup'
       | undefined;
+    const isEducatorFlow = searchParams.get('educator') === '1';
 
     const hashParams = new URLSearchParams(
       window.location.hash.startsWith('#') ? window.location.hash.slice(1) : window.location.hash,
@@ -26,6 +27,10 @@ const accessToken = hashParams.get('access_token');
 const refreshToken = hashParams.get('refresh_token');
 
     const finish = async () => {
+      if (isEducatorFlow) {
+        document.cookie =
+          'profile_kind_override=educator; path=/; max-age=60; sameSite=Lax;';
+      }
       if (code) {
         await supabase.auth.exchangeCodeForSession(code);
         router.replace('/d');

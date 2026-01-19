@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { SidebarProvider } from '@iconicedu/ui-web';
-import { headers } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 
 import { SidebarShell } from './sidebar-shell';
 import { createSupabaseServerClient } from '../../../lib/supabase/server';
@@ -22,11 +22,16 @@ export default async function Layout({ children }: { children: ReactNode }) {
 
   const headerStore = await headers();
   const referer = headerStore.get('referer');
-  const profileKindOverride =
+  const cookieStore = await cookies();
+  const overrideCookie = cookieStore.get('profile_kind_override');
+  const profileKindOverrideFromCookie =
+    overrideCookie?.value === 'educator' ? 'educator' : undefined;
+  const profileKindOverrideFromReferer =
     referer?.includes('/login/tutor') &&
     new URL(referer, 'http://localhost').searchParams.get('educator') === '1'
       ? 'educator'
       : undefined;
+  const profileKindOverride = profileKindOverrideFromCookie ?? profileKindOverrideFromReferer;
 
   const { sidebarData, onboardingStatus } = await loadSidebarContext(supabase, {
       authUser,

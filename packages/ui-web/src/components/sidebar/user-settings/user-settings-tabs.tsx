@@ -19,6 +19,7 @@ import { useSidebar } from '../../../ui/sidebar';
 import { cn } from '@iconicedu/ui-web/lib/utils';
 import { getProfileDisplayName } from '../../../lib/display-name';
 import { AccountTab, type AccountSectionKey } from './account-tab';
+import { Button } from '../../../ui/button';
 import { FamilyTab } from './family-tab';
 import { LocationTab } from './location-tab';
 import { NotificationsTab } from './notifications-tab';
@@ -151,6 +152,13 @@ export function UserSettingsTabs({
   onboardingStep,
   scrollToken = 0,
 }: UserSettingsTabsProps) {
+  const handleLogoutClick = React.useCallback(() => {
+    if (!onLogout) {
+      return;
+    }
+    void onLogout();
+  }, [onLogout]);
+
   const { isMobile } = useSidebar();
   const profileBlock = profile.profile;
   const profileDisplayName = getProfileDisplayName(profileBlock);
@@ -325,7 +333,8 @@ export function UserSettingsTabs({
             : 'grid min-h-0 h-full w-full grid-cols-[180px_1fr] gap-6',
         )}
       >
-        <TabsList
+        <div className="flex flex-col">
+          <TabsList
           variant="line"
           className={cn(
             'bg-transparent p-0',
@@ -347,7 +356,25 @@ export function UserSettingsTabs({
               </TabsTrigger>
             );
           })}
-        </TabsList>
+          </TabsList>
+          {Boolean(onboardingStep) ? (
+            <div className="px-2 pt-3">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-full justify-start gap-2 text-xs font-semibold"
+                onClick={handleLogoutClick}
+                disabled={!onLogout}
+              >
+                <LogOut className="size-4" />
+                Log out
+              </Button>
+              <p className="mt-1 text-[11px] text-muted-foreground">
+                Need to pause onboarding? Logging out allows you to resume later.
+              </p>
+            </div>
+          ) : null}
+        </div>
 
         <ScrollArea className={cn('min-h-0 flex-1 w-full min-w-0', isMobile && 'flex-1')}>
           <TabsContent value="profile" className="mt-0 space-y-8 w-full px-1">
