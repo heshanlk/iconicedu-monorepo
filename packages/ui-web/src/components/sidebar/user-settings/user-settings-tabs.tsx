@@ -185,10 +185,6 @@ export function UserSettingsTabs({
   const accountSectionKey = accountGuidance?.sectionKey as AccountSectionKey | undefined;
   const preferencesSectionKey =
     preferencesGuidance?.sectionKey as PreferencesSectionKey | undefined;
-  const profileOnboardingHint =
-    profile.kind === 'educator' && isProfileOnboarding
-      ? 'Enter your own first and last name so families know who you are (not your child’s).'
-      : undefined;
   const togglePreferredChannel = React.useCallback(
     (channel: string, enabled: boolean) => {
       const nextChannels = enabled
@@ -346,16 +342,15 @@ export function UserSettingsTabs({
 
         <ScrollArea className={cn('min-h-0 flex-1 w-full min-w-0', isMobile && 'flex-1')}>
           <TabsContent value="profile" className="mt-0 space-y-8 w-full px-1">
-              <ProfileTab
-                profile={profile}
-                profileBlock={profileBlock}
-                staffProfile={staffProfile}
-                scrollToRequired={value === 'profile' || isProfileOnboarding}
-                scrollToken={scrollToken}
-                showProfileTaskToast={isProfileOnboarding}
-                expandProfileDetails={Boolean(profileGuidance)}
-                onboardingHint={profileOnboardingHint}
-                onProfileSave={onProfileSave}
+            <ProfileTab
+              profile={profile}
+              profileBlock={profileBlock}
+              staffProfile={staffProfile}
+              scrollToRequired={value === 'profile' || isProfileOnboarding}
+              scrollToken={scrollToken}
+              showProfileTaskToast={isProfileOnboarding}
+              expandProfileDetails={Boolean(profileGuidance)}
+              onProfileSave={onProfileSave}
                 onAvatarUpload={onAvatarUpload}
                 onAvatarRemove={onAvatarRemove}
               />

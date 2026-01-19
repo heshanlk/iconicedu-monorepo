@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ArrowRight, User, X } from 'lucide-react';
+import { ArrowRight, Info, User, X } from 'lucide-react';
 
 import type {
   EducatorProfileVM,
@@ -26,6 +26,7 @@ import { Input } from '../../../ui/input';
 import { Label } from '../../../ui/label';
 import { Separator } from '../../../ui/separator';
 import { Textarea } from '../../../ui/textarea';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../../../ui/tooltip';
 import { UserSettingsTabSection } from './components/user-settings-tab-section';
 import {
   Select,
@@ -49,7 +50,6 @@ type ProfileTabProps = {
   onProfileSave?: (input: ProfileSaveInput) => Promise<void> | void;
   onAvatarUpload?: (input: ProfileAvatarInput) => Promise<void> | void;
   onAvatarRemove?: (input: ProfileAvatarRemoveInput) => Promise<void> | void;
-  onboardingHint?: string;
   showProfileTaskToast?: boolean;
 };
 
@@ -85,7 +85,6 @@ export function ProfileTab({
   onProfileSave,
   onAvatarUpload,
   onAvatarRemove,
-  onboardingHint,
   showProfileTaskToast,
 }: ProfileTabProps) {
   const [profileDetailsOpen, setProfileDetailsOpen] =
@@ -136,6 +135,10 @@ export function ProfileTab({
   const lastNameRef = React.useRef<HTMLInputElement | null>(null);
   const requiredProfileFieldsMissing = !firstNameValue.trim() || !lastNameValue.trim();
   const isPrimaryDisabled = shouldHighlightRequired && requiredProfileFieldsMissing;
+  const firstNameHintMessage =
+    profile.kind === 'educator'
+      ? 'Enter your own first and last name so families know who you are (not your child’s).'
+      : undefined;
 
   React.useEffect(() => {
     if (expandProfileDetails) {
@@ -471,13 +474,30 @@ export function ProfileTab({
               </div>
               <div className="space-y-2">
                 <Label htmlFor="settings-first-name">
-                  First name <span className="text-destructive">*</span>
+                  <div className="flex items-center gap-1">
+                    <span>
+                      First name <span className="text-destructive">*</span>
+                    </span>
+                    {firstNameHintMessage ? (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            type="button"
+                            className="text-muted-foreground hover:text-foreground"
+                            aria-label="Onboarding hint"
+                          >
+                            <Info className="size-4" />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent className="text-xs text-muted-foreground">
+                          {firstNameHintMessage}
+                        </TooltipContent>
+                      </Tooltip>
+                    ) : null}
+                  </div>
                 </Label>
-                {onboardingHint ? (
-                  <p className="text-xs text-muted-foreground">{onboardingHint}</p>
-                ) : null}
                 <div className="relative rounded-full">
-                  {showFirstNameBeam && !firstNameValue.trim() && !isFirstFocused ? (
+                  {showFirstNameBeam && !firstNameValue.trim() ? (
                     <BorderBeam
                       size={52}
                       initialOffset={8}
@@ -512,7 +532,7 @@ export function ProfileTab({
                   Last name <span className="text-destructive">*</span>
                 </Label>
                 <div className="relative rounded-full">
-                  {showLastNameBeam && !lastNameValue.trim() && !isLastFocused ? (
+                  {showLastNameBeam && !lastNameValue.trim() ? (
                     <BorderBeam
                       size={52}
                       initialOffset={8}

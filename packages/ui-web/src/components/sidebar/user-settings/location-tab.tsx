@@ -323,7 +323,7 @@ export function LocationTab({
                   City <span className="text-destructive">*</span>
                 </Label>
                 <div className="relative rounded-full border border-border/60">
-                  {showCityBeam && !cityValue.trim() && !isCityFocused ? (
+                  {showCityBeam && !cityValue.trim() ? (
                     <BorderBeam
                       size={52}
                       initialOffset={8}
@@ -358,7 +358,7 @@ export function LocationTab({
                   State <span className="text-destructive">*</span>
                 </Label>
                 <div className="relative rounded-full border border-border/60">
-                  {showRegionBeam && !regionValue.trim() && !isRegionFocused ? (
+                  {showRegionBeam && !regionValue.trim() ? (
                     <BorderBeam
                       size={52}
                       initialOffset={8}
@@ -417,7 +417,7 @@ export function LocationTab({
                   Zip <span className="text-destructive">*</span>
                 </Label>
                 <div className="relative rounded-full border border-border/60">
-                  {showPostalBeam && !postalValue.trim() && !isPostalFocused ? (
+                  {showPostalBeam && !postalValue.trim() ? (
                     <BorderBeam
                       size={52}
                       initialOffset={8}
@@ -473,12 +473,12 @@ export function LocationTab({
                     <div className="relative inline-flex rounded-full">
                       {showContinueBeam ? (
                         <BorderBeam
-                      size={26}
-                      initialOffset={8}
-                      borderWidth={2}
-                      className="from-transparent via-amber-700 to-transparent"
-                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
-                    />
+                          size={26}
+                          initialOffset={8}
+                          borderWidth={2}
+                          className="from-transparent via-amber-700 to-transparent"
+                          transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                        />
                       ) : null}
                       <Button
                         size="sm"
@@ -497,12 +497,12 @@ export function LocationTab({
                     <div className="relative inline-flex rounded-full">
                       {showContinueBeam ? (
                         <BorderBeam
-                      size={26}
-                      initialOffset={8}
-                      borderWidth={2}
-                      className="from-transparent via-amber-700 to-transparent"
-                      transition={{ type: 'spring', stiffness: 60, damping: 20 }}
-                    />
+                          size={26}
+                          initialOffset={8}
+                          borderWidth={2}
+                          className="from-transparent via-amber-700 to-transparent"
+                          transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+                        />
                       ) : null}
                       <Button
                         size="sm"
