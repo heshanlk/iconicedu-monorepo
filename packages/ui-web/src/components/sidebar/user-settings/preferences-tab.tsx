@@ -482,6 +482,7 @@ export function PreferencesTab({
             subtitle={languageValue.length ? languageValue.join(', ') : 'Not set'}
             defaultOpen={isLanguagesSectionActive}
             disabled={shouldLockSections && !isLanguagesSectionActive}
+            showSeparator={false}
           >
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-3 sm:col-span-2">

@@ -270,6 +270,7 @@ export function LocationTab({
               location?.countryName ?? selectedCountry?.name ?? 'Country'
             }`}
             open={expandLocation || undefined}
+            showSeparator={false}
           >
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2 sm:col-span-2" ref={countryFieldRef}>
