@@ -6,6 +6,7 @@ export * from './shared/working-hours';
 export * from './vm/class-schedule';
 export * from './vm/channel';
 export * from './vm/activity-feed';
+export * from './vm/admin-menu';
 export * from './vm/roles';
 export * from './vm/family';
 export * from './vm/account';

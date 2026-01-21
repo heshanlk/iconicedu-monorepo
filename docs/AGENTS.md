@@ -115,3 +115,14 @@
 - Command log:
   - `apply_patch` to add `ChevronDown` + icon rotation logic in `packages/ui-web/src/components/sidebar/nav-admin.tsx` (supporting the open/closed carrot indicator).
   - `apply_patch` to append the command-logging instructions and log header into `docs/AGENTS.md`.
+  - `rg -n "activity" packages/shared-types/src` to verify available view models before adding activity-related admin links.
+  - `apply_patch` to extend `packages/ui-web/src/components/sidebar/sidebar-left.tsx` with Activity, Moderation, and System sections plus their icons so admin navigation covers logs, moderation, and settings.
+  - `apply_patch` to swap the invalid `Adjustments` icon for the available `Sliders` icon on the “System & settings” admin section.
+  - `apply_patch` to swap the invalid `AdjustmentsHorizontal` icon import with `Adjustments` and adjust the administration “System & settings” section to keep a valid lucide icon.
+  - `apply_patch` to add `SidebarSeparator` hooks to `NavAdmin`, the `showDividerBefore` flag, and separators before sections where the user requested grouped items.
+  - `apply_patch` to revert the separator injection, drop `showDividerBefore`, and return `NavAdmin` to rendering plain items so layout-level separators stay in `SidebarLeft`.
+  - `apply_patch` to make each `NavAdmin` button background transparent so no extra fill shows behind the nav items.
+  - `apply_patch` to add `bg-transparent` to the shared `SidebarMenuButton`/`SidebarMenuSubButton` variants so every sidebar menu item renders without a background.
+  - `apply_patch` to define `AdminMenuSection`/`AdminMenuLink` under `packages/shared-types` and start preparing the admin data for reuse by the layout.
+  - `apply_patch` to correct the relative path for `admin-menu-sections` imports and to add explicit `AdminMenuLink` typings so the nav hooks satisfy TypeScript.
+  - `apply_patch` to relocate `ADMIN_MENU_SECTIONS` into `apps/web/lib/data`, add shared `AdminMenuSection`/`AdminMenuLink` typings under `packages/shared-types`, update `NavAdmin` to render icons via the shared `iconKey`, and pass the new sections list down from the server layout through `SidebarShell`/`SidebarLeft`.

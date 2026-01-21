@@ -6,6 +6,7 @@ import { SidebarShell } from './sidebar-shell';
 import { createSupabaseServerClient } from '../../../lib/supabase/server';
 import { ORG } from '../../../lib/data/org';
 import { SIDEBAR_LEFT_DATA } from '../../../lib/data/sidebar-left';
+import { ADMIN_MENU_SECTIONS } from '../../../lib/data/admin-menu-sections';
 import { requireAuthedUser } from '../../../lib/auth/requireAuthedUser';
 import { getOrCreateAccount } from '../../../lib/accounts/getOrCreateAccount';
 import { loadSidebarContext } from '../../../lib/sidebar/loadSidebarContext';
@@ -46,6 +47,7 @@ export default async function Layout({ children }: { children: ReactNode }) {
       <SidebarShell
         data={sidebarData}
         initialOnboardingStatus={onboardingStatus}
+        adminSections={ADMIN_MENU_SECTIONS}
       >
         {children}
       </SidebarShell>

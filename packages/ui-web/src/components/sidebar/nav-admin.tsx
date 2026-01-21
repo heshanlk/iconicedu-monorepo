@@ -12,23 +12,38 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from '../../ui/sidebar';
-import { ChevronDown } from 'lucide-react';
+import {
+  Activity,
+  CalendarCheck,
+  Layers,
+  Shield,
+  ShieldCheck,
+  Sliders,
+  Users,
+  ChevronDown,
+} from 'lucide-react';
 import { cn } from '../../lib/utils';
+import type {
+  AdminMenuIconKey,
+  AdminMenuLinkVM,
+  AdminMenuSectionVM,
+} from '@iconicedu/shared-types';
+export type { AdminMenuSectionVM };
 
-export type AdminMenuLink = {
-  title: string;
-  url: string;
-};
-
-export type AdminMenuSection = {
-  title: string;
-  icon: React.ComponentType<{ className?: string }>;
-  links: AdminMenuLink[];
-};
+const ADMIN_MENU_ICON_MAP: Record<AdminMenuIconKey, React.ComponentType<{ className?: string }>> =
+  {
+    users: Users,
+    learning_spaces: Layers,
+    class_schedules: CalendarCheck,
+    channels: Shield,
+    activity: Activity,
+    moderation: ShieldCheck,
+    system: Sliders,
+  };
 
 type NavAdminProps = {
   label?: string;
-  sections: AdminMenuSection[];
+  sections: AdminMenuSectionVM[];
   activePath?: string | null;
 } & React.ComponentPropsWithoutRef<typeof SidebarGroup>;
 
@@ -58,7 +73,9 @@ export function NavAdmin({
       let changed = false;
       const next = { ...prev };
       sections.forEach((section) => {
-        const shouldBeOpen = section.links.some((link) => getIsActive(link.url));
+        const shouldBeOpen = section.links.some((link: AdminMenuLinkVM) =>
+          getIsActive(link.url),
+        );
         if (shouldBeOpen && !next[section.title]) {
           next[section.title] = true;
           changed = true;
@@ -76,18 +93,22 @@ export function NavAdmin({
       <SidebarGroupContent>
         <SidebarMenu>
           {sections.map((section) => {
-            const sectionIsActive = section.links.some((link) => getIsActive(link.url));
+          const sectionIsActive = section.links.some((link: AdminMenuLinkVM) =>
+            getIsActive(link.url),
+          );
             const sectionIsOpen = openSections[section.title] ?? false;
+            const Icon = ADMIN_MENU_ICON_MAP[section.iconKey] ?? Users;
             return (
-              <SidebarMenuItem key={section.title}>
-                <SidebarMenuButton
-                  type="button"
-                  isActive={sectionIsActive}
-                  data-open={sectionIsOpen ? 'true' : 'false'}
-                  aria-expanded={sectionIsOpen}
-                  onClick={() => toggleSection(section.title)}
-                >
-                  <section.icon className="size-4" />
+                <SidebarMenuItem key={section.title}>
+                  <SidebarMenuButton
+                    type="button"
+                    isActive={sectionIsActive}
+                    data-open={sectionIsOpen ? 'true' : 'false'}
+                    aria-expanded={sectionIsOpen}
+                    onClick={() => toggleSection(section.title)}
+                    className="bg-transparent hover:bg-transparent active:bg-transparent data-active:bg-transparent shadow-none"
+                  >
+                  <Icon className="size-4" />
                   <span>{section.title}</span>
                   <ChevronDown
                     className={cn(
@@ -98,7 +119,7 @@ export function NavAdmin({
                 </SidebarMenuButton>
                 {sectionIsOpen && (
                   <SidebarMenuSub>
-                    {section.links.map((link) => (
+                      {section.links.map((link: AdminMenuLinkVM) => (
                       <SidebarMenuSubItem key={link.title}>
                         <SidebarMenuSubButton
                           asChild

@@ -3,20 +3,16 @@
 import * as React from 'react';
 import {
   Calendar,
-  CalendarCheck,
   ChefHat,
   Earth,
   Home,
   Inbox,
   Languages,
-  Layers,
   LifeBuoy,
   MessageSquarePlus,
   MoreHorizontal,
   Send,
-  Shield,
   SquarePi,
-  Users,
   Settings,
   UserPlus,
 } from 'lucide-react';
@@ -57,7 +53,8 @@ import {
 } from '../../ui/dropdown-menu';
 import { NavMain } from './nav-main';
 import { NavDirectMessages } from './nav-direct-messages';
-import { NavAdmin, type AdminMenuSection } from './nav-admin';
+import { NavAdmin } from './nav-admin';
+import type { AdminMenuSection } from '@iconicedu/shared-types';
 import { SiteLogoWithName } from '../site-logo-wt-name';
 import { Empty } from '../../ui/empty';
 import { EmptyContent } from '../../ui/empty';
@@ -89,47 +86,6 @@ const ICONS = {
   send: Send,
 } as const;
 
-const ADMIN_MENU_SECTIONS: AdminMenuSection[] = [
-  {
-    title: 'Users',
-    icon: Users,
-    links: [
-      { title: 'List users', url: '/d/admin/users' },
-      { title: 'List pending invites', url: '/d/admin/users/pending-invites' },
-      { title: 'Manage families', url: '/d/admin/users/families' },
-      { title: 'Roles & permissions', url: '/d/admin/users/roles' },
-    ],
-  },
-  {
-    title: 'Learning spaces',
-    icon: Layers,
-    links: [
-      { title: 'All learning spaces', url: '/d/admin/spaces' },
-      { title: 'Learning space schedules', url: '/d/admin/spaces/schedules' },
-      { title: 'Space resources', url: '/d/admin/spaces/resources' },
-      { title: 'Participants & channels', url: '/d/admin/spaces/participants' },
-    ],
-  },
-  {
-    title: 'Class schedules',
-    icon: CalendarCheck,
-    links: [
-      { title: 'Upcoming sessions', url: '/d/admin/schedules' },
-      { title: 'Availability blocks', url: '/d/admin/schedules/availability' },
-      { title: 'Session audits', url: '/d/admin/schedules/audits' },
-    ],
-  },
-  {
-    title: 'Channels',
-    icon: Shield,
-    links: [
-      { title: 'All chats', url: '/d/admin/channels' },
-      { title: 'Announcements', url: '/d/admin/channels/announcements' },
-      { title: 'Support channels', url: '/d/admin/channels/support' },
-    ],
-  },
-];
-
 export function SidebarLeft({
   data,
   activePath,
@@ -152,6 +108,7 @@ export function SidebarLeft({
   onEducatorProfileSave,
   onEducatorAvailabilitySave,
   onStaffProfileSave,
+  adminSections,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
   data: SidebarLeftDataVM;
@@ -222,6 +179,7 @@ export function SidebarLeft({
   onFamilyMemberRemove?: (input: { childAccountId: string }) => Promise<void> | void;
   onEducatorProfileSave?: (input: EducatorProfileSaveInput) => Promise<void> | void;
   onEducatorAvailabilitySave?: (input: EducatorAvailabilityInput) => Promise<void> | void;
+  adminSections?: AdminMenuSection[] | null;
   onStaffProfileSave?: (input: StaffProfileSaveInput) => Promise<void> | void;
   onOnboardingComplete?: () => void;
 }) {
@@ -297,10 +255,10 @@ export function SidebarLeft({
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={navMain} />
-        {userProfile.kind === 'staff' ? (
+        {userProfile.kind === 'staff' && (adminSections?.length ?? 0) > 0 ? (
           <NavAdmin
             className="mt-1 space-y-1"
-            sections={ADMIN_MENU_SECTIONS}
+            sections={adminSections ?? []}
             activePath={activePath ?? undefined}
           />
         ) : null}

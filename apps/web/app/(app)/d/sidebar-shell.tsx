@@ -14,6 +14,7 @@ import type {
   StaffProfileSaveInput,
   ThemeKey,
   UserOnboardingStatusVM,
+  AdminMenuSectionVM,
 } from '@iconicedu/shared-types';
 import { SidebarLeft, SidebarInset } from '@iconicedu/ui-web';
 import { toast } from 'sonner';
@@ -65,10 +66,12 @@ export function SidebarShell({
   children,
   data,
   initialOnboardingStatus,
+  adminSections,
 }: {
   children: ReactNode;
   data: SidebarLeftDataVM;
   initialOnboardingStatus?: UserOnboardingStatusVM | null;
+  adminSections?: AdminMenuSectionVM[] | null;
 }) {
   const pathname = usePathname();
   const supabase = React.useMemo(() => createSupabaseBrowserClient(), []);
@@ -1257,13 +1260,14 @@ export function SidebarShell({
         onAvatarRemove={handleAvatarRemove}
         onNotificationPreferenceSave={handleNotificationPreferenceSave}
         onFamilyInviteCreate={handleFamilyInviteCreate}
-        onFamilyInviteRemove={handleFamilyInviteRemove}
-        onChildThemeSave={handleChildThemeSave}
-        onChildProfileCreate={handleChildProfileCreate}
-        onFamilyMemberRemove={handleFamilyMemberRemove}
-        onEducatorProfileSave={handleEducatorProfileSave}
-        onEducatorAvailabilitySave={handleEducatorAvailabilitySave}
-        onStaffProfileSave={handleStaffProfileSave}
+      onFamilyInviteRemove={handleFamilyInviteRemove}
+      onChildThemeSave={handleChildThemeSave}
+      onChildProfileCreate={handleChildProfileCreate}
+      onFamilyMemberRemove={handleFamilyMemberRemove}
+      onEducatorProfileSave={handleEducatorProfileSave}
+      onEducatorAvailabilitySave={handleEducatorAvailabilitySave}
+      onStaffProfileSave={handleStaffProfileSave}
+      adminSections={adminSections ?? undefined}
       />
       <SidebarInset>{children}</SidebarInset>
     </>
