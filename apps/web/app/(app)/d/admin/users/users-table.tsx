@@ -150,10 +150,7 @@ export function UsersTable({ rows }: UsersTableProps) {
     <div className="w-full space-y-4 rounded-2xl border border-border bg-card p-4 shadow-sm">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-            Users
-          </p>
-          <p className="text-lg font-semibold text-foreground">Roster</p>
+          <p className="text-sm font-semibold uppercase text-muted-foreground">Users</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <Input
@@ -246,11 +243,12 @@ export function UsersTable({ rows }: UsersTableProps) {
                   <div className="flex items-center gap-2">
                     {(() => {
                       const kind = row.profileKind ?? 'account';
-                      const Icon =
-                        PROFILE_ICON_MAP[kind] ?? PROFILE_ICON_MAP.default;
+                      const Icon = PROFILE_ICON_MAP[kind] ?? PROFILE_ICON_MAP.default;
                       return <Icon className="size-4 text-muted-foreground" />;
                     })()}
-                    <span className="text-sm capitalize">{row.profileKind ?? 'account'}</span>
+                    <span className="text-sm capitalize">
+                      {row.profileKind ?? 'account'}
+                    </span>
                   </div>
                 </TableCell>
                 <TableCell>
