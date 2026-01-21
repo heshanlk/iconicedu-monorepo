@@ -154,34 +154,29 @@ export function UsersTable({ rows }: UsersTableProps) {
 
   return (
     <div className="w-full space-y-4 rounded-2xl border border-border bg-card p-4 shadow-sm">
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div>
-          <p className="text-sm font-semibold uppercase text-muted-foreground">Users</p>
-        </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <Input
-            placeholder="Search name, email or phone"
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            className="w-64"
-          />
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Status:</span>
-            <Select
-              value={statusFilter}
-              onValueChange={(value) => setStatusFilter(value as 'all' | string)}
-            >
-              <SelectTrigger size="sm" className="w-32">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All</SelectItem>
-                <SelectItem value="active">Active</SelectItem>
-                <SelectItem value="invited">Invited</SelectItem>
-                <SelectItem value="archived">Archived</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+      <div className="flex flex-wrap items-center gap-3">
+        <Input
+          placeholder="Search name, email or phone"
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          className="w-64"
+        />
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-muted-foreground">Status:</span>
+          <Select
+            value={statusFilter}
+            onValueChange={(value) => setStatusFilter(value as 'all' | string)}
+          >
+            <SelectTrigger size="sm" className="w-32">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="active">Active</SelectItem>
+              <SelectItem value="invited">Invited</SelectItem>
+              <SelectItem value="archived">Archived</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
       <Table className="min-w-full">
@@ -229,14 +224,13 @@ export function UsersTable({ rows }: UsersTableProps) {
         </TableHeader>
         <TableBody>
           {visibleRows.map((row) => {
-            const name =
-              (row.displayName ??
-                `${row.firstName ?? ''} ${row.lastName ?? ''}`.trim()) ||
-              'Unnamed';
+            const fallbackName = `${row.firstName ?? ''} ${row.lastName ?? ''}`.trim();
+            const resolvedName = row.displayName ?? fallbackName;
+            const displayName = resolvedName || 'Unnamed';
             return (
               <TableRow key={row.accountId}>
                 <TableCell>
-                  <p className="text-sm font-semibold">{name}</p>
+                  <p className="text-sm font-semibold">{displayName}</p>
                   <p className="text-xs text-muted-foreground">
                     {row.email ?? 'no email'}
                   </p>
@@ -246,15 +240,16 @@ export function UsersTable({ rows }: UsersTableProps) {
                   <p className="text-xs text-muted-foreground">{row.phone ?? '—'}</p>
                 </TableCell>
                 <TableCell>
-                  <div className="flex items-center gap-2">
+                  <div
+                    className="flex items-center gap-2"
+                    title={row.profileKind ?? 'Account'}
+                  >
                     {(() => {
                       const kind = row.profileKind ?? 'account';
                       const Icon = PROFILE_ICON_MAP[kind] ?? PROFILE_ICON_MAP.default;
-                      return <Icon className="size-4 text-muted-foreground" />;
+                      return <Icon className="size-4 text-muted-foreground" aria-hidden />;
                     })()}
-                    <span className="text-sm capitalize">
-                      {row.profileKind ?? 'account'}
-                    </span>
+                    <span className="sr-only">{row.profileKind ?? 'account'}</span>
                   </div>
                 </TableCell>
                 <TableCell>

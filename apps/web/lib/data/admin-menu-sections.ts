@@ -5,8 +5,8 @@ export const ADMIN_MENU_SECTIONS: AdminMenuSectionVM[] = [
     title: 'Users',
     iconKey: 'users',
     links: [
-      { title: 'List users', url: '/d/admin/users' },
-      { title: 'List pending invites', url: '/d/admin/users/pending-invites' },
+      { title: 'All', url: '/d/admin/users' },
+      { title: 'Pending invites', url: '/d/admin/users/pending-invites' },
       { title: 'Manage families', url: '/d/admin/users/families' },
       { title: 'Roles & permissions', url: '/d/admin/users/roles' },
     ],

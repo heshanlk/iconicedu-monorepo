@@ -132,3 +132,7 @@
   - `apply_patch` to re-export `MoreHorizontal`, `Pencil`, `Trash2`, and `UserCheck` from `@iconicedu/ui-web` so consuming admin pages import icons directly from the UI package.
   - `apply_patch` to add profile-type icon mappings (Shield/Users/Briefcase/etc.) so the admin table renders consistent icons instead of text-only labels.
   - `apply_patch` to map account statuses to badge variants (secondary/invite/archived) so each status shows the correct shadcn badge color.
+  - `apply_patch` to revisit `apps/web/app/(app)/d/admin/users/users-table.tsx`, remove the redundant section heading, stabilize the name fallback, and render an icon-only representation of each profile kind so the admin table matches the requested UX.
+  - `apply_patch` to add `apps/web/app/(app)/d/admin/spaces/page.tsx`, query live learning spaces for the organization, and reuse the existing table component so “Learning spaces → All” surfaces database-backed data with sorting/filtering.
+  - `apply_patch` to update `packages/ui-web/src/ui/sidebar.tsx` so `SidebarMenuButton` and `SidebarMenuSubButton` variants drop their background fills while keeping text highlighting, ensuring every sidebar item has a transparent base.
+  - `apply_patch` to append these new log entries so the command log mirrors the work completed during this session.
