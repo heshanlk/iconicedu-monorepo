@@ -434,6 +434,9 @@ importers:
       '@types/react-dom':
         specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.7)
+      chokidar:
+        specifier: ^4.0.3
+        version: 4.0.3
       postcss:
         specifier: ^8.5
         version: 8.5.6
@@ -443,9 +446,6 @@ importers:
       typescript:
         specifier: ^5
         version: 5.9.3
-      chokidar:
-        specifier: ^4.0.3
-        version: 4.0.3
 
   packages/utils: {}
 

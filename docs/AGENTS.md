@@ -127,3 +127,7 @@
   - `apply_patch` to correct the relative path for `admin-menu-sections` imports and to add explicit `AdminMenuLink` typings so the nav hooks satisfy TypeScript.
   - `apply_patch` to relocate `ADMIN_MENU_SECTIONS` into `apps/web/lib/data`, add shared `AdminMenuSection`/`AdminMenuLink` typings under `packages/shared-types`, update `NavAdmin` to render icons via the shared `iconKey`, and pass the new sections list down from the server layout through `SidebarShell`/`SidebarLeft`.
   - `apply_patch` to only emit `data-active` attributes when a sidebar button is active so non-active items stop showing `data-active`.
+  - `apply_patch` to scaffold `/d/admin/users` with a server-side supabase query, shared client `UsersTable`, and a simple admin layout so the new navigation entry renders a searchable/paged/ sortable table with row actions.
+  - `apply_patch` to switch the admin users table to use the shared `Table` primitives from `packages/ui-web/src/ui/table.tsx` instead of raw `<table>` tags before applying the radix data-table design.
+  - `apply_patch` to re-export `MoreHorizontal`, `Pencil`, `Trash2`, and `UserCheck` from `@iconicedu/ui-web` so consuming admin pages import icons directly from the UI package.
+  - `apply_patch` to add profile-type icon mappings (Shield/Users/Briefcase/etc.) so the admin table renders consistent icons instead of text-only labels.
