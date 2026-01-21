@@ -139,3 +139,5 @@
   - `apply_patch` to introduce `apps/web/app/(app)/d/admin/users/actions/invite-user.ts`, a server action that creates invited accounts/profiles, sends a magic link via Supabase, and returns the generated invite URL.
   - `apply_patch` to add `apps/web/app/(app)/d/admin/users/invite-dialog.tsx` and wire it into `users-table.tsx` so staff can open an invite dialog, submit an email, and copy the generated magic link.
   - `apply_patch` to export the Dialog and Label primitives from `@iconicedu/ui-web` so the new invite dialog can reuse the shared UI primitives.
+  - `apply_patch` to replace the invite dialog profile kind select/ButtonGroup with shadcn `RadioGroup`/`RadioGroupItem` so the dialog follows the standard Radix pattern and labels each pill like the shadcn demos.
+  - `apply_patch` to restore `packages/ui-web/src/ui/button-group.tsx` and export it again because existing components depend on that module, fixing the failing `lucide-react` build.

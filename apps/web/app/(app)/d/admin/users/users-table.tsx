@@ -168,7 +168,7 @@ export function UsersTable({ rows }: UsersTableProps) {
             <span className="text-sm text-muted-foreground">Status:</span>
             <Select
               value={statusFilter}
-              onValueChange={(value) => setStatusFilter(value as 'all' | string)}
+              onValueChange={(value) => setStatusFilter(value)}
             >
               <SelectTrigger size="sm" className="w-32">
                 <SelectValue />

@@ -15,11 +15,8 @@ import {
   DialogTrigger,
   Input,
   Label,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  RadioGroup,
+  RadioGroupItem,
 } from '@iconicedu/ui-web';
 
 import { inviteAdminUserAction } from './actions/invite-user';
@@ -32,6 +29,7 @@ export function InviteUserDialog({ className }: { className?: string }) {
   const [copied, setCopied] = React.useState(false);
   const [lastEmail, setLastEmail] = React.useState('');
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [profileKind, setProfileKind] = React.useState<'guardian' | 'educator' | 'staff'>('staff');
   const formRef = React.useRef<HTMLFormElement | null>(null);
 
   const handleOpenChange = (next: boolean) => {
@@ -115,16 +113,31 @@ export function InviteUserDialog({ className }: { className?: string }) {
           </div>
           <div className="space-y-1">
             <Label htmlFor="invite-kind">Profile kind</Label>
-            <Select id="invite-kind" name="profileKind" defaultValue="staff" disabled={isSubmitting}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="guardian">Guardian</SelectItem>
-                <SelectItem value="educator">Educator</SelectItem>
-                <SelectItem value="staff">Staff</SelectItem>
-              </SelectContent>
-            </Select>
+            <input type="hidden" name="profileKind" value={profileKind} />
+            <RadioGroup
+              id="invite-kind"
+              name="profileKind"
+              value={profileKind}
+              onValueChange={(value) => setProfileKind(value as 'guardian' | 'educator' | 'staff')}
+              className="flex flex-wrap gap-3"
+            >
+              {(['guardian', 'educator', 'staff'] as const).map((kind) => {
+                const itemId = `invite-kind-${kind}`;
+                return (
+                  <div key={kind} className="flex items-center gap-3">
+                    <RadioGroupItem
+                      value={kind}
+                      id={itemId}
+                      className="h-4 w-4 rounded-full border border-input focus-visible:ring-2 focus-visible:ring-ring"
+                      disabled={isSubmitting}
+                    />
+                    <Label htmlFor={itemId} className="text-sm capitalize">
+                      {kind}
+                    </Label>
+                  </div>
+                );
+              })}
+            </RadioGroup>
           </div>
           {status === 'success' && inviteUrl ? (
             <div className="rounded-lg border border-border bg-muted/50 p-3">
