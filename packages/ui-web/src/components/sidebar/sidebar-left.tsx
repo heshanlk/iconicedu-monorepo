@@ -1,17 +1,24 @@
 'use client';
 
 import * as React from 'react';
-import { MessageSquarePlus, MoreHorizontal, Settings, UserPlus } from 'lucide-react';
 import {
   Calendar,
+  CalendarCheck,
   ChefHat,
   Earth,
   Home,
   Inbox,
   Languages,
+  Layers,
   LifeBuoy,
+  MessageSquarePlus,
+  MoreHorizontal,
   Send,
+  Shield,
   SquarePi,
+  Users,
+  Settings,
+  UserPlus,
 } from 'lucide-react';
 
 import { NavLearningSpaces } from './nav-learning-spaces';
@@ -34,6 +41,9 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
   SidebarSeparator,
   useSidebar,
 } from '../../ui/sidebar';
@@ -47,6 +57,7 @@ import {
 } from '../../ui/dropdown-menu';
 import { NavMain } from './nav-main';
 import { NavDirectMessages } from './nav-direct-messages';
+import { NavAdmin, type AdminMenuSection } from './nav-admin';
 import { SiteLogoWithName } from '../site-logo-wt-name';
 import { Empty } from '../../ui/empty';
 import { EmptyContent } from '../../ui/empty';
@@ -77,6 +88,47 @@ const ICONS = {
   'life-buoy': LifeBuoy,
   send: Send,
 } as const;
+
+const ADMIN_MENU_SECTIONS: AdminMenuSection[] = [
+  {
+    title: 'Users',
+    icon: Users,
+    links: [
+      { title: 'List users', url: '/d/admin/users' },
+      { title: 'List pending invites', url: '/d/admin/users/pending-invites' },
+      { title: 'Manage families', url: '/d/admin/users/families' },
+      { title: 'Roles & permissions', url: '/d/admin/users/roles' },
+    ],
+  },
+  {
+    title: 'Learning spaces',
+    icon: Layers,
+    links: [
+      { title: 'All learning spaces', url: '/d/admin/spaces' },
+      { title: 'Learning space schedules', url: '/d/admin/spaces/schedules' },
+      { title: 'Space resources', url: '/d/admin/spaces/resources' },
+      { title: 'Participants & channels', url: '/d/admin/spaces/participants' },
+    ],
+  },
+  {
+    title: 'Class schedules',
+    icon: CalendarCheck,
+    links: [
+      { title: 'Upcoming sessions', url: '/d/admin/schedules' },
+      { title: 'Availability blocks', url: '/d/admin/schedules/availability' },
+      { title: 'Session audits', url: '/d/admin/schedules/audits' },
+    ],
+  },
+  {
+    title: 'Channels',
+    icon: Shield,
+    links: [
+      { title: 'All chats', url: '/d/admin/channels' },
+      { title: 'Announcements', url: '/d/admin/channels/announcements' },
+      { title: 'Support channels', url: '/d/admin/channels/support' },
+    ],
+  },
+];
 
 export function SidebarLeft({
   data,
@@ -188,7 +240,6 @@ export function SidebarLeft({
       isActive: activePath ? activePath.startsWith(item.url) : false,
     }),
   );
-
   const userProfile = data.user.profile;
   const children =
     userProfile.kind === 'guardian' ? (userProfile.children?.items ?? []) : [];
@@ -246,6 +297,13 @@ export function SidebarLeft({
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={navMain} />
+        {userProfile.kind === 'staff' ? (
+          <NavAdmin
+            className="mt-1 space-y-1"
+            sections={ADMIN_MENU_SECTIONS}
+            activePath={activePath ?? undefined}
+          />
+        ) : null}
         <SidebarSeparator className="mx-2 group-data-[collapsible=icon]:hidden" />
         {userProfile.kind === 'guardian' ? (
           <>

@@ -107,3 +107,11 @@
 ## 18. Sample family seeds
 - Refer to the newly added migration at `supabase/migrations/20260203000000_014_seed_family_learning_spaces.sql` when you need to reproduce the classes, channels, and weekly schedules for the guardian account `77d50ed9-00ff-4996-8527-4d5c20a53043` with child IDs `adbe4160-f7a5-4882-9dd1-6b84ed66b083` and `cc1d8646-bf7f-4e2b-abe6-70f798e884d3`. That SQL also introduces the educators Ms. Charmain, Ms. Wickramasinghe, and Ms. Shenaly so you can trace their participation across `learning_spaces`, `channels`, and `class_schedules`.
 - Keep the TypeScript fixtures under `apps/web/lib/data` in sync with those seeds; when you tweak the schedule interfaces or learning-space wiring, mirror the same shape in `class-schedule-events.ts`, `learning-spaces.ts`, and related builders inside `apps/web/lib` using the contracts defined in `packages/shared-types/src/vm/class-schedule.ts`.
+
+## 19. Command logging notes
+- Log significant shell commands and developer workflow steps (especially when a user asked for it) directly in this file so future agents can trace the steps taken.
+- Each entry should briefly describe the command, why it was run, and whether it succeeded, keeping the log concise yet actionable.
+- Treat this section as high priority when a user explicitly requests “agent updates per command” so the policy is captured in the shared instructions themselves.
+- Command log:
+  - `apply_patch` to add `ChevronDown` + icon rotation logic in `packages/ui-web/src/components/sidebar/nav-admin.tsx` (supporting the open/closed carrot indicator).
+  - `apply_patch` to append the command-logging instructions and log header into `docs/AGENTS.md`.
