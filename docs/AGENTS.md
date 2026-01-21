@@ -131,3 +131,4 @@
   - `apply_patch` to switch the admin users table to use the shared `Table` primitives from `packages/ui-web/src/ui/table.tsx` instead of raw `<table>` tags before applying the radix data-table design.
   - `apply_patch` to re-export `MoreHorizontal`, `Pencil`, `Trash2`, and `UserCheck` from `@iconicedu/ui-web` so consuming admin pages import icons directly from the UI package.
   - `apply_patch` to add profile-type icon mappings (Shield/Users/Briefcase/etc.) so the admin table renders consistent icons instead of text-only labels.
+  - `apply_patch` to map account statuses to badge variants (secondary/invite/archived) so each status shows the correct shadcn badge color.

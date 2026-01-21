@@ -52,6 +52,12 @@ type UsersTableProps = {
 
 const PAGE_SIZES = [10, 25, 50];
 
+const STATUS_BADGE_VARIANTS: Record<string, string> = {
+  active: 'default',
+  invited: 'outline',
+  archived: 'destructive',
+};
+
 const PROFILE_ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   guardian: Shield,
   educator: GraduationCap,
@@ -199,7 +205,7 @@ export function UsersTable({ rows }: UsersTableProps) {
                 Email {renderSortIndicator('email')}
               </button>
             </TableHead>
-            <TableHead>Profile type</TableHead>
+            <TableHead>Type</TableHead>
             <TableHead>
               <button
                 type="button"
@@ -253,8 +259,8 @@ export function UsersTable({ rows }: UsersTableProps) {
                 </TableCell>
                 <TableCell>
                   <Badge
-                    variant={row.status === 'active' ? 'secondary' : 'outline'}
-                    className="text-xs uppercase tracking-[0.2em]"
+                    variant={STATUS_BADGE_VARIANTS[row.status] ?? 'ghost'}
+                    className="text-xs capitalize"
                   >
                     {row.status}
                   </Badge>
