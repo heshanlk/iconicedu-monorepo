@@ -89,7 +89,7 @@ export function NavAdmin({
 
   return (
     <SidebarGroup {...props}>
-      <SidebarGroupLabel asChild className="uppercase tracking-[0.35em] text-[11px]">
+      <SidebarGroupLabel asChild className="uppercase">
         <span>{label}</span>
       </SidebarGroupLabel>
       <SidebarGroupContent>
