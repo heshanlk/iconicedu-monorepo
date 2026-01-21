@@ -136,3 +136,6 @@
   - `apply_patch` to add `apps/web/app/(app)/d/admin/spaces/page.tsx`, query live learning spaces for the organization, and reuse the existing table component so “Learning spaces → All” surfaces database-backed data with sorting/filtering.
   - `apply_patch` to update `packages/ui-web/src/ui/sidebar.tsx` so `SidebarMenuButton` and `SidebarMenuSubButton` variants drop their background fills while keeping text highlighting, ensuring every sidebar item has a transparent base.
   - `apply_patch` to append these new log entries so the command log mirrors the work completed during this session.
+  - `apply_patch` to introduce `apps/web/app/(app)/d/admin/users/actions/invite-user.ts`, a server action that creates invited accounts/profiles, sends a magic link via Supabase, and returns the generated invite URL.
+  - `apply_patch` to add `apps/web/app/(app)/d/admin/users/invite-dialog.tsx` and wire it into `users-table.tsx` so staff can open an invite dialog, submit an email, and copy the generated magic link.
+  - `apply_patch` to export the Dialog and Label primitives from `@iconicedu/ui-web` so the new invite dialog can reuse the shared UI primitives.

@@ -30,6 +30,7 @@ import {
   MoreHorizontal,
   Pencil,
 } from '@iconicedu/ui-web';
+import { InviteUserDialog } from './invite-dialog';
 
 export type UserRow = {
   accountId: string;
@@ -154,29 +155,32 @@ export function UsersTable({ rows }: UsersTableProps) {
 
   return (
     <div className="w-full space-y-4 rounded-2xl border border-border bg-card p-4 shadow-sm">
-      <div className="flex flex-wrap items-center gap-3">
-        <Input
-          placeholder="Search name, email or phone"
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-          className="w-64"
-        />
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">Status:</span>
-          <Select
-            value={statusFilter}
-            onValueChange={(value) => setStatusFilter(value as 'all' | string)}
-          >
-            <SelectTrigger size="sm" className="w-32">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All</SelectItem>
-              <SelectItem value="active">Active</SelectItem>
-              <SelectItem value="invited">Invited</SelectItem>
-              <SelectItem value="archived">Archived</SelectItem>
-            </SelectContent>
-          </Select>
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <InviteUserDialog />
+        <div className="flex flex-wrap items-center gap-3">
+          <Input
+            placeholder="Search name, email or phone"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            className="w-64"
+          />
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">Status:</span>
+            <Select
+              value={statusFilter}
+              onValueChange={(value) => setStatusFilter(value as 'all' | string)}
+            >
+              <SelectTrigger size="sm" className="w-32">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="invited">Invited</SelectItem>
+                <SelectItem value="archived">Archived</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </div>
       <Table className="min-w-full">
@@ -247,7 +251,9 @@ export function UsersTable({ rows }: UsersTableProps) {
                     {(() => {
                       const kind = row.profileKind ?? 'account';
                       const Icon = PROFILE_ICON_MAP[kind] ?? PROFILE_ICON_MAP.default;
-                      return <Icon className="size-4 text-muted-foreground" aria-hidden />;
+                      return (
+                        <Icon className="size-4 text-muted-foreground" aria-hidden />
+                      );
                     })()}
                     <span className="sr-only">{row.profileKind ?? 'account'}</span>
                   </div>
