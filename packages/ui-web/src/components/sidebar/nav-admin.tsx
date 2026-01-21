@@ -30,16 +30,18 @@ import type {
 } from '@iconicedu/shared-types';
 export type { AdminMenuSectionVM };
 
-const ADMIN_MENU_ICON_MAP: Record<AdminMenuIconKey, React.ComponentType<{ className?: string }>> =
-  {
-    users: Users,
-    learning_spaces: Layers,
-    class_schedules: CalendarCheck,
-    channels: Shield,
-    activity: Activity,
-    moderation: ShieldCheck,
-    system: Sliders,
-  };
+const ADMIN_MENU_ICON_MAP: Record<
+  AdminMenuIconKey,
+  React.ComponentType<{ className?: string }>
+> = {
+  users: Users,
+  learning_spaces: Layers,
+  class_schedules: CalendarCheck,
+  channels: Shield,
+  activity: Activity,
+  moderation: ShieldCheck,
+  system: Sliders,
+};
 
 type NavAdminProps = {
   label?: string;
@@ -93,21 +95,20 @@ export function NavAdmin({
       <SidebarGroupContent>
         <SidebarMenu>
           {sections.map((section) => {
-          const sectionIsActive = section.links.some((link: AdminMenuLinkVM) =>
-            getIsActive(link.url),
-          );
+            const sectionIsActive = section.links.some((link: AdminMenuLinkVM) =>
+              getIsActive(link.url),
+            );
             const sectionIsOpen = openSections[section.title] ?? false;
             const Icon = ADMIN_MENU_ICON_MAP[section.iconKey] ?? Users;
             return (
-                <SidebarMenuItem key={section.title}>
-                  <SidebarMenuButton
-                    type="button"
-                    isActive={sectionIsActive}
-                    data-open={sectionIsOpen ? 'true' : 'false'}
-                    aria-expanded={sectionIsOpen}
-                    onClick={() => toggleSection(section.title)}
-                    className="bg-transparent hover:bg-transparent active:bg-transparent data-active:bg-transparent shadow-none"
-                  >
+              <SidebarMenuItem key={section.title}>
+                <SidebarMenuButton
+                  type="button"
+                  isActive={sectionIsActive}
+                  data-open={sectionIsOpen ? 'true' : 'false'}
+                  aria-expanded={sectionIsOpen}
+                  onClick={() => toggleSection(section.title)}
+                >
                   <Icon className="size-4" />
                   <span>{section.title}</span>
                   <ChevronDown
@@ -119,7 +120,7 @@ export function NavAdmin({
                 </SidebarMenuButton>
                 {sectionIsOpen && (
                   <SidebarMenuSub>
-                      {section.links.map((link: AdminMenuLinkVM) => (
+                    {section.links.map((link: AdminMenuLinkVM) => (
                       <SidebarMenuSubItem key={link.title}>
                         <SidebarMenuSubButton
                           asChild

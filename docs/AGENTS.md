@@ -126,3 +126,4 @@
   - `apply_patch` to define `AdminMenuSection`/`AdminMenuLink` under `packages/shared-types` and start preparing the admin data for reuse by the layout.
   - `apply_patch` to correct the relative path for `admin-menu-sections` imports and to add explicit `AdminMenuLink` typings so the nav hooks satisfy TypeScript.
   - `apply_patch` to relocate `ADMIN_MENU_SECTIONS` into `apps/web/lib/data`, add shared `AdminMenuSection`/`AdminMenuLink` typings under `packages/shared-types`, update `NavAdmin` to render icons via the shared `iconKey`, and pass the new sections list down from the server layout through `SidebarShell`/`SidebarLeft`.
+  - `apply_patch` to only emit `data-active` attributes when a sidebar button is active so non-active items stop showing `data-active`.

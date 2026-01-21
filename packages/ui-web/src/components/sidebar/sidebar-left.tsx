@@ -247,7 +247,7 @@ export function SidebarLeft({
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg">
+            <SidebarMenuButton className="bg-transparent" size="lg">
               <SiteLogoWithName />
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -256,15 +256,18 @@ export function SidebarLeft({
       <SidebarContent>
         <NavMain items={navMain} />
         {userProfile.kind === 'staff' && (adminSections?.length ?? 0) > 0 ? (
-          <NavAdmin
-            className="mt-1 space-y-1"
-            sections={adminSections ?? []}
-            activePath={activePath ?? undefined}
-          />
+          <>
+            <SidebarSeparator className="mx-2" />
+            <NavAdmin
+              className="mt-1 space-y-1"
+              sections={adminSections ?? []}
+              activePath={activePath ?? undefined}
+            />
+          </>
         ) : null}
-        <SidebarSeparator className="mx-2 group-data-[collapsible=icon]:hidden" />
         {userProfile.kind === 'guardian' ? (
           <>
+            <SidebarSeparator className="mx-2 group-data-[collapsible=icon]:hidden" />
             <SidebarGroup className="pb-0">
               <SidebarGroupLabel asChild className="uppercase">
                 <span>Learning spaces</span>
