@@ -11,7 +11,10 @@ import {
   getAccountByEmail,
   insertInvitedAccount,
 } from '../../../../../../lib/user/queries/accounts.query';
-import { upsertProfileForAccount } from '../../../../../../lib/user/queries/profiles.query';
+import {
+  insertProfileForAccount,
+  upsertProfileForAccount,
+} from '../../../../../../lib/user/queries/profiles.query';
 import { getFamilyInviteAdminClient } from '../../../../../../lib/family/queries/invite.query';
 
 const INVITE_SCHEMA = z.object({
@@ -103,22 +106,40 @@ export async function inviteAdminUserAction(
     throw new Error('Unable to resolve invited account.');
   }
 
-  const { error: profileError } = await upsertProfileForAccount(adminClient, {
-    orgId: ORG.id,
-    accountId: targetAccount.id,
-    kind: parsed.profileKind,
-    displayName: KIND_DISPLAY_NAME[parsed.profileKind],
-    avatarSource: 'seed',
-    avatarUrl: null,
-    avatarSeed: targetAccount.id,
-    timezone: 'UTC',
-    locale: 'en-US',
-    status: 'invited',
-    uiThemeKey: 'teal',
-  });
+  const { data: profileInserted, error: upsertError } =
+    await upsertProfileForAccount(adminClient, {
+      orgId: ORG.id,
+      accountId: targetAccount.id,
+      kind: parsed.profileKind,
+      displayName: KIND_DISPLAY_NAME[parsed.profileKind],
+      avatarSource: 'seed',
+      avatarUrl: null,
+      avatarSeed: targetAccount.id,
+      timezone: 'UTC',
+      locale: 'en-US',
+      status: 'invited',
+      uiThemeKey: 'teal',
+    });
 
-  if (profileError) {
-    throw profileError;
+  if (upsertError?.code === '42P10') {
+    const { error: insertError } = await insertProfileForAccount(adminClient, {
+      orgId: ORG.id,
+      accountId: targetAccount.id,
+      kind: parsed.profileKind,
+      displayName: KIND_DISPLAY_NAME[parsed.profileKind],
+      avatarSource: 'seed',
+      avatarUrl: null,
+      avatarSeed: targetAccount.id,
+      timezone: 'UTC',
+      locale: 'en-US',
+      status: 'invited',
+      uiThemeKey: 'teal',
+    });
+    if (insertError) {
+      throw insertError;
+    }
+  } else if (upsertError) {
+    throw upsertError;
   }
 
   const baseUrl = await resolveBaseUrl();

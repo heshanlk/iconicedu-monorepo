@@ -15,8 +15,11 @@ import {
   DialogTrigger,
   Input,
   Label,
-  RadioGroup,
-  RadioGroupItem,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@iconicedu/ui-web';
 
 import { inviteAdminUserAction } from './actions/invite-user';
@@ -112,32 +115,26 @@ export function InviteUserDialog({ className }: { className?: string }) {
             />
           </div>
           <div className="space-y-1">
-            <Label htmlFor="invite-kind">Profile kind</Label>
-            <input type="hidden" name="profileKind" value={profileKind} />
-            <RadioGroup
-              id="invite-kind"
+            <Label htmlFor="invite-kind">Type</Label>
+            <Select
               name="profileKind"
               value={profileKind}
-              onValueChange={(value) => setProfileKind(value as 'guardian' | 'educator' | 'staff')}
-              className="flex flex-wrap gap-3"
+              onValueChange={(value) =>
+                setProfileKind(value as 'guardian' | 'educator' | 'staff')
+              }
+              disabled={isSubmitting}
             >
-              {(['guardian', 'educator', 'staff'] as const).map((kind) => {
-                const itemId = `invite-kind-${kind}`;
-                return (
-                  <div key={kind} className="flex items-center gap-3">
-                    <RadioGroupItem
-                      value={kind}
-                      id={itemId}
-                      className="h-4 w-4 rounded-full border border-input focus-visible:ring-2 focus-visible:ring-ring"
-                      disabled={isSubmitting}
-                    />
-                    <Label htmlFor={itemId} className="text-sm capitalize">
-                      {kind}
-                    </Label>
-                  </div>
-                );
-              })}
-            </RadioGroup>
+              <SelectTrigger id="invite-kind" className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {(['guardian', 'educator', 'staff'] as const).map((kind) => (
+                  <SelectItem key={kind} value={kind}>
+                    <span className="capitalize">{kind}</span>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           {status === 'success' && inviteUrl ? (
             <div className="rounded-lg border border-border bg-muted/50 p-3">

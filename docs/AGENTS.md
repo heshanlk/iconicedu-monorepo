@@ -141,3 +141,4 @@
   - `apply_patch` to export the Dialog and Label primitives from `@iconicedu/ui-web` so the new invite dialog can reuse the shared UI primitives.
   - `apply_patch` to replace the invite dialog profile kind select/ButtonGroup with shadcn `RadioGroup`/`RadioGroupItem` so the dialog follows the standard Radix pattern and labels each pill like the shadcn demos.
   - `apply_patch` to restore `packages/ui-web/src/ui/button-group.tsx` and export it again because existing components depend on that module, fixing the failing `lucide-react` build.
+  - `apply_patch` to catch the missing unique constraint (`42P10`) by falling back from `upsertProfileForAccount` to `insertProfileForAccount`, matching the same workaround used in other server helpers.
