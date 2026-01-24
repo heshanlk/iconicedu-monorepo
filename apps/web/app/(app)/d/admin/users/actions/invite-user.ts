@@ -29,12 +29,6 @@ type InviteUserResult = {
   inviteUrl: string;
 };
 
-const KIND_DISPLAY_NAME: Record<z.infer<typeof INVITE_SCHEMA>['profileKind'], string> = {
-  guardian: 'Invited guardian',
-  staff: 'Invited staff',
-  educator: 'Invited educator',
-};
-
 function buildRedirectUrl(profileKind: string, baseUrl: string) {
   const sanitizedBase = baseUrl.replace(/\/$/, '');
   const params = new URLSearchParams({ profileKind });
@@ -124,29 +118,27 @@ export async function inviteAdminUserAction(
     throw statusError;
   }
 
-  const { data: profileInserted, error: upsertError } = await upsertProfileForAccount(
-    adminClient,
-    {
-      orgId: ORG.id,
-      accountId: targetAccount.id,
-      kind: parsed.profileKind,
-      displayName: KIND_DISPLAY_NAME[parsed.profileKind],
-      avatarSource: 'seed',
-      avatarUrl: null,
-      avatarSeed: targetAccount.id,
-      timezone: 'UTC',
-      locale: 'en-US',
-      status: 'invited',
-      uiThemeKey: 'teal',
-    },
-  );
+    const { data: profileInserted, error: upsertError } = await upsertProfileForAccount(
+      adminClient,
+      {
+        orgId: ORG.id,
+        accountId: targetAccount.id,
+        kind: parsed.profileKind,
+        avatarSource: 'seed',
+        avatarUrl: null,
+        avatarSeed: targetAccount.id,
+        timezone: 'UTC',
+        locale: 'en-US',
+        status: 'invited',
+        uiThemeKey: 'teal',
+      },
+    );
 
   if (upsertError?.code === '42P10') {
     const { error: insertError } = await insertProfileForAccount(adminClient, {
       orgId: ORG.id,
       accountId: targetAccount.id,
       kind: parsed.profileKind,
-      displayName: KIND_DISPLAY_NAME[parsed.profileKind],
       avatarSource: 'seed',
       avatarUrl: null,
       avatarSeed: targetAccount.id,

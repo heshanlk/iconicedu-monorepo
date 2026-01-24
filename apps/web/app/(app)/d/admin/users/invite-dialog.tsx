@@ -30,7 +30,7 @@ export function InviteUserDialog({ className }: { className?: string }) {
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [profileKind, setProfileKind] =
-    React.useState<'guardian' | 'educator' | 'staff'>('staff');
+    React.useState<'guardian' | 'educator' | 'staff'>('guardian');
   const formRef = React.useRef<HTMLFormElement | null>(null);
 
   const handleOpenChange = (next: boolean) => {

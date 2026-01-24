@@ -30,6 +30,7 @@ import {
   TableHeader,
   TableRow,
 } from '@iconicedu/ui-web';
+import { Skeleton } from '@iconicedu/ui-web/ui/skeleton';
 import {
   Briefcase,
   GraduationCap,
@@ -83,13 +84,14 @@ const PAGE_SIZES = [10, 25, 50];
 
 export function UsersTable({ rows }: UsersTableProps) {
   const router = useRouter();
-  const [refreshing, setRefreshing] = React.useState(false);
+  const [isPending, startTransition] = React.useTransition();
   const [confirmDeleteUser, setConfirmDeleteUser] = React.useState<UserRow | null>(null);
+  const refreshing = isPending;
 
-  const handleRefresh = async () => {
-    setRefreshing(true);
-    await router.refresh();
-    setRefreshing(false);
+  const handleRefresh = () => {
+    startTransition(() => {
+      router.refresh();
+    });
   };
 
   const [search, setSearch] = React.useState('');
@@ -253,8 +255,26 @@ export function UsersTable({ rows }: UsersTableProps) {
           </div>
         </div>
       </div>
-      <Table className="min-w-full">
-        <TableHeader>
+      <div className="relative">
+        {isPending && (
+          <div className="absolute inset-0 rounded-2xl border border-border bg-card/90 p-4">
+            <div className="flex flex-col gap-3">
+              <Skeleton className="h-4 w-1/3" />
+              <div className="space-y-3">
+                {[...Array(3)].map((_, index) => (
+                  <div key={index} className="flex items-center gap-3">
+                    <Skeleton className="h-10 w-10 rounded-full" />
+                    <Skeleton className="h-4 flex-1" />
+                    <Skeleton className="h-4 w-20" />
+                    <Skeleton className="h-4 w-16" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+        <Table className="min-w-full">
+          <TableHeader>
           <TableRow>
             <TableHead>
               <button
@@ -383,7 +403,8 @@ export function UsersTable({ rows }: UsersTableProps) {
             );
           })}
         </TableBody>
-      </Table>
+        </Table>
+      </div>
       <AlertDialog
         open={Boolean(confirmDeleteUser)}
         onOpenChange={(open) => {
