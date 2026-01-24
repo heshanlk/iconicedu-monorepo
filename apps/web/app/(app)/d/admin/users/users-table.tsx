@@ -179,7 +179,7 @@ export function UsersTable({ rows }: UsersTableProps) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userId: confirmDeleteUser.id }),
+        body: JSON.stringify({ accountId: confirmDeleteUser.id }),
       });
       const result = await response.json();
       if (!result?.success) {

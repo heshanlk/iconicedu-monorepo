@@ -1,12 +1,73 @@
 import { NextResponse } from 'next/server';
 
 import { deleteUserAction } from '../../../auth/actions';
+import { getFamilyInviteAdminClient } from '../../../../../../../lib/family/queries/invite.query';
+
+type DeleteRequestBody = {
+  accountId?: string;
+};
 
 export async function POST(request: Request) {
-  const { userId } = await request.json();
-  if (!userId) {
-    return NextResponse.json({ success: false, message: 'userId is required' }, { status: 400 });
+  const { accountId } = (await request.json()) as DeleteRequestBody;
+
+  if (!accountId) {
+    return NextResponse.json(
+      { success: false, message: 'accountId is required' },
+      { status: 400 },
+    );
   }
-  const result = await deleteUserAction({ userId, softDelete: false });
-  return NextResponse.json(result);
+
+  const adminClient = getFamilyInviteAdminClient();
+  const { data: account, error: accountError } = await adminClient
+    .from('accounts')
+    .select('id, org_id, auth_user_id')
+    .eq('id', accountId)
+    .is('deleted_at', null)
+    .limit(1)
+    .maybeSingle();
+
+  if (accountError) {
+    return NextResponse.json({ success: false, message: accountError.message }, { status: 500 });
+  }
+
+  if (!account) {
+    return NextResponse.json({ success: false, message: 'Account not found' }, { status: 404 });
+  }
+
+  if (account.auth_user_id) {
+    const result = await deleteUserAction({ userId: account.auth_user_id, softDelete: false });
+    return NextResponse.json(result);
+  }
+
+  try {
+    await deleteAccountOnly(adminClient, account.id, account.org_id);
+    return NextResponse.json({
+      action: 'delete-account',
+      success: true,
+      message: 'Account records removed.',
+    });
+  } catch (error) {
+    return NextResponse.json(
+      { success: false, message: error instanceof Error ? error.message : 'Cleanup failed.' },
+      { status: 500 },
+    );
+  }
+}
+
+async function deleteAccountOnly(adminClient: ReturnType<typeof getFamilyInviteAdminClient>, accountId: string, orgId: string) {
+  const accountDeletion = adminClient.from('accounts').delete().eq('id', accountId).eq('org_id', orgId);
+
+  const profileDeletion = adminClient
+    .from('profiles')
+    .delete()
+    .eq('account_id', accountId)
+    .eq('org_id', orgId);
+
+  const familyLinkDeletion = adminClient
+    .from('family_links')
+    .delete()
+    .eq('org_id', orgId)
+    .or(`guardian_account_id.eq.${accountId},child_account_id.eq.${accountId}`);
+
+  await Promise.all([profileDeletion, familyLinkDeletion, accountDeletion]);
 }
