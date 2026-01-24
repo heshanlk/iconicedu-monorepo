@@ -301,7 +301,7 @@ export function UsersTable({ rows }: UsersTableProps) {
           {visibleRows.map((row) => {
             const displayName = row.displayName || row.email || 'Unnamed';
             const Icon =
-              PROFILE_ICON_MAP[row.role ?? 'default'] ?? PROFILE_ICON_MAP.default;
+              PROFILE_ICON_MAP[row.profileKind ?? 'default'] ?? PROFILE_ICON_MAP.default;
             return (
               <TableRow
                 key={row.id}

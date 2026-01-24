@@ -3,6 +3,7 @@
 import type { AccountRow } from '@iconicedu/shared-types';
 import { headers } from 'next/headers';
 import { z } from 'zod';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
 import { createSupabaseServerClient } from '../../../../../../lib/supabase/server';
 import { ORG } from '../../../../../../lib/data/org';
@@ -10,6 +11,7 @@ import {
   getAccountByAuthUserId,
   getAccountByEmail,
   insertInvitedAccount,
+  updateAccountStatus,
 } from '../../../../../../lib/user/queries/accounts.query';
 import {
   insertProfileForAccount,
@@ -110,15 +112,21 @@ export async function inviteAdminUserAction(
     throw new Error('Account already active; no invite sent.');
   }
 
-  await adminClient
-    .from('accounts')
-    .update({
-      status: 'invited',
-    })
-    .eq('id', targetAccount.id);
+  const { error: statusError } = await updateAccountStatus(
+    adminClient,
+    targetAccount.id,
+    ORG.id,
+    'invited',
+    accountResponse.data.id,
+  );
 
-  const { data: profileInserted, error: upsertError } =
-    await upsertProfileForAccount(adminClient, {
+  if (statusError) {
+    throw statusError;
+  }
+
+  const { data: profileInserted, error: upsertError } = await upsertProfileForAccount(
+    adminClient,
+    {
       orgId: ORG.id,
       accountId: targetAccount.id,
       kind: parsed.profileKind,
@@ -130,7 +138,8 @@ export async function inviteAdminUserAction(
       locale: 'en-US',
       status: 'invited',
       uiThemeKey: 'teal',
-    });
+    },
+  );
 
   if (upsertError?.code === '42P10') {
     const { error: insertError } = await insertProfileForAccount(adminClient, {
@@ -158,7 +167,7 @@ export async function inviteAdminUserAction(
   const baseUrl = await resolveBaseUrl();
   const redirectTo = buildRedirectUrl(parsed.profileKind, baseUrl);
 
-  const { error: otpError } = await adminClient.auth.signInWithOtp({
+  const { data: otpData, error: otpError } = await adminClient.auth.signInWithOtp({
     email: normalizedEmail,
     emailRedirectTo: redirectTo,
   });
@@ -177,9 +186,61 @@ export async function inviteAdminUserAction(
   if (linkError) {
     throw linkError;
   }
+  await reconcileInvitedAccount({
+    client: adminClient,
+    orgId: ORG.id,
+    accountId: targetAccount.id,
+    email: normalizedEmail,
+    updatedBy: accountResponse.data.id,
+    authUserId: otpData?.user?.id ?? undefined,
+  });
 
   return {
     email: normalizedEmail,
     inviteUrl: generatedLink?.action_link ?? redirectTo,
   };
+}
+
+type ReconcileInvitedAccountOptions = {
+  client: SupabaseClient;
+  orgId: string;
+  accountId: string;
+  email: string;
+  updatedBy: string;
+  authUserId?: string;
+};
+
+async function reconcileInvitedAccount(options: ReconcileInvitedAccountOptions) {
+  const updates: Record<string, unknown> = {
+    status: 'invited',
+    updated_by: options.updatedBy,
+  };
+
+  if (options.authUserId) {
+    updates.auth_user_id = options.authUserId;
+  }
+
+  const { error: updateError } = await options.client
+    .from('accounts')
+    .update(updates)
+    .eq('id', options.accountId)
+    .eq('org_id', options.orgId)
+    .is('deleted_at', null);
+
+  if (updateError) {
+    throw updateError;
+  }
+
+  const { error: deleteError } = await options.client
+    .from('accounts')
+    .delete()
+    .eq('org_id', options.orgId)
+    .ilike('email', options.email)
+    .not('auth_user_id', 'is', null)
+    .neq('id', options.accountId)
+    .is('deleted_at', null);
+
+  if (deleteError) {
+    throw deleteError;
+  }
 }

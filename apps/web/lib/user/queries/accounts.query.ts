@@ -1,6 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 
-import type { AccountRow } from '@iconicedu/shared-types';
+import type { AccountRow, AccountStatus } from '@iconicedu/shared-types';
 
 import { ACCOUNT_SELECT } from '../constants/selects';
 
@@ -112,4 +112,24 @@ export async function updateAccountAuthUserId(
     .eq('id', accountId)
     .select(ACCOUNT_SELECT)
     .single<AccountRow>();
+}
+
+export async function updateAccountStatus(
+  supabase: SupabaseClient,
+  accountId: string,
+  orgId: string,
+  status: AccountStatus,
+  updatedBy?: string | null,
+) {
+  return supabase
+    .from('accounts')
+    .update({
+      status,
+      updated_by: updatedBy ?? null,
+    })
+    .eq('id', accountId)
+    .eq('org_id', orgId)
+    .is('deleted_at', null)
+    .select(ACCOUNT_SELECT)
+    .maybeSingle<AccountRow>();
 }

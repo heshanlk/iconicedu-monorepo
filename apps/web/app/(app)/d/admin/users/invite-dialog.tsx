@@ -49,6 +49,7 @@ export function InviteUserDialog({ className }: { className?: string }) {
     const formData = new FormData(event.currentTarget);
     try {
       await inviteAdminUserAction(formData);
+      setOpen(false);
       router.refresh();
     } catch (error) {
       setErrorMessage(
@@ -77,6 +78,7 @@ export function InviteUserDialog({ className }: { className?: string }) {
 
     try {
       await inviteAdminUserAction(formData);
+      setOpen(false);
       router.refresh();
     } catch (error) {
       setErrorMessage(

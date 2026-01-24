@@ -9,6 +9,9 @@ import { UsersTable, type UserRow } from './users-table';
 type ProfileSummary = {
   id: string;
   kind?: string | null;
+  display_name?: string | null;
+  first_name?: string | null;
+  last_name?: string | null;
 };
 
 type AccountWithProfiles = {
@@ -40,7 +43,10 @@ export default async function AdminUsersPage() {
       updated_at,
       profiles (
         id,
-        kind
+        kind,
+        display_name,
+        first_name,
+        last_name
       )
     `,
     )
@@ -57,7 +63,16 @@ export default async function AdminUsersPage() {
           : normalizedStatus === 'invited'
             ? 'invited'
             : 'active';
-      const profileKind = account.profiles?.[0]?.kind ?? null;
+      const profile = account.profiles?.[0];
+      const profileKind = profile?.kind ?? null;
+      const profileName =
+        profile?.display_name?.trim() ||
+        [profile?.first_name, profile?.last_name]
+          .map((part) => part?.trim())
+          .filter(Boolean)
+          .join(' ')
+          .trim() ||
+        null;
       return {
         id: account.id,
         email: account.email,
@@ -65,7 +80,7 @@ export default async function AdminUsersPage() {
         status,
         createdAt: account.created_at,
         lastSignInAt: account.updated_at,
-        displayName: account.email,
+        displayName: profileName ?? account.email,
         profileKind,
       };
     }) ?? [];
