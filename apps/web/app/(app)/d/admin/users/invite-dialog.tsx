@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { Copy } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 import {
   Button,
@@ -29,8 +30,10 @@ export function InviteUserDialog({ className }: { className?: string }) {
   const [open, setOpen] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const [profileKind, setProfileKind] =
-    React.useState<'guardian' | 'educator' | 'staff'>('guardian');
+  const [profileKind, setProfileKind] = React.useState<'guardian' | 'educator' | 'staff'>(
+    'guardian',
+  );
+  const [generatedInviteUrl, setGeneratedInviteUrl] = React.useState<string | null>(null);
   const formRef = React.useRef<HTMLFormElement | null>(null);
 
   const handleOpenChange = (next: boolean) => {
@@ -38,6 +41,7 @@ export function InviteUserDialog({ className }: { className?: string }) {
     if (!next) {
       setErrorMessage(null);
       formRef.current?.reset();
+      setGeneratedInviteUrl(null);
     }
   };
 
@@ -48,12 +52,28 @@ export function InviteUserDialog({ className }: { className?: string }) {
 
     const formData = new FormData(event.currentTarget);
     try {
-      await inviteAdminUserAction(formData);
+      const result = await inviteAdminUserAction(formData);
+      console.log({ result });
+      const inviteLink = result.actionLink ?? result.inviteUrl;
+      if (!inviteLink) {
+        throw new Error('Invite link not returned.');
+      }
+
+      const clipboard = typeof navigator === 'undefined' ? null : navigator.clipboard;
+      if (!clipboard?.writeText) {
+        throw new Error('Clipboard unavailable in this context.');
+      }
+
+      await clipboard.writeText(inviteLink);
+      toast.success('Invite link copied to clipboard');
+      setGeneratedInviteUrl(inviteLink);
       setOpen(false);
       router.refresh();
     } catch (error) {
       setErrorMessage(
-        error instanceof Error ? error.message : 'Unable to send invite at this time.',
+        error instanceof Error
+          ? error.message
+          : 'Unable to generate invite link at this time.',
       );
     } finally {
       setIsSubmitting(false);
@@ -75,10 +95,15 @@ export function InviteUserDialog({ className }: { className?: string }) {
 
     setIsSubmitting(true);
     setErrorMessage(null);
+    setGeneratedInviteUrl(null);
 
     try {
-      await inviteAdminUserAction(formData);
-      setOpen(false);
+      const result = await inviteAdminUserAction(formData);
+      const inviteLink = result.actionLink ?? result.inviteUrl;
+      if (!inviteLink) {
+        throw new Error('Invite link not returned.');
+      }
+      setGeneratedInviteUrl(inviteLink);
       router.refresh();
     } catch (error) {
       setErrorMessage(
@@ -86,6 +111,24 @@ export function InviteUserDialog({ className }: { className?: string }) {
       );
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleCopyInviteUrl = async () => {
+    if (!generatedInviteUrl) {
+      return;
+    }
+
+    if (!navigator?.clipboard?.writeText) {
+      toast.error('Clipboard not available');
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(generatedInviteUrl);
+      toast.success('Invite link copied');
+    } catch {
+      toast.error('Unable to copy invite link');
     }
   };
 
@@ -143,6 +186,29 @@ export function InviteUserDialog({ className }: { className?: string }) {
               </SelectContent>
             </Select>
           </div>
+          {generatedInviteUrl && (
+            <div className="rounded-lg border border-border bg-muted px-3 py-2 text-sm">
+              <div className="flex items-center justify-between gap-2">
+                <span
+                  className="text-xs text-muted-foreground break-words"
+                  style={{ wordBreak: 'break-word' }}
+                >
+                  {generatedInviteUrl}
+                </span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="px-2"
+                  onClick={handleCopyInviteUrl}
+                  disabled={isSubmitting}
+                  type="button"
+                >
+                  <Copy className="size-4" />
+                  <span className="sr-only">Copy invite link</span>
+                </Button>
+              </div>
+            </div>
+          )}
           {errorMessage ? (
             <p className="text-sm text-destructive">{errorMessage}</p>
           ) : null}

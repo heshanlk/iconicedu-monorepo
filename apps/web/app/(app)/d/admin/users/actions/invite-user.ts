@@ -27,6 +27,7 @@ const INVITE_SCHEMA = z.object({
 type InviteUserResult = {
   email: string;
   inviteUrl: string;
+  actionLink?: string | null;
 };
 
 function buildRedirectUrl(profileKind: string, baseUrl: string) {
@@ -118,21 +119,18 @@ export async function inviteAdminUserAction(
     throw statusError;
   }
 
-    const { data: profileInserted, error: upsertError } = await upsertProfileForAccount(
-      adminClient,
-      {
-        orgId: ORG.id,
-        accountId: targetAccount.id,
-        kind: parsed.profileKind,
-        avatarSource: 'seed',
-        avatarUrl: null,
-        avatarSeed: targetAccount.id,
-        timezone: 'UTC',
-        locale: 'en-US',
-        status: 'invited',
-        uiThemeKey: 'teal',
-      },
-    );
+  const { error: upsertError } = await upsertProfileForAccount(adminClient, {
+    orgId: ORG.id,
+    accountId: targetAccount.id,
+    kind: parsed.profileKind,
+    avatarSource: 'seed',
+    avatarUrl: null,
+    avatarSeed: targetAccount.id,
+    timezone: 'UTC',
+    locale: 'en-US',
+    status: 'invited',
+    uiThemeKey: 'teal',
+  });
 
   if (upsertError?.code === '42P10') {
     const { error: insertError } = await insertProfileForAccount(adminClient, {
@@ -170,13 +168,18 @@ export async function inviteAdminUserAction(
 
   const { data: generatedLink, error: linkError } =
     await adminClient.auth.admin.generateLink({
-      type: 'magiclink',
+      type: 'invite',
       email: normalizedEmail,
       redirectTo,
     });
 
   if (linkError) {
     throw linkError;
+  }
+
+  const actionLink = generatedLink?.properties?.action_link;
+  if (!actionLink) {
+    throw new Error('Supabase did not return an invite action link.');
   }
   await reconcileInvitedAccount({
     client: adminClient,
@@ -189,7 +192,8 @@ export async function inviteAdminUserAction(
 
   return {
     email: normalizedEmail,
-    inviteUrl: generatedLink?.action_link ?? redirectTo,
+    inviteUrl: actionLink,
+    actionLink,
   };
 }
 
