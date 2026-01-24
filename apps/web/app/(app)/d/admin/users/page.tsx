@@ -50,10 +50,11 @@ export default async function AdminUsersPage() {
 
   const rows: UserRow[] =
     data?.map((account) => {
+      const normalizedStatus = account.status?.toLowerCase() ?? '';
       const status =
-        account.status === 'deleted'
+        normalizedStatus === 'deleted'
           ? 'archived'
-          : account.status === 'invited'
+          : normalizedStatus === 'invited'
             ? 'invited'
             : 'active';
       const profileKind = account.profiles?.[0]?.kind ?? null;

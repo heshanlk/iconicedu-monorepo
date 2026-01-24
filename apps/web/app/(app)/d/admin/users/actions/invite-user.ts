@@ -106,6 +106,17 @@ export async function inviteAdminUserAction(
     throw new Error('Unable to resolve invited account.');
   }
 
+  if (targetAccount.status === 'active') {
+    throw new Error('Account already active; no invite sent.');
+  }
+
+  await adminClient
+    .from('accounts')
+    .update({
+      status: 'invited',
+    })
+    .eq('id', targetAccount.id);
+
   const { data: profileInserted, error: upsertError } =
     await upsertProfileForAccount(adminClient, {
       orgId: ORG.id,

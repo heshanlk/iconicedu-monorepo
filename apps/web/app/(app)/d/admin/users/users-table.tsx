@@ -3,6 +3,14 @@
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
   Badge,
   Button,
   DropdownMenu,
@@ -33,6 +41,7 @@ import {
   Pencil,
   MoreHorizontal,
   RotateCw,
+  Loader2,
 } from 'lucide-react';
 import { cn } from '@iconicedu/ui-web/lib/utils';
 
@@ -75,6 +84,7 @@ const PAGE_SIZES = [10, 25, 50];
 export function UsersTable({ rows }: UsersTableProps) {
   const router = useRouter();
   const [refreshing, setRefreshing] = React.useState(false);
+  const [confirmDeleteUser, setConfirmDeleteUser] = React.useState<UserRow | null>(null);
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -103,12 +113,7 @@ export function UsersTable({ rows }: UsersTableProps) {
       if (!normalizedSearch) {
         return true;
       }
-      const title = (
-        row.displayName ??
-        row.email ??
-        row.profileKind ??
-        ''
-      ).toLowerCase();
+      const title = (row.displayName ?? row.email ?? row.profileKind ?? '').toLowerCase();
       if (title.includes(normalizedSearch)) {
         return true;
       }
@@ -155,6 +160,38 @@ export function UsersTable({ rows }: UsersTableProps) {
     setSortDirection('asc');
   };
 
+  const [deletingId, setDeletingId] = React.useState<string | null>(null);
+
+  const openDeleteDialog = (row: UserRow) => {
+    setConfirmDeleteUser(row);
+  };
+
+  const handleDelete = async () => {
+    if (!confirmDeleteUser) {
+      return;
+    }
+    setDeletingId(confirmDeleteUser.id);
+    try {
+      const response = await fetch('/d/admin/users/actions/delete-user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId: confirmDeleteUser.id }),
+      });
+      const result = await response.json();
+      if (!result?.success) {
+        throw new Error(result?.message ?? 'Failed to delete user');
+      }
+      setConfirmDeleteUser(null);
+      await router.refresh();
+    } catch (error) {
+      window.alert(error instanceof Error ? error.message : 'Unable to delete user.');
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
   const toggleAction = (action: string, id: string) => {
     window.alert(`${action} user ${id}`);
   };
@@ -171,21 +208,24 @@ export function UsersTable({ rows }: UsersTableProps) {
   };
 
   return (
-    <div className="w-full space-y-4 rounded-2xl border border-border bg-card p-4 shadow-sm">
-        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div className="flex items-center gap-2">
-            <InviteUserDialog />
-          </div>
-          <div className="flex flex-wrap items-center gap-3">
-            <Input
-              placeholder="Search name, email or role"
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              className="w-64"
+    <div className="w-full space-y-4 rounded-2xl border border-border bg-card p-4">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div className="flex items-center gap-2">
+          <InviteUserDialog />
+        </div>
+        <div className="flex flex-wrap items-center gap-3">
+          <Input
+            placeholder="Search name, email or role"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            className="w-64"
           />
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">Status:</span>
-            <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value)}>
+            <Select
+              value={statusFilter}
+              onValueChange={(value) => setStatusFilter(value)}
+            >
               <SelectTrigger size="sm" className="w-32">
                 <SelectValue />
               </SelectTrigger>
@@ -204,7 +244,11 @@ export function UsersTable({ rows }: UsersTableProps) {
               disabled={refreshing}
               aria-label="Refresh users"
             >
-              <RotateCw className={cn('size-4 transition-transform', refreshing && 'animate-spin')} />
+              {refreshing ? (
+                <Loader2 className="size-4 animate-spin text-muted-foreground" />
+              ) : (
+                <RotateCw className="size-4 transition-transform" />
+              )}
             </Button>
           </div>
         </div>
@@ -213,23 +257,39 @@ export function UsersTable({ rows }: UsersTableProps) {
         <TableHeader>
           <TableRow>
             <TableHead>
-              <button type="button" className="flex items-center" onClick={() => handleSort('name')}>
+              <button
+                type="button"
+                className="flex items-center"
+                onClick={() => handleSort('name')}
+              >
                 Name {renderSortIndicator('name')}
               </button>
             </TableHead>
             <TableHead>
-              <button type="button" className="flex items-center" onClick={() => handleSort('email')}>
+              <button
+                type="button"
+                className="flex items-center"
+                onClick={() => handleSort('email')}
+              >
                 Email {renderSortIndicator('email')}
               </button>
             </TableHead>
             <TableHead>Type</TableHead>
             <TableHead>
-              <button type="button" className="flex items-center" onClick={() => handleSort('status')}>
+              <button
+                type="button"
+                className="flex items-center"
+                onClick={() => handleSort('status')}
+              >
                 Status {renderSortIndicator('status')}
               </button>
             </TableHead>
             <TableHead>
-              <button type="button" className="flex items-center" onClick={() => handleSort('joined')}>
+              <button
+                type="button"
+                className="flex items-center"
+                onClick={() => handleSort('joined')}
+              >
                 Joined {renderSortIndicator('joined')}
               </button>
             </TableHead>
@@ -240,12 +300,18 @@ export function UsersTable({ rows }: UsersTableProps) {
         <TableBody>
           {visibleRows.map((row) => {
             const displayName = row.displayName || row.email || 'Unnamed';
-            const Icon = PROFILE_ICON_MAP[row.role ?? 'default'] ?? PROFILE_ICON_MAP.default;
+            const Icon =
+              PROFILE_ICON_MAP[row.role ?? 'default'] ?? PROFILE_ICON_MAP.default;
             return (
-              <TableRow key={row.id}>
+              <TableRow
+                key={row.id}
+                data-deleting={deletingId === row.id ? 'true' : 'false'}
+              >
                 <TableCell>
                   <p className="text-sm font-semibold capitalize">{displayName}</p>
-                  <p className="text-xs text-muted-foreground">{row.phone ?? row.email ?? '—'}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {row.phone ?? row.email ?? '—'}
+                  </p>
                 </TableCell>
                 <TableCell>
                   <p className="text-sm">{row.email ?? '—'}</p>
@@ -258,40 +324,57 @@ export function UsersTable({ rows }: UsersTableProps) {
                   </div>
                 </TableCell>
                 <TableCell>
-                  <Badge variant={STATUS_BADGE_VARIANTS[row.status] ?? 'ghost'} className="text-xs capitalize">
+                  <Badge
+                    variant={STATUS_BADGE_VARIANTS[row.status] ?? 'ghost'}
+                    className="text-xs capitalize"
+                  >
                     {row.status}
                   </Badge>
                 </TableCell>
                 <TableCell>
                   {row.createdAt ? (
-                    <p className="text-sm">{new Date(row.createdAt).toLocaleDateString()}</p>
+                    <p className="text-sm">
+                      {new Date(row.createdAt).toLocaleDateString()}
+                    </p>
                   ) : (
                     <span className="text-sm text-muted-foreground">—</span>
                   )}
                 </TableCell>
                 <TableCell>
                   {row.lastSignInAt ? (
-                    <p className="text-sm">{new Date(row.lastSignInAt).toLocaleDateString()}</p>
+                    <p className="text-sm">
+                      {new Date(row.lastSignInAt).toLocaleDateString()}
+                    </p>
                   ) : (
                     <span className="text-sm text-muted-foreground">n/a</span>
                   )}
                 </TableCell>
                 <TableCell>
-                  <DropdownMenu>
+                  <DropdownMenu disabled={deletingId === row.id}>
                     <DropdownMenuTrigger asChild>
                       <Button variant="outline" size="sm" className="px-2">
                         <MoreHorizontal className="size-4" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => toggleAction('Edit', row.id)}>
+                      <DropdownMenuItem
+                        onClick={() => toggleAction('Edit', row.id)}
+                        disabled={deletingId === row.id}
+                      >
                         <Pencil className="size-3 mr-2" /> Edit
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => toggleAction('Change status', row.id)}>
+                      <DropdownMenuItem
+                        onClick={() => toggleAction('Change status', row.id)}
+                        disabled={deletingId === row.id}
+                      >
                         <UserCheck className="size-3 mr-2" /> Change status
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => toggleAction('Delete', row.id)}>
-                        <Trash2 className="size-3 mr-2" /> Delete
+                      <DropdownMenuItem
+                        onClick={() => openDeleteDialog(row)}
+                        disabled={deletingId === row.id}
+                      >
+                        <Trash2 className="size-3 mr-2" />
+                        {deletingId === row.id ? 'Deleting…' : 'Delete'}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -301,10 +384,48 @@ export function UsersTable({ rows }: UsersTableProps) {
           })}
         </TableBody>
       </Table>
+      <AlertDialog
+        open={Boolean(confirmDeleteUser)}
+        onOpenChange={(open) => {
+          if (!open) {
+            setConfirmDeleteUser(null);
+          }
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete account?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Removing this account will delete every record tied to it, including
+              profiles and family links. This cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel asChild>
+              <Button variant="ghost" size="sm">
+                Cancel
+              </Button>
+            </AlertDialogCancel>
+            <AlertDialogAction asChild>
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={handleDelete}
+                disabled={Boolean(deletingId)}
+              >
+                {deletingId ? 'Deleting…' : 'Delete account'}
+              </Button>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-3 text-xs text-muted-foreground">
         <div className="flex items-center gap-2">
           <span>Page size</span>
-          <Select value={String(pageSize)} onValueChange={(value) => setPageSize(Number(value))}>
+          <Select
+            value={String(pageSize)}
+            onValueChange={(value) => setPageSize(Number(value))}
+          >
             <SelectTrigger size="sm" className="w-20">
               <SelectValue />
             </SelectTrigger>

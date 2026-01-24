@@ -23,6 +23,7 @@ export * from './ui/radio-group';
 export * from './ui/label';
 export * from './providers/theme-provider';
 export * from './ui/badge';
+export * from './ui/alert-dialog';
 export * from './components/dashboard-header';
 export { GalleryVerticalEnd } from 'lucide-react';
 export { FingerprintIcon } from 'lucide-react';

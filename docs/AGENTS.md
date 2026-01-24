@@ -29,6 +29,7 @@
 - Realtime is allowed only via Supabase channels with RLS policies in place.
 - Avoid client-side direct DB mutations; use API contracts.
 - When data must be fetched or mutated during onboarding or user settings flows, prefer server actions (e.g., `app/actions/*`) so the browser never talks directly to Supabase and we keep auth/cleanup logic centralized.
+- All user/auth-related interactions—retrieval, invites, role/status changes, MFA factors, OAuth client administration, etc.—should first be routed through the shared admin actions under `apps/web/app/(app)/d/admin/auth/actions.ts`. Review that file before adding new user-facing mutations and only branch outside it when the existing helpers cannot be reused.
 
 ## 5. TypeScript & API Design Rules
 - Use strict typing and prefer explicit interfaces/types.

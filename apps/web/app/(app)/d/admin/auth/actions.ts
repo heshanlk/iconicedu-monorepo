@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 
 import { createAuthAdminService } from '../../../../../lib/auth/admin';
+import { createSupabaseServerClient } from '../../../../../lib/supabase/server';
 
 import type {
   AdminUserAttributes,
@@ -15,6 +16,25 @@ import type {
 } from '@supabase/auth-js';
 
 const AUTH_ADMIN_PATH = '/d/admin/auth';
+
+async function cleanupAccountRecords(authUserId: string) {
+  const supabase = await createSupabaseServerClient();
+  const { data: account } = await supabase
+    .from('accounts')
+    .select('id, org_id')
+    .eq('auth_user_id', authUserId)
+    .maybeSingle<{ id: string; org_id: string }>();
+
+  if (!account?.id) {
+    return;
+  }
+
+  await Promise.all([
+    supabase.from('profiles').delete().eq('account_id', account.id).eq('org_id', account.org_id),
+    supabase.from('family_links').delete().eq('guardian_account_id', account.id).eq('org_id', account.org_id),
+    supabase.from('accounts').delete().eq('id', account.id).eq('org_id', account.org_id),
+  ]);
+}
 
 export type AuthAdminActionResult<T = unknown> = {
   action: string;
@@ -97,9 +117,11 @@ export async function updateUserAction(payload: UpdateUserPayload) {
 type DeleteUserPayload = { userId: string; softDelete?: boolean };
 
 export async function deleteUserAction(payload: DeleteUserPayload) {
-  return runAction('delete-user', (service) =>
-    service.deleteUser(payload.userId, payload.softDelete),
-  );
+  return runAction('delete-user', async (service) => {
+    const result = await service.deleteUser(payload.userId, payload.softDelete);
+    await cleanupAccountRecords(payload.userId);
+    return result;
+  });
 }
 
 type InvitePayload = { email: string; redirectTo?: string; metadata?: string };
