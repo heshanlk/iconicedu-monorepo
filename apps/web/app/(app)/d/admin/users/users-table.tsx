@@ -257,20 +257,8 @@ export function UsersTable({ rows }: UsersTableProps) {
       </div>
       <div className="relative">
         {isPending && (
-          <div className="absolute inset-0 rounded-2xl border border-border bg-card/90 p-4">
-            <div className="flex flex-col gap-3">
-              <Skeleton className="h-4 w-1/3" />
-              <div className="space-y-3">
-                {[...Array(3)].map((_, index) => (
-                  <div key={index} className="flex items-center gap-3">
-                    <Skeleton className="h-10 w-10 rounded-full" />
-                    <Skeleton className="h-4 flex-1" />
-                    <Skeleton className="h-4 w-20" />
-                    <Skeleton className="h-4 w-16" />
-                  </div>
-                ))}
-              </div>
-            </div>
+          <div className="absolute inset-0 rounded-2xl border border-border bg-card/90 flex items-center justify-center">
+            <Loader2 className="size-5 animate-spin text-muted-foreground" />
           </div>
         )}
         <Table className="min-w-full">
