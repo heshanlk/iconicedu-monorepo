@@ -40,7 +40,7 @@ function buildRedirectUrl(profileKind: string, baseUrl: string) {
 }
 
 async function resolveBaseUrl() {
-  const headerStore = headers();
+  const headerStore = await headers();
   const forwardedHost =
     headerStore.get('x-forwarded-host') ?? headerStore.get('host') ?? undefined;
   const protocol = headerStore.get('x-forwarded-proto') ?? 'https';
@@ -135,9 +135,11 @@ export async function inviteAdminUserAction(
       status: 'invited',
       uiThemeKey: 'teal',
     });
-    if (insertError) {
+    if (insertError && insertError.code !== '23505') {
       throw insertError;
     }
+  } else if (upsertError?.code === '23505') {
+    // profile already exists, no action needed
   } else if (upsertError) {
     throw upsertError;
   }

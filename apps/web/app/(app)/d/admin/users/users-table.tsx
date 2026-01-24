@@ -3,46 +3,47 @@
 import * as React from 'react';
 import {
   Badge,
-  Briefcase,
   Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  GraduationCap,
   Input,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Shield,
   Table,
   TableBody,
+  TableCell,
   TableHead,
   TableHeader,
   TableRow,
-  TableCell,
-  Trash2,
-  User,
-  UserCheck,
-  Users,
-  MoreHorizontal,
-  Pencil,
 } from '@iconicedu/ui-web';
+import {
+  Briefcase,
+  GraduationCap,
+  Shield,
+  User,
+  Users,
+  UserCheck,
+  Trash2,
+  Pencil,
+  MoreHorizontal,
+} from 'lucide-react';
+
 import { InviteUserDialog } from './invite-dialog';
 
 export type UserRow = {
-  accountId: string;
-  email: string | null;
+  id: string;
+  email?: string | null;
   phone?: string | null;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
   profileKind?: string | null;
+  status: 'active' | 'invited' | 'archived' | string;
+  createdAt?: string | null;
+  lastSignInAt?: string | null;
   displayName?: string | null;
-  firstName?: string | null;
-  lastName?: string | null;
 };
 
 type SortKey = 'name' | 'email' | 'status' | 'joined';
@@ -51,8 +52,6 @@ type UsersTableProps = {
   rows: UserRow[];
 };
 
-const PAGE_SIZES = [10, 25, 50];
-
 const STATUS_BADGE_VARIANTS: Record<string, string> = {
   active: 'default',
   invited: 'outline',
@@ -60,13 +59,15 @@ const STATUS_BADGE_VARIANTS: Record<string, string> = {
 };
 
 const PROFILE_ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
-  guardian: Shield,
   educator: GraduationCap,
-  child: Users,
   staff: Briefcase,
+  guardian: Users,
+  child: Shield,
   owner: Shield,
   default: User,
 };
+
+const PAGE_SIZES = [10, 25, 50];
 
 export function UsersTable({ rows }: UsersTableProps) {
   const [search, setSearch] = React.useState('');
@@ -91,7 +92,10 @@ export function UsersTable({ rows }: UsersTableProps) {
         return true;
       }
       const title = (
-        row.displayName ?? `${row.firstName ?? ''} ${row.lastName ?? ''}`.trim()
+        row.displayName ??
+        row.email ??
+        row.profileKind ??
+        ''
       ).toLowerCase();
       if (title.includes(normalizedSearch)) {
         return true;
@@ -100,6 +104,9 @@ export function UsersTable({ rows }: UsersTableProps) {
         return true;
       }
       if (row.phone?.toLowerCase().includes(normalizedSearch)) {
+        return true;
+      }
+      if (row.profileKind?.toLowerCase().includes(normalizedSearch)) {
         return true;
       }
       return false;
@@ -111,15 +118,13 @@ export function UsersTable({ rows }: UsersTableProps) {
     return [...filteredRows].sort((a, b) => {
       let compare = 0;
       if (sortKey === 'name') {
-        const nameA = a.displayName ?? `${a.firstName ?? ''} ${a.lastName ?? ''}`.trim();
-        const nameB = b.displayName ?? `${b.firstName ?? ''} ${b.lastName ?? ''}`.trim();
-        compare = collator.compare(nameA || '', nameB || '');
+        compare = collator.compare(a.displayName ?? '', b.displayName ?? '');
       } else if (sortKey === 'email') {
         compare = collator.compare(a.email ?? '', b.email ?? '');
       } else if (sortKey === 'status') {
         compare = collator.compare(a.status, b.status);
       } else {
-        compare = collator.compare(a.createdAt, b.createdAt);
+        compare = collator.compare(a.createdAt ?? '', b.createdAt ?? '');
       }
       return sortDirection === 'asc' ? compare : -compare;
     });
@@ -159,17 +164,14 @@ export function UsersTable({ rows }: UsersTableProps) {
         <InviteUserDialog />
         <div className="flex flex-wrap items-center gap-3">
           <Input
-            placeholder="Search name, email or phone"
+            placeholder="Search name, email or role"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             className="w-64"
           />
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">Status:</span>
-            <Select
-              value={statusFilter}
-              onValueChange={(value) => setStatusFilter(value)}
-            >
+            <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value)}>
               <SelectTrigger size="sm" className="w-32">
                 <SelectValue />
               </SelectTrigger>
@@ -187,92 +189,68 @@ export function UsersTable({ rows }: UsersTableProps) {
         <TableHeader>
           <TableRow>
             <TableHead>
-              <button
-                type="button"
-                className="flex items-center"
-                onClick={() => handleSort('name')}
-              >
+              <button type="button" className="flex items-center" onClick={() => handleSort('name')}>
                 Name {renderSortIndicator('name')}
               </button>
             </TableHead>
             <TableHead>
-              <button
-                type="button"
-                className="flex items-center"
-                onClick={() => handleSort('email')}
-              >
+              <button type="button" className="flex items-center" onClick={() => handleSort('email')}>
                 Email {renderSortIndicator('email')}
               </button>
             </TableHead>
             <TableHead>Type</TableHead>
             <TableHead>
-              <button
-                type="button"
-                className="flex items-center"
-                onClick={() => handleSort('status')}
-              >
+              <button type="button" className="flex items-center" onClick={() => handleSort('status')}>
                 Status {renderSortIndicator('status')}
               </button>
             </TableHead>
             <TableHead>
-              <button
-                type="button"
-                className="flex items-center"
-                onClick={() => handleSort('joined')}
-              >
+              <button type="button" className="flex items-center" onClick={() => handleSort('joined')}>
                 Joined {renderSortIndicator('joined')}
               </button>
             </TableHead>
+            <TableHead>Last seen</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {visibleRows.map((row) => {
-            const fallbackName = `${row.firstName ?? ''} ${row.lastName ?? ''}`.trim();
-            const resolvedName = row.displayName ?? fallbackName;
-            const displayName = resolvedName || 'Unnamed';
+            const displayName = row.displayName || row.email || 'Unnamed';
+            const Icon = PROFILE_ICON_MAP[row.role ?? 'default'] ?? PROFILE_ICON_MAP.default;
             return (
-              <TableRow key={row.accountId}>
+              <TableRow key={row.id}>
                 <TableCell>
-                  <p className="text-sm font-semibold">{displayName}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {row.email ?? 'no email'}
-                  </p>
+                  <p className="text-sm font-semibold capitalize">{displayName}</p>
+                  <p className="text-xs text-muted-foreground">{row.phone ?? row.email ?? '—'}</p>
                 </TableCell>
                 <TableCell>
                   <p className="text-sm">{row.email ?? '—'}</p>
                   <p className="text-xs text-muted-foreground">{row.phone ?? '—'}</p>
                 </TableCell>
                 <TableCell>
-                  <div
-                    className="flex items-center gap-2"
-                    title={row.profileKind ?? 'Account'}
-                  >
-                    {(() => {
-                      const kind = row.profileKind ?? 'account';
-                      const Icon = PROFILE_ICON_MAP[kind] ?? PROFILE_ICON_MAP.default;
-                      return (
-                        <Icon className="size-4 text-muted-foreground" aria-hidden />
-                      );
-                    })()}
-                    <span className="sr-only">{row.profileKind ?? 'account'}</span>
+                  <div className="inline-flex items-center gap-2 text-sm capitalize">
+                    <Icon className="size-4 text-muted-foreground" aria-hidden />
+                    {row.profileKind ?? 'account'}
                   </div>
                 </TableCell>
                 <TableCell>
-                  <Badge
-                    variant={STATUS_BADGE_VARIANTS[row.status] ?? 'ghost'}
-                    className="text-xs capitalize"
-                  >
+                  <Badge variant={STATUS_BADGE_VARIANTS[row.status] ?? 'ghost'} className="text-xs capitalize">
                     {row.status}
                   </Badge>
                 </TableCell>
                 <TableCell>
-                  <p className="text-sm">
-                    {new Date(row.createdAt).toLocaleDateString()}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    Updated {new Date(row.updatedAt).toLocaleDateString()}
-                  </p>
+                  {row.createdAt ? (
+                    <p className="text-sm">{new Date(row.createdAt).toLocaleDateString()}</p>
+                  ) : (
+                    <span className="text-sm text-muted-foreground">—</span>
+                  )}
+                </TableCell>
+                <TableCell>
+                  {row.lastSignInAt ? (
+                    <p className="text-sm">{new Date(row.lastSignInAt).toLocaleDateString()}</p>
+                  ) : (
+                    <span className="text-sm text-muted-foreground">n/a</span>
+                  )}
                 </TableCell>
                 <TableCell>
                   <DropdownMenu>
@@ -282,19 +260,13 @@ export function UsersTable({ rows }: UsersTableProps) {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem
-                        onClick={() => toggleAction('Edit', row.accountId)}
-                      >
+                      <DropdownMenuItem onClick={() => toggleAction('Edit', row.id)}>
                         <Pencil className="size-3 mr-2" /> Edit
                       </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => toggleAction('Change status', row.accountId)}
-                      >
+                      <DropdownMenuItem onClick={() => toggleAction('Change status', row.id)}>
                         <UserCheck className="size-3 mr-2" /> Change status
                       </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => toggleAction('Delete', row.accountId)}
-                      >
+                      <DropdownMenuItem onClick={() => toggleAction('Delete', row.id)}>
                         <Trash2 className="size-3 mr-2" /> Delete
                       </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -308,10 +280,7 @@ export function UsersTable({ rows }: UsersTableProps) {
       <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-3 text-xs text-muted-foreground">
         <div className="flex items-center gap-2">
           <span>Page size</span>
-          <Select
-            value={String(pageSize)}
-            onValueChange={(value) => setPageSize(Number(value))}
-          >
+          <Select value={String(pageSize)} onValueChange={(value) => setPageSize(Number(value))}>
             <SelectTrigger size="sm" className="w-20">
               <SelectValue />
             </SelectTrigger>

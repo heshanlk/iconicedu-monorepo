@@ -2,11 +2,11 @@
 
 import * as React from 'react';
 import { Copy } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 import {
   Button,
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -25,55 +25,60 @@ import {
 import { inviteAdminUserAction } from './actions/invite-user';
 
 export function InviteUserDialog({ className }: { className?: string }) {
+  const router = useRouter();
   const [open, setOpen] = React.useState(false);
-  const [status, setStatus] = React.useState<'idle' | 'pending' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
-  const [inviteUrl, setInviteUrl] = React.useState<string | null>(null);
-  const [copied, setCopied] = React.useState(false);
-  const [lastEmail, setLastEmail] = React.useState('');
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const [profileKind, setProfileKind] = React.useState<'guardian' | 'educator' | 'staff'>('staff');
+  const [profileKind, setProfileKind] =
+    React.useState<'guardian' | 'educator' | 'staff'>('staff');
   const formRef = React.useRef<HTMLFormElement | null>(null);
 
   const handleOpenChange = (next: boolean) => {
     setOpen(next);
     if (!next) {
-      setStatus('idle');
       setErrorMessage(null);
-      setInviteUrl(null);
-      setCopied(false);
-      setLastEmail('');
       formRef.current?.reset();
-    }
-  };
-
-  const handleCopy = async () => {
-    if (!inviteUrl) {
-      return;
-    }
-    try {
-      await navigator.clipboard.writeText(inviteUrl);
-      setCopied(true);
-    } catch {
-      setErrorMessage('Unable to copy the invite link.');
     }
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsSubmitting(true);
-    setStatus('pending');
     setErrorMessage(null);
-    setCopied(false);
 
     const formData = new FormData(event.currentTarget);
     try {
-      const result = await inviteAdminUserAction(formData);
-      setInviteUrl(result.inviteUrl);
-      setLastEmail(result.email);
-      setStatus('success');
+      await inviteAdminUserAction(formData);
+      router.refresh();
     } catch (error) {
-      setStatus('error');
+      setErrorMessage(
+        error instanceof Error ? error.message : 'Unable to send invite at this time.',
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleGenerateLink = async () => {
+    const emailFromForm = formRef.current
+      ?.querySelector<HTMLInputElement>('input[name="email"]')
+      ?.value.trim();
+    if (!emailFromForm) {
+      setErrorMessage('Enter an email address before generating a link.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.set('email', emailFromForm);
+    formData.set('profileKind', profileKind);
+
+    setIsSubmitting(true);
+    setErrorMessage(null);
+
+    try {
+      await inviteAdminUserAction(formData);
+      router.refresh();
+    } catch (error) {
       setErrorMessage(
         error instanceof Error ? error.message : 'Unable to send invite at this time.',
       );
@@ -136,37 +141,19 @@ export function InviteUserDialog({ className }: { className?: string }) {
               </SelectContent>
             </Select>
           </div>
-          {status === 'success' && inviteUrl ? (
-            <div className="rounded-lg border border-border bg-muted/50 p-3">
-              <p className="text-sm font-medium text-foreground">
-                Magic link sent to{' '}
-                <span className="font-semibold text-muted-foreground">{lastEmail}</span>
-              </p>
-              <div className="mt-2 flex items-center gap-2">
-                <Button variant="ghost" size="sm" onClick={handleCopy}>
-                  Copy invite link
-                </Button>
-                <a
-                  href={inviteUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-sm font-medium text-primary underline-offset-4 hover:underline"
-                >
-                  Preview link
-                </a>
-                {copied && <span className="text-xs text-muted-foreground">Copied!</span>}
-              </div>
-            </div>
-          ) : null}
           {errorMessage ? (
             <p className="text-sm text-destructive">{errorMessage}</p>
           ) : null}
           <DialogFooter className="space-x-2">
-            <DialogClose asChild>
-              <Button variant="ghost" size="sm">
-                Close
-              </Button>
-            </DialogClose>
+            <Button
+              variant="ghost"
+              size="sm"
+              type="button"
+              onClick={handleGenerateLink}
+              disabled={isSubmitting}
+            >
+              Generate link
+            </Button>
             <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? 'Sending…' : 'Send magic link'}
             </Button>
