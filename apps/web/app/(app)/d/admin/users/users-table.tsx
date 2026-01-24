@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useRouter } from 'next/navigation';
 import {
   Badge,
   Button,
@@ -31,7 +32,9 @@ import {
   Trash2,
   Pencil,
   MoreHorizontal,
+  RotateCw,
 } from 'lucide-react';
+import { cn } from '@iconicedu/ui-web/lib/utils';
 
 import { InviteUserDialog } from './invite-dialog';
 
@@ -70,6 +73,15 @@ const PROFILE_ICON_MAP: Record<string, React.ComponentType<{ className?: string 
 const PAGE_SIZES = [10, 25, 50];
 
 export function UsersTable({ rows }: UsersTableProps) {
+  const router = useRouter();
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await router.refresh();
+    setRefreshing(false);
+  };
+
   const [search, setSearch] = React.useState('');
   const [statusFilter, setStatusFilter] = React.useState<'all' | string>('all');
   const [sortKey, setSortKey] = React.useState<SortKey>('name');
@@ -160,14 +172,16 @@ export function UsersTable({ rows }: UsersTableProps) {
 
   return (
     <div className="w-full space-y-4 rounded-2xl border border-border bg-card p-4 shadow-sm">
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <InviteUserDialog />
-        <div className="flex flex-wrap items-center gap-3">
-          <Input
-            placeholder="Search name, email or role"
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            className="w-64"
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="flex items-center gap-2">
+            <InviteUserDialog />
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <Input
+              placeholder="Search name, email or role"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              className="w-64"
           />
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">Status:</span>
@@ -182,6 +196,16 @@ export function UsersTable({ rows }: UsersTableProps) {
                 <SelectItem value="archived">Archived</SelectItem>
               </SelectContent>
             </Select>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="px-2"
+              onClick={handleRefresh}
+              disabled={refreshing}
+              aria-label="Refresh users"
+            >
+              <RotateCw className={cn('size-4 transition-transform', refreshing && 'animate-spin')} />
+            </Button>
           </div>
         </div>
       </div>
