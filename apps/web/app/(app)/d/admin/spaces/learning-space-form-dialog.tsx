@@ -158,14 +158,9 @@ export function LearningSpaceFormDialog() {
                       >
                         <SelectTrigger
                           aria-label="Select icon"
-                          className="flex rounded-2xl border border-border bg-muted py-2"
+                          className="flex items-center justify-center rounded-full border border-border bg-muted"
                         >
-                          <div className="flex items-center gap-3">
-                            <span className="flex items-center justify-center">
-                              <SelectedIcon className="size-5" aria-hidden />
-                            </span>
-                            <SelectValue placeholder="Select icon" />
-                          </div>
+                          <SelectValue placeholder="Select icon" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectGroup>
@@ -183,15 +178,11 @@ export function LearningSpaceFormDialog() {
                           </SelectGroup>
                         </SelectContent>
                       </Select>
-                      <FieldDescription
-                        className={
-                          iconInvalid ? 'text-destructive' : 'text-muted-foreground'
-                        }
-                      >
-                        {iconInvalid
-                          ? 'Please choose an icon for this learning space.'
-                          : 'Select an icon that represents the learning space.'}
-                      </FieldDescription>
+                      {iconInvalid && (
+                        <FieldDescription className="text-destructive">
+                          Please choose an icon for this learning space.
+                        </FieldDescription>
+                      )}
                     </Field>
                     <Field>
                       <FieldLabel htmlFor="ls-title">
@@ -280,6 +271,10 @@ export function LearningSpaceFormDialog() {
                 </FieldSet>
                 <FieldSeparator />
                 <FieldSet>
+                  <ResourceLinksEditor links={resources} onLinksChange={setResources} />
+                </FieldSet>
+                <FieldSeparator />
+                <FieldSet>
                   <FieldLegend variant="label">Participants</FieldLegend>
                   <FieldDescription>
                     Select families and educators with grouped chips for quick selection.
@@ -320,10 +315,6 @@ export function LearningSpaceFormDialog() {
                       </ComboboxContent>
                     </Combobox>
                   </FieldGroup>
-                </FieldSet>
-                <FieldSeparator />
-                <FieldSet>
-                  <ResourceLinksEditor links={resources} onLinksChange={setResources} />
                 </FieldSet>
                 <FieldSeparator />
                 <FieldSet>
