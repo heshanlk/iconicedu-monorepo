@@ -17,7 +17,6 @@ import {
   FieldLabel,
   FieldLegend,
   FieldSet,
-  FieldTitle,
   FieldSeparator,
   Input,
   ScrollArea,
@@ -31,6 +30,7 @@ import {
   SelectTrigger,
   SelectValue,
   toast,
+  ResourceLinksEditor,
 } from '@iconicedu/ui-web';
 import { Textarea } from '@iconicedu/ui-web/ui/textarea';
 import {
@@ -39,6 +39,21 @@ import {
   LEARNING_SPACE_ICON_OPTIONS,
   type LearningSpaceIconKey,
 } from '@iconicedu/ui-web/lib/icons';
+import {
+  Combobox,
+  ComboboxChip,
+  ComboboxChips,
+  ComboboxChipsInput,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxGroup,
+  ComboboxItem,
+  ComboboxLabel,
+  ComboboxList,
+  ComboboxValue,
+  useComboboxAnchor,
+} from '@iconicedu/ui-web/ui/combobox';
+import type { LearningSpaceLinkVM } from '@iconicedu/shared-types';
 
 const KIND_OPTIONS = [
   { value: 'one_on_one', label: 'One on one' },
@@ -47,6 +62,23 @@ const KIND_OPTIONS = [
 ];
 
 const SUBJECT_OPTIONS = ['MATH', 'SCIENCE', 'ELA', 'CHESS'];
+
+const PARTICIPANT_GROUPS = [
+  {
+    label: 'Parents',
+    items: ['Alex Vega (parent of Mateo)', 'Jordan Rivera (parent of Leila)'],
+  },
+  {
+    label: 'Kids',
+    items: ['Mateo Vega', 'Leila Rivera', 'Sienna Park'],
+  },
+  {
+    label: 'Educators',
+    items: ['Sophie Lee', 'Noel Patel', 'Imani Brooks'],
+  },
+] as const;
+
+const PARTICIPANT_ITEMS = PARTICIPANT_GROUPS.flatMap((group) => group.items);
 
 export function LearningSpaceFormDialog() {
   const [open, setOpen] = React.useState(false);
@@ -60,11 +92,22 @@ export function LearningSpaceFormDialog() {
   const [primaryChannel, setPrimaryChannel] = React.useState('');
   const [relatedChannels, setRelatedChannels] = React.useState('');
   const [scheduleSeries, setScheduleSeries] = React.useState('');
-  const [resourceLinks, setResourceLinks] = React.useState('');
+  const [participants, setParticipants] = React.useState<string[]>([]);
+  const [resources, setResources] = React.useState<LearningSpaceLinkVM[]>([]);
+  const [isSubmitted, setIsSubmitted] = React.useState(false);
+  const anchor = useComboboxAnchor();
   const SelectedIcon = LEARNING_SPACE_ICON_MAP[iconKey];
+  const iconInvalid = isSubmitted && !iconKey;
+  const titleInvalid = isSubmitted && !title.trim();
+  const kindInvalid = isSubmitted && !kind;
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setIsSubmitted(true);
+    if (!iconKey || !title.trim() || !kind) {
+      toast.error('Please fill in all required fields.');
+      return;
+    }
     toast.success('Learning space placeholder created');
     setOpen(false);
   };
@@ -83,8 +126,7 @@ export function LearningSpaceFormDialog() {
             <DialogHeader>
               <DialogTitle>Create learning space</DialogTitle>
               <DialogDescription>
-                Fill out the basics, channels, and optional resources. This is a mock form
-                until backend wiring is implemented.
+                Configure the basics, invite participants, and attach resources for the learning space.
               </DialogDescription>
             </DialogHeader>
           </div>
@@ -98,26 +140,26 @@ export function LearningSpaceFormDialog() {
                 <FieldSet>
                   <FieldLegend variant="label">Basics</FieldLegend>
                   <FieldDescription>
-                    Define the core details, subject, icon, and status for this learning
-                    space.
+                    Define the core details, subject, icon, and kind for this learning space.
                   </FieldDescription>
                   <FieldGroup className="grid gap-3 md:grid-cols-[auto_minmax(0,1fr)]">
-                    <Field className="items-center gap-2">
+                    <Field data-invalid={iconInvalid} className="items-center gap-2">
                       <FieldLabel htmlFor="ls-icon">
                         Icon <span className="text-destructive">*</span>
                       </FieldLabel>
                       <Select
                         id="ls-icon"
                         value={iconKey}
-                        onValueChange={(value) =>
-                          setIconKey(value as LearningSpaceIconKey)
-                        }
+                        onValueChange={(value) => setIconKey(value as LearningSpaceIconKey)}
                       >
                         <SelectTrigger
                           aria-label="Select icon"
                           className="flex rounded-2xl border border-border bg-muted py-2"
                         >
-                          <div className="flex items-center">
+                          <div className="flex items-center gap-3">
+                            <span className="flex items-center justify-center">
+                              <SelectedIcon className="size-5" aria-hidden />
+                            </span>
                             <SelectValue placeholder="Select icon" />
                           </div>
                         </SelectTrigger>
@@ -127,13 +169,21 @@ export function LearningSpaceFormDialog() {
                               const Icon = LEARNING_SPACE_ICON_MAP[option.value];
                               return (
                                 <SelectItem key={option.value} value={option.value}>
-                                  <Icon className="size-4" aria-hidden />
+                                  <div className="flex items-center gap-2">
+                                    <Icon className="size-4" aria-hidden />
+                                    <span>{option.label}</span>
+                                  </div>
                                 </SelectItem>
                               );
                             })}
                           </SelectGroup>
                         </SelectContent>
                       </Select>
+                      <FieldDescription className={iconInvalid ? 'text-destructive' : 'text-muted-foreground'}>
+                        {iconInvalid
+                          ? 'Please choose an icon for this learning space.'
+                          : 'Select an icon that represents the learning space.'}
+                      </FieldDescription>
                     </Field>
                     <Field>
                       <FieldLabel htmlFor="ls-title">
@@ -144,7 +194,11 @@ export function LearningSpaceFormDialog() {
                         value={title}
                         onChange={(event) => setTitle(event.target.value)}
                         required
+                        aria-invalid={titleInvalid}
                       />
+                      {titleInvalid && (
+                        <FieldDescription className="text-destructive">Title is required.</FieldDescription>
+                      )}
                     </Field>
                   </FieldGroup>
                   <FieldGroup className="grid gap-3 md:grid-cols-2">
@@ -160,6 +214,7 @@ export function LearningSpaceFormDialog() {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectGroup>
+                            <SelectLabel>Subjects</SelectLabel>
                             {SUBJECT_OPTIONS.map((option) => (
                               <SelectItem key={option} value={option}>
                                 {option}
@@ -169,20 +224,17 @@ export function LearningSpaceFormDialog() {
                         </SelectContent>
                       </Select>
                     </Field>
-                    <Field>
+                    <Field data-invalid={kindInvalid}>
                       <FieldLabel htmlFor="ls-kind">
                         Kind <span className="text-destructive">*</span>
                       </FieldLabel>
-                      <Select
-                        id="ls-kind"
-                        value={kind}
-                        onValueChange={(value) => setKind(value)}
-                      >
+                      <Select id="ls-kind" value={kind} onValueChange={(value) => setKind(value)}>
                         <SelectTrigger>
                           <SelectValue placeholder="Select kind" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectGroup>
+                            <SelectLabel>Learning kinds</SelectLabel>
                             {KIND_OPTIONS.map((option) => (
                               <SelectItem key={option.value} value={option.value}>
                                 {option.label}
@@ -191,6 +243,11 @@ export function LearningSpaceFormDialog() {
                           </SelectGroup>
                         </SelectContent>
                       </Select>
+                      <FieldDescription className={kindInvalid ? 'text-destructive' : 'text-muted-foreground'}>
+                        {kindInvalid
+                          ? 'Kind is required for the learning space.'
+                          : 'Choose how the learning experience is structured.'}
+                      </FieldDescription>
                     </Field>
                   </FieldGroup>
                   <Field>
@@ -205,15 +262,67 @@ export function LearningSpaceFormDialog() {
                 </FieldSet>
                 <FieldSeparator />
                 <FieldSet>
+                  <FieldLegend variant="label">Participants</FieldLegend>
+                  <FieldDescription>
+                    Select families and educators with grouped chips for quick selection.
+                  </FieldDescription>
+                  <FieldGroup>
+                    <Combobox
+                      multiple
+                      items={PARTICIPANT_ITEMS}
+                      value={participants}
+                      onValueChange={setParticipants}
+                    >
+                      <ComboboxChips ref={anchor} className="w-full">
+                        <ComboboxValue>
+                          {(values) => (
+                            <>
+                              {values.map((value) => (
+                                <ComboboxChip key={value}>{value}</ComboboxChip>
+                              ))}
+                              <ComboboxChipsInput placeholder="Search participants" />
+                            </>
+                          )}
+                        </ComboboxValue>
+                      </ComboboxChips>
+                      <ComboboxContent anchor={anchor}>
+                        <ComboboxEmpty>No participants found.</ComboboxEmpty>
+                        <ComboboxList>
+                          {PARTICIPANT_GROUPS.map((group) => (
+                            <ComboboxGroup key={group.label}>
+                              <ComboboxLabel>{group.label}</ComboboxLabel>
+                              {group.items.map((item) => (
+                                <ComboboxItem key={item} value={item}>
+                                  {item}
+                                </ComboboxItem>
+                              ))}
+                            </ComboboxGroup>
+                          ))}
+                        </ComboboxList>
+                      </ComboboxContent>
+                    </Combobox>
+                  </FieldGroup>
+                </FieldSet>
+                <FieldSeparator />
+                <FieldSet>
+                  <FieldLegend variant="label">Resources</FieldLegend>
+                  <FieldDescription>
+                    Attach helpful links or documents for this space.
+                  </FieldDescription>
+                  <ResourceLinksEditor
+                    links={resources}
+                    onLinksChange={setResources}
+                  />
+                </FieldSet>
+                <FieldSeparator />
+                <FieldSet>
                   <FieldLegend variant="label">Channels</FieldLegend>
                   <FieldDescription>
                     Connect the learning space to existing channels.
                   </FieldDescription>
                   <FieldGroup className="grid gap-3 md:grid-cols-2">
                     <Field>
-                      <FieldLabel htmlFor="ls-primary-channel">
-                        Primary channel
-                      </FieldLabel>
+                      <FieldLabel htmlFor="ls-primary-channel">Primary channel</FieldLabel>
                       <Input
                         id="ls-primary-channel"
                         value={primaryChannel}
@@ -222,9 +331,7 @@ export function LearningSpaceFormDialog() {
                       />
                     </Field>
                     <Field>
-                      <FieldLabel htmlFor="ls-related-channels">
-                        Related channels
-                      </FieldLabel>
+                      <FieldLabel htmlFor="ls-related-channels">Related channels</FieldLabel>
                       <Textarea
                         id="ls-related-channels"
                         value={relatedChannels}
@@ -237,29 +344,18 @@ export function LearningSpaceFormDialog() {
                 </FieldSet>
                 <FieldSeparator />
                 <FieldSet>
-                  <FieldLegend variant="label">Schedule & resources</FieldLegend>
+                  <FieldLegend variant="label">Schedule</FieldLegend>
                   <FieldDescription>
-                    Configure the recurring schedule and attach helpful resources.
+                    Configure the recurring schedule for this learning space.
                   </FieldDescription>
-                  <FieldGroup className="grid gap-3 md:grid-cols-2">
-                    <Field>
-                      <FieldLabel htmlFor="ls-schedule">Schedule series</FieldLabel>
-                      <Input
-                        id="ls-schedule"
-                        value={scheduleSeries}
-                        onChange={(event) => setScheduleSeries(event.target.value)}
-                      />
-                    </Field>
-                    <Field>
-                      <FieldLabel htmlFor="ls-resources">Resource links</FieldLabel>
-                      <Textarea
-                        id="ls-resources"
-                        value={resourceLinks}
-                        onChange={(event) => setResourceLinks(event.target.value)}
-                        rows={2}
-                      />
-                    </Field>
-                  </FieldGroup>
+                  <Field>
+                    <FieldLabel htmlFor="ls-schedule">Schedule series</FieldLabel>
+                    <Input
+                      id="ls-schedule"
+                      value={scheduleSeries}
+                      onChange={(event) => setScheduleSeries(event.target.value)}
+                    />
+                  </Field>
                 </FieldSet>
               </form>
               <ScrollBar orientation="vertical" className="right-2" />
@@ -269,11 +365,7 @@ export function LearningSpaceFormDialog() {
                 <Button variant="ghost" onClick={() => setOpen(false)} type="button">
                   Cancel
                 </Button>
-                <Button
-                  type="submit"
-                  form="learning-space-form"
-                  className="w-full sm:w-auto"
-                >
+                <Button type="submit" form="learning-space-form" className="w-full sm:w-auto">
                   Create space
                 </Button>
               </DialogFooter>

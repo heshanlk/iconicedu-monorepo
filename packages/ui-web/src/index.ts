@@ -28,6 +28,7 @@ export * from './ui/badge';
 export * from './ui/alert-dialog';
 export * from './ui/card';
 export * from './components/dashboard-header';
+export * from './components/resource-links-editor';
 export { GalleryVerticalEnd } from 'lucide-react';
 export { FingerprintIcon } from 'lucide-react';
 export * from './components/site-logo';

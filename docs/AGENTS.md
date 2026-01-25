@@ -44,6 +44,7 @@
 - Prefer composition of shadcn primitives over custom components.
 - Reference the official shadcn component docs (https://ui.shadcn.com/docs/components) before recreating a UI pattern; strive to reuse those building blocks rather than invent new ones.
 - When a layout or interaction is repeated across views, add a shared, shadcn-friendly component inside `packages/ui-web/src/components` instead of duplicating markup in multiple files.
+- All new UI components, modals, or interaction patterns must be authored inside `packages/ui-web` (and exported from there); calling contexts should import from `@iconicedu/ui-web` instead of defining their own UI primitives.
 - Theming uses `ThemeKey` and `theme-*` classes; avoid inline colors.
 - Keep mobile responsiveness in mind for all layouts.
 
