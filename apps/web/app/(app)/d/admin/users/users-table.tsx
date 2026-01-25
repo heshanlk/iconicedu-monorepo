@@ -38,7 +38,6 @@ import {
   TableRow,
 } from '@iconicedu/ui-web';
 import { toast } from 'sonner';
-import { Skeleton } from '@iconicedu/ui-web/ui/skeleton';
 import {
   Briefcase,
   Copy,
@@ -46,9 +45,7 @@ import {
   Shield,
   User,
   Users,
-  UserCheck,
   Trash2,
-  Pencil,
   MoreHorizontal,
   RotateCw,
   Loader2,
@@ -56,22 +53,14 @@ import {
 import { cn } from '@iconicedu/ui-web/lib/utils';
 
 import { InviteUserDialog } from './invite-dialog';
+import type { AdminUserRow } from '../../../../../lib/admin/users';
 
-export type UserRow = {
-  id: string;
-  email?: string | null;
-  phone?: string | null;
-  profileKind?: string | null;
-  status: 'active' | 'invited' | 'archived' | string;
-  createdAt?: string | null;
-  lastSignInAt?: string | null;
-  displayName?: string | null;
-};
+export type UserRow = AdminUserRow;
 
 type SortKey = 'name' | 'email' | 'status' | 'joined';
 
 type UsersTableProps = {
-  rows: UserRow[];
+  rows: AdminUserRow[];
 };
 
 const STATUS_BADGE_VARIANTS: Record<string, string> = {
@@ -205,10 +194,6 @@ export function UsersTable({ rows }: UsersTableProps) {
     } finally {
       setDeletingId(null);
     }
-  };
-
-  const toggleAction = (action: string, id: string) => {
-    window.alert(`${action} user ${id}`);
   };
 
   const renderSortIndicator = (key: SortKey) => {
@@ -431,18 +416,6 @@ export function UsersTable({ rows }: UsersTableProps) {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem
-                        onClick={() => toggleAction('Edit', row.id)}
-                        disabled={deletingId === row.id}
-                      >
-                        <Pencil className="size-3 mr-2" /> Edit
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => toggleAction('Change status', row.id)}
-                        disabled={deletingId === row.id}
-                      >
-                        <UserCheck className="size-3 mr-2" /> Change status
-                      </DropdownMenuItem>
                       {row.status === 'invited' && (
                         <DropdownMenuItem
                           onClick={() => handleRowInviteAction(row, 'invite')}

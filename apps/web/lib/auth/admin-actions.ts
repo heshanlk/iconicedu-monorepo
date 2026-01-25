@@ -2,8 +2,8 @@
 
 import { revalidatePath } from 'next/cache';
 
-import { createAuthAdminService } from '../../../../../lib/auth/admin';
-import { createSupabaseServerClient } from '../../../../../lib/supabase/server';
+import { createAuthAdminService } from './admin';
+import { createSupabaseServerClient } from '../supabase/server';
 
 import type {
   AdminUserAttributes,
@@ -91,9 +91,7 @@ export async function createUserAction(payload: CreateUserPayload) {
     password: payload.password,
     role: payload.role,
     phone: payload.phone,
-    user_metadata: payload.displayName
-      ? { display_name: payload.displayName }
-      : undefined,
+    user_metadata: payload.displayName ? { display_name: payload.displayName } : undefined,
   };
 
   return runAction('create-user', (service) => service.createUser(attributes));
@@ -114,9 +112,7 @@ export async function updateUserAction(payload: UpdateUserPayload) {
     role: payload.role,
     phone: payload.phone,
     password: payload.password,
-    user_metadata: payload.displayName
-      ? { display_name: payload.displayName }
-      : undefined,
+    user_metadata: payload.displayName ? { display_name: payload.displayName } : undefined,
   };
 
   return runAction('update-user', (service) => service.updateUser(payload.userId, attributes));
@@ -219,9 +215,7 @@ export async function generateEmailLinkAction(payload: GenerateLinkPayload) {
 type SignOutPayload = { jwt: string; scope?: string };
 
 export async function signOutUserAction(payload: SignOutPayload) {
-  return runAction('sign-out-user', (service) =>
-    service.signOutUser(payload.jwt, payload.scope),
-  );
+  return runAction('sign-out-user', (service) => service.signOutUser(payload.jwt, payload.scope));
 }
 
 type ListFactorsPayload = { userId: string };
@@ -248,20 +242,9 @@ type OAuthClientPayload = {
   description?: string;
 };
 
-function parseRedirects(values?: string) {
-  if (!values) {
-    return [];
-  }
-
-  return values
-    .split(',')
-    .map((value) => value.trim())
-    .filter(Boolean);
-}
-
-export async function listOAuthClientsAction() {
+export async function listOAuthClientsAction(options?: { page?: number; perPage?: number }) {
   return runAction('list-oauth-clients', (service) =>
-    service.listOAuthClients({ perPage: 25 }),
+    service.listOAuthClients({ page: options?.page, perPage: options?.perPage }),
   );
 }
 
@@ -270,37 +253,32 @@ export async function getOAuthClientAction(clientId: string) {
 }
 
 export async function createOAuthClientAction(payload: OAuthClientPayload) {
-  const params: CreateOAuthClientParams = {
-    name: payload.name ?? 'New client',
-    redirectUris: parseRedirects(payload.redirectUris),
-    scopes: payload.scopes?.split(',').map((scope) => scope.trim()),
-    description: payload.description,
-  };
-
-  return runAction('create-oauth-client', (service) => service.createOAuthClient(params));
+  if (!payload.redirectUris) {
+    throw new Error('redirectUris is required');
+  }
+  return runAction('create-oauth-client', (service) =>
+    service.createOAuthClient({
+      name: payload.name,
+      redirectUris: payload.redirectUris,
+      scopes: payload.scopes,
+      description: payload.description,
+    }),
+  );
 }
 
-export async function updateOAuthClientAction(payload: OAuthClientPayload) {
-  if (!payload.clientId) {
-    throw new Error('clientId is required to update a client');
-  }
-
-  const params: UpdateOAuthClientParams = {
-    name: payload.name,
-    redirectUris: parseRedirects(payload.redirectUris),
-    scopes: payload.scopes?.split(',').map((scope) => scope.trim()),
-    description: payload.description,
-  };
-
+export async function updateOAuthClientAction(payload: OAuthClientPayload & { clientId: string }) {
   return runAction('update-oauth-client', (service) =>
-    service.updateOAuthClient(payload.clientId!, params),
+    service.updateOAuthClient(payload.clientId, {
+      name: payload.name,
+      redirectUris: payload.redirectUris,
+      scopes: payload.scopes,
+      description: payload.description,
+    }),
   );
 }
 
 export async function deleteOAuthClientAction(clientId: string) {
-  return runAction('delete-oauth-client', (service) =>
-    service.deleteOAuthClient(clientId),
-  );
+  return runAction('delete-oauth-client', (service) => service.deleteOAuthClient(clientId));
 }
 
 export async function regenerateOAuthClientSecretAction(clientId: string) {

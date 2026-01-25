@@ -55,7 +55,6 @@ export const ADMIN_MENU_SECTIONS: AdminMenuSectionVM[] = [
     links: [
       { title: 'Account settings', url: '/d/admin/settings/accounts' },
       { title: 'Roles & policies', url: '/d/admin/settings/roles' },
-      { title: 'Auth admin', url: '/d/admin/auth' },
     ],
   },
 ];
