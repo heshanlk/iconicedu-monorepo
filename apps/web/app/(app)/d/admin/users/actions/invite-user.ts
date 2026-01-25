@@ -170,7 +170,7 @@ export async function inviteAdminUserAction(
       await adminClient.auth.admin.generateLink({
         type: linkType,
         email: normalizedEmail,
-        redirectTo,
+        options: { redirectTo },
       });
 
     if (inviteError) {
@@ -207,7 +207,7 @@ export async function inviteAdminUserAction(
     await adminClient.auth.admin.generateLink({
       type: linkType,
       email: normalizedEmail,
-      redirectTo,
+      options: { redirectTo },
     });
 
   if (linkError) {
