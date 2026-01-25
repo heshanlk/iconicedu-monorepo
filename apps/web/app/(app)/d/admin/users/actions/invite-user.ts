@@ -21,7 +21,7 @@ import { getFamilyInviteAdminClient } from '../../../../../../lib/family/queries
 
 const INVITE_SCHEMA = z.object({
   email: z.string().trim().email(),
-  profileKind: z.enum(['guardian', 'staff', 'educator']),
+  profileKind: z.enum(['guardian', 'staff', 'educator', 'child']),
 });
 
 type InviteUserResult = {
@@ -158,8 +158,12 @@ export async function inviteAdminUserAction(
     throw upsertError;
   }
 
-  const baseUrl = await resolveBaseUrl();
-  const redirectTo = buildRedirectUrl(parsed.profileKind, baseUrl);
+  const redirectOverride = formData.get('redirectTo') as string | null;
+
+  const redirectTo =
+    redirectOverride && redirectOverride.trim()
+      ? redirectOverride
+      : buildRedirectUrl(parsed.profileKind, await resolveBaseUrl());
 
   if (mode === 'invite') {
     const { data: inviteData, error: inviteError } =
@@ -215,15 +219,6 @@ export async function inviteAdminUserAction(
   if (!actionLink) {
     throw new Error('Supabase did not return an invite action link.');
   }
-  await reconcileInvitedAccount({
-    client: adminClient,
-    orgId: ORG.id,
-    accountId: targetAccount.id,
-    email: normalizedEmail,
-    updatedBy: accountResponse.data.id,
-    authUserId: otpData?.user?.id ?? undefined,
-  });
-
   return {
     email: normalizedEmail,
     inviteUrl: actionLink,

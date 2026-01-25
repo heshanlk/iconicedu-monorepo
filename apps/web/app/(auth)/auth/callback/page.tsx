@@ -23,8 +23,22 @@ export default function CallbackPage() {
     const hashParams = new URLSearchParams(
       window.location.hash.startsWith('#') ? window.location.hash.slice(1) : window.location.hash,
     );
-const accessToken = hashParams.get('access_token');
-const refreshToken = hashParams.get('refresh_token');
+    const accessToken = hashParams.get('access_token');
+    const refreshToken = hashParams.get('refresh_token');
+
+    const activateAccount = async () => {
+      try {
+        const response = await fetch('/api/accounts/activate', {
+          method: 'POST',
+          credentials: 'same-origin',
+        });
+        if (!response.ok) {
+          console.error('Failed to mark account as active', await response.text());
+        }
+      } catch (error) {
+        console.error('Failed to activate account after auth callback', error);
+      }
+    };
 
     const finish = async () => {
       if (isEducatorFlow) {
@@ -33,6 +47,7 @@ const refreshToken = hashParams.get('refresh_token');
       }
       if (code) {
         await supabase.auth.exchangeCodeForSession(code);
+        await activateAccount();
         router.replace('/d');
         return;
       }
@@ -42,6 +57,7 @@ const refreshToken = hashParams.get('refresh_token');
           access_token: accessToken,
           refresh_token: refreshToken,
         });
+        await activateAccount();
         router.replace('/d');
         return;
       }
@@ -51,6 +67,7 @@ const refreshToken = hashParams.get('refresh_token');
           token,
           type: type ?? 'invite',
         });
+        await activateAccount();
 
         router.replace('/d');
       }

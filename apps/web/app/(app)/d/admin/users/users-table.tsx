@@ -231,6 +231,9 @@ export function UsersTable({ rows }: UsersTableProps) {
       setLoginLinkLoading(true);
     }
     try {
+      const redirectTo = `${window.location.origin.replace(/\/$/, '')}/auth/callback?profileKind=${encodeURIComponent(
+        row.profileKind ?? 'guardian',
+      )}`;
       const response = await fetch('/d/admin/users/actions/invite-row', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -239,6 +242,7 @@ export function UsersTable({ rows }: UsersTableProps) {
           profileKind: row.profileKind ?? 'guardian',
           mode,
           linkType: mode === 'invite' ? 'invite' : 'magiclink',
+          redirectTo,
         }),
       });
 

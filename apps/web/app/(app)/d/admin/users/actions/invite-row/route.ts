@@ -8,10 +8,11 @@ type RowInviteRequest = {
   profileKind?: string;
   mode?: 'invite' | 'link';
   linkType?: 'invite' | 'magiclink';
+  redirectTo?: string;
 };
 
 export async function POST(request: Request) {
-  const { accountId, profileKind, mode, linkType } =
+  const { accountId, profileKind, mode, linkType, redirectTo } =
     (await request.json()) as RowInviteRequest;
 
   if (!accountId) {
@@ -41,6 +42,9 @@ export async function POST(request: Request) {
   formData.set('profileKind', profileKind ?? 'guardian');
   formData.set('mode', mode ?? 'link');
   formData.set('linkType', linkType ?? (mode === 'link' ? 'magiclink' : 'invite'));
+  if (redirectTo) {
+    formData.set('redirectTo', redirectTo);
+  }
 
   try {
     const payload = await inviteAdminUserAction(formData);

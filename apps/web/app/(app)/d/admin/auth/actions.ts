@@ -17,6 +17,14 @@ import type {
 
 const AUTH_ADMIN_PATH = '/d/admin/auth';
 
+const APP_URL = (process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000').replace(/\/$/, '');
+const DEFAULT_AUTH_CALLBACK_URL = `${APP_URL}/auth/callback`;
+
+function resolveCallbackRedirect(override?: string | null) {
+  const trimmed = override?.trim();
+  return trimmed && trimmed.length > 0 ? trimmed : DEFAULT_AUTH_CALLBACK_URL;
+}
+
 async function cleanupAccountRecords(authUserId: string) {
   const supabase = await createSupabaseServerClient();
   const { data: account } = await supabase
@@ -130,7 +138,7 @@ export async function inviteUserByEmailAction(payload: InvitePayload) {
   const data = payload.metadata ? { metadata: payload.metadata } : undefined;
   return runAction('invite-user', (service) =>
     service.inviteUserByEmail(payload.email, {
-      redirectTo: payload.redirectTo,
+      redirectTo: resolveCallbackRedirect(payload.redirectTo),
       data,
     }),
   );
@@ -159,7 +167,7 @@ function parseMetadata(value?: string) {
 
 export async function generateEmailLinkAction(payload: GenerateLinkPayload) {
   const options = {
-    redirectTo: payload.redirectTo,
+    redirectTo: resolveCallbackRedirect(payload.redirectTo),
     data: parseMetadata(payload.metadata),
   };
 
