@@ -17,7 +17,10 @@ import type {
 
 const AUTH_ADMIN_PATH = '/d/admin/auth';
 
-const APP_URL = (process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000').replace(/\/$/, '');
+const APP_URL = (process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000').replace(
+  /\/$/,
+  '',
+);
 const DEFAULT_AUTH_CALLBACK_URL = `${APP_URL}/auth/callback`;
 
 function resolveCallbackRedirect(override?: string | null) {
@@ -38,8 +41,16 @@ async function cleanupAccountRecords(authUserId: string) {
   }
 
   await Promise.all([
-    supabase.from('profiles').delete().eq('account_id', account.id).eq('org_id', account.org_id),
-    supabase.from('family_links').delete().eq('guardian_account_id', account.id).eq('org_id', account.org_id),
+    supabase
+      .from('profiles')
+      .delete()
+      .eq('account_id', account.id)
+      .eq('org_id', account.org_id),
+    supabase
+      .from('family_links')
+      .delete()
+      .eq('guardian_account_id', account.id)
+      .eq('org_id', account.org_id),
     supabase.from('accounts').delete().eq('id', account.id).eq('org_id', account.org_id),
   ]);
 }
@@ -51,9 +62,14 @@ export type AuthAdminActionResult<T = unknown> = {
   payload?: T;
 };
 
-type ActionCallback<T> = (service: ReturnType<typeof createAuthAdminService>) => Promise<T>;
+type ActionCallback<T> = (
+  service: ReturnType<typeof createAuthAdminService>,
+) => Promise<T>;
 
-async function runAction<T>(action: string, callback: ActionCallback<T>): Promise<AuthAdminActionResult<T>> {
+async function runAction<T>(
+  action: string,
+  callback: ActionCallback<T>,
+): Promise<AuthAdminActionResult<T>> {
   try {
     const service = createAuthAdminService();
     const payload = await callback(service);
@@ -68,7 +84,8 @@ async function runAction<T>(action: string, callback: ActionCallback<T>): Promis
     return {
       action,
       success: false,
-      message: error instanceof Error ? error.message : `Unexpected error performing ${action}.`,
+      message:
+        error instanceof Error ? error.message : `Unexpected error performing ${action}.`,
     };
   }
 }
@@ -91,7 +108,9 @@ export async function createUserAction(payload: CreateUserPayload) {
     password: payload.password,
     role: payload.role,
     phone: payload.phone,
-    user_metadata: payload.displayName ? { display_name: payload.displayName } : undefined,
+    user_metadata: payload.displayName
+      ? { display_name: payload.displayName }
+      : undefined,
   };
 
   return runAction('create-user', (service) => service.createUser(attributes));
@@ -112,10 +131,14 @@ export async function updateUserAction(payload: UpdateUserPayload) {
     role: payload.role,
     phone: payload.phone,
     password: payload.password,
-    user_metadata: payload.displayName ? { display_name: payload.displayName } : undefined,
+    user_metadata: payload.displayName
+      ? { display_name: payload.displayName }
+      : undefined,
   };
 
-  return runAction('update-user', (service) => service.updateUser(payload.userId, attributes));
+  return runAction('update-user', (service) =>
+    service.updateUser(payload.userId, attributes),
+  );
 }
 
 type DeleteUserPayload = { userId: string; softDelete?: boolean };
@@ -215,7 +238,9 @@ export async function generateEmailLinkAction(payload: GenerateLinkPayload) {
 type SignOutPayload = { jwt: string; scope?: string };
 
 export async function signOutUserAction(payload: SignOutPayload) {
-  return runAction('sign-out-user', (service) => service.signOutUser(payload.jwt, payload.scope));
+  return runAction('sign-out-user', (service) =>
+    service.signOutUser(payload.jwt, payload.scope),
+  );
 }
 
 type ListFactorsPayload = { userId: string };
@@ -242,7 +267,10 @@ type OAuthClientPayload = {
   description?: string;
 };
 
-export async function listOAuthClientsAction(options?: { page?: number; perPage?: number }) {
+export async function listOAuthClientsAction(options?: {
+  page?: number;
+  perPage?: number;
+}) {
   return runAction('list-oauth-clients', (service) =>
     service.listOAuthClients({ page: options?.page, perPage: options?.perPage }),
   );
@@ -266,7 +294,9 @@ export async function createOAuthClientAction(payload: OAuthClientPayload) {
   );
 }
 
-export async function updateOAuthClientAction(payload: OAuthClientPayload & { clientId: string }) {
+export async function updateOAuthClientAction(
+  payload: OAuthClientPayload & { clientId: string },
+) {
   return runAction('update-oauth-client', (service) =>
     service.updateOAuthClient(payload.clientId, {
       name: payload.name,
@@ -278,7 +308,9 @@ export async function updateOAuthClientAction(payload: OAuthClientPayload & { cl
 }
 
 export async function deleteOAuthClientAction(clientId: string) {
-  return runAction('delete-oauth-client', (service) => service.deleteOAuthClient(clientId));
+  return runAction('delete-oauth-client', (service) =>
+    service.deleteOAuthClient(clientId),
+  );
 }
 
 export async function regenerateOAuthClientSecretAction(clientId: string) {

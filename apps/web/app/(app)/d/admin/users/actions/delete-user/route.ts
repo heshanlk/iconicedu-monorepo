@@ -27,15 +27,24 @@ export async function POST(request: Request) {
     .maybeSingle();
 
   if (accountError) {
-    return NextResponse.json({ success: false, message: accountError.message }, { status: 500 });
+    return NextResponse.json(
+      { success: false, message: accountError.message },
+      { status: 500 },
+    );
   }
 
   if (!account) {
-    return NextResponse.json({ success: false, message: 'Account not found' }, { status: 404 });
+    return NextResponse.json(
+      { success: false, message: 'Account not found' },
+      { status: 404 },
+    );
   }
 
   if (account.auth_user_id) {
-    const result = await deleteUserAction({ userId: account.auth_user_id, softDelete: false });
+    const result = await deleteUserAction({
+      userId: account.auth_user_id,
+      softDelete: false,
+    });
     return NextResponse.json(result);
   }
 
@@ -48,14 +57,25 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     return NextResponse.json(
-      { success: false, message: error instanceof Error ? error.message : 'Cleanup failed.' },
+      {
+        success: false,
+        message: error instanceof Error ? error.message : 'Cleanup failed.',
+      },
       { status: 500 },
     );
   }
 }
 
-async function deleteAccountOnly(adminClient: ReturnType<typeof getFamilyInviteAdminClient>, accountId: string, orgId: string) {
-  const accountDeletion = adminClient.from('accounts').delete().eq('id', accountId).eq('org_id', orgId);
+async function deleteAccountOnly(
+  adminClient: ReturnType<typeof getFamilyInviteAdminClient>,
+  accountId: string,
+  orgId: string,
+) {
+  const accountDeletion = adminClient
+    .from('accounts')
+    .delete()
+    .eq('id', accountId)
+    .eq('org_id', orgId);
 
   const profileDeletion = adminClient
     .from('profiles')
