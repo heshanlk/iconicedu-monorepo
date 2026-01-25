@@ -25,7 +25,9 @@ import {
   Plus,
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
   toast,
@@ -44,19 +46,11 @@ const KIND_OPTIONS = [
   { value: 'large_class', label: 'Large class' },
 ];
 
-const STATUS_OPTIONS = [
-  { value: 'active', label: 'Active' },
-  { value: 'archived', label: 'Archived' },
-  { value: 'completed', label: 'Completed' },
-  { value: 'paused', label: 'Paused' },
-];
-
 const SUBJECT_OPTIONS = ['MATH', 'SCIENCE', 'ELA', 'CHESS'];
 
 export function LearningSpaceFormDialog() {
   const [open, setOpen] = React.useState(false);
   const [kind, setKind] = React.useState(KIND_OPTIONS[0].value);
-  const [status, setStatus] = React.useState(STATUS_OPTIONS[0].value);
   const [title, setTitle] = React.useState('');
   const [subject, setSubject] = React.useState('');
   const [description, setDescription] = React.useState('');
@@ -108,8 +102,10 @@ export function LearningSpaceFormDialog() {
                     space.
                   </FieldDescription>
                   <FieldGroup className="grid gap-3 md:grid-cols-[auto_minmax(0,1fr)]">
-                    <Field className="items-start">
-                      <FieldLabel htmlFor="ls-icon">Icon</FieldLabel>
+                    <Field className="items-center gap-2">
+                      <FieldLabel htmlFor="ls-icon">
+                        Icon <span className="text-destructive">*</span>
+                      </FieldLabel>
                       <Select
                         id="ls-icon"
                         value={iconKey}
@@ -119,29 +115,30 @@ export function LearningSpaceFormDialog() {
                       >
                         <SelectTrigger
                           aria-label="Select icon"
-                          className="h-12 w-12 rounded-full border border-border bg-muted"
+                          className="flex rounded-2xl border border-border bg-muted py-2"
                         >
-                          <span className="flex h-full w-full items-center justify-center">
-                            <SelectedIcon className="size-5" aria-hidden />
-                          </span>
+                          <div className="flex items-center">
+                            <SelectValue placeholder="Select icon" />
+                          </div>
                         </SelectTrigger>
                         <SelectContent>
-                          {LEARNING_SPACE_ICON_OPTIONS.map((option) => {
-                            const Icon = LEARNING_SPACE_ICON_MAP[option.value];
-                            return (
-                              <SelectItem key={option.value} value={option.value}>
-                                <div className="flex items-center gap-2">
+                          <SelectGroup>
+                            {LEARNING_SPACE_ICON_OPTIONS.map((option) => {
+                              const Icon = LEARNING_SPACE_ICON_MAP[option.value];
+                              return (
+                                <SelectItem key={option.value} value={option.value}>
                                   <Icon className="size-4" aria-hidden />
-                                  <span>{option.label}</span>
-                                </div>
-                              </SelectItem>
-                            );
-                          })}
+                                </SelectItem>
+                              );
+                            })}
+                          </SelectGroup>
                         </SelectContent>
                       </Select>
                     </Field>
                     <Field>
-                      <FieldLabel htmlFor="ls-title">Title</FieldLabel>
+                      <FieldLabel htmlFor="ls-title">
+                        Title <span className="text-destructive">*</span>
+                      </FieldLabel>
                       <Input
                         id="ls-title"
                         value={title}
@@ -162,69 +159,40 @@ export function LearningSpaceFormDialog() {
                           <SelectValue placeholder="Select subject" />
                         </SelectTrigger>
                         <SelectContent>
-                          {SUBJECT_OPTIONS.map((option) => (
-                            <SelectItem key={option} value={option}>
-                              {option}
-                            </SelectItem>
-                          ))}
+                          <SelectGroup>
+                            {SUBJECT_OPTIONS.map((option) => (
+                              <SelectItem key={option} value={option}>
+                                {option}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
                         </SelectContent>
                       </Select>
                     </Field>
                     <Field>
-                      <FieldLabel htmlFor="ls-status">Status</FieldLabel>
+                      <FieldLabel htmlFor="ls-kind">
+                        Kind <span className="text-destructive">*</span>
+                      </FieldLabel>
                       <Select
-                        id="ls-status"
-                        value={status}
-                        onValueChange={(value) => setStatus(value as string)}
+                        id="ls-kind"
+                        value={kind}
+                        onValueChange={(value) => setKind(value)}
                       >
                         <SelectTrigger>
-                          <SelectValue />
+                          <SelectValue placeholder="Select kind" />
                         </SelectTrigger>
                         <SelectContent>
-                          {STATUS_OPTIONS.map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                              {option.label}
-                            </SelectItem>
-                          ))}
+                          <SelectGroup>
+                            {KIND_OPTIONS.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
                         </SelectContent>
                       </Select>
                     </Field>
                   </FieldGroup>
-                  <FieldSeparator />
-                  <Field>
-                    <FieldLabel>Kind</FieldLabel>
-                    <FieldDescription>
-                      The type of session that best describes this learning space.
-                    </FieldDescription>
-                    <div className="space-y-3">
-                      {KIND_OPTIONS.map((option) => (
-                        <button
-                          key={option.value}
-                          type="button"
-                          onClick={() => setKind(option.value)}
-                          className={`flex flex-col gap-2 rounded-2xl border p-4 text-left transition ${
-                            kind === option.value
-                              ? 'border-primary bg-primary/5 shadow focus-visible:border-primary focus-visible:ring focus-visible:ring-primary/30'
-                              : 'border-border bg-muted'
-                          }`}
-                        >
-                          <div className="flex items-center justify-between gap-2">
-                            <FieldTitle>{option.label}</FieldTitle>
-                            <span
-                              className={`h-4 w-4 rounded-full border ${
-                                kind === option.value
-                                  ? 'border-primary bg-primary'
-                                  : 'border-border'
-                              }`}
-                            />
-                          </div>
-                          <FieldDescription className="text-xs text-muted-foreground">
-                            Suitable for {option.label.toLowerCase()}
-                          </FieldDescription>
-                        </button>
-                      ))}
-                    </div>
-                  </Field>
                   <Field>
                     <FieldLabel htmlFor="ls-description">Description</FieldLabel>
                     <Textarea
