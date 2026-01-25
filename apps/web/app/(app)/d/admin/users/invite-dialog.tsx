@@ -51,63 +51,19 @@ export function InviteUserDialog({ className }: { className?: string }) {
     setErrorMessage(null);
 
     const formData = new FormData(event.currentTarget);
-    try {
-      const result = await inviteAdminUserAction(formData);
-      console.log({ result });
-      const inviteLink = result.actionLink ?? result.inviteUrl;
-      if (!inviteLink) {
-        throw new Error('Invite link not returned.');
-      }
-
-      const clipboard = typeof navigator === 'undefined' ? null : navigator.clipboard;
-      if (!clipboard?.writeText) {
-        throw new Error('Clipboard unavailable in this context.');
-      }
-
-      await clipboard.writeText(inviteLink);
-      toast.success('Invite link copied to clipboard');
-      setGeneratedInviteUrl(inviteLink);
-      setOpen(false);
-      router.refresh();
-    } catch (error) {
-      setErrorMessage(
-        error instanceof Error
-          ? error.message
-          : 'Unable to generate invite link at this time.',
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleGenerateLink = async () => {
-    const emailFromForm = formRef.current
-      ?.querySelector<HTMLInputElement>('input[name="email"]')
-      ?.value.trim();
-    if (!emailFromForm) {
-      setErrorMessage('Enter an email address before generating a link.');
-      return;
-    }
-
-    const formData = new FormData();
-    formData.set('email', emailFromForm);
-    formData.set('profileKind', profileKind);
-
-    setIsSubmitting(true);
-    setErrorMessage(null);
-    setGeneratedInviteUrl(null);
-
+    formData.set('mode', 'invite');
+    formData.set('linkType', 'invite');
     try {
       const result = await inviteAdminUserAction(formData);
       const inviteLink = result.actionLink ?? result.inviteUrl;
-      if (!inviteLink) {
-        throw new Error('Invite link not returned.');
+      if (inviteLink) {
+        setGeneratedInviteUrl(inviteLink);
       }
-      setGeneratedInviteUrl(inviteLink);
+      toast.success('Magic link sent');
       router.refresh();
     } catch (error) {
       setErrorMessage(
-        error instanceof Error ? error.message : 'Unable to send invite at this time.',
+        error instanceof Error ? error.message : 'Unable to send magic link at this time.',
       );
     } finally {
       setIsSubmitting(false);
@@ -186,6 +142,9 @@ export function InviteUserDialog({ className }: { className?: string }) {
               </SelectContent>
             </Select>
           </div>
+          {errorMessage ? (
+            <p className="text-sm text-destructive">{errorMessage}</p>
+          ) : null}
           {generatedInviteUrl && (
             <div className="rounded-lg border border-border bg-muted px-3 py-2 text-sm">
               <div className="flex items-center justify-between gap-2">
@@ -209,21 +168,9 @@ export function InviteUserDialog({ className }: { className?: string }) {
               </div>
             </div>
           )}
-          {errorMessage ? (
-            <p className="text-sm text-destructive">{errorMessage}</p>
-          ) : null}
           <DialogFooter className="space-x-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              type="button"
-              onClick={handleGenerateLink}
-              disabled={isSubmitting}
-            >
-              Generate link
-            </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Sending…' : 'Send magic link'}
+              {isSubmitting ? 'Sending…' : 'Send invite to register'}
             </Button>
           </DialogFooter>
         </form>

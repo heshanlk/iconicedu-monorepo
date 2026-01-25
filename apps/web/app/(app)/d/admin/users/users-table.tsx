@@ -13,6 +13,13 @@ import {
   AlertDialogTitle,
   Badge,
   Button,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -30,9 +37,11 @@ import {
   TableHeader,
   TableRow,
 } from '@iconicedu/ui-web';
+import { toast } from 'sonner';
 import { Skeleton } from '@iconicedu/ui-web/ui/skeleton';
 import {
   Briefcase,
+  Copy,
   GraduationCap,
   Shield,
   User,
@@ -86,6 +95,10 @@ export function UsersTable({ rows }: UsersTableProps) {
   const router = useRouter();
   const [isPending, startTransition] = React.useTransition();
   const [confirmDeleteUser, setConfirmDeleteUser] = React.useState<UserRow | null>(null);
+  const [rowActionLoading, setRowActionLoading] = React.useState<string | null>(null);
+  const [loginLink, setLoginLink] = React.useState<string | null>(null);
+  const [linkDialogOpen, setLinkDialogOpen] = React.useState(false);
+  const [loginLinkLoading, setLoginLinkLoading] = React.useState(false);
   const refreshing = isPending;
 
   const handleRefresh = () => {
@@ -207,6 +220,55 @@ export function UsersTable({ rows }: UsersTableProps) {
         {sortDirection === 'asc' ? '↑' : '↓'}
       </span>
     );
+  };
+
+  const handleRowInviteAction = async (row: UserRow, mode: 'invite' | 'link') => {
+    if (rowActionLoading) {
+      return;
+    }
+    setRowActionLoading(row.id);
+    if (mode === 'link') {
+      setLoginLinkLoading(true);
+    }
+    try {
+      const response = await fetch('/d/admin/users/actions/invite-row', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          accountId: row.id,
+          profileKind: row.profileKind ?? 'guardian',
+          mode,
+          linkType: mode === 'invite' ? 'invite' : 'magiclink',
+        }),
+      });
+
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result?.message ?? 'Unable to perform invite action');
+      }
+
+      if (mode === 'link') {
+        const link = result?.payload?.actionLink ?? result?.payload?.inviteUrl;
+        if (!link) {
+          throw new Error('Invite link missing');
+        }
+        if (navigator?.clipboard?.writeText) {
+          await navigator.clipboard.writeText(link);
+        }
+        setLoginLink(link);
+        setLinkDialogOpen(true);
+        toast.success('Invite link ready to copy');
+      } else {
+        toast.success('Magic link resent');
+      }
+
+      await router.refresh();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Invite action failed');
+    } finally {
+      setRowActionLoading(null);
+      setLoginLinkLoading(false);
+    }
   };
 
   return (
@@ -377,6 +439,20 @@ export function UsersTable({ rows }: UsersTableProps) {
                       >
                         <UserCheck className="size-3 mr-2" /> Change status
                       </DropdownMenuItem>
+                      {row.status === 'invited' && (
+                        <DropdownMenuItem
+                          onClick={() => handleRowInviteAction(row, 'invite')}
+                          disabled={Boolean(rowActionLoading) || deletingId === row.id}
+                        >
+                          <Copy className="size-3 mr-2" /> Resend invite
+                        </DropdownMenuItem>
+                      )}
+                      <DropdownMenuItem
+                        onClick={() => handleRowInviteAction(row, 'link')}
+                        disabled={Boolean(rowActionLoading) || deletingId === row.id}
+                      >
+                        <Copy className="size-3 mr-2" /> Generate a login link
+                      </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() => openDeleteDialog(row)}
                         disabled={deletingId === row.id}
@@ -469,6 +545,47 @@ export function UsersTable({ rows }: UsersTableProps) {
           </Button>
         </div>
       </div>
+      <Dialog open={linkDialogOpen} onOpenChange={(open) => setLinkDialogOpen(open)}>
+        <DialogContent className="max-w-md space-y-4">
+          <DialogHeader>
+            <DialogTitle>Generated login link</DialogTitle>
+            <DialogDescription>
+              Copy this magic link and share it with the user.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="relative rounded-lg border border-border bg-muted px-3 py-2 text-sm">
+            {loginLinkLoading && (
+              <div className="absolute inset-0 flex items-center justify-center bg-card/80">
+                <Loader2 className="size-5 animate-spin text-muted-foreground" />
+              </div>
+            )}
+            <div className="flex items-center justify-between gap-3">
+              <span
+                className="text-xs text-muted-foreground break-words"
+                style={{ wordBreak: 'break-word' }}
+              >
+                {loginLink}
+              </span>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="px-2"
+                disabled={!loginLink}
+                onClick={async () => {
+                  if (!loginLink || !navigator?.clipboard?.writeText) {
+                    return;
+                  }
+                  await navigator.clipboard.writeText(loginLink);
+                  toast.success('Invite link copied');
+                }}
+              >
+                <Copy className="size-4" />
+                <span className="sr-only">Copy login link</span>
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -54,6 +54,8 @@ export async function inviteAdminUserAction(
     email: formData.get('email'),
     profileKind: formData.get('profileKind'),
   });
+  const mode = (formData.get('mode') as 'invite' | 'link') ?? 'link';
+  const linkType = (formData.get('linkType') as 'invite' | 'magiclink') ?? 'invite';
 
   const supabase = await createSupabaseServerClient();
   const { data: userData } = await supabase.auth.getUser();
@@ -103,20 +105,22 @@ export async function inviteAdminUserAction(
     throw new Error('Unable to resolve invited account.');
   }
 
-  if (targetAccount.status === 'active') {
-    throw new Error('Account already active; no invite sent.');
-  }
+  if (mode === 'invite') {
+    if (targetAccount.status === 'active') {
+      throw new Error('Account already active; no invite sent.');
+    }
 
-  const { error: statusError } = await updateAccountStatus(
-    adminClient,
-    targetAccount.id,
-    ORG.id,
-    'invited',
-    accountResponse.data.id,
-  );
+    const { error: statusError } = await updateAccountStatus(
+      adminClient,
+      targetAccount.id,
+      ORG.id,
+      'invited',
+      accountResponse.data.id,
+    );
 
-  if (statusError) {
-    throw statusError;
+    if (statusError) {
+      throw statusError;
+    }
   }
 
   const { error: upsertError } = await upsertProfileForAccount(adminClient, {
@@ -157,6 +161,35 @@ export async function inviteAdminUserAction(
   const baseUrl = await resolveBaseUrl();
   const redirectTo = buildRedirectUrl(parsed.profileKind, baseUrl);
 
+  if (mode === 'invite') {
+    const { data: inviteData, error: inviteError } =
+      await adminClient.auth.admin.generateLink({
+        type: linkType,
+        email: normalizedEmail,
+        redirectTo,
+      });
+
+    if (inviteError) {
+      throw inviteError;
+    }
+
+    const actionLink = inviteData?.properties?.action_link ?? inviteData?.action_link ?? redirectTo;
+
+    await reconcileInvitedAccount({
+      client: adminClient,
+      orgId: ORG.id,
+      accountId: targetAccount.id,
+      email: normalizedEmail,
+      updatedBy: accountResponse.data.id,
+    });
+
+    return {
+      email: normalizedEmail,
+      inviteUrl: actionLink,
+      actionLink,
+    };
+  }
+
   const { data: otpData, error: otpError } = await adminClient.auth.signInWithOtp({
     email: normalizedEmail,
     emailRedirectTo: redirectTo,
@@ -168,7 +201,7 @@ export async function inviteAdminUserAction(
 
   const { data: generatedLink, error: linkError } =
     await adminClient.auth.admin.generateLink({
-      type: 'invite',
+      type: linkType,
       email: normalizedEmail,
       redirectTo,
     });
@@ -177,7 +210,8 @@ export async function inviteAdminUserAction(
     throw linkError;
   }
 
-  const actionLink = generatedLink?.properties?.action_link;
+  const actionLink =
+    generatedLink?.properties?.action_link ?? generatedLink?.action_link ?? redirectTo;
   if (!actionLink) {
     throw new Error('Supabase did not return an invite action link.');
   }
