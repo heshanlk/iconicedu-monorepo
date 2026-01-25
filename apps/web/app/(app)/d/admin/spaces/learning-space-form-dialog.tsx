@@ -120,13 +120,14 @@ export function LearningSpaceFormDialog() {
           Add new
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[min(95vw,90rem)] sm:max-w-[min(95vw,90rem)] max-w-none overflow-hidden p-0">
+      <DialogContent className="w-[min(95vw,60rem)] sm:max-w-[min(95vw,60rem)] max-w-none overflow-hidden p-0">
         <div className="flex max-h-[90vh] flex-col overflow-hidden rounded-2xl border border-border bg-card">
           <div className="px-6 py-5">
             <DialogHeader>
               <DialogTitle>Create learning space</DialogTitle>
               <DialogDescription>
-                Configure the basics, invite participants, and attach resources for the learning space.
+                Configure the basics, invite participants, and attach resources for the
+                learning space.
               </DialogDescription>
             </DialogHeader>
           </div>
@@ -140,7 +141,8 @@ export function LearningSpaceFormDialog() {
                 <FieldSet>
                   <FieldLegend variant="label">Basics</FieldLegend>
                   <FieldDescription>
-                    Define the core details, subject, icon, and kind for this learning space.
+                    Define the core details, subject, icon, and kind for this learning
+                    space.
                   </FieldDescription>
                   <FieldGroup className="grid gap-3 md:grid-cols-[auto_minmax(0,1fr)]">
                     <Field data-invalid={iconInvalid} className="items-center gap-2">
@@ -150,7 +152,9 @@ export function LearningSpaceFormDialog() {
                       <Select
                         id="ls-icon"
                         value={iconKey}
-                        onValueChange={(value) => setIconKey(value as LearningSpaceIconKey)}
+                        onValueChange={(value) =>
+                          setIconKey(value as LearningSpaceIconKey)
+                        }
                       >
                         <SelectTrigger
                           aria-label="Select icon"
@@ -179,7 +183,11 @@ export function LearningSpaceFormDialog() {
                           </SelectGroup>
                         </SelectContent>
                       </Select>
-                      <FieldDescription className={iconInvalid ? 'text-destructive' : 'text-muted-foreground'}>
+                      <FieldDescription
+                        className={
+                          iconInvalid ? 'text-destructive' : 'text-muted-foreground'
+                        }
+                      >
                         {iconInvalid
                           ? 'Please choose an icon for this learning space.'
                           : 'Select an icon that represents the learning space.'}
@@ -197,7 +205,9 @@ export function LearningSpaceFormDialog() {
                         aria-invalid={titleInvalid}
                       />
                       {titleInvalid && (
-                        <FieldDescription className="text-destructive">Title is required.</FieldDescription>
+                        <FieldDescription className="text-destructive">
+                          Title is required.
+                        </FieldDescription>
                       )}
                     </Field>
                   </FieldGroup>
@@ -228,7 +238,11 @@ export function LearningSpaceFormDialog() {
                       <FieldLabel htmlFor="ls-kind">
                         Kind <span className="text-destructive">*</span>
                       </FieldLabel>
-                      <Select id="ls-kind" value={kind} onValueChange={(value) => setKind(value)}>
+                      <Select
+                        id="ls-kind"
+                        value={kind}
+                        onValueChange={(value) => setKind(value)}
+                      >
                         <SelectTrigger>
                           <SelectValue placeholder="Select kind" />
                         </SelectTrigger>
@@ -243,7 +257,11 @@ export function LearningSpaceFormDialog() {
                           </SelectGroup>
                         </SelectContent>
                       </Select>
-                      <FieldDescription className={kindInvalid ? 'text-destructive' : 'text-muted-foreground'}>
+                      <FieldDescription
+                        className={
+                          kindInvalid ? 'text-destructive' : 'text-muted-foreground'
+                        }
+                      >
                         {kindInvalid
                           ? 'Kind is required for the learning space.'
                           : 'Choose how the learning experience is structured.'}
@@ -305,14 +323,7 @@ export function LearningSpaceFormDialog() {
                 </FieldSet>
                 <FieldSeparator />
                 <FieldSet>
-                  <FieldLegend variant="label">Resources</FieldLegend>
-                  <FieldDescription>
-                    Attach helpful links or documents for this space.
-                  </FieldDescription>
-                  <ResourceLinksEditor
-                    links={resources}
-                    onLinksChange={setResources}
-                  />
+                  <ResourceLinksEditor links={resources} onLinksChange={setResources} />
                 </FieldSet>
                 <FieldSeparator />
                 <FieldSet>
@@ -322,7 +333,9 @@ export function LearningSpaceFormDialog() {
                   </FieldDescription>
                   <FieldGroup className="grid gap-3 md:grid-cols-2">
                     <Field>
-                      <FieldLabel htmlFor="ls-primary-channel">Primary channel</FieldLabel>
+                      <FieldLabel htmlFor="ls-primary-channel">
+                        Primary channel
+                      </FieldLabel>
                       <Input
                         id="ls-primary-channel"
                         value={primaryChannel}
@@ -331,7 +344,9 @@ export function LearningSpaceFormDialog() {
                       />
                     </Field>
                     <Field>
-                      <FieldLabel htmlFor="ls-related-channels">Related channels</FieldLabel>
+                      <FieldLabel htmlFor="ls-related-channels">
+                        Related channels
+                      </FieldLabel>
                       <Textarea
                         id="ls-related-channels"
                         value={relatedChannels}
@@ -365,7 +380,11 @@ export function LearningSpaceFormDialog() {
                 <Button variant="ghost" onClick={() => setOpen(false)} type="button">
                   Cancel
                 </Button>
-                <Button type="submit" form="learning-space-form" className="w-full sm:w-auto">
+                <Button
+                  type="submit"
+                  form="learning-space-form"
+                  className="w-full sm:w-auto"
+                >
                   Create space
                 </Button>
               </DialogFooter>

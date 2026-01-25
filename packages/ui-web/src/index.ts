@@ -21,6 +21,7 @@ export * from './ui/select';
 export * from './ui/table';
 export * from './ui/radio-group';
 export * from './ui/label';
+export * from './ui/switch';
 export * from './ui/field';
 export * from './ui/scroll-area';
 export * from './providers/theme-provider';

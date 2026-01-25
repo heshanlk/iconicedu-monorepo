@@ -21,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select';
+import { Switch } from '../ui/switch';
 import {
   Video,
   Folder,
@@ -48,11 +49,6 @@ const ICON_OPTIONS: { key: string; label: string; icon: LucideIcon }[] = [
   { key: 'book', label: 'Book', icon: Book },
   { key: 'music', label: 'Music', icon: Music },
   { key: 'image', label: 'Image', icon: ImageIcon },
-];
-
-const STATUS_OPTIONS: { value: LearningSpaceLinkStatusVM; label: string }[] = [
-  { value: 'active', label: 'Active' },
-  { value: 'inactive', label: 'Inactive' },
 ];
 
 interface ResourceLinksEditorProps {
@@ -198,23 +194,20 @@ export function ResourceLinksEditor({ links, onLinksChange, className }: Resourc
                 </div>
                 <div className="grid gap-2">
                   <Label>Status</Label>
-                  <Select
-                    value={formData.status}
-                    onValueChange={(value: LearningSpaceLinkStatusVM) =>
-                      setFormData((prev) => ({ ...prev, status: value }))
-                    }
-                  >
-                    <SelectTrigger className="w-full">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {STATUS_OPTIONS.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <div className="flex items-center gap-2 rounded-2xl border border-border px-3 py-2">
+                    <Switch
+                      checked={formData.status === 'active'}
+                      onCheckedChange={(checked) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          status: checked ? 'active' : 'inactive',
+                        }))
+                      }
+                    />
+                    <span className="text-sm text-muted-foreground">
+                      {formData.status === 'active' ? 'Active' : 'Inactive'}
+                    </span>
+                  </div>
                 </div>
               </div>
               <DialogFooter className="mt-2">
