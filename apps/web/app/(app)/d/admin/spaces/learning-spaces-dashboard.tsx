@@ -4,7 +4,6 @@ import * as React from 'react';
 import { useRouter } from 'next/navigation';
 
 import {
-  Badge,
   Button,
   Input,
   Select,
@@ -13,10 +12,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@iconicedu/ui-web';
-import { Loader2, RotateCw, Plus } from 'lucide-react';
+import { Loader2, RotateCw } from 'lucide-react';
 
 import type { LearningSpaceRow } from '../../../../lib/admin/learning-spaces';
 import { LearningSpacesTable } from './learning-spaces-table';
+import { LearningSpaceFormDialog } from './learning-space-form-dialog';
 
 const PAGE_SIZES = [10, 25, 50];
 
@@ -75,52 +75,47 @@ export function LearningSpacesDashboard({ rows }: LearningSpacesDashboardProps) 
 
   return (
     <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-4">
-    <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-      <div className="flex flex-wrap items-center gap-2">
-        <Button variant="secondary" size="sm" className="flex items-center gap-2">
-          <Plus className="size-4" />
-          Add new
-        </Button>
-        <Input
-          placeholder="Search title or subject"
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-          className="w-64"
-        />
-      </div>
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <span>Status:</span>
-          <Select
-            value={statusFilter}
-            onValueChange={(value) => setStatusFilter(value as 'all' | string)}
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <LearningSpaceFormDialog />
+        <div className="flex flex-wrap items-center gap-3">
+          <Input
+            placeholder="Search title or subject"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            className="w-64"
+          />
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <span>Status:</span>
+            <Select
+              value={statusFilter}
+              onValueChange={(value) => setStatusFilter(value as 'all' | string)}
+            >
+              <SelectTrigger size="sm" className="w-32">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="archived">Archived</SelectItem>
+                <SelectItem value="paused">Paused</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="px-2"
+            onClick={handleRefresh}
+            disabled={refreshing}
+            aria-label="Refresh learning spaces"
           >
-            <SelectTrigger size="sm" className="w-32">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All</SelectItem>
-              <SelectItem value="active">Active</SelectItem>
-              <SelectItem value="archived">Archived</SelectItem>
-              <SelectItem value="paused">Paused</SelectItem>
-            </SelectContent>
-          </Select>
+            {refreshing ? (
+              <Loader2 className="size-4 animate-spin text-muted-foreground" />
+            ) : (
+              <RotateCw className="size-4 transition-transform" />
+            )}
+          </Button>
         </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="px-2"
-          onClick={handleRefresh}
-          disabled={refreshing}
-          aria-label="Refresh learning spaces"
-        >
-          {refreshing ? (
-            <Loader2 className="size-4 animate-spin text-muted-foreground" />
-          ) : (
-            <RotateCw className="size-4 transition-transform" />
-          )}
-        </Button>
-      </div>
       </div>
       <div className="relative">
         {isPending && (

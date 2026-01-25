@@ -1,14 +1,11 @@
 'use client';
 import {
-  ChefHat,
   ChevronDown,
   ChevronUp,
-  Earth,
   Languages,
   ListXIcon,
   MessageSquarePlus,
   MoreHorizontal,
-  SquarePi,
   StarOff,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -40,6 +37,7 @@ import { Empty, EmptyContent } from '../../ui/empty';
 import { AvatarWithStatus } from '../shared/avatar-with-status';
 import { getProfileDisplayName } from '../../lib/display-name';
 import { ThemedIconBadge } from '../shared/themed-icon';
+import { getLearningSpaceIcon } from '../../lib/icons';
 
 export function NavLearningSpaces({
   learningSpaces,
@@ -95,9 +93,7 @@ export function NavLearningSpaces({
               {learningSpaces.map((space) => {
                 const channel = space.channels.primaryChannel;
                 const iconKey = space.basics.iconKey ?? channel.basics.iconKey ?? null;
-                const Icon: LucideIcon = iconKey
-                  ? (LEARNING_SPACE_ICONS[iconKey] ?? Languages)
-                  : Languages;
+                const Icon: LucideIcon = getLearningSpaceIcon(iconKey, Languages);
                 const isActive = activeChannelId === channel.ids.id;
 
                 return (
@@ -158,10 +154,3 @@ export function NavLearningSpaces({
     </SidebarGroup>
   );
 }
-
-const LEARNING_SPACE_ICONS: Record<string, LucideIcon> = {
-  languages: Languages,
-  'chef-hat': ChefHat,
-  earth: Earth,
-  'square-pi': SquarePi,
-};

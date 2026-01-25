@@ -11,10 +11,6 @@ import {
   LogOut,
   MoreHorizontal,
   Sparkles,
-  Languages,
-  SquarePi,
-  ChefHat,
-  Earth,
   Video,
   Bookmark,
   Flag,
@@ -40,19 +36,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../../../ui/dropdown-menu';
+import { getLearningSpaceIcon } from '../../../lib/icons';
 
 interface LearningSpaceInfoPanelProps {
   intent: MessagesRightPanelIntent;
   learningSpace?: LearningSpaceVM | null;
 }
-
-const LEARNING_SPACE_ICON_MAP = {
-  languages: Languages,
-  'square-pi': SquarePi,
-  'chef-hat': ChefHat,
-  earth: Earth,
-  sparkles: Sparkles,
-} as const;
 
 const ActionButton = memo(function ActionButton({
   icon: Icon,
@@ -142,8 +131,7 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
     : undefined;
 
   const iconKey = learningSpace.basics.iconKey ?? channel.basics.iconKey ?? 'sparkles';
-  const Icon =
-    LEARNING_SPACE_ICON_MAP[iconKey as keyof typeof LEARNING_SPACE_ICON_MAP] ?? Sparkles;
+  const Icon = getLearningSpaceIcon(iconKey);
   const schedule = learningSpace.schedule?.scheduleSeries ?? null;
   const quickLinks = learningSpace.resources?.links ?? [];
   const visibleLinks = quickLinks.filter((link) => !link.hidden);
