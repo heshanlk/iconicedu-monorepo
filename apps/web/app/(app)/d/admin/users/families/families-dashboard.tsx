@@ -82,7 +82,7 @@ export function FamiliesDashboard({ rows }: FamiliesDashboardProps) {
   };
 
   return (
-    <div className="flex flex-1 flex-col gap-4 rounded-2xl border border-border bg-card p-4">
+    <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-1 items-center justify-end gap-3">
           <Input

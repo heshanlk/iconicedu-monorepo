@@ -7,7 +7,6 @@ export const ADMIN_MENU_SECTIONS: AdminMenuSectionVM[] = [
     links: [
       { title: 'All', url: '/d/admin/users' },
       { title: 'Manage families', url: '/d/admin/users/families' },
-      { title: 'Roles & permissions', url: '/d/admin/users/roles' },
     ],
   },
   {
