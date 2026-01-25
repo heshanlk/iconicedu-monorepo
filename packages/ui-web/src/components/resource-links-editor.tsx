@@ -143,7 +143,9 @@ export function ResourceLinksEditor({ links, onLinksChange, className }: Resourc
             </DialogHeader>
             <form onSubmit={handleSubmit} className="grid gap-4 py-4">
               <div className="grid gap-2">
-                <Label htmlFor="resource-label">Label</Label>
+                <Label htmlFor="resource-label">
+                  Label <span className="text-destructive">*</span>
+                </Label>
                 <Input
                   id="resource-label"
                   placeholder="e.g., Join Zoom"
@@ -155,7 +157,9 @@ export function ResourceLinksEditor({ links, onLinksChange, className }: Resourc
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="resource-url">URL</Label>
+                <Label htmlFor="resource-url">
+                  URL <span className="text-destructive">*</span>
+                </Label>
                 <Input
                   id="resource-url"
                   type="url"

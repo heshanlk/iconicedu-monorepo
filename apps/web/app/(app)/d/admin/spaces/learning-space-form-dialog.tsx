@@ -248,15 +248,11 @@ export function LearningSpaceFormDialog() {
                           </SelectGroup>
                         </SelectContent>
                       </Select>
-                      <FieldDescription
-                        className={
-                          kindInvalid ? 'text-destructive' : 'text-muted-foreground'
-                        }
-                      >
-                        {kindInvalid
-                          ? 'Kind is required for the learning space.'
-                          : 'Choose how the learning experience is structured.'}
-                      </FieldDescription>
+                      {kindInvalid && (
+                        <FieldDescription className="text-destructive">
+                          Kind is required for the learning space.
+                        </FieldDescription>
+                      )}
                     </Field>
                   </FieldGroup>
                   <Field>
