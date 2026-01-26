@@ -31,7 +31,12 @@ import {
 import { ToggleGroup, ToggleGroupItem } from '../ui/toggle-group';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { ScrollArea } from '../ui/scroll-area';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '../ui/accordion';
 import { Badge } from '../ui/badge';
 import { Separator } from '../ui/separator';
 
@@ -96,16 +101,16 @@ export function RecurrenceForm({
   const [newExceptionReason, setNewExceptionReason] = React.useState('');
   const [editingExceptionId, setEditingExceptionId] = React.useState<string | null>(null);
 
-  const [newOverrideOriginalDate, setNewOverrideOriginalDate] = React.useState<Date | undefined>();
+  const [newOverrideOriginalDate, setNewOverrideOriginalDate] = React.useState<
+    Date | undefined
+  >();
   const [newOverrideNewDate, setNewOverrideNewDate] = React.useState<Date | undefined>();
   const [newOverrideTime, setNewOverrideTime] = React.useState('');
   const [newOverrideReason, setNewOverrideReason] = React.useState('');
   const [editingOverrideId, setEditingOverrideId] = React.useState<string | null>(null);
 
   const updateWeekdayTime = (day: WeekdayVM, time: string) => {
-    setWeekdayTimes((prev) =>
-      prev.map((wt) => (wt.day === day ? { ...wt, time } : wt)),
-    );
+    setWeekdayTimes((prev) => prev.map((wt) => (wt.day === day ? { ...wt, time } : wt)));
   };
 
   const addException = () => {
@@ -221,12 +226,10 @@ export function RecurrenceForm({
       rule: {
         frequency,
         interval: interval > 1 ? interval : undefined,
-        byWeekday:
-          frequency === 'weekly' && byWeekday.length > 0 ? byWeekday : undefined,
+        byWeekday: frequency === 'weekly' && byWeekday.length > 0 ? byWeekday : undefined,
         weekdayTimes: selectedWeekdayTimes,
         count: endType === 'count' ? count : undefined,
-        until:
-          endType === 'until' && untilDate ? untilDate.toISOString() : undefined,
+        until: endType === 'until' && untilDate ? untilDate.toISOString() : undefined,
         timezone,
       },
       exceptions,
@@ -271,11 +274,7 @@ export function RecurrenceForm({
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                mode="single"
-                selected={startDate}
-                onSelect={setStartDate}
-              />
+              <Calendar mode="single" selected={startDate} onSelect={setStartDate} />
             </PopoverContent>
           </Popover>
         </div>
@@ -338,17 +337,18 @@ export function RecurrenceForm({
             <div className="space-y-2">
               <Label>On days</Label>
               <ToggleGroup
+                variant={'outline'}
                 type="multiple"
                 value={byWeekday}
                 onValueChange={(value) => setByWeekday(value as WeekdayVM[])}
-                className="flex-wrap justify-start gap-1"
+                className="gap-1"
               >
                 {WEEKDAYS.map((day) => (
                   <ToggleGroupItem
                     key={day.value}
                     value={day.value}
                     aria-label={day.label}
-                    className="h-9 w-9 rounded-full p-0 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                    className="rounded-full"
                   >
                     {day.short}
                   </ToggleGroupItem>
@@ -370,7 +370,9 @@ export function RecurrenceForm({
                         <Input
                           type="time"
                           value={dayTime?.time || '09:00'}
-                          onChange={(event) => updateWeekdayTime(day.value, event.target.value)}
+                          onChange={(event) =>
+                            updateWeekdayTime(day.value, event.target.value)
+                          }
                           className="w-32"
                         />
                       </div>
@@ -559,7 +561,12 @@ export function RecurrenceForm({
                     className="flex-1"
                   />
                 </div>
-                <Button type="button" size="sm" onClick={addException} disabled={!newExceptionDate}>
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={addException}
+                  disabled={!newExceptionDate}
+                >
                   {editingExceptionId ? (
                     <>
                       <Check className="mr-1 h-4 w-4" /> Save
@@ -607,7 +614,9 @@ export function RecurrenceForm({
                           </span>
                         </p>
                         {override.reason && (
-                          <p className="text-xs text-muted-foreground">{override.reason}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {override.reason}
+                          </p>
                         )}
                       </div>
                       <div className="flex gap-1">
