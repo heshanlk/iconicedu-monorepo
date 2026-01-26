@@ -145,6 +145,8 @@ export interface EducatorProfileVM extends BaseUserProfileVM {
 export interface ChildProfileVM extends BaseUserProfileVM {
   kind: 'child';
 
+  guardianNames?: string[] | null;
+
   gradeLevel?: GradeLevel | null;
   birthYear?: number | null;
 

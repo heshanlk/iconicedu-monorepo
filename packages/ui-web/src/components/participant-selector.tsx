@@ -40,6 +40,16 @@ function getEmail(user: UserProfileVM) {
   return '';
 }
 
+function getSecondaryText(user: UserProfileVM) {
+  const email = getEmail(user);
+  if (user.kind === 'child' && user.guardianNames?.length) {
+    const parentText = `Parent: ${user.guardianNames.join(', ')}`;
+    if (email) return `${email} • ${parentText}`;
+    return `${parentText} • ${ROLE_LABELS[user.kind]}`;
+  }
+  return email || ROLE_LABELS[user.kind];
+}
+
 interface ParticipantSelectorProps {
   users: UserProfileVM[];
   selectedUsers: UserProfileVM[];
@@ -123,12 +133,13 @@ export function ParticipantSelector({
                     const displayName = getDisplayName(user);
                     const avatarUrl = user.profile.avatar?.url ?? undefined;
                     const emailText = getEmail(user);
-                    const secondaryText =
-                      emailText || user.profile.bio?.trim() || ROLE_LABELS[user.kind];
+                    const secondaryText = getSecondaryText(user);
                     return (
                       <CommandItem
                         key={user.ids.id}
-                        value={`${displayName} ${secondaryText} ${emailText}`}
+                        value={`${displayName} ${secondaryText} ${emailText} ${
+                          user.guardianNames?.join(' ') ?? ''
+                        }`}
                         onSelect={() => {
                           onUserAdd(user);
                           setOpen(false);
@@ -174,9 +185,7 @@ export function ParticipantSelector({
             {selectedUsers.map((user, index) => {
               const displayName = getDisplayName(user);
               const avatarUrl = user.profile.avatar?.url ?? undefined;
-              const emailText = getEmail(user);
-              const secondaryText =
-                emailText || user.profile.bio?.trim() || ROLE_LABELS[user.kind];
+              const secondaryText = getSecondaryText(user);
               return (
                 <div
                   key={user.ids.id}
