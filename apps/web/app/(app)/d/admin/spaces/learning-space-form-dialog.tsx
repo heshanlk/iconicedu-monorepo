@@ -93,7 +93,7 @@ export function LearningSpaceFormDialog({
           Add new
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[min(95vw,60rem)] sm:max-w-[min(95vw,60rem)] max-w-none overflow-hidden p-0">
+      <DialogContent className="w-[min(95vw,30rem)] sm:max-w-[min(95vw,30rem)] max-w-none overflow-hidden p-0">
         <div className="flex max-h-[90vh] flex-col overflow-hidden rounded-2xl border border-border bg-card">
           <div className="px-6 py-5">
             <DialogHeader>
