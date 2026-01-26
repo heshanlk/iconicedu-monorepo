@@ -1,0 +1,74 @@
+import type {
+  ActivityFeedItemRow,
+  ActivityFeedSectionRow,
+  ActivityFeedItemVM,
+  ActivityFeedSectionVM,
+  ActivityItemAudienceVM,
+  ActivityItemContentVM,
+  ActivityItemRefsVM,
+  ActivityItemStateVM,
+  ActivityVerbVM,
+  InboxTabKeyVM,
+  ActivityItemGroupingVM,
+} from '@iconicedu/shared-types';
+
+export function mapActivityFeedItemRow(
+  row: ActivityFeedItemRow,
+): ActivityFeedItemVM {
+  const contentBase = (row.content ?? {}) as ActivityItemContentVM;
+  const content: ActivityItemContentVM = {
+    ...contentBase,
+    summary: contentBase.summary ?? row.summary ?? undefined,
+    preview: contentBase.preview ?? row.preview ?? undefined,
+    actionButton: contentBase.actionButton ?? row.action_button ?? undefined,
+    expandedContent: contentBase.expandedContent ?? row.expanded_content ?? undefined,
+  };
+  const refs = (row.refs ?? {}) as ActivityItemRefsVM;
+  const audience = (row.audience ?? {
+    scope: { kind: 'global' },
+    visibility: 'public',
+  }) as ActivityItemAudienceVM;
+  const grouping: ActivityItemGroupingVM | undefined =
+    row.group_key || row.group_type
+      ? {
+          groupKey: row.group_key ?? undefined,
+          groupType: row.group_type as ActivityItemGroupingVM['groupType'],
+        }
+      : (content as Partial<{ grouping: ActivityItemGroupingVM }>).grouping;
+
+  const base = {
+    kind: (row.kind ?? 'leaf') as ActivityFeedItemVM['kind'],
+    ids: { id: row.id, orgId: row.org_id },
+    timestamps: {
+      occurredAt: row.occurred_at ?? row.created_at,
+      createdAt: row.created_at,
+    },
+    tabKey: row.tab_key as InboxTabKeyVM,
+    audience,
+    verb: row.verb as ActivityVerbVM,
+    refs,
+    content,
+    state: {
+      importance: row.importance as ActivityItemStateVM['importance'],
+      isRead: row.is_read ?? undefined,
+    },
+  };
+
+  return {
+    ...base,
+    grouping,
+    subActivities: (content as Partial<ActivityFeedItemVM>).subActivities,
+    subActivityCount: row.sub_activity_count ?? undefined,
+    isCollapsed: row.is_collapsed ?? undefined,
+  } as ActivityFeedItemVM;
+}
+
+export function mapActivityFeedSectionRow(
+  row: ActivityFeedSectionRow,
+  items: ActivityFeedItemVM[],
+): ActivityFeedSectionVM {
+  return {
+    label: row.label,
+    items,
+  };
+}

@@ -31,8 +31,11 @@ export interface ProfileRow {
   lead_source?: string | null;
   ui_theme_key?: string | null;
   created_at: ISODateTime;
+  created_by?: UUID | null;
   updated_at: ISODateTime;
+  updated_by?: UUID | null;
   deleted_at?: ISODateTime | null;
+  deleted_by?: UUID | null;
 }
 
 export interface EducatorProfileRow {
@@ -49,8 +52,11 @@ export interface EducatorProfileRow {
   total_reviews?: number | null;
   featured_video_intro_url?: string | null;
   created_at?: ISODateTime | null;
+  created_by?: UUID | null;
   updated_at?: ISODateTime | null;
+  updated_by?: UUID | null;
   deleted_at?: ISODateTime | null;
+  deleted_by?: UUID | null;
 }
 
 export interface ChildProfileRow {
@@ -67,8 +73,11 @@ export interface ChildProfileRow {
   motivation_styles?: string[] | null;
   communication_styles?: string[] | null;
   created_at?: ISODateTime | null;
+  created_by?: UUID | null;
   updated_at?: ISODateTime | null;
+  updated_by?: UUID | null;
   deleted_at?: ISODateTime | null;
+  deleted_by?: UUID | null;
 }
 
 export interface GuardianProfileRow {
@@ -77,8 +86,11 @@ export interface GuardianProfileRow {
   joined_date?: ISODateTime | null;
   session_notes_visibility?: string | null;
   created_at?: ISODateTime | null;
+  created_by?: UUID | null;
   updated_at?: ISODateTime | null;
+  updated_by?: UUID | null;
   deleted_at?: ISODateTime | null;
+  deleted_by?: UUID | null;
 }
 
 export interface StaffProfileRow {
@@ -92,8 +104,11 @@ export interface StaffProfileRow {
   working_hours_schedule?: WorkingHoursSchedule | null;
   weekly_availability?: DayAvailability | null;
   created_at?: ISODateTime | null;
+  created_by?: UUID | null;
   updated_at?: ISODateTime | null;
+  updated_by?: UUID | null;
   deleted_at?: ISODateTime | null;
+  deleted_by?: UUID | null;
 }
 
 export interface EducatorProfileSubjectRow {
@@ -102,8 +117,11 @@ export interface EducatorProfileSubjectRow {
   profile_id: UUID;
   subject: string;
   created_at?: ISODateTime | null;
+  created_by?: UUID | null;
   updated_at?: ISODateTime | null;
+  updated_by?: UUID | null;
   deleted_at?: ISODateTime | null;
+  deleted_by?: UUID | null;
 }
 
 export interface EducatorProfileGradeLevelRow {
@@ -113,8 +131,11 @@ export interface EducatorProfileGradeLevelRow {
   grade_id: GradeLevel;
   grade_label?: string | null;
   created_at?: ISODateTime | null;
+  created_by?: UUID | null;
   updated_at?: ISODateTime | null;
+  updated_by?: UUID | null;
   deleted_at?: ISODateTime | null;
+  deleted_by?: UUID | null;
 }
 
 export interface ChildProfileGradeLevelRow {
@@ -124,8 +145,11 @@ export interface ChildProfileGradeLevelRow {
   grade_id: GradeLevel;
   grade_label?: string | null;
   created_at?: ISODateTime | null;
+  created_by?: UUID | null;
   updated_at?: ISODateTime | null;
+  updated_by?: UUID | null;
   deleted_at?: ISODateTime | null;
+  deleted_by?: UUID | null;
 }
 
 export interface EducatorProfileCurriculumTagRow {
@@ -134,8 +158,11 @@ export interface EducatorProfileCurriculumTagRow {
   profile_id: UUID;
   tag: string;
   created_at?: ISODateTime | null;
+  created_by?: UUID | null;
   updated_at?: ISODateTime | null;
+  updated_by?: UUID | null;
   deleted_at?: ISODateTime | null;
+  deleted_by?: UUID | null;
 }
 
 export interface EducatorProfileBadgeRow {
@@ -144,8 +171,11 @@ export interface EducatorProfileBadgeRow {
   profile_id: UUID;
   badge: string;
   created_at?: ISODateTime | null;
+  created_by?: UUID | null;
   updated_at?: ISODateTime | null;
+  updated_by?: UUID | null;
   deleted_at?: ISODateTime | null;
+  deleted_by?: UUID | null;
 }
 
 export interface StaffProfileSpecialtyRow {
@@ -154,8 +184,11 @@ export interface StaffProfileSpecialtyRow {
   profile_id: UUID;
   specialty: string;
   created_at?: ISODateTime | null;
+  created_by?: UUID | null;
   updated_at?: ISODateTime | null;
+  updated_by?: UUID | null;
   deleted_at?: ISODateTime | null;
+  deleted_by?: UUID | null;
 }
 
 export interface ProfilePresenceRow {
@@ -170,8 +203,11 @@ export interface ProfilePresenceRow {
   last_seen_at?: ISODateTime | null;
   presence_loaded?: boolean | null;
   created_at?: ISODateTime | null;
+  created_by?: UUID | null;
   updated_at?: ISODateTime | null;
+  updated_by?: UUID | null;
   deleted_at?: ISODateTime | null;
+  deleted_by?: UUID | null;
 }
 
 export interface NotificationPreferenceRow {
@@ -182,8 +218,11 @@ export interface NotificationPreferenceRow {
   channels: string[];
   muted?: boolean | null;
   created_at?: ISODateTime | null;
+  created_by?: UUID | null;
   updated_at?: ISODateTime | null;
+  updated_by?: UUID | null;
   deleted_at?: ISODateTime | null;
+  deleted_by?: UUID | null;
 }
 
 export interface FamilyLinkRow {
@@ -195,6 +234,9 @@ export interface FamilyLinkRow {
   relation: FamilyRelation;
   permissions_scope?: string[] | null;
   created_at?: ISODateTime | null;
+  created_by?: UUID | null;
   updated_at?: ISODateTime | null;
+  updated_by?: UUID | null;
   deleted_at?: ISODateTime | null;
+  deleted_by?: UUID | null;
 }

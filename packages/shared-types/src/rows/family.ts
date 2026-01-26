@@ -1,13 +1,9 @@
 import type { ISODateTime, UUID } from '@iconicedu/shared-types/shared/shared';
-import type { RoleKey } from '@iconicedu/shared-types/vm/roles';
 
-export interface UserRoleRow {
+export interface FamilyRow {
   id: UUID;
   org_id: UUID;
-  account_id: UUID;
-  role_key: RoleKey;
-  assigned_by?: UUID | null;
-  assigned_at: ISODateTime;
+  display_name: string;
   created_at: ISODateTime;
   created_by?: UUID | null;
   updated_at: ISODateTime;

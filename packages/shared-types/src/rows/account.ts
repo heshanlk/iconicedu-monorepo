@@ -16,7 +16,10 @@ export interface AccountRow {
   preferred_contact_channels?: string[] | null;
   status: AccountStatus;
   created_at: ISODateTime;
+  created_by?: UUID | null;
   updated_at: ISODateTime;
+  updated_by?: UUID | null;
   archived_at?: ISODateTime | null;
   deleted_at?: ISODateTime | null;
+  deleted_by?: UUID | null;
 }
