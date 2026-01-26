@@ -1,0 +1,280 @@
+'use client';
+
+import * as React from 'react';
+import { format, parseISO } from 'date-fns';
+import { Plus, Pencil, Trash2, CalendarDays, Clock, MapPin } from 'lucide-react';
+
+import { cn } from '@iconicedu/ui-web/lib/utils';
+import { RecurrenceForm } from './recurrence-form';
+import { RecurrenceFormData, WEEKDAYS, FREQUENCIES } from '@iconicedu/ui-web/lib/recurrence-types';
+import { Button } from '../ui/button';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from '../ui/card';
+import { Badge } from '../ui/badge';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '../ui/dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '../ui/alert-dialog';
+
+interface RecurrenceSchedulerProps {
+  schedules?: RecurrenceFormData[];
+  onSchedulesChange?: (schedules: RecurrenceFormData[]) => void;
+  className?: string;
+}
+
+export function RecurrenceScheduler({
+  schedules: controlledSchedules,
+  onSchedulesChange,
+  className,
+}: RecurrenceSchedulerProps) {
+  const [internalSchedules, setInternalSchedules] = React.useState<RecurrenceFormData[]>([]);
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [editingSchedule, setEditingSchedule] = React.useState<RecurrenceFormData | null>(null);
+
+  const isControlled = controlledSchedules !== undefined;
+  const schedules = isControlled ? controlledSchedules : internalSchedules;
+
+  const setSchedules = React.useCallback(
+    (
+      updater: RecurrenceFormData[] | ((prev: RecurrenceFormData[]) => RecurrenceFormData[]),
+    ) => {
+      const newSchedules = typeof updater === 'function' ? updater(schedules) : updater;
+      if (isControlled) {
+        onSchedulesChange?.(newSchedules);
+      } else {
+        setInternalSchedules(newSchedules);
+      }
+    },
+    [isControlled, onSchedulesChange, schedules],
+  );
+
+  const handleSubmit = (data: RecurrenceFormData) => {
+    if (editingSchedule) {
+      setSchedules((prev) => prev.map((s) => (s.id === editingSchedule.id ? data : s)));
+    } else {
+      setSchedules((prev) => [...prev, data]);
+    }
+    handleCloseDialog();
+  };
+
+  const handleEdit = (schedule: RecurrenceFormData) => {
+    setEditingSchedule(schedule);
+    setDialogOpen(true);
+  };
+
+  const handleDelete = (id: string) => {
+    setSchedules((prev) => prev.filter((s) => s.id !== id));
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+    setEditingSchedule(null);
+  };
+
+  const handleOpenCreate = () => {
+    setEditingSchedule(null);
+    setDialogOpen(true);
+  };
+
+  const getFrequencyLabel = (freq: string) =>
+    FREQUENCIES.find((f) => f.value === freq)?.label || freq;
+
+  const getWeekdayLabels = (days: string[]) =>
+    days
+      .map((day) => WEEKDAYS.find((weekday) => weekday.value === day)?.label)
+      .filter(Boolean)
+      .join(', ');
+
+  return (
+    <div className={className}>
+      <div className="mb-4" />
+
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>{editingSchedule ? 'Edit Schedule' : 'Create Schedule'}</DialogTitle>
+            <DialogDescription>
+              {editingSchedule
+                ? 'Modify your recurring schedule settings, exceptions, and overrides.'
+                : 'Configure your recurring schedule with custom times, exceptions, and overrides.'}
+            </DialogDescription>
+          </DialogHeader>
+          <RecurrenceForm
+            key={editingSchedule?.id || 'new'}
+            defaultValues={editingSchedule || undefined}
+            onSubmit={handleSubmit}
+            onCancel={handleCloseDialog}
+            isEditing={Boolean(editingSchedule)}
+          />
+        </DialogContent>
+      </Dialog>
+
+      <div className="space-y-4">
+        {schedules.length === 0 && (
+          <Card className="border-dashed">
+            <CardContent className="flex flex-col items-center justify-center py-12">
+              <CalendarDays className="h-12 w-12 text-muted-foreground/50" />
+              <h4 className="mt-4 text-lg font-medium text-foreground">No schedules yet</h4>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Create your first recurring schedule to get started.
+              </p>
+              <Button className="mt-4" onClick={handleOpenCreate}>
+                <Plus className="mr-2 h-4 w-4" />
+                Create Schedule
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
+        {schedules.length > 0 && (
+          <div className="space-y-4">
+            {schedules.map((schedule, index) => (
+              <ScheduleCard
+                key={schedule.id ?? `schedule-${index}`}
+                schedule={schedule}
+                onEdit={() => handleEdit(schedule)}
+                onDelete={() => handleDelete(schedule.id ?? '')}
+                getFrequencyLabel={getFrequencyLabel}
+                getWeekdayLabels={getWeekdayLabels}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+interface ScheduleCardProps {
+  schedule: RecurrenceFormData;
+  onEdit: () => void;
+  onDelete: () => void;
+  getFrequencyLabel: (freq: string) => string;
+  getWeekdayLabels: (days: string[]) => string;
+}
+
+function ScheduleCard({
+  schedule,
+  onEdit,
+  onDelete,
+  getFrequencyLabel,
+  getWeekdayLabels,
+}: ScheduleCardProps) {
+  const { rule, exceptions, overrides, startDate, timezone } = schedule;
+
+  return (
+    <Card>
+      <CardHeader className="pb-3">
+        <div className="flex items-start justify-between">
+          <div>
+            <CardTitle className="text-base">{getFrequencyLabel(rule.frequency)} Schedule</CardTitle>
+            <CardDescription className="mt-1">
+              {rule.interval && rule.interval > 1
+                ? `Every ${rule.interval} ${rule.frequency.replace('ly', '')}s`
+                : `Every ${rule.frequency.replace('ly', '')}`}
+            </CardDescription>
+          </div>
+          <div className="flex gap-1">
+            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onEdit}>
+              <Pencil className="h-4 w-4" />
+              <span className="sr-only">Edit</span>
+            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-destructive hover:text-destructive"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  <span className="sr-only">Delete</span>
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete Schedule</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to delete this schedule? This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={onDelete}>Delete</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        {startDate && (
+          <div className="flex items-center gap-2 text-sm">
+            <CalendarDays className="h-4 w-4 text-muted-foreground" />
+            <span className="text-foreground">Starts {format(startDate, 'PPP')}</span>
+          </div>
+        )}
+
+        <div className="flex items-center gap-2 text-sm">
+          <MapPin className="h-4 w-4 text-muted-foreground" />
+          <span className="text-muted-foreground">{timezone}</span>
+        </div>
+
+        {rule.byWeekday && rule.byWeekday.length > 0 && (
+          <div className="space-y-2">
+            <p className="text-sm text-muted-foreground">{getWeekdayLabels(rule.byWeekday)}</p>
+            {rule.weekdayTimes && rule.weekdayTimes.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {rule.weekdayTimes.map((weekdayTime) => (
+                  <Badge key={weekdayTime.day} variant="secondary" className="font-mono">
+                    <Clock className="mr-1 h-3 w-3" />
+                    {WEEKDAYS.find((day) => day.value === weekdayTime.day)?.short}{' '}
+                    {weekdayTime.time}
+                  </Badge>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {(rule.count || rule.until) && (
+          <p className="text-sm text-muted-foreground">
+            {rule.count && `Ends after ${rule.count} occurrences`}
+            {rule.until && `Ends on ${format(parseISO(rule.until), 'PPP')}`}
+          </p>
+        )}
+
+        <div className="flex flex-wrap gap-2 pt-1">
+          {exceptions.length > 0 && (
+            <Badge variant="outline">
+              {exceptions.length} exception{exceptions.length !== 1 ? 's' : ''}
+            </Badge>
+          )}
+          {overrides.length > 0 && (
+            <Badge variant="outline">
+              {overrides.length} override{overrides.length !== 1 ? 's' : ''}
+            </Badge>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}

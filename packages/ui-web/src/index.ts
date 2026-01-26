@@ -36,6 +36,7 @@ export * from './ui/card';
 export * from './components/dashboard-header';
 export * from './components/participant-selector';
 export * from './components/recurrence-form';
+export * from './components/recurrence-scheduler';
 export * from './components/resource-links-editor';
 export { GalleryVerticalEnd } from 'lucide-react';
 export { FingerprintIcon } from 'lucide-react';

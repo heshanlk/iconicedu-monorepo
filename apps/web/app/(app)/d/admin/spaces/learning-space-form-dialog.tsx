@@ -32,7 +32,7 @@ import {
   toast,
   ResourceLinksEditor,
   ParticipantSelector,
-  RecurrenceForm,
+  RecurrenceScheduler,
 } from '@iconicedu/ui-web';
 import { Textarea } from '@iconicedu/ui-web/ui/textarea';
 import {
@@ -170,7 +170,7 @@ export function LearningSpaceFormDialog() {
           Add new
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[min(95vw,30rem)] sm:max-w-[min(95vw,30rem)] max-w-none overflow-hidden p-0">
+      <DialogContent className="w-[min(95vw,60rem)] sm:max-w-[min(95vw,60rem)] max-w-none overflow-hidden p-0">
         <div className="flex max-h-[90vh] flex-col overflow-hidden rounded-2xl border border-border bg-card">
           <div className="px-6 py-5">
             <DialogHeader>
@@ -190,10 +190,6 @@ export function LearningSpaceFormDialog() {
               >
                 <FieldSet>
                   <FieldLegend>Basics</FieldLegend>
-                  <FieldDescription>
-                    Define the core details, subject, icon, and kind for this learning
-                    space.
-                  </FieldDescription>
                   <FieldGroup className="grid gap-3 md:grid-cols-[auto_minmax(0,1fr)]">
                     <Field data-invalid={iconInvalid} className="items-center gap-2">
                       <FieldLabel htmlFor="ls-icon">
@@ -348,10 +344,7 @@ export function LearningSpaceFormDialog() {
                 <FieldSeparator />
                 <FieldSet>
                   <FieldLegend>Schedule</FieldLegend>
-                  <FieldDescription>
-                    Configure the recurring schedule for this learning space.
-                  </FieldDescription>
-                  <RecurrenceForm className="max-w-none" />
+                  <RecurrenceScheduler className="max-w-none" />
                 </FieldSet>
               </form>
               <ScrollBar orientation="vertical" className="right-2" />
