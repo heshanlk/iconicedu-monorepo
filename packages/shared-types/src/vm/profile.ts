@@ -45,6 +45,7 @@ export interface PresenceVM {
 
 export interface UserProfileBlockVM {
   displayName: string;
+  email?: string | null;
   firstName?: string | null;
   lastName?: string | null;
   bio?: string | null;
@@ -98,6 +99,7 @@ export interface BaseUserProfileVM {
   presence?: PresenceVM | null;
 
   status?: AccountStatus;
+  accountEmail?: string | null;
 
   location?: UserLocationVM;
 
@@ -157,7 +159,6 @@ export interface ChildProfileVM extends BaseUserProfileVM {
   confidenceLevel?: string | null;
   communicationStyles?: string[] | null;
 
-  accountEmail?: string | null;
   accountAuthUserId?: UUID | null;
 }
 

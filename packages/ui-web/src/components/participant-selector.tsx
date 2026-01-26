@@ -34,6 +34,12 @@ const ROLE_STYLES: Record<UserProfileVM['kind'], string> = {
   system: 'bg-gray-100 text-gray-700 border-gray-200',
 };
 
+function getEmail(user: UserProfileVM) {
+  const email = user.accountEmail?.trim() || user.profile.email?.trim();
+  if (email) return email;
+  return '';
+}
+
 interface ParticipantSelectorProps {
   users: UserProfileVM[];
   selectedUsers: UserProfileVM[];
@@ -105,7 +111,7 @@ export function ParticipantSelector({
           align="start"
         >
           <Command>
-            <CommandInput placeholder="Search by name" />
+            <CommandInput placeholder="Search by name or email" />
             <CommandList
               onWheel={(event) => event.stopPropagation()}
               onTouchMove={(event) => event.stopPropagation()}
@@ -116,16 +122,18 @@ export function ParticipantSelector({
                   {group.users.map((user) => {
                     const displayName = getDisplayName(user);
                     const avatarUrl = user.profile.avatar?.url ?? undefined;
-                    const secondaryText = user.profile.bio || ROLE_LABELS[user.kind];
+                    const emailText = getEmail(user);
+                    const secondaryText =
+                      emailText || user.profile.bio?.trim() || ROLE_LABELS[user.kind];
                     return (
                       <CommandItem
                         key={user.ids.id}
-                        value={`${displayName} ${secondaryText}`}
+                        value={`${displayName} ${secondaryText} ${emailText}`}
                         onSelect={() => {
                           onUserAdd(user);
                           setOpen(false);
                         }}
-                        className="flex items-center gap-3 my-2"
+                        className="flex items-center gap-3 my-2 rounded-full hover:bg-muted"
                       >
                         <Avatar className="size-10">
                           <AvatarImage src={avatarUrl} alt={displayName} />
@@ -166,7 +174,9 @@ export function ParticipantSelector({
             {selectedUsers.map((user, index) => {
               const displayName = getDisplayName(user);
               const avatarUrl = user.profile.avatar?.url ?? undefined;
-              const secondaryText = user.profile.bio || ROLE_LABELS[user.kind];
+              const emailText = getEmail(user);
+              const secondaryText =
+                emailText || user.profile.bio?.trim() || ROLE_LABELS[user.kind];
               return (
                 <div
                   key={user.ids.id}

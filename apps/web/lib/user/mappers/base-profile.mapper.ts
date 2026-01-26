@@ -13,6 +13,7 @@ export function mapBaseProfile(
     notificationDefaults: NotificationDefaultsVM | null;
     presence: PresenceVM | null;
     avatarUrlOverride?: string | null;
+    accountEmail?: string | null;
   },
 ): Omit<UserProfileVM, 'kind'> {
   return {
@@ -23,6 +24,7 @@ export function mapBaseProfile(
     },
     profile: {
       displayName: profileRow.display_name ?? '',
+      email: input.accountEmail ?? null,
       firstName: profileRow.first_name,
       lastName: profileRow.last_name,
       bio: profileRow.bio,
@@ -41,6 +43,7 @@ export function mapBaseProfile(
     },
     presence: input.presence,
     status: profileRow.status ?? undefined,
+    accountEmail: input.accountEmail ?? null,
     location: {
       countryCode: profileRow.country_code,
       countryName: profileRow.country_name,

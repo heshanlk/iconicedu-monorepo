@@ -8,20 +8,29 @@ import { mapBaseProfile } from '../user/mappers/base-profile.mapper';
 
 type AccountWithProfiles = {
   id: string;
+  email: string | null;
   status: string;
   profiles?: ProfileRow[];
 };
 
 const ACCOUNT_WITH_PROFILE_SELECT = `
   id,
+  email,
   status,
   profiles (
     ${PROFILE_SELECT}
   )
 `;
 
-function mapProfileToUserProfile(profile: ProfileRow): UserProfileVM {
-  const base = mapBaseProfile(profile, { notificationDefaults: null, presence: null });
+function mapProfileToUserProfile(
+  profile: ProfileRow,
+  accountEmail: string | null,
+): UserProfileVM {
+  const base = mapBaseProfile(profile, {
+    notificationDefaults: null,
+    presence: null,
+    accountEmail,
+  });
 
   switch (profile.kind) {
     case 'guardian':
@@ -72,9 +81,9 @@ export async function getActiveParticipantProfiles(): Promise<UserProfileVM[]> {
     return [];
   }
 
-  const profiles = data.flatMap((account) =>
-    (account.profiles ?? []).filter((profile) => !profile.deleted_at),
+  return data.flatMap((account) =>
+    (account.profiles ?? [])
+      .filter((profile) => !profile.deleted_at)
+      .map((profile) => mapProfileToUserProfile(profile, account.email)),
   );
-
-  return profiles.map(mapProfileToUserProfile);
 }
