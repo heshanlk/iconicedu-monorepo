@@ -1,9 +1,14 @@
 import { notFound } from 'next/navigation';
 import { MessagesShell, DashboardHeader } from '@iconicedu/ui-web';
+
+import { createSupabaseServerClient } from '@iconicedu/web/lib/supabase/server';
+import { requireAuthedUser } from '@iconicedu/web/lib/auth/requireAuthedUser';
+import { getOrCreateAccount } from '@iconicedu/web/lib/accounts/getOrCreateAccount';
+import { ORG_ID } from '@iconicedu/web/lib/data/ids';
 import {
-  DIRECT_MESSAGE_CHANNELS_BY_ID,
-  DIRECT_MESSAGE_CHANNELS_WITH_MESSAGES,
-} from '@iconicedu/web/lib/data/channel-message-data';
+  buildChannelByDmKey,
+  buildChannelById,
+} from '@iconicedu/web/lib/channels/builders/channel.builder';
 
 export default async function Page({
   params,
@@ -11,11 +16,20 @@ export default async function Page({
   params: Promise<{ channelId: string }>;
 }) {
   const { channelId } = await params;
+  const supabase = await createSupabaseServerClient();
+  const authUser = await requireAuthedUser(supabase);
+  const { account } = await getOrCreateAccount(supabase, {
+    orgId: ORG_ID,
+    authUserId: authUser.id,
+    authEmail: authUser.email ?? null,
+  });
   const channel =
-    DIRECT_MESSAGE_CHANNELS_BY_ID[channelId] ??
-    DIRECT_MESSAGE_CHANNELS_WITH_MESSAGES.find(
-      (item) => item.dm?.dmKey === channelId,
-    );
+    (await buildChannelById(supabase, account.org_id, channelId, {
+      accountId: account.id,
+    })) ??
+    (await buildChannelByDmKey(supabase, account.org_id, channelId, {
+      accountId: account.id,
+    }));
 
   if (!channel) {
     notFound();

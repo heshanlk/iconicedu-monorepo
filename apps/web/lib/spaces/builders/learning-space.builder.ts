@@ -24,9 +24,9 @@ import {
   getLearningSpaceParticipantsByLearningSpaceIds,
 } from '@iconicedu/web/lib/spaces/queries/learning-space-relations.query';
 import { mapLearningSpaceLinkRow, mapLearningSpaceRowToVM } from '@iconicedu/web/lib/spaces/mappers/learning-space.mapper';
-import { getChannelById } from '@iconicedu/web/lib/channels/builders/channel.builder';
+import { buildChannelById } from '@iconicedu/web/lib/channels/builders/channel.builder';
 import { buildUserProfileById } from '@iconicedu/web/lib/profile/builders/user-profile.builder';
-import { getClassScheduleById } from '@iconicedu/web/lib/schedules/builders/class-schedule.builder';
+import { buildClassScheduleById } from '@iconicedu/web/lib/schedules/builders/class-schedule.builder';
 
 type LearningSpaceRelations = {
   channels: LearningSpaceChannelRow[];
@@ -35,15 +35,22 @@ type LearningSpaceRelations = {
 };
 
 async function resolveChannels(
+  supabase: SupabaseClient,
+  orgId: string,
   rows: LearningSpaceChannelRow[],
 ): Promise<{ primaryChannel: ChannelVM | null; relatedChannels: ChannelVM[] }> {
-  const channels = rows
-    .map((row) => getChannelById(row.channel_id))
-    .filter((channel): channel is ChannelVM => Boolean(channel));
+  const channels = (
+    await Promise.all(
+      rows.map((row) => buildChannelById(supabase, orgId, row.channel_id)),
+    )
+  ).filter((channel): channel is ChannelVM => Boolean(channel));
 
   const primaryRow = rows.find((row) => row.is_primary);
   const primaryChannel =
-    (primaryRow && getChannelById(primaryRow.channel_id)) ?? channels[0] ?? null;
+    (primaryRow &&
+      (await buildChannelById(supabase, orgId, primaryRow.channel_id))) ??
+    channels[0] ??
+    null;
 
   const relatedChannels = primaryChannel
     ? channels.filter((channel) => channel.ids.id !== primaryChannel.ids.id)
@@ -66,8 +73,12 @@ function resolveLinks(rows: LearningSpaceLinkRow[]): LearningSpaceLinkVM[] {
   return rows.map(mapLearningSpaceLinkRow);
 }
 
-function resolveSchedule(scheduleId?: string | null): ClassScheduleVM | null {
-  return scheduleId ? getClassScheduleById(scheduleId) : null;
+async function resolveSchedule(
+  supabase: SupabaseClient,
+  orgId: string,
+  scheduleId?: string | null,
+): Promise<ClassScheduleVM | null> {
+  return scheduleId ? buildClassScheduleById(supabase, orgId, scheduleId) : null;
 }
 
 export async function buildLearningSpaceFromRow(
@@ -76,7 +87,11 @@ export async function buildLearningSpaceFromRow(
   relations: LearningSpaceRelations,
   scheduleId?: string | null,
 ): Promise<LearningSpaceVM | null> {
-  const { primaryChannel, relatedChannels } = await resolveChannels(relations.channels);
+  const { primaryChannel, relatedChannels } = await resolveChannels(
+    supabase,
+    row.org_id,
+    relations.channels,
+  );
   if (!primaryChannel) {
     return null;
   }
@@ -86,7 +101,7 @@ export async function buildLearningSpaceFromRow(
     Promise.resolve(resolveLinks(relations.links)),
   ]);
 
-  const scheduleSeries = resolveSchedule(scheduleId);
+  const scheduleSeries = await resolveSchedule(supabase, row.org_id, scheduleId);
 
   return mapLearningSpaceRowToVM(row, {
     channels: {

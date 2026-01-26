@@ -2,7 +2,7 @@
 
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { getFamilyInviteAdminClient } from '@iconicedu/web/lib/family/queries/invite.query';
-import { ORG } from '@iconicedu/web/lib/data/org';
+import { ORG_ID } from '@iconicedu/web/lib/data/ids';
 
 type EducatorSignupInput = {
   email: string;
@@ -31,7 +31,7 @@ export async function educatorSignupAction(input: EducatorSignupInput) {
   const { data: account, error: accountError } = await adminClient
     .from('accounts')
     .insert({
-      org_id: ORG.id,
+      org_id: ORG_ID,
       auth_user_id: user.id,
       email: input.email,
       status: 'active',
@@ -46,7 +46,7 @@ export async function educatorSignupAction(input: EducatorSignupInput) {
   }
 
   const { error: profileError } = await adminClient.from('profiles').insert({
-    org_id: ORG.id,
+    org_id: ORG_ID,
     account_id: account.id,
     kind: 'educator',
     display_name:

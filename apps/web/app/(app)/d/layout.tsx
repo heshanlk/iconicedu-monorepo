@@ -4,19 +4,19 @@ import { cookies, headers } from 'next/headers';
 
 import { SidebarShell } from '@iconicedu/web/app/(app)/d/sidebar-shell';
 import { createSupabaseServerClient } from '@iconicedu/web/lib/supabase/server';
-import { ORG } from '@iconicedu/web/lib/data/org';
-import { SIDEBAR_LEFT_DATA } from '@iconicedu/web/lib/data/sidebar-left';
+import { ORG_ID } from '@iconicedu/web/lib/data/ids';
 import { ADMIN_MENU_SECTIONS } from '@iconicedu/web/lib/data/admin-menu-sections';
 import { requireAuthedUser } from '@iconicedu/web/lib/auth/requireAuthedUser';
 import { getOrCreateAccount } from '@iconicedu/web/lib/accounts/getOrCreateAccount';
 import { loadSidebarContext } from '@iconicedu/web/lib/sidebar/loadSidebarContext';
+import { buildSidebarBaseData } from '@iconicedu/web/lib/sidebar/buildSidebarBaseData';
 
 export default async function Layout({ children }: { children: ReactNode }) {
   const supabase = await createSupabaseServerClient();
   const authUser = await requireAuthedUser(supabase);
 
   const { account, invite } = await getOrCreateAccount(supabase, {
-    orgId: ORG.id,
+    orgId: ORG_ID,
     authUserId: authUser.id,
     authEmail: authUser.email ?? null,
   });
@@ -34,13 +34,18 @@ export default async function Layout({ children }: { children: ReactNode }) {
       : undefined;
   const profileKindOverride = profileKindOverrideFromCookie ?? profileKindOverrideFromReferer;
 
+  const baseSidebarData = await buildSidebarBaseData(
+    supabase,
+    account.org_id,
+    account.id,
+  );
   const { sidebarData, onboardingStatus } = await loadSidebarContext(supabase, {
-      authUser,
-      account,
-      familyInvite: invite,
-      baseSidebarData: SIDEBAR_LEFT_DATA,
-      profileKindOverride,
-    });
+    authUser,
+    account,
+    familyInvite: invite,
+    baseSidebarData,
+    profileKindOverride,
+  });
 
   return (
     <SidebarProvider>

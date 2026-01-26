@@ -29,7 +29,7 @@ export async function loadSidebarContext(
       app_metadata?: Record<string, unknown>;
     };
     account: { id: string; org_id: string };
-    baseSidebarData: SidebarLeftDataVM;
+    baseSidebarData: Omit<SidebarLeftDataVM, 'user'>;
     familyInvite?: FamilyLinkInviteRow | null;
     profileKindOverride?: UserProfileVM['kind'];
   },

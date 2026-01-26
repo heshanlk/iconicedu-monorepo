@@ -1,7 +1,7 @@
 import type { AccountRow, ProfileRow } from '@iconicedu/shared-types';
 
 import { createSupabaseServerClient } from '@iconicedu/web/lib/supabase/server';
-import { ORG } from '@iconicedu/web/lib/data/org';
+import { ORG_ID } from '@iconicedu/web/lib/data/ids';
 import { getAccountsByOrgId } from '@iconicedu/web/lib/accounts/queries/accounts.query';
 import { getProfileSummariesByAccountIds } from '@iconicedu/web/lib/profile/queries/profiles.query';
 
@@ -47,7 +47,7 @@ function mapAccountToRow(account: AccountRow, profile?: ProfileRow | null): Admi
 
 export async function getAdminUserRows(): Promise<AdminUserRow[]> {
   const supabase = await createSupabaseServerClient();
-  const { data: accounts } = await getAccountsByOrgId(supabase, ORG.id);
+  const { data: accounts } = await getAccountsByOrgId(supabase, ORG_ID);
 
   if (!accounts?.length) {
     return [];
@@ -59,7 +59,7 @@ export async function getAdminUserRows(): Promise<AdminUserRow[]> {
   const accountIds = sortedAccounts.map((account) => account.id);
   const { data: profiles } = await getProfileSummariesByAccountIds(
     supabase,
-    ORG.id,
+    ORG_ID,
     accountIds,
   );
 

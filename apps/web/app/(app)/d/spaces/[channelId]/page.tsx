@@ -1,8 +1,12 @@
 import { notFound } from 'next/navigation';
 import { DashboardHeader } from '@iconicedu/ui-web';
-import { LEARNING_SPACE_CHANNELS_BY_ID } from '@iconicedu/web/lib/data/channel-message-data';
-import { LEARNING_SPACE_BY_CHANNEL_ID } from '@iconicedu/web/lib/data/learning-spaces';
 import { LearningSpaceShell } from '@iconicedu/web/app/(app)/d/spaces/[channelId]/learning-space-shell';
+import { createSupabaseServerClient } from '@iconicedu/web/lib/supabase/server';
+import { requireAuthedUser } from '@iconicedu/web/lib/auth/requireAuthedUser';
+import { getOrCreateAccount } from '@iconicedu/web/lib/accounts/getOrCreateAccount';
+import { ORG_ID } from '@iconicedu/web/lib/data/ids';
+import { buildChannelById } from '@iconicedu/web/lib/channels/builders/channel.builder';
+import { buildLearningSpaceByChannelId } from '@iconicedu/web/lib/spaces/builders/learning-space.builder';
 
 export default async function Page({
   params,
@@ -10,8 +14,21 @@ export default async function Page({
   params: Promise<{ channelId: string }>;
 }) {
   const { channelId } = await params;
-  const channel = LEARNING_SPACE_CHANNELS_BY_ID[channelId];
-  const learningSpace = LEARNING_SPACE_BY_CHANNEL_ID[channelId] ?? null;
+  const supabase = await createSupabaseServerClient();
+  const authUser = await requireAuthedUser(supabase);
+  const { account } = await getOrCreateAccount(supabase, {
+    orgId: ORG_ID,
+    authUserId: authUser.id,
+    authEmail: authUser.email ?? null,
+  });
+  const channel = await buildChannelById(supabase, account.org_id, channelId, {
+    accountId: account.id,
+  });
+  const learningSpace = await buildLearningSpaceByChannelId(
+    supabase,
+    account.org_id,
+    channelId,
+  );
 
   if (!channel) {
     notFound();

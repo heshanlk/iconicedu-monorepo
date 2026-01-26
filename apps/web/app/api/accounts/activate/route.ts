@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 import { createSupabaseServerClient } from '@iconicedu/web/lib/supabase/server';
 import { createSupabaseServiceClient } from '@iconicedu/web/lib/supabase/service';
-import { ORG } from '@iconicedu/web/lib/data/org';
+import { ORG_ID } from '@iconicedu/web/lib/data/ids';
 import { getOrCreateAccount } from '@iconicedu/web/lib/accounts/getOrCreateAccount';
 import { updateAccountStatus } from '@iconicedu/web/lib/accounts/queries/accounts.query';
 
@@ -18,7 +18,7 @@ export async function POST() {
 
   try {
     const { account } = await getOrCreateAccount(serviceSupabase, {
-      orgId: ORG.id,
+      orgId: ORG_ID,
       authUserId: data.user.id,
       authEmail: data.user.email ?? null,
     });
@@ -26,7 +26,7 @@ export async function POST() {
     await updateAccountStatus(
       serviceSupabase,
       account.id,
-      ORG.id,
+    ORG_ID,
       'active',
       data.user.id,
     );

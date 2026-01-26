@@ -1,51 +1,19 @@
-'use client';
+import { createSupabaseServerClient } from '@iconicedu/web/lib/supabase/server';
+import { requireAuthedUser } from '@iconicedu/web/lib/auth/requireAuthedUser';
+import { getOrCreateAccount } from '@iconicedu/web/lib/accounts/getOrCreateAccount';
+import { ORG_ID } from '@iconicedu/web/lib/data/ids';
+import { buildClassSchedulesByOrg } from '@iconicedu/web/lib/schedules/builders/class-schedule.builder';
+import { ClassScheduleClient } from '@iconicedu/web/app/(app)/d/class-schedule/class-schedule-client';
 
-import { useEffect, useMemo, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
-import { ClassScheduleContainer, DashboardHeader } from '@iconicedu/ui-web';
-import type { ClassScheduleViewVM } from '@iconicedu/shared-types';
-import { baseEvents } from '@iconicedu/web/lib/data/class-schedule-events';
+export default async function ClassSchedulePage() {
+  const supabase = await createSupabaseServerClient();
+  const authUser = await requireAuthedUser(supabase);
+  const { account } = await getOrCreateAccount(supabase, {
+    orgId: ORG_ID,
+    authUserId: authUser.id,
+    authEmail: authUser.email ?? null,
+  });
+  const events = await buildClassSchedulesByOrg(supabase, account.org_id);
 
-export default function ClassSchedulePage() {
-  const searchParams = useSearchParams();
-  const dateParam = searchParams.get('date');
-  const viewParam = searchParams.get('view');
-
-  const initialDate = useMemo(() => {
-    if (!dateParam) return new Date();
-    const [year, month, day] = dateParam.split('-').map(Number);
-    if (!year || !month || !day) return new Date();
-    return new Date(year, month - 1, day);
-  }, [dateParam]);
-
-  const initialView = useMemo<ClassScheduleViewVM>(() => {
-    if (viewParam === 'week' || viewParam === 'day' || viewParam === 'month') {
-      return viewParam;
-    }
-    return 'day';
-  }, [viewParam]);
-
-  const [currentDate, setCurrentDate] = useState(initialDate);
-  const [view, setView] = useState<ClassScheduleViewVM>(initialView);
-
-  useEffect(() => {
-    setCurrentDate(initialDate);
-  }, [initialDate]);
-
-  useEffect(() => {
-    setView(initialView);
-  }, [initialView]);
-
-  return (
-    <div className="flex flex-col h-[calc(100vh-3.5rem)]">
-      <DashboardHeader title="Calendar" />
-      <ClassScheduleContainer
-        currentDate={currentDate}
-        view={view}
-        onViewChange={setView}
-        onDateSelect={setCurrentDate}
-        events={baseEvents}
-      />
-    </div>
-  );
+  return <ClassScheduleClient events={events} />;
 }

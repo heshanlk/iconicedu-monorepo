@@ -36,6 +36,20 @@ export async function getChannelById(
     .maybeSingle();
 }
 
+export async function getChannelByDmKey(
+  supabase: SupabaseClient,
+  orgId: string,
+  dmKey: string,
+) {
+  return supabase
+    .from<ChannelRow>('channels')
+    .select(CHANNEL_SELECT)
+    .eq('org_id', orgId)
+    .eq('dm_key', dmKey)
+    .is('deleted_at', null)
+    .maybeSingle();
+}
+
 export async function getChannelParticipantsByChannelIds(
   supabase: SupabaseClient,
   orgId: string,

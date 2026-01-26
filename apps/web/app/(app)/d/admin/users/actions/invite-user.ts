@@ -6,7 +6,7 @@ import { z } from 'zod';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 import { createSupabaseServerClient } from '@iconicedu/web/lib/supabase/server';
-import { ORG } from '@iconicedu/web/lib/data/org';
+import { ORG_ID } from '@iconicedu/web/lib/data/ids';
 import {
   getAccountByAuthUserId,
   getAccountByEmail,
@@ -74,7 +74,7 @@ export async function inviteAdminUserAction(
 
   const existingAccountResponse = await getAccountByEmail(
     adminClient,
-    ORG.id,
+    ORG_ID,
     normalizedEmail,
   );
 
@@ -88,7 +88,7 @@ export async function inviteAdminUserAction(
     const { data: insertedAccount, error: insertError } = await insertInvitedAccount(
       adminClient,
       {
-        orgId: ORG.id,
+        orgId: ORG_ID,
         email: normalizedEmail,
         createdBy: accountResponse.data.id,
       },
@@ -113,7 +113,7 @@ export async function inviteAdminUserAction(
     const { error: statusError } = await updateAccountStatus(
       adminClient,
       targetAccount.id,
-      ORG.id,
+      ORG_ID,
       'invited',
       accountResponse.data.id,
     );
@@ -124,7 +124,7 @@ export async function inviteAdminUserAction(
   }
 
   const { error: upsertError } = await upsertProfileForAccount(adminClient, {
-    orgId: ORG.id,
+    orgId: ORG_ID,
     accountId: targetAccount.id,
     kind: parsed.profileKind,
     avatarSource: 'seed',
@@ -138,7 +138,7 @@ export async function inviteAdminUserAction(
 
   if (upsertError?.code === '42P10') {
     const { error: insertError } = await insertProfileForAccount(adminClient, {
-      orgId: ORG.id,
+      orgId: ORG_ID,
       accountId: targetAccount.id,
       kind: parsed.profileKind,
       avatarSource: 'seed',
@@ -181,7 +181,7 @@ export async function inviteAdminUserAction(
 
     await reconcileInvitedAccount({
       client: adminClient,
-      orgId: ORG.id,
+      orgId: ORG_ID,
       accountId: targetAccount.id,
       email: normalizedEmail,
       updatedBy: accountResponse.data.id,
