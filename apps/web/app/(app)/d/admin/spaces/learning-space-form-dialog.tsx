@@ -317,6 +317,11 @@ export function LearningSpaceFormDialog() {
                 </FieldSet>
                 <FieldSeparator />
                 <FieldSet>
+                  <FieldLegend>Schedule</FieldLegend>
+                  <RecurrenceScheduler className="max-w-none" />
+                </FieldSet>
+                <FieldSeparator />
+                <FieldSet>
                   <FieldLegend>Participants</FieldLegend>
                   <FieldDescription>
                     Select families and educators with grouped chips for quick selection.
@@ -340,11 +345,6 @@ export function LearningSpaceFormDialog() {
                       placeholder="Add participant"
                     />
                   </FieldGroup>
-                </FieldSet>
-                <FieldSeparator />
-                <FieldSet>
-                  <FieldLegend>Schedule</FieldLegend>
-                  <RecurrenceScheduler className="max-w-none" />
                 </FieldSet>
               </form>
               <ScrollBar orientation="vertical" className="right-2" />

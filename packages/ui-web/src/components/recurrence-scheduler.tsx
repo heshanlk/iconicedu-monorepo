@@ -6,15 +6,13 @@ import { Plus, Pencil, Trash2, CalendarDays, Clock, MapPin } from 'lucide-react'
 
 import { cn } from '@iconicedu/ui-web/lib/utils';
 import { RecurrenceForm } from './recurrence-form';
-import { RecurrenceFormData, WEEKDAYS, FREQUENCIES } from '@iconicedu/ui-web/lib/recurrence-types';
-import { Button } from '../ui/button';
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from '../ui/card';
+  RecurrenceFormData,
+  WEEKDAYS,
+  FREQUENCIES,
+} from '@iconicedu/ui-web/lib/recurrence-types';
+import { Button } from '../ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
 import { Badge } from '../ui/badge';
 import {
   Dialog,
@@ -46,16 +44,22 @@ export function RecurrenceScheduler({
   onSchedulesChange,
   className,
 }: RecurrenceSchedulerProps) {
-  const [internalSchedules, setInternalSchedules] = React.useState<RecurrenceFormData[]>([]);
+  const [internalSchedules, setInternalSchedules] = React.useState<RecurrenceFormData[]>(
+    [],
+  );
   const [dialogOpen, setDialogOpen] = React.useState(false);
-  const [editingSchedule, setEditingSchedule] = React.useState<RecurrenceFormData | null>(null);
+  const [editingSchedule, setEditingSchedule] = React.useState<RecurrenceFormData | null>(
+    null,
+  );
 
   const isControlled = controlledSchedules !== undefined;
   const schedules = isControlled ? controlledSchedules : internalSchedules;
 
   const setSchedules = React.useCallback(
     (
-      updater: RecurrenceFormData[] | ((prev: RecurrenceFormData[]) => RecurrenceFormData[]),
+      updater:
+        | RecurrenceFormData[]
+        | ((prev: RecurrenceFormData[]) => RecurrenceFormData[]),
     ) => {
       const newSchedules = typeof updater === 'function' ? updater(schedules) : updater;
       if (isControlled) {
@@ -111,7 +115,9 @@ export function RecurrenceScheduler({
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>{editingSchedule ? 'Edit Schedule' : 'Create Schedule'}</DialogTitle>
+            <DialogTitle>
+              {editingSchedule ? 'Edit Schedule' : 'Create Schedule'}
+            </DialogTitle>
             <DialogDescription>
               {editingSchedule
                 ? 'Modify your recurring schedule settings, exceptions, and overrides.'
@@ -133,7 +139,9 @@ export function RecurrenceScheduler({
           <Card className="border-dashed">
             <CardContent className="flex flex-col items-center justify-center py-12">
               <CalendarDays className="h-12 w-12 text-muted-foreground/50" />
-              <h4 className="mt-4 text-lg font-medium text-foreground">No schedules yet</h4>
+              <h4 className="mt-4 text-lg font-medium text-foreground">
+                No schedules yet
+              </h4>
               <p className="mt-1 text-sm text-muted-foreground">
                 Create your first recurring schedule to get started.
               </p>
@@ -182,11 +190,13 @@ function ScheduleCard({
   const { rule, exceptions, overrides, startDate, timezone } = schedule;
 
   return (
-    <Card>
+    <Card className="gap-0">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div>
-            <CardTitle className="text-base">{getFrequencyLabel(rule.frequency)} Schedule</CardTitle>
+            <CardTitle className="text-base">
+              {getFrequencyLabel(rule.frequency)} Schedule
+            </CardTitle>
             <CardDescription className="mt-1">
               {rule.interval && rule.interval > 1
                 ? `Every ${rule.interval} ${rule.frequency.replace('ly', '')}s`
@@ -213,7 +223,8 @@ function ScheduleCard({
                 <AlertDialogHeader>
                   <AlertDialogTitle>Delete Schedule</AlertDialogTitle>
                   <AlertDialogDescription>
-                    Are you sure you want to delete this schedule? This action cannot be undone.
+                    Are you sure you want to delete this schedule? This action cannot be
+                    undone.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
@@ -240,7 +251,9 @@ function ScheduleCard({
 
         {rule.byWeekday && rule.byWeekday.length > 0 && (
           <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">{getWeekdayLabels(rule.byWeekday)}</p>
+            <p className="text-sm text-muted-foreground">
+              {getWeekdayLabels(rule.byWeekday)}
+            </p>
             {rule.weekdayTimes && rule.weekdayTimes.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {rule.weekdayTimes.map((weekdayTime) => (
