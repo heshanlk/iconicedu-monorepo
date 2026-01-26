@@ -8,29 +8,29 @@ import type {
 import type { AccountRow, ProfileRow } from '@iconicedu/shared-types';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
-import { mapAccountRowToVM, mapUserRoles } from '../../user/mappers/account.mapper';
-import { mapBaseProfile } from '../../user/mappers/base-profile.mapper';
+import { mapAccountRowToVM, mapUserRoles } from '../../accounts/mappers/account.mapper';
+import { mapBaseProfile } from '../../profile/mappers/base-profile.mapper';
 import {
   deriveProfileKind,
   resolveAvatarSource,
   resolveExternalAvatarUrl,
-} from '../../user/derive';
-import { createSignedAvatarUrl } from '../../user/queries/avatar.query';
-import { getAccountById } from '../../user/queries/accounts.query';
-import { getNotificationDefaults } from '../../user/queries/notification-defaults.query';
-import { getPresence } from '../../user/queries/presence.query';
+} from '../../profile/derive';
+import { createSignedAvatarUrl } from '../../profile/queries/avatar.query';
+import { getAccountById } from '../../accounts/queries/accounts.query';
+import { getNotificationDefaults } from '../../profile/queries/notification-defaults.query';
+import { getPresence } from '../../profile/queries/presence.query';
 import {
   getProfileByAccountId,
   insertProfileForAccount,
   updateProfileAvatar,
   upsertProfileForAccount,
-} from '../../user/queries/profiles.query';
-import { getUserRoles } from '../../user/queries/roles.query';
-import { buildChildProfile } from '../../user/builders/child.builder';
-import { buildEducatorProfile } from '../../user/builders/educator.builder';
-import { buildGuardianProfile } from '../../user/builders/guardian.builder';
-import { buildStaffProfile } from '../../user/builders/staff.builder';
-import { getGuardianFamilyInvites } from '../../user/queries/family-link-invites.query';
+} from '../../profile/queries/profiles.query';
+import { getUserRoles } from '../../profile/queries/roles.query';
+import { buildChildProfile } from '../../profile/builders/child.builder';
+import { buildEducatorProfile } from '../../profile/builders/educator.builder';
+import { buildGuardianProfile } from '../../profile/builders/guardian.builder';
+import { buildStaffProfile } from '../../profile/builders/staff.builder';
+import { getGuardianFamilyInvites } from '../../profile/queries/family-link-invites.query';
 import {
   findFamilyInviteForAccount,
   mapFamilyLinkInviteRowToVM,

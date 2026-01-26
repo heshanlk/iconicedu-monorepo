@@ -8,8 +8,8 @@ import type {
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 import { createSupabaseServerClient } from '../../lib/supabase/server';
-import { getAccountByAuthUserId } from '../../lib/user/queries/accounts.query';
-import { upsertEducatorAvailability } from '../../lib/user/queries/educator.query';
+import { getAccountByAuthUserId } from '../../lib/accounts/queries/accounts.query';
+import { upsertEducatorAvailability } from '../../lib/profile/queries/educator.query';
 
 export type SaveEducatorAvailabilityActionInput = {
   profileId: string;

@@ -4,7 +4,7 @@ import { createSupabaseServerClient } from '../../../../lib/supabase/server';
 import { createSupabaseServiceClient } from '../../../../lib/supabase/service';
 import { ORG } from '../../../../lib/data/org';
 import { getOrCreateAccount } from '../../../../lib/accounts/getOrCreateAccount';
-import { updateAccountStatus } from '../../../../lib/user/queries/accounts.query';
+import { updateAccountStatus } from '../../../../lib/accounts/queries/accounts.query';
 
 export async function POST() {
   const sessionSupabase = await createSupabaseServerClient();

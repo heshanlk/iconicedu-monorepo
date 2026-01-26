@@ -10,8 +10,8 @@ import type {
 } from '@iconicedu/shared-types';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { getFamilyInviteAdminClient, ensureFamilyForGuardian } from '../../lib/family/queries/invite.query';
-import { loadChildProfiles } from '../../lib/user/builders/load-child-profiles';
-import { getAccountByAuthUserId } from '../../lib/user/queries/accounts.query';
+import { loadChildProfiles } from '../../lib/profile/builders/load-child-profiles';
+import { getAccountByAuthUserId } from '../../lib/accounts/queries/accounts.query';
 import { createSupabaseServerClient } from '../../lib/supabase/server';
 
 const normalizeEmail = (value?: string | null) => value?.trim().toLowerCase() ?? null;

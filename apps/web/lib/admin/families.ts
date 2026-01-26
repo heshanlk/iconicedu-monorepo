@@ -2,21 +2,14 @@ import type { AccountRow, FamilyLinkInviteRow } from '@iconicedu/shared-types';
 
 import { createSupabaseServerClient } from '../supabase/server';
 import { ORG } from '../data/org';
-import { ACCOUNT_SELECT } from '../user/constants/selects';
-
-type FamilyRow = {
-  id: string;
-  display_name: string;
-  created_at: string;
-  updated_at: string;
-};
-
-type FamilyLinkRow = {
-  id: string;
-  family_id: string;
-  guardian_account_id: string;
-  child_account_id: string;
-};
+import { getAccountsByIds } from '../accounts/queries/accounts.query';
+import {
+  getFamiliesByOrg,
+  getFamilyInvitesByFamilyIds,
+  getFamilyLinksByFamilyIds,
+  type FamilyRow,
+  type FamilyLinkRow,
+} from '../family/queries/families.query';
 
 export type AdminFamilyParticipant = {
   id: string;
@@ -43,12 +36,6 @@ export type AdminFamilyRow = {
   updatedAt: string;
 };
 
-const FAMILY_SELECT = 'id, display_name, created_at, updated_at';
-const FAMILY_LINK_SELECT =
-  'id, family_id, guardian_account_id, child_account_id';
-const FAMILY_INVITE_SELECT =
-  'id, family_id, invited_email, invited_phone_e164, invited_role, status, created_at';
-
 function formatLabel(account?: AccountRow) {
   if (!account) {
     return 'Unknown account';
@@ -63,12 +50,7 @@ function formatLabel(account?: AccountRow) {
 export async function getAdminFamilyRows(): Promise<AdminFamilyRow[]> {
   const supabase = await createSupabaseServerClient();
 
-  const { data: families } = await supabase
-    .from<FamilyRow>('families')
-    .select(FAMILY_SELECT)
-    .eq('org_id', ORG.id)
-    .is('deleted_at', null)
-    .order('created_at', { ascending: false });
+  const { data: families } = await getFamiliesByOrg(supabase, ORG.id);
 
   if (!families?.length) {
     return [];
@@ -76,12 +58,11 @@ export async function getAdminFamilyRows(): Promise<AdminFamilyRow[]> {
 
   const familyIds = families.map((family) => family.id);
 
-  const { data: links } = await supabase
-    .from<FamilyLinkRow>('family_links')
-    .select(FAMILY_LINK_SELECT)
-    .in('family_id', familyIds)
-    .eq('org_id', ORG.id)
-    .is('deleted_at', null);
+  const { data: links } = await getFamilyLinksByFamilyIds(
+    supabase,
+    ORG.id,
+    familyIds,
+  );
 
   const accountIds = new Set<string>();
   links?.forEach((link) => {
@@ -91,23 +72,17 @@ export async function getAdminFamilyRows(): Promise<AdminFamilyRow[]> {
 
   const accounts =
     accountIds.size > 0
-      ? await supabase
-          .from<AccountRow>('accounts')
-          .select(ACCOUNT_SELECT)
-          .in('id', Array.from(accountIds))
-          .is('deleted_at', null)
-      : { data: [] };
+      ? await getAccountsByIds(supabase, ORG.id, Array.from(accountIds))
+      : { data: [] as AccountRow[] };
 
   const accountMap = new Map<string, AccountRow>();
   accounts.data?.forEach((account) => accountMap.set(account.id, account));
 
-  const { data: invites } = await supabase
-    .from<FamilyLinkInviteRow>('family_link_invites')
-    .select(FAMILY_INVITE_SELECT)
-    .in('family_id', familyIds)
-    .eq('org_id', ORG.id)
-    .is('deleted_at', null)
-    .order('created_at', { ascending: false });
+  const { data: invites } = await getFamilyInvitesByFamilyIds(
+    supabase,
+    ORG.id,
+    familyIds,
+  );
 
   const invitesByFamily = new Map<string, FamilyLinkInviteRow[]>();
   invites?.forEach((invite) => {

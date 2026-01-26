@@ -1,23 +1,3 @@
-export const ACCOUNT_SELECT = [
-  'id',
-  'org_id',
-  'auth_user_id',
-  'email',
-  'phone_e164',
-  'whatsapp_e164',
-  'email_verified',
-  'email_verified_at',
-  'phone_verified',
-  'phone_verified_at',
-  'whatsapp_verified',
-  'whatsapp_verified_at',
-  'preferred_contact_channels',
-  'status',
-  'created_at',
-  'updated_at',
-  'archived_at',
-].join(',');
-
 export const ROLE_SELECT = 'id, org_id, role_key, assigned_by, assigned_at';
 
 export const PROFILE_SELECT = [
@@ -47,6 +27,16 @@ export const PROFILE_SELECT = [
   'ui_theme_key',
   'created_at',
   'updated_at',
+].join(',');
+
+export const PROFILE_SUMMARY_SELECT = [
+  'id',
+  'org_id',
+  'account_id',
+  'kind',
+  'display_name',
+  'first_name',
+  'last_name',
 ].join(',');
 
 export const NOTIFICATION_DEFAULTS_SELECT = 'pref_key, channels, muted';

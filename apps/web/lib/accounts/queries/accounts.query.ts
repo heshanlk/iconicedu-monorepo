@@ -10,6 +10,24 @@ type AccountInsertPayload = {
   email: string | null;
 };
 
+export async function getAccountsByOrgId(
+  supabase: SupabaseClient,
+  orgId: string,
+  options?: { status?: AccountStatus },
+) {
+  const query = supabase
+    .from('accounts')
+    .select(ACCOUNT_SELECT)
+    .eq('org_id', orgId)
+    .is('deleted_at', null);
+
+  if (options?.status) {
+    query.eq('status', options.status);
+  }
+
+  return query.returns<AccountRow[]>();
+}
+
 export async function getAccountByAuthUserId(
   supabase: SupabaseClient,
   authUserId: string,
@@ -132,4 +150,12 @@ export async function updateAccountStatus(
     .is('deleted_at', null)
     .select(ACCOUNT_SELECT)
     .maybeSingle<AccountRow>();
+}
+
+export async function deleteAccountById(
+  supabase: SupabaseClient,
+  accountId: string,
+  orgId: string,
+) {
+  return supabase.from('accounts').delete().eq('id', accountId).eq('org_id', orgId);
 }

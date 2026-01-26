@@ -12,11 +12,11 @@ import {
   getAccountByEmail,
   insertInvitedAccount,
   updateAccountStatus,
-} from '../../../../../../lib/user/queries/accounts.query';
+} from '../../../../../../lib/accounts/queries/accounts.query';
 import {
   insertProfileForAccount,
   upsertProfileForAccount,
-} from '../../../../../../lib/user/queries/profiles.query';
+} from '../../../../../../lib/profile/queries/profiles.query';
 import { getFamilyInviteAdminClient } from '../../../../../../lib/family/queries/invite.query';
 
 const INVITE_SCHEMA = z.object({

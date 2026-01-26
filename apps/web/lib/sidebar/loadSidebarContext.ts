@@ -11,7 +11,7 @@ import type { FamilyLinkInviteRow } from '@iconicedu/shared-types';
 
 import { acceptFamilyInvite } from '../family/queries/invite.query';
 import { buildSidebarUser } from './user/buildSidebarUser';
-import { getAccountById } from '../user/queries/accounts.query';
+import { getAccountById } from '../accounts/queries/accounts.query';
 import { determineOnboardingStep } from '../onboarding/determineOnboardingStep';
 import {
   getUserOnboardingStatusByProfileId,

@@ -8,7 +8,7 @@ import type {
 } from '@iconicedu/shared-types';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { createSupabaseServerClient } from '../../lib/supabase/server';
-import { getAccountByAuthUserId } from '../../lib/user/queries/accounts.query';
+import { getAccountByAuthUserId } from '../../lib/accounts/queries/accounts.query';
 import {
   acceptFamilyInvite,
   createFamilyInvite,

@@ -1,23 +1,9 @@
+import type { AccountRow, ProfileRow } from '@iconicedu/shared-types';
+
 import { createSupabaseServerClient } from '../supabase/server';
 import { ORG } from '../data/org';
-
-type ProfileSummary = {
-  id: string;
-  kind?: string | null;
-  display_name?: string | null;
-  first_name?: string | null;
-  last_name?: string | null;
-};
-
-type AccountWithProfiles = {
-  id: string;
-  email: string | null;
-  phone_e164?: string | null;
-  status: string;
-  created_at: string;
-  updated_at: string;
-  profiles?: ProfileSummary[];
-};
+import { getAccountsByOrgId } from '../accounts/queries/accounts.query';
+import { getProfileSummariesByAccountIds } from '../profile/queries/profiles.query';
 
 export type AdminUserRow = {
   id: string;
@@ -30,7 +16,7 @@ export type AdminUserRow = {
   profileKind?: string | null;
 };
 
-function mapAccountToRow(account: AccountWithProfiles): AdminUserRow {
+function mapAccountToRow(account: AccountRow, profile?: ProfileRow | null): AdminUserRow {
   const normalizedStatus = account.status?.toLowerCase() ?? '';
   const status =
     normalizedStatus === 'deleted'
@@ -38,7 +24,6 @@ function mapAccountToRow(account: AccountWithProfiles): AdminUserRow {
       : normalizedStatus === 'invited'
         ? 'invited'
         : 'active';
-  const profile = account.profiles?.[0];
   const profileKind = profile?.kind ?? null;
   const profileName =
     profile?.display_name?.trim() ||
@@ -60,34 +45,33 @@ function mapAccountToRow(account: AccountWithProfiles): AdminUserRow {
   };
 }
 
-const ACCOUNT_SELECT = `
-  id,
-  email,
-  phone_e164,
-  status,
-  created_at,
-  updated_at,
-  profiles (
-    id,
-    kind,
-    display_name,
-    first_name,
-    last_name
-  )
-`;
-
 export async function getAdminUserRows(): Promise<AdminUserRow[]> {
   const supabase = await createSupabaseServerClient();
-  const { data } = await supabase
-    .from<AccountWithProfiles>('accounts')
-    .select(ACCOUNT_SELECT)
-    .eq('org_id', ORG.id)
-    .is('deleted_at', null)
-    .order('created_at', { ascending: false });
+  const { data: accounts } = await getAccountsByOrgId(supabase, ORG.id);
 
-  if (!data) {
+  if (!accounts?.length) {
     return [];
   }
 
-  return data.map(mapAccountToRow);
+  const sortedAccounts = [...accounts].sort((a, b) =>
+    b.created_at.localeCompare(a.created_at),
+  );
+  const accountIds = sortedAccounts.map((account) => account.id);
+  const { data: profiles } = await getProfileSummariesByAccountIds(
+    supabase,
+    ORG.id,
+    accountIds,
+  );
+
+  const profileByAccountId = new Map<string, ProfileRow>();
+  profiles?.forEach((profile) => {
+    if (!profile.account_id || profileByAccountId.has(profile.account_id)) {
+      return;
+    }
+    profileByAccountId.set(profile.account_id, profile);
+  });
+
+  return sortedAccounts.map((account) =>
+    mapAccountToRow(account, profileByAccountId.get(account.id) ?? null),
+  );
 }

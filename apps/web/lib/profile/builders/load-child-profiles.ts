@@ -7,7 +7,7 @@ import { resolveAvatarSource } from '../derive';
 import { createSignedAvatarUrl } from '../queries/avatar.query';
 import { getChildProfilesDetails } from '../queries/child.query';
 import { getChildProfilesByAccountIds } from '../queries/profiles.query';
-import { getAccountsByIds } from '../queries/accounts.query';
+import { getAccountsByIds } from '../../accounts/queries/accounts.query';
 import { parseGradeLevel } from '@iconicedu/shared-types';
 
 async function resolveAvatarUrl(

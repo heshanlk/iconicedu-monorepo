@@ -4,6 +4,12 @@ import { revalidatePath } from 'next/cache';
 
 import { createAuthAdminService } from './admin';
 import { createSupabaseServerClient } from '../supabase/server';
+import {
+  deleteAccountById,
+  getAccountByAuthUserId,
+} from '../accounts/queries/accounts.query';
+import { deleteProfilesByAccountId } from '../profile/queries/profiles.query';
+import { deleteFamilyLinksByGuardianAccountId } from '../family/queries/families.query';
 
 import type {
   AdminUserAttributes,
@@ -30,28 +36,16 @@ function resolveCallbackRedirect(override?: string | null) {
 
 async function cleanupAccountRecords(authUserId: string) {
   const supabase = await createSupabaseServerClient();
-  const { data: account } = await supabase
-    .from('accounts')
-    .select('id, org_id')
-    .eq('auth_user_id', authUserId)
-    .maybeSingle<{ id: string; org_id: string }>();
+  const { data: account } = await getAccountByAuthUserId(supabase, authUserId);
 
   if (!account?.id) {
     return;
   }
 
   await Promise.all([
-    supabase
-      .from('profiles')
-      .delete()
-      .eq('account_id', account.id)
-      .eq('org_id', account.org_id),
-    supabase
-      .from('family_links')
-      .delete()
-      .eq('guardian_account_id', account.id)
-      .eq('org_id', account.org_id),
-    supabase.from('accounts').delete().eq('id', account.id).eq('org_id', account.org_id),
+    deleteProfilesByAccountId(supabase, account.id, account.org_id),
+    deleteFamilyLinksByGuardianAccountId(supabase, account.org_id, account.id),
+    deleteAccountById(supabase, account.id, account.org_id),
   ]);
 }
 
