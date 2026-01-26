@@ -31,6 +31,7 @@ import {
   SelectValue,
   toast,
   ResourceLinksEditor,
+  ParticipantSelector,
 } from '@iconicedu/ui-web';
 import { Textarea } from '@iconicedu/ui-web/ui/textarea';
 import {
@@ -39,21 +40,7 @@ import {
   LEARNING_SPACE_ICON_OPTIONS,
   type LearningSpaceIconKey,
 } from '@iconicedu/ui-web/lib/icons';
-import {
-  Combobox,
-  ComboboxChip,
-  ComboboxChips,
-  ComboboxChipsInput,
-  ComboboxContent,
-  ComboboxEmpty,
-  ComboboxGroup,
-  ComboboxItem,
-  ComboboxLabel,
-  ComboboxList,
-  ComboboxValue,
-  useComboboxAnchor,
-} from '@iconicedu/ui-web/ui/combobox';
-import type { LearningSpaceLinkVM } from '@iconicedu/shared-types';
+import type { LearningSpaceLinkVM, UserProfileVM } from '@iconicedu/shared-types';
 
 const KIND_OPTIONS = [
   { value: 'one_on_one', label: 'One on one' },
@@ -63,22 +50,88 @@ const KIND_OPTIONS = [
 
 const SUBJECT_OPTIONS = ['MATH', 'SCIENCE', 'ELA', 'CHESS'];
 
-const PARTICIPANT_GROUPS = [
+const PARTICIPANT_USERS: UserProfileVM[] = [
   {
-    label: 'Parents',
-    items: ['Alex Vega (parent of Mateo)', 'Jordan Rivera (parent of Leila)'],
+    kind: 'guardian',
+    ids: {
+      id: 'profile-guardian-1',
+      orgId: 'org-1',
+      accountId: 'account-guardian-1',
+    },
+    profile: {
+      displayName: 'Jordan Rivera',
+      firstName: 'Jordan',
+      lastName: 'Rivera',
+      bio: 'Parent of Leila Rivera',
+      avatar: {
+        source: 'seed',
+        seed: 'jordan-rivera',
+        url: null,
+        updatedAt: '2025-01-01T00:00:00.000Z',
+      },
+    },
+    prefs: {},
+    meta: {
+      createdAt: '2025-01-01T00:00:00.000Z',
+      updatedAt: '2025-01-01T00:00:00.000Z',
+    },
+    status: 'active',
+    joinedDate: '2025-01-01T00:00:00.000Z',
   },
   {
-    label: 'Kids',
-    items: ['Mateo Vega', 'Leila Rivera', 'Sienna Park'],
+    kind: 'child',
+    ids: {
+      id: 'profile-child-1',
+      orgId: 'org-1',
+      accountId: 'account-child-1',
+    },
+    profile: {
+      displayName: 'Leila Rivera',
+      firstName: 'Leila',
+      lastName: 'Rivera',
+      bio: 'Grade 4',
+      avatar: {
+        source: 'seed',
+        seed: 'leila-rivera',
+        url: null,
+        updatedAt: '2025-01-01T00:00:00.000Z',
+      },
+    },
+    prefs: {},
+    meta: {
+      createdAt: '2025-01-01T00:00:00.000Z',
+      updatedAt: '2025-01-01T00:00:00.000Z',
+    },
+    status: 'active',
   },
   {
-    label: 'Educators',
-    items: ['Sophie Lee', 'Noel Patel', 'Imani Brooks'],
+    kind: 'educator',
+    ids: {
+      id: 'profile-educator-1',
+      orgId: 'org-1',
+      accountId: 'account-educator-1',
+    },
+    profile: {
+      displayName: 'Sophie Lee',
+      firstName: 'Sophie',
+      lastName: 'Lee',
+      bio: 'Math educator',
+      avatar: {
+        source: 'seed',
+        seed: 'sophie-lee',
+        url: null,
+        updatedAt: '2025-01-01T00:00:00.000Z',
+      },
+    },
+    prefs: {},
+    meta: {
+      createdAt: '2025-01-01T00:00:00.000Z',
+      updatedAt: '2025-01-01T00:00:00.000Z',
+    },
+    status: 'active',
+    joinedDate: '2025-01-01T00:00:00.000Z',
   },
 ] as const;
-
-const PARTICIPANT_ITEMS = PARTICIPANT_GROUPS.flatMap((group) => group.items);
 
 export function LearningSpaceFormDialog() {
   const [open, setOpen] = React.useState(false);
@@ -92,10 +145,9 @@ export function LearningSpaceFormDialog() {
   const [primaryChannel, setPrimaryChannel] = React.useState('');
   const [relatedChannels, setRelatedChannels] = React.useState('');
   const [scheduleSeries, setScheduleSeries] = React.useState('');
-  const [participants, setParticipants] = React.useState<string[]>([]);
+  const [participants, setParticipants] = React.useState<UserProfileVM[]>([]);
   const [resources, setResources] = React.useState<LearningSpaceLinkVM[]>([]);
   const [isSubmitted, setIsSubmitted] = React.useState(false);
-  const anchor = useComboboxAnchor();
   const SelectedIcon = LEARNING_SPACE_ICON_MAP[iconKey];
   const iconInvalid = isSubmitted && !iconKey;
   const titleInvalid = isSubmitted && !title.trim();
@@ -158,9 +210,9 @@ export function LearningSpaceFormDialog() {
                       >
                         <SelectTrigger
                           aria-label="Select icon"
-                          className="flex items-center justify-center rounded-full border border-border bg-muted"
+                          className="flex size-9 items-center justify-center rounded-full border border-border bg-muted p-0"
                         >
-                          <SelectValue placeholder="Select icon" />
+                          <SelectedIcon className="size-4" aria-hidden />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectGroup>
@@ -276,40 +328,23 @@ export function LearningSpaceFormDialog() {
                     Select families and educators with grouped chips for quick selection.
                   </FieldDescription>
                   <FieldGroup>
-                    <Combobox
-                      multiple
-                      items={PARTICIPANT_ITEMS}
-                      value={participants}
-                      onValueChange={setParticipants}
-                    >
-                      <ComboboxChips ref={anchor} className="w-full">
-                        <ComboboxValue>
-                          {(values) => (
-                            <>
-                              {values.map((value) => (
-                                <ComboboxChip key={value}>{value}</ComboboxChip>
-                              ))}
-                              <ComboboxChipsInput placeholder="Search participants" />
-                            </>
-                          )}
-                        </ComboboxValue>
-                      </ComboboxChips>
-                      <ComboboxContent anchor={anchor}>
-                        <ComboboxEmpty>No participants found.</ComboboxEmpty>
-                        <ComboboxList>
-                          {PARTICIPANT_GROUPS.map((group) => (
-                            <ComboboxGroup key={group.label}>
-                              <ComboboxLabel>{group.label}</ComboboxLabel>
-                              {group.items.map((item) => (
-                                <ComboboxItem key={item} value={item}>
-                                  {item}
-                                </ComboboxItem>
-                              ))}
-                            </ComboboxGroup>
-                          ))}
-                        </ComboboxList>
-                      </ComboboxContent>
-                    </Combobox>
+                    <ParticipantSelector
+                      users={PARTICIPANT_USERS}
+                      selectedUsers={participants}
+                      onUserAdd={(user) =>
+                        setParticipants((prev) =>
+                          prev.some((item) => item.ids.id === user.ids.id)
+                            ? prev
+                            : [...prev, user],
+                        )
+                      }
+                      onUserRemove={(user) =>
+                        setParticipants((prev) =>
+                          prev.filter((item) => item.ids.id !== user.ids.id),
+                        )
+                      }
+                      placeholder="Add participant"
+                    />
                   </FieldGroup>
                 </FieldSet>
                 <FieldSeparator />
