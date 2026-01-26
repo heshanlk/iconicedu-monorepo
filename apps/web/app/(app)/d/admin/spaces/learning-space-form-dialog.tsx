@@ -142,8 +142,6 @@ export function LearningSpaceFormDialog() {
   const [iconKey, setIconKey] = React.useState<LearningSpaceIconKey>(
     DEFAULT_LEARNING_SPACE_ICON_KEY,
   );
-  const [primaryChannel, setPrimaryChannel] = React.useState('');
-  const [relatedChannels, setRelatedChannels] = React.useState('');
   const [scheduleSeries, setScheduleSeries] = React.useState('');
   const [participants, setParticipants] = React.useState<UserProfileVM[]>([]);
   const [resources, setResources] = React.useState<LearningSpaceLinkVM[]>([]);
@@ -345,38 +343,6 @@ export function LearningSpaceFormDialog() {
                       }
                       placeholder="Add participant"
                     />
-                  </FieldGroup>
-                </FieldSet>
-                <FieldSeparator />
-                <FieldSet>
-                  <FieldLegend>Channels</FieldLegend>
-                  <FieldDescription>
-                    Connect the learning space to existing channels.
-                  </FieldDescription>
-                  <FieldGroup className="grid gap-3 md:grid-cols-2">
-                    <Field>
-                      <FieldLabel htmlFor="ls-primary-channel">
-                        Primary channel
-                      </FieldLabel>
-                      <Input
-                        id="ls-primary-channel"
-                        value={primaryChannel}
-                        onChange={(event) => setPrimaryChannel(event.target.value)}
-                        placeholder="channel id or slug"
-                      />
-                    </Field>
-                    <Field>
-                      <FieldLabel htmlFor="ls-related-channels">
-                        Related channels
-                      </FieldLabel>
-                      <Textarea
-                        id="ls-related-channels"
-                        value={relatedChannels}
-                        onChange={(event) => setRelatedChannels(event.target.value)}
-                        rows={2}
-                        placeholder="comma-separated channels"
-                      />
-                    </Field>
                   </FieldGroup>
                 </FieldSet>
                 <FieldSeparator />
