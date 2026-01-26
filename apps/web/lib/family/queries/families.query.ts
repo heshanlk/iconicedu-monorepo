@@ -1,19 +1,11 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { FamilyLinkInviteRow } from '@iconicedu/shared-types';
-import type { FamilyLinkRow } from '@iconicedu/shared-types';
+import type { FamilyLinkInviteRow, FamilyLinkRow, FamilyRow } from '@iconicedu/shared-types';
 
 import {
   FAMILY_INVITE_SELECT,
   FAMILY_LINK_SELECT,
   FAMILY_SELECT,
 } from '@iconicedu/web/lib/family/constants/selects';
-
-export type FamilyRow = {
-  id: string;
-  display_name: string;
-  created_at: string;
-  updated_at: string;
-};
 
 export async function getFamiliesByOrg(
   supabase: SupabaseClient,
@@ -25,6 +17,20 @@ export async function getFamiliesByOrg(
     .eq('org_id', orgId)
     .is('deleted_at', null)
     .order('created_at', { ascending: false });
+}
+
+export async function getFamilyById(
+  supabase: SupabaseClient,
+  orgId: string,
+  familyId: string,
+) {
+  return supabase
+    .from<FamilyRow>('families')
+    .select(FAMILY_SELECT)
+    .eq('org_id', orgId)
+    .eq('id', familyId)
+    .is('deleted_at', null)
+    .maybeSingle<FamilyRow>();
 }
 
 export async function getFamilyLinksByFamilyIds(

@@ -1,4 +1,9 @@
-import type { AccountRow, FamilyLinkInviteRow } from '@iconicedu/shared-types';
+import type {
+  AccountRow,
+  FamilyLinkInviteRow,
+  FamilyLinkRow,
+  FamilyRow,
+} from '@iconicedu/shared-types';
 
 import { createSupabaseServerClient } from '@iconicedu/web/lib/supabase/server';
 import { ORG } from '@iconicedu/web/lib/data/org';
@@ -7,8 +12,6 @@ import {
   getFamiliesByOrg,
   getFamilyInvitesByFamilyIds,
   getFamilyLinksByFamilyIds,
-  type FamilyRow,
-  type FamilyLinkRow,
 } from '@iconicedu/web/lib/family/queries/families.query';
 
 export type AdminFamilyParticipant = {

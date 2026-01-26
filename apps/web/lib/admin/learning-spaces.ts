@@ -1,9 +1,6 @@
 import { createSupabaseServerClient } from '@iconicedu/web/lib/supabase/server';
 import { ORG } from '@iconicedu/web/lib/data/org';
-import {
-  mapLearningSpaceRow,
-  type LearningSpaceRow,
-} from '@iconicedu/web/lib/spaces/mappers/learning-space.mapper';
+import type { LearningSpaceRow } from '@iconicedu/shared-types';
 import { getLearningSpacesByOrg } from '@iconicedu/web/lib/spaces/queries/learning-spaces.query';
 
 export async function getAdminLearningSpaceRows(): Promise<LearningSpaceRow[]> {
@@ -14,5 +11,5 @@ export async function getAdminLearningSpaceRows(): Promise<LearningSpaceRow[]> {
     return [];
   }
 
-  return data.map(mapLearningSpaceRow);
+  return data;
 }

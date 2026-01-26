@@ -3,6 +3,7 @@ import type {
   ChannelReadStateRow,
   ChannelRow,
   ChannelContextVM,
+  ChannelCapabilityRecordVM,
   ChannelDmVM,
   ChannelMiniVM,
   ChannelReadStateVM,
@@ -40,6 +41,21 @@ export function mapChannelCapabilityRow(
   row: ChannelCapabilityRow,
 ): ChannelCapabilityVM {
   return row.capability as ChannelCapabilityVM;
+}
+
+export function mapChannelCapabilityRowToRecordVM(
+  row: ChannelCapabilityRow,
+): ChannelCapabilityRecordVM {
+  return {
+    ids: {
+      id: row.id,
+      orgId: row.org_id,
+      channelId: row.channel_id,
+    },
+    capability: row.capability as ChannelCapabilityRecordVM['capability'],
+    createdAt: row.created_at,
+    updatedAt: row.updated_at ?? null,
+  };
 }
 
 export function mapChannelReadStateRow(

@@ -3,6 +3,7 @@ import type {
   ActivityFeedSectionRow,
   ActivityFeedItemVM,
   ActivityFeedSectionVM,
+  ActivityActorVM,
   ActivityItemAudienceVM,
   ActivityItemContentVM,
   ActivityItemRefsVM,
@@ -14,6 +15,7 @@ import type {
 
 export function mapActivityFeedItemRow(
   row: ActivityFeedItemRow,
+  options: { actor?: ActivityActorVM | null } = {},
 ): ActivityFeedItemVM {
   const contentBase = (row.content ?? {}) as ActivityItemContentVM;
   const content: ActivityItemContentVM = {
@@ -23,7 +25,11 @@ export function mapActivityFeedItemRow(
     actionButton: contentBase.actionButton ?? row.action_button ?? undefined,
     expandedContent: contentBase.expandedContent ?? row.expanded_content ?? undefined,
   };
-  const refs = (row.refs ?? {}) as ActivityItemRefsVM;
+  const refsBase = (row.refs ?? {}) as Partial<ActivityItemRefsVM>;
+  const refs = {
+    ...(refsBase as ActivityItemRefsVM),
+    actor: options.actor ?? (refsBase.actor as ActivityActorVM),
+  } as ActivityItemRefsVM;
   const audience = (row.audience ?? {
     scope: { kind: 'global' },
     visibility: 'public',

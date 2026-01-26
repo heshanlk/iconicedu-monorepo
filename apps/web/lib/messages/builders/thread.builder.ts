@@ -1,0 +1,84 @@
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { ThreadVM, UserProfileVM } from '@iconicedu/shared-types';
+
+import { getThreadsByChannelId, getThreadParticipantsByThreadIds, getThreadReadStatesByAccountId } from '@iconicedu/web/lib/messages/queries/messages.query';
+import { buildUserProfileById } from '@iconicedu/web/lib/profile/builders/user-profile.builder';
+import { mapThreadRowToVM } from '@iconicedu/web/lib/messages/mappers/thread.mapper';
+
+type ThreadBuildOptions = {
+  accountId?: string;
+};
+
+export async function buildThreadsByChannelId(
+  supabase: SupabaseClient,
+  orgId: string,
+  channelId: string,
+  options: ThreadBuildOptions = {},
+): Promise<ThreadVM[]> {
+  const threadsResponse = await getThreadsByChannelId(supabase, orgId, channelId);
+  const threadRows = threadsResponse.data ?? [];
+  if (!threadRows.length) {
+    return [];
+  }
+
+  const threadIds = threadRows.map((row) => row.id);
+  const [participantsResponse, readStateResponse] = await Promise.all([
+    getThreadParticipantsByThreadIds(supabase, orgId, threadIds),
+    options.accountId
+      ? getThreadReadStatesByAccountId(supabase, orgId, options.accountId)
+      : Promise.resolve({ data: [] }),
+  ]);
+
+  const participantsByThread = groupBy(
+    participantsResponse.data ?? [],
+    (row) => row.thread_id,
+  );
+  const readStateByThread = new Map(
+    (readStateResponse.data ?? []).map((row) => [row.thread_id, row]),
+  );
+
+  const profileIds = new Set<string>();
+  (participantsResponse.data ?? []).forEach((row) => profileIds.add(row.profile_id));
+
+  const profilesById = await resolveProfilesById(supabase, Array.from(profileIds));
+
+  return threadRows.map((row) => {
+    const participants = (participantsByThread.get(row.id) ?? [])
+      .map((participant) => profilesById.get(participant.profile_id))
+      .filter((profile): profile is UserProfileVM => Boolean(profile));
+    return mapThreadRowToVM(row, {
+      participants,
+      readState: readStateByThread.get(row.id),
+    });
+  });
+}
+
+async function resolveProfilesById(
+  supabase: SupabaseClient,
+  profileIds: string[],
+): Promise<Map<string, UserProfileVM>> {
+  const profiles = await Promise.all(
+    profileIds.map((profileId) => buildUserProfileById(supabase, profileId)),
+  );
+  const map = new Map<string, UserProfileVM>();
+  profiles.forEach((profile) => {
+    if (profile) {
+      map.set(profile.ids.id, profile);
+    }
+  });
+  return map;
+}
+
+function groupBy<T, K extends string>(
+  rows: T[],
+  getKey: (row: T) => K,
+): Map<K, T[]> {
+  const map = new Map<K, T[]>();
+  rows.forEach((row) => {
+    const key = getKey(row);
+    const bucket = map.get(key) ?? [];
+    bucket.push(row);
+    map.set(key, bucket);
+  });
+  return map;
+}

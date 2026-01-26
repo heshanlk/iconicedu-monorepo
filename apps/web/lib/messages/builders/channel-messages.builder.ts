@@ -1,22 +1,42 @@
+import type { SupabaseClient } from '@supabase/supabase-js';
 import type {
   ChannelFileItemVM,
   ChannelMediaItemVM,
   MessageVM,
 } from '@iconicedu/shared-types';
 
-import { getChannelById } from '@iconicedu/web/lib/channels/builders/channel.builder';
+import {
+  getChannelFilesByChannelIds,
+  getChannelMediaByChannelIds,
+} from '@iconicedu/web/lib/messages/queries/messages.query';
+import {
+  mapChannelFileRow,
+  mapChannelMediaRow,
+} from '@iconicedu/web/lib/messages/mappers/message.mapper';
+import { buildMessagesByChannelId } from '@iconicedu/web/lib/messages/builders/message.builder';
 
-export function getChannelMessages(channelId: string): MessageVM[] {
-  const channel = getChannelById(channelId);
-  return channel?.collections.messages.items ?? [];
+export async function buildChannelMessages(
+  supabase: SupabaseClient,
+  orgId: string,
+  channelId: string,
+): Promise<MessageVM[]> {
+  return buildMessagesByChannelId(supabase, orgId, channelId);
 }
 
-export function getChannelMedia(channelId: string): ChannelMediaItemVM[] {
-  const channel = getChannelById(channelId);
-  return channel?.collections.media.items ?? [];
+export async function buildChannelMedia(
+  supabase: SupabaseClient,
+  orgId: string,
+  channelId: string,
+): Promise<ChannelMediaItemVM[]> {
+  const response = await getChannelMediaByChannelIds(supabase, orgId, [channelId]);
+  return (response.data ?? []).map(mapChannelMediaRow);
 }
 
-export function getChannelFiles(channelId: string): ChannelFileItemVM[] {
-  const channel = getChannelById(channelId);
-  return channel?.collections.files.items ?? [];
+export async function buildChannelFiles(
+  supabase: SupabaseClient,
+  orgId: string,
+  channelId: string,
+): Promise<ChannelFileItemVM[]> {
+  const response = await getChannelFilesByChannelIds(supabase, orgId, [channelId]);
+  return (response.data ?? []).map(mapChannelFileRow);
 }

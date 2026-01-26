@@ -32,6 +32,18 @@ export async function getProfileByAccountId(
     .maybeSingle<ProfileRow>();
 }
 
+export async function getProfileById(
+  supabase: SupabaseClient,
+  profileId: string,
+) {
+  return supabase
+    .from('profiles')
+    .select(PROFILE_SELECT)
+    .eq('id', profileId)
+    .is('deleted_at', null)
+    .maybeSingle<ProfileRow>();
+}
+
 export async function upsertProfileForAccount(
   supabase: SupabaseClient,
   payload: ProfileInsertPayload,
@@ -145,6 +157,23 @@ export async function getProfilesByAccountIds(
     .from('profiles')
     .select(PROFILE_SELECT)
     .in('account_id', accountIds)
+    .eq('org_id', orgId)
+    .is('deleted_at', null)
+    .returns<ProfileRow[]>();
+}
+
+export async function getProfilesByIds(
+  supabase: SupabaseClient,
+  orgId: string,
+  profileIds: string[],
+) {
+  if (!profileIds.length) {
+    return { data: [] as ProfileRow[] };
+  }
+  return supabase
+    .from('profiles')
+    .select(PROFILE_SELECT)
+    .in('id', profileIds)
     .eq('org_id', orgId)
     .is('deleted_at', null)
     .returns<ProfileRow[]>();

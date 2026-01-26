@@ -27,6 +27,24 @@ export async function getClassSchedulesByOrg(
     .order('start_at', { ascending: true });
 }
 
+export async function getClassSchedulesByIds(
+  supabase: SupabaseClient,
+  orgId: string,
+  scheduleIds: string[],
+) {
+  if (!scheduleIds.length) {
+    return { data: [] as ClassScheduleRow[] };
+  }
+
+  return supabase
+    .from<ClassScheduleRow>('class_schedules')
+    .select(CLASS_SCHEDULE_SELECT)
+    .eq('org_id', orgId)
+    .in('id', scheduleIds)
+    .is('deleted_at', null)
+    .order('start_at', { ascending: true });
+}
+
 export async function getClassScheduleParticipantsByScheduleIds(
   supabase: SupabaseClient,
   orgId: string,

@@ -111,6 +111,15 @@ export interface ChannelFileItemVM {
 
 export type ChannelCapabilityVM = 'has_schedule' | 'has_homework' | 'has_summaries';
 
+export interface ChannelCapabilityRecordVM {
+  ids: Omit<IdsBaseVM, 'channelId'> & {
+    channelId: UUID;
+  };
+  capability: ChannelCapabilityVM;
+  createdAt: ISODateTime;
+  updatedAt?: ISODateTime | null;
+}
+
 export interface ChannelContextVM {
   primaryEntity?: EntityRefVM | null;
   capabilities?: ChannelCapabilityVM[] | null;

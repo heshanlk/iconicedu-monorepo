@@ -1,0 +1,207 @@
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type {
+  ChannelVM,
+  ClassScheduleVM,
+  LearningSpaceLinkVM,
+  LearningSpaceVM,
+  UserProfileVM,
+} from '@iconicedu/shared-types';
+import type {
+  LearningSpaceRow,
+  LearningSpaceChannelRow,
+  LearningSpaceLinkRow,
+  LearningSpaceParticipantRow,
+} from '@iconicedu/shared-types';
+
+import {
+  getLearningSpaceById,
+  getLearningSpacesByOrg,
+} from '@iconicedu/web/lib/spaces/queries/learning-spaces.query';
+import {
+  getLearningSpaceChannelsByLearningSpaceIds,
+  getLearningSpaceChannelByChannelId,
+  getLearningSpaceLinksByLearningSpaceIds,
+  getLearningSpaceParticipantsByLearningSpaceIds,
+} from '@iconicedu/web/lib/spaces/queries/learning-space-relations.query';
+import { mapLearningSpaceLinkRow, mapLearningSpaceRowToVM } from '@iconicedu/web/lib/spaces/mappers/learning-space.mapper';
+import { getChannelById } from '@iconicedu/web/lib/channels/builders/channel.builder';
+import { buildUserProfileById } from '@iconicedu/web/lib/profile/builders/user-profile.builder';
+import { getClassScheduleById } from '@iconicedu/web/lib/schedules/builders/class-schedule.builder';
+
+type LearningSpaceRelations = {
+  channels: LearningSpaceChannelRow[];
+  participants: LearningSpaceParticipantRow[];
+  links: LearningSpaceLinkRow[];
+};
+
+async function resolveChannels(
+  rows: LearningSpaceChannelRow[],
+): Promise<{ primaryChannel: ChannelVM | null; relatedChannels: ChannelVM[] }> {
+  const channels = rows
+    .map((row) => getChannelById(row.channel_id))
+    .filter((channel): channel is ChannelVM => Boolean(channel));
+
+  const primaryRow = rows.find((row) => row.is_primary);
+  const primaryChannel =
+    (primaryRow && getChannelById(primaryRow.channel_id)) ?? channels[0] ?? null;
+
+  const relatedChannels = primaryChannel
+    ? channels.filter((channel) => channel.ids.id !== primaryChannel.ids.id)
+    : channels;
+
+  return { primaryChannel, relatedChannels };
+}
+
+async function resolveParticipants(
+  supabase: SupabaseClient,
+  rows: LearningSpaceParticipantRow[],
+): Promise<UserProfileVM[]> {
+  const profiles = await Promise.all(
+    rows.map((row) => buildUserProfileById(supabase, row.profile_id)),
+  );
+  return profiles.filter((profile): profile is UserProfileVM => Boolean(profile));
+}
+
+function resolveLinks(rows: LearningSpaceLinkRow[]): LearningSpaceLinkVM[] {
+  return rows.map(mapLearningSpaceLinkRow);
+}
+
+function resolveSchedule(scheduleId?: string | null): ClassScheduleVM | null {
+  return scheduleId ? getClassScheduleById(scheduleId) : null;
+}
+
+export async function buildLearningSpaceFromRow(
+  supabase: SupabaseClient,
+  row: LearningSpaceRow,
+  relations: LearningSpaceRelations,
+  scheduleId?: string | null,
+): Promise<LearningSpaceVM | null> {
+  const { primaryChannel, relatedChannels } = await resolveChannels(relations.channels);
+  if (!primaryChannel) {
+    return null;
+  }
+
+  const [participants, links] = await Promise.all([
+    resolveParticipants(supabase, relations.participants),
+    Promise.resolve(resolveLinks(relations.links)),
+  ]);
+
+  const scheduleSeries = resolveSchedule(scheduleId);
+
+  return mapLearningSpaceRowToVM(row, {
+    channels: {
+      primaryChannel,
+      relatedChannels: relatedChannels.length ? relatedChannels : undefined,
+    },
+    participants,
+    links: links.length ? links : undefined,
+    scheduleSeries,
+  });
+}
+
+export async function buildLearningSpaceById(
+  supabase: SupabaseClient,
+  orgId: string,
+  learningSpaceId: string,
+  scheduleId?: string | null,
+): Promise<LearningSpaceVM | null> {
+  const { data: learningSpace } = await getLearningSpaceById(
+    supabase,
+    learningSpaceId,
+  );
+
+  if (!learningSpace || learningSpace.org_id !== orgId) {
+    return null;
+  }
+
+  const [channels, participants, links] = await Promise.all([
+    getLearningSpaceChannelsByLearningSpaceIds(supabase, orgId, [learningSpaceId]),
+    getLearningSpaceParticipantsByLearningSpaceIds(supabase, orgId, [learningSpaceId]),
+    getLearningSpaceLinksByLearningSpaceIds(supabase, orgId, [learningSpaceId]),
+  ]);
+
+  return buildLearningSpaceFromRow(
+    supabase,
+    learningSpace,
+    {
+      channels: channels.data ?? [],
+      participants: participants.data ?? [],
+      links: links.data ?? [],
+    },
+    scheduleId,
+  );
+}
+
+export async function buildLearningSpacesByOrg(
+  supabase: SupabaseClient,
+  orgId: string,
+): Promise<LearningSpaceVM[]> {
+  const { data: learningSpaces } = await getLearningSpacesByOrg(supabase, orgId);
+  if (!learningSpaces?.length) {
+    return [];
+  }
+
+  const learningSpaceIds = learningSpaces.map((space) => space.id);
+
+  const [channels, participants, links] = await Promise.all([
+    getLearningSpaceChannelsByLearningSpaceIds(supabase, orgId, learningSpaceIds),
+    getLearningSpaceParticipantsByLearningSpaceIds(supabase, orgId, learningSpaceIds),
+    getLearningSpaceLinksByLearningSpaceIds(supabase, orgId, learningSpaceIds),
+  ]);
+
+  const channelsBySpace = groupBy(channels.data ?? [], (row) => row.learning_space_id);
+  const participantsBySpace = groupBy(
+    participants.data ?? [],
+    (row) => row.learning_space_id,
+  );
+  const linksBySpace = groupBy(links.data ?? [], (row) => row.learning_space_id);
+
+  const results = await Promise.all(
+    learningSpaces.map((space) =>
+      buildLearningSpaceFromRow(
+        supabase,
+        space,
+        {
+          channels: channelsBySpace.get(space.id) ?? [],
+          participants: participantsBySpace.get(space.id) ?? [],
+          links: linksBySpace.get(space.id) ?? [],
+        },
+      ),
+    ),
+  );
+
+  return results.filter((space): space is LearningSpaceVM => Boolean(space));
+}
+
+export async function buildLearningSpaceByChannelId(
+  supabase: SupabaseClient,
+  orgId: string,
+  channelId: string,
+): Promise<LearningSpaceVM | null> {
+  const channelResponse = await getLearningSpaceChannelByChannelId(
+    supabase,
+    orgId,
+    channelId,
+  );
+
+  const channelRow = channelResponse.data;
+  if (!channelRow) {
+    return null;
+  }
+
+  return buildLearningSpaceById(supabase, orgId, channelRow.learning_space_id);
+}
+
+function groupBy<T, K extends string>(
+  rows: T[],
+  getKey: (row: T) => K,
+): Map<K, T[]> {
+  const map = new Map<K, T[]>();
+  rows.forEach((row) => {
+    const key = getKey(row);
+    const bucket = map.get(key) ?? [];
+    bucket.push(row);
+    map.set(key, bucket);
+  });
+  return map;
+}

@@ -1,11 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { ORG_SELECT } from '../constants/selects';
+import type { OrgRow } from '@iconicedu/shared-types';
 
-type OrgRow = {
-  id: string;
-  name: string;
-  slug: string;
-};
+import { ORG_SELECT } from '../constants/selects';
 
 export async function getOrgById(supabase: SupabaseClient, orgId: string) {
   return supabase

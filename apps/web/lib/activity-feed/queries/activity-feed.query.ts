@@ -2,11 +2,13 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import type {
   ActivityFeedItemRow,
   ActivityFeedSectionRow,
+  ActivityFeedGroupMemberRow,
 } from '@iconicedu/shared-types';
 
 import {
   ACTIVITY_FEED_ITEM_SELECT,
   ACTIVITY_FEED_SECTION_SELECT,
+  ACTIVITY_FEED_GROUP_MEMBER_SELECT,
 } from '@iconicedu/web/lib/activity-feed/constants/selects';
 
 export async function getActivityFeedItemsByOrg(
@@ -44,4 +46,21 @@ export async function getActivityFeedSectionsByOrg(
     .select(ACTIVITY_FEED_SECTION_SELECT)
     .eq('org_id', orgId)
     .order('created_at', { ascending: true });
+}
+
+export async function getActivityFeedGroupMembersByGroupIds(
+  supabase: SupabaseClient,
+  orgId: string,
+  groupIds: string[],
+) {
+  if (!groupIds.length) {
+    return { data: [] as ActivityFeedGroupMemberRow[] };
+  }
+
+  return supabase
+    .from<ActivityFeedGroupMemberRow>('activity_feed_group_members')
+    .select(ACTIVITY_FEED_GROUP_MEMBER_SELECT)
+    .eq('org_id', orgId)
+    .in('group_id', groupIds)
+    .is('deleted_at', null);
 }

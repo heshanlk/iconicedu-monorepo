@@ -1,10 +1,4 @@
-import type { OrgVM } from '@iconicedu/shared-types';
-
-type OrgRow = {
-  id: string;
-  name: string;
-  slug: string;
-};
+import type { OrgRow, OrgVM } from '@iconicedu/shared-types';
 
 export function mapOrgRow(row: OrgRow): OrgVM {
   return {

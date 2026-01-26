@@ -39,3 +39,16 @@ export const ACTIVITY_FEED_SECTION_SELECT = [
   'deleted_at',
   'deleted_by',
 ].join(',');
+
+export const ACTIVITY_FEED_GROUP_MEMBER_SELECT = [
+  'id',
+  'org_id',
+  'group_id',
+  'item_id',
+  'created_at',
+  'created_by',
+  'updated_at',
+  'updated_by',
+  'deleted_at',
+  'deleted_by',
+].join(',');
