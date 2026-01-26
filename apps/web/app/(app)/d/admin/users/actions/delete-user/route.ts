@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 import { deleteUserAction } from '../../../auth/actions';
-import { getFamilyInviteAdminClient } from '../../../../../../../lib/family/queries/invite.query';
+import { getFamilyInviteAdminClient } from '@iconicedu/web/lib/family/queries/invite.query';
 
 type DeleteRequestBody = {
   accountId?: string;

@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { DashboardHeader, MessagesShell } from '@iconicedu/ui-web';
-import { SUPPORT_CHANNEL } from '../../../../../lib/data/support-channel';
+import { SUPPORT_CHANNEL } from '@iconicedu/web/lib/data/support-channel';
 
 export default async function Page({
   params,

@@ -11,7 +11,7 @@ import {
 } from '@iconicedu/ui-web';
 import { Shield, Users, User, Layers } from 'lucide-react';
 
-import type { LearningSpaceRow } from '../../../../lib/admin/learning-spaces';
+import type { LearningSpaceRow } from '@iconicedu/web/lib/admin/learning-spaces';
 
 const KIND_ICON_MAP = {
   one_on_one: User,

@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 
-import { createSupabaseServerClient } from '../../../../lib/supabase/server';
-import { createSupabaseServiceClient } from '../../../../lib/supabase/service';
-import { ORG } from '../../../../lib/data/org';
-import { getOrCreateAccount } from '../../../../lib/accounts/getOrCreateAccount';
-import { updateAccountStatus } from '../../../../lib/accounts/queries/accounts.query';
+import { createSupabaseServerClient } from '@iconicedu/web/lib/supabase/server';
+import { createSupabaseServiceClient } from '@iconicedu/web/lib/supabase/service';
+import { ORG } from '@iconicedu/web/lib/data/org';
+import { getOrCreateAccount } from '@iconicedu/web/lib/accounts/getOrCreateAccount';
+import { updateAccountStatus } from '@iconicedu/web/lib/accounts/queries/accounts.query';
 
 export async function POST() {
   const sessionSupabase = await createSupabaseServerClient();

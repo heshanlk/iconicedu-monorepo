@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import EducatorAuthClient from './educator-client';
-import { createSupabaseServerClient } from '../../../../lib/supabase/server';
+import { createSupabaseServerClient } from '@iconicedu/web/lib/supabase/server';
 
 export default async function EducatorPage() {
   const supabase = await createSupabaseServerClient();

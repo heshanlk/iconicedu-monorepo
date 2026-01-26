@@ -16,7 +16,7 @@ import {
 } from '@iconicedu/ui-web';
 import { Loader2, RotateCw } from 'lucide-react';
 
-import type { AdminFamilyRow } from '../../../../../../lib/admin/families';
+import type { AdminFamilyRow } from '@iconicedu/web/lib/admin/families';
 import { FamiliesTable } from './families-table';
 
 const PAGE_SIZES = [5, 10, 20];

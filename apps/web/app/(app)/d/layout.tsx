@@ -3,13 +3,13 @@ import { SidebarProvider } from '@iconicedu/ui-web';
 import { cookies, headers } from 'next/headers';
 
 import { SidebarShell } from './sidebar-shell';
-import { createSupabaseServerClient } from '../../../lib/supabase/server';
-import { ORG } from '../../../lib/data/org';
-import { SIDEBAR_LEFT_DATA } from '../../../lib/data/sidebar-left';
-import { ADMIN_MENU_SECTIONS } from '../../../lib/data/admin-menu-sections';
-import { requireAuthedUser } from '../../../lib/auth/requireAuthedUser';
-import { getOrCreateAccount } from '../../../lib/accounts/getOrCreateAccount';
-import { loadSidebarContext } from '../../../lib/sidebar/loadSidebarContext';
+import { createSupabaseServerClient } from '@iconicedu/web/lib/supabase/server';
+import { ORG } from '@iconicedu/web/lib/data/org';
+import { SIDEBAR_LEFT_DATA } from '@iconicedu/web/lib/data/sidebar-left';
+import { ADMIN_MENU_SECTIONS } from '@iconicedu/web/lib/data/admin-menu-sections';
+import { requireAuthedUser } from '@iconicedu/web/lib/auth/requireAuthedUser';
+import { getOrCreateAccount } from '@iconicedu/web/lib/accounts/getOrCreateAccount';
+import { loadSidebarContext } from '@iconicedu/web/lib/sidebar/loadSidebarContext';
 
 export default async function Layout({ children }: { children: ReactNode }) {
   const supabase = await createSupabaseServerClient();

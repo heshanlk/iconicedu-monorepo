@@ -6,6 +6,12 @@
     "noEmit": true,
     "baseUrl": ".",
     "paths": {
+      "@iconicedu/web/*": ["../web/*"],
+      "@iconicedu/web": ["../web"],
+      "@iconicedu/api/*": ["../api/*"],
+      "@iconicedu/api": ["../api"],
+      "@iconicedu/mobile/*": ["./*"],
+      "@iconicedu/mobile": ["."],
       "@iconicedu/ui-web/*": ["../../packages/ui-web/src/*"],
       "@iconicedu/ui-web": ["../../packages/ui-web/src"],
       "@iconicedu/ui-native/*": ["../../packages/ui-native/src/*"],

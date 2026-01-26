@@ -14,7 +14,7 @@ import {
 } from '@iconicedu/ui-web';
 import { Loader2, RotateCw } from 'lucide-react';
 
-import type { LearningSpaceRow } from '../../../../lib/admin/learning-spaces';
+import type { LearningSpaceRow } from '@iconicedu/web/lib/admin/learning-spaces';
 import { LearningSpacesTable } from './learning-spaces-table';
 import { LearningSpaceFormDialog } from './learning-space-form-dialog';
 import type { UserProfileVM } from '@iconicedu/shared-types';

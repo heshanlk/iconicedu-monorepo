@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 
 import { DashboardHeader } from '@iconicedu/ui-web';
 
-import { getAdminFamilyRows } from '../../../../../../lib/admin/families';
+import { getAdminFamilyRows } from '@iconicedu/web/lib/admin/families';
 import { FamiliesDashboard } from './families-dashboard';
 
 export const metadata: Metadata = {

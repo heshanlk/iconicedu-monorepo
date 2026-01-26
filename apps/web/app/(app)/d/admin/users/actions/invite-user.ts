@@ -5,19 +5,19 @@ import { headers } from 'next/headers';
 import { z } from 'zod';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
-import { createSupabaseServerClient } from '../../../../../../lib/supabase/server';
-import { ORG } from '../../../../../../lib/data/org';
+import { createSupabaseServerClient } from '@iconicedu/web/lib/supabase/server';
+import { ORG } from '@iconicedu/web/lib/data/org';
 import {
   getAccountByAuthUserId,
   getAccountByEmail,
   insertInvitedAccount,
   updateAccountStatus,
-} from '../../../../../../lib/accounts/queries/accounts.query';
+} from '@iconicedu/web/lib/accounts/queries/accounts.query';
 import {
   insertProfileForAccount,
   upsertProfileForAccount,
-} from '../../../../../../lib/profile/queries/profiles.query';
-import { getFamilyInviteAdminClient } from '../../../../../../lib/family/queries/invite.query';
+} from '@iconicedu/web/lib/profile/queries/profiles.query';
+import { getFamilyInviteAdminClient } from '@iconicedu/web/lib/family/queries/invite.query';
 
 const INVITE_SCHEMA = z.object({
   email: z.string().trim().email(),

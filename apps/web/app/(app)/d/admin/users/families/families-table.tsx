@@ -8,7 +8,7 @@ import {
   TableRow,
 } from '@iconicedu/ui-web';
 
-import type { AdminFamilyRow } from '../../../../../../lib/admin/families';
+import type { AdminFamilyRow } from '@iconicedu/web/lib/admin/families';
 
 type FamiliesTableProps = {
   rows: AdminFamilyRow[];

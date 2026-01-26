@@ -3,7 +3,7 @@ import { MessagesShell, DashboardHeader } from '@iconicedu/ui-web';
 import {
   DIRECT_MESSAGE_CHANNELS_BY_ID,
   DIRECT_MESSAGE_CHANNELS_WITH_MESSAGES,
-} from '../../../../../lib/data/channel-message-data';
+} from '@iconicedu/web/lib/data/channel-message-data';
 
 export default async function Page({
   params,

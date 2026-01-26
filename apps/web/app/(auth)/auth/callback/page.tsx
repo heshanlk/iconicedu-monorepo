@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
 
-import { createSupabaseBrowserClient } from '../../../../lib/supabase/client';
+import { createSupabaseBrowserClient } from '@iconicedu/web/lib/supabase/client';
 
 export default function CallbackPage() {
   const router = useRouter();

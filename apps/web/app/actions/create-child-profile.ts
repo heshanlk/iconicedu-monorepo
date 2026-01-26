@@ -9,10 +9,10 @@ import type {
   ThemeKey,
 } from '@iconicedu/shared-types';
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { getFamilyInviteAdminClient, ensureFamilyForGuardian } from '../../lib/family/queries/invite.query';
-import { loadChildProfiles } from '../../lib/profile/builders/load-child-profiles';
-import { getAccountByAuthUserId } from '../../lib/accounts/queries/accounts.query';
-import { createSupabaseServerClient } from '../../lib/supabase/server';
+import { getFamilyInviteAdminClient, ensureFamilyForGuardian } from '@iconicedu/web/lib/family/queries/invite.query';
+import { loadChildProfiles } from '@iconicedu/web/lib/profile/builders/load-child-profiles';
+import { getAccountByAuthUserId } from '@iconicedu/web/lib/accounts/queries/accounts.query';
+import { createSupabaseServerClient } from '@iconicedu/web/lib/supabase/server';
 
 const normalizeEmail = (value?: string | null) => value?.trim().toLowerCase() ?? null;
 

@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { Button } from '@iconicedu/ui-web';
 import { LoginForm } from '@iconicedu/ui-web';
-import { createSupabaseBrowserClient } from '../../../../lib/supabase/client';
+import { createSupabaseBrowserClient } from '@iconicedu/web/lib/supabase/client';
 import { educatorSignupAction } from './actions/educator-signup';
 
 export default function EducatorAuthClient() {

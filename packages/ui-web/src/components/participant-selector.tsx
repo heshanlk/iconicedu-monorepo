@@ -50,6 +50,12 @@ function getSecondaryText(user: UserProfileVM) {
   return email || ROLE_LABELS[user.kind];
 }
 
+function getGuardianNamesSearchText(user: UserProfileVM) {
+  return user.kind === 'child' && user.guardianNames?.length
+    ? user.guardianNames.join(' ')
+    : '';
+}
+
 interface ParticipantSelectorProps {
   users: UserProfileVM[];
   selectedUsers: UserProfileVM[];
@@ -137,9 +143,7 @@ export function ParticipantSelector({
                     return (
                       <CommandItem
                         key={user.ids.id}
-                        value={`${displayName} ${secondaryText} ${emailText} ${
-                          user.guardianNames?.join(' ') ?? ''
-                        }`}
+                        value={`${displayName} ${secondaryText} ${emailText} ${getGuardianNamesSearchText(user)}`}
                         onSelect={() => {
                           onUserAdd(user);
                           setOpen(false);

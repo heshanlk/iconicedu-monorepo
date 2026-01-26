@@ -18,7 +18,7 @@ import type {
 } from '@iconicedu/shared-types';
 import { SidebarLeft, SidebarInset } from '@iconicedu/ui-web';
 import { toast } from 'sonner';
-import { createSupabaseBrowserClient } from '../../../lib/supabase/client';
+import { createSupabaseBrowserClient } from '@iconicedu/web/lib/supabase/client';
 import {
   revokeFamilyInviteAction,
   sendFamilyInviteAction,
@@ -27,7 +27,7 @@ import { removeFamilyMemberAction } from '../../actions/remove-family-member';
 import { createChildProfileAction } from '../../actions/create-child-profile';
 import { saveEducatorAvailabilityAction } from '../../actions/educator-availability';
 import { upsertUserOnboardingStatusAction } from '../../actions/onboarding-status';
-import { determineOnboardingStep } from '../../../lib/onboarding/determineOnboardingStep';
+import { determineOnboardingStep } from '@iconicedu/web/lib/onboarding/determineOnboardingStep';
 
 const AVATAR_BUCKET = 'public-avatars';
 const AVATAR_SIGNED_URL_TTL = 60 * 60;

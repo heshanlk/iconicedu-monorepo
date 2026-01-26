@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import LoginClient from './login-client';
-import { createSupabaseServerClient } from '../../../lib/supabase/server';
+import { createSupabaseServerClient } from '@iconicedu/web/lib/supabase/server';
 
 export default async function LoginPage() {
   const supabase = await createSupabaseServerClient();

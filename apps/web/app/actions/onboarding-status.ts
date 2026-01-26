@@ -1,8 +1,8 @@
 'use server';
 
-import { createSupabaseServerClient } from '../../lib/supabase/server';
-import { upsertUserOnboardingStatus } from '../../lib/onboarding/queries/status.query';
-import { mapUserOnboardingStatusRowToVM } from '../../lib/onboarding/mappers';
+import { createSupabaseServerClient } from '@iconicedu/web/lib/supabase/server';
+import { upsertUserOnboardingStatus } from '@iconicedu/web/lib/onboarding/queries/status.query';
+import { mapUserOnboardingStatusRowToVM } from '@iconicedu/web/lib/onboarding/mappers';
 import type {
   OnboardingStep,
   UserOnboardingStatusVM,

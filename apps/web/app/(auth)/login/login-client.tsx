@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { LoginForm } from '@iconicedu/ui-web';
-import { createSupabaseBrowserClient } from '../../../lib/supabase/client';
+import { createSupabaseBrowserClient } from '@iconicedu/web/lib/supabase/client';
 
 export default function LoginClient() {
   const supabase = React.useMemo(() => createSupabaseBrowserClient(), []);

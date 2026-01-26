@@ -7,9 +7,9 @@ import type {
 } from '@iconicedu/shared-types';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
-import { createSupabaseServerClient } from '../../lib/supabase/server';
-import { getAccountByAuthUserId } from '../../lib/accounts/queries/accounts.query';
-import { upsertEducatorAvailability } from '../../lib/profile/queries/educator.query';
+import { createSupabaseServerClient } from '@iconicedu/web/lib/supabase/server';
+import { getAccountByAuthUserId } from '@iconicedu/web/lib/accounts/queries/accounts.query';
+import { upsertEducatorAvailability } from '@iconicedu/web/lib/profile/queries/educator.query';
 
 export type SaveEducatorAvailabilityActionInput = {
   profileId: string;

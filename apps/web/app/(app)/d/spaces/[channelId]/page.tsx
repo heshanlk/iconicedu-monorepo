@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { DashboardHeader } from '@iconicedu/ui-web';
-import { LEARNING_SPACE_CHANNELS_BY_ID } from '../../../../../lib/data/channel-message-data';
-import { LEARNING_SPACE_BY_CHANNEL_ID } from '../../../../../lib/data/learning-spaces';
+import { LEARNING_SPACE_CHANNELS_BY_ID } from '@iconicedu/web/lib/data/channel-message-data';
+import { LEARNING_SPACE_BY_CHANNEL_ID } from '@iconicedu/web/lib/data/learning-spaces';
 import { LearningSpaceShell } from './learning-space-shell';
 
 export default async function Page({

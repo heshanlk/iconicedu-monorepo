@@ -13,13 +13,19 @@
     "moduleResolution": "node",
     "jsx": "react-jsx",
     "baseUrl": ".",
-  "paths": {
-    "@iconicedu/ui-web/*": ["packages/ui-web/src/*"],
-    "@iconicedu/ui-web": ["packages/ui-web/src"],
-    "@iconicedu/ui-native/*": ["packages/ui-native/src/*"],
-    "@iconicedu/shared-types/*": ["packages/shared-types/src/*"],
-    "@iconicedu/shared-types": ["packages/shared-types/src"],
-    "@iconicedu/utils/*": ["packages/utils/src/*"]
+    "paths": {
+      "@iconicedu/web/*": ["apps/web/*"],
+      "@iconicedu/web": ["apps/web"],
+      "@iconicedu/api/*": ["apps/api/*"],
+      "@iconicedu/api": ["apps/api"],
+      "@iconicedu/mobile/*": ["apps/mobile/*"],
+      "@iconicedu/mobile": ["apps/mobile"],
+      "@iconicedu/ui-web/*": ["packages/ui-web/src/*"],
+      "@iconicedu/ui-web": ["packages/ui-web/src"],
+      "@iconicedu/ui-native/*": ["packages/ui-native/src/*"],
+      "@iconicedu/shared-types/*": ["packages/shared-types/src/*"],
+      "@iconicedu/shared-types": ["packages/shared-types/src"],
+      "@iconicedu/utils/*": ["packages/utils/src/*"]
+    }
   }
-}
 }

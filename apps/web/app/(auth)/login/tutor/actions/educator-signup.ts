@@ -1,8 +1,8 @@
 'use server';
 
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { getFamilyInviteAdminClient } from '../../../../../lib/family/queries/invite.query';
-import { ORG } from '../../../../../lib/data/org';
+import { getFamilyInviteAdminClient } from '@iconicedu/web/lib/family/queries/invite.query';
+import { ORG } from '@iconicedu/web/lib/data/org';
 
 type EducatorSignupInput = {
   email: string;

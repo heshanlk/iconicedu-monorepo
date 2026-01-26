@@ -53,7 +53,7 @@ import {
 import { cn } from '@iconicedu/ui-web/lib/utils';
 
 import { InviteUserDialog } from './invite-dialog';
-import type { AdminUserRow } from '../../../../../lib/admin/users';
+import type { AdminUserRow } from '@iconicedu/web/lib/admin/users';
 
 export type UserRow = AdminUserRow;
 

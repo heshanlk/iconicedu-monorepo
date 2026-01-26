@@ -7,15 +7,15 @@ import type {
   FamilyRelation,
 } from '@iconicedu/shared-types';
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { createSupabaseServerClient } from '../../lib/supabase/server';
-import { getAccountByAuthUserId } from '../../lib/accounts/queries/accounts.query';
+import { createSupabaseServerClient } from '@iconicedu/web/lib/supabase/server';
+import { getAccountByAuthUserId } from '@iconicedu/web/lib/accounts/queries/accounts.query';
 import {
   acceptFamilyInvite,
   createFamilyInvite,
   deleteFamilyInvite,
   getFamilyInviteAdminClient,
   mapFamilyLinkInviteRowToVM,
-} from '../../lib/family/queries/invite.query';
+} from '@iconicedu/web/lib/family/queries/invite.query';
 
 type ResolvedGuardianContext = {
   supabase: SupabaseClient;
