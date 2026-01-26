@@ -61,6 +61,7 @@ export function RecurrenceForm({
   className,
   isEditing = false,
 }: RecurrenceFormProps) {
+  const [isSubmitted, setIsSubmitted] = React.useState(false);
   const [startDate, setStartDate] = React.useState<Date | undefined>(
     defaultValues?.startDate,
   );
@@ -108,6 +109,10 @@ export function RecurrenceForm({
   const [newOverrideTime, setNewOverrideTime] = React.useState('');
   const [newOverrideReason, setNewOverrideReason] = React.useState('');
   const [editingOverrideId, setEditingOverrideId] = React.useState<string | null>(null);
+
+  const startDateInvalid = isSubmitted && !startDate;
+  const timezoneInvalid = isSubmitted && !timezone;
+  const weekdayInvalid = isSubmitted && frequency === 'weekly' && byWeekday.length === 0;
 
   const updateWeekdayTime = (day: WeekdayVM, time: string) => {
     setWeekdayTimes((prev) => prev.map((wt) => (wt.day === day ? { ...wt, time } : wt)));
@@ -213,6 +218,10 @@ export function RecurrenceForm({
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+    setIsSubmitted(true);
+    if (!startDate || !timezone || (frequency === 'weekly' && byWeekday.length === 0)) {
+      return;
+    }
 
     const selectedWeekdayTimes =
       frequency === 'weekly' && byWeekday.length > 0
@@ -258,7 +267,9 @@ export function RecurrenceForm({
     <ScrollArea className={cn('max-h-[70vh]', className)}>
       <form onSubmit={handleSubmit} className="space-y-6 px-1">
         <div className="space-y-2">
-          <Label htmlFor="start-date">Start Date</Label>
+          <Label htmlFor="start-date">
+            Start Date <span className="text-destructive">*</span>
+          </Label>
           <Popover>
             <PopoverTrigger asChild>
               <Button
@@ -277,10 +288,15 @@ export function RecurrenceForm({
               <Calendar mode="single" selected={startDate} onSelect={setStartDate} />
             </PopoverContent>
           </Popover>
+          {startDateInvalid && (
+            <p className="text-xs text-destructive">Start date is required.</p>
+          )}
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="timezone">Timezone</Label>
+          <Label htmlFor="timezone">
+            Timezone <span className="text-destructive">*</span>
+          </Label>
           <Select value={timezone} onValueChange={setTimezone}>
             <SelectTrigger id="timezone" className="w-full">
               <SelectValue placeholder="Select timezone" />
@@ -293,6 +309,9 @@ export function RecurrenceForm({
               ))}
             </SelectContent>
           </Select>
+          {timezoneInvalid && (
+            <p className="text-xs text-destructive">Timezone is required.</p>
+          )}
         </div>
 
         <div className="space-y-2">
@@ -335,9 +354,10 @@ export function RecurrenceForm({
         {frequency === 'weekly' && (
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label>On days</Label>
+              <Label>
+                On days <span className="text-destructive">*</span>
+              </Label>
               <ToggleGroup
-                variant={'outline'}
                 type="multiple"
                 value={byWeekday}
                 onValueChange={(value) => setByWeekday(value as WeekdayVM[])}
@@ -354,6 +374,9 @@ export function RecurrenceForm({
                   </ToggleGroupItem>
                 ))}
               </ToggleGroup>
+              {weekdayInvalid && (
+                <p className="text-xs text-destructive">Select at least one day.</p>
+              )}
             </div>
 
             {byWeekday.length > 0 && (
