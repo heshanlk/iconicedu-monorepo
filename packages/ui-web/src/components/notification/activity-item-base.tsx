@@ -15,11 +15,11 @@ import {
   Sparkles,
   Video,
 } from 'lucide-react';
-import { Badge } from '../../ui/badge';
-import { Button } from '../../ui/button';
-import { cn } from '../../lib/utils';
-import { ActivityBadge } from './activity-badge';
-import { ActivityWithButton } from './activity-with-button';
+import { Badge } from '@iconicedu/ui-web/ui/badge';
+import { Button } from '@iconicedu/ui-web/ui/button';
+import { cn } from '@iconicedu/ui-web/lib/utils';
+import { ActivityBadge } from '@iconicedu/ui-web/components/notification/activity-badge';
+import { ActivityWithButton } from '@iconicedu/ui-web/components/notification/activity-with-button';
 import type { ActivityFeedItemVM, InboxIconKeyVM } from '@iconicedu/shared-types';
 
 type ActivityItemBaseProps = {

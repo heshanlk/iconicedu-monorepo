@@ -2,7 +2,7 @@
 
 import { memo } from 'react';
 import type { ImageMessageVM as ImageMessageType } from '@iconicedu/shared-types';
-import { MessageBase, type MessageBaseProps } from '../message-base';
+import { MessageBase, type MessageBaseProps } from '@iconicedu/ui-web/components/messages/message-base';
 
 interface ImageMessageProps extends Omit<MessageBaseProps, 'message' | 'children'> {
   message: ImageMessageType;

@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { DashboardHeader } from '@iconicedu/ui-web';
 
 import { getAdminFamilyRows } from '@iconicedu/web/lib/admin/families';
-import { FamiliesDashboard } from './families-dashboard';
+import { FamiliesDashboard } from '@iconicedu/web/app/(app)/d/admin/users/families/families-dashboard';
 
 export const metadata: Metadata = {
   title: 'Admin · Families',

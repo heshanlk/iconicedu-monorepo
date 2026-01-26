@@ -4,8 +4,8 @@ import type React from 'react';
 
 import { Component, type ReactNode } from 'react';
 import { AlertCircle } from 'lucide-react';
-import { Button } from '../ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
+import { Button } from '@iconicedu/ui-web/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@iconicedu/ui-web/ui/card';
 
 interface Props {
   children: ReactNode;

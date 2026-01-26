@@ -1,7 +1,7 @@
 import type { AvatarSource, ThemeKey, UserProfileVM, UserRoleVM } from '@iconicedu/shared-types';
 import type { RoleKey } from '@iconicedu/shared-types';
 
-import { THEME_KEY_SET } from './constants/theme';
+import { THEME_KEY_SET } from '@iconicedu/web/lib/profile/constants/theme';
 
 export function deriveDisplayName(user: {
   email?: string | null;

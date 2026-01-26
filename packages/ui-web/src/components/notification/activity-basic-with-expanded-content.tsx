@@ -2,7 +2,7 @@
 
 import type React from 'react';
 import { useState } from 'react';
-import { ActivityItemBase } from './activity-item-base';
+import { ActivityItemBase } from '@iconicedu/ui-web/components/notification/activity-item-base';
 import type { ActivityFeedItemVM } from '@iconicedu/shared-types';
 
 type ActivityBasicWithExpandedContentProps = {

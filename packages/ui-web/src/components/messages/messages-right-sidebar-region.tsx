@@ -6,8 +6,8 @@ import type {
   MessagesRightPanelIntent,
   MessagesRightPanelRegistry,
 } from '@iconicedu/shared-types';
-import { MessagesSidebar } from './messages-sidebar';
-import { useMessagesState } from './context/messages-state-provider';
+import { MessagesSidebar } from '@iconicedu/ui-web/components/messages/messages-sidebar';
+import { useMessagesState } from '@iconicedu/ui-web/components/messages/context/messages-state-provider';
 interface MessagesRightSidebarRegionProps {
   registry: MessagesRightPanelRegistry<ComponentType<MessagesRightPanelProps>>;
   layout?: 'fixed' | 'resizable';

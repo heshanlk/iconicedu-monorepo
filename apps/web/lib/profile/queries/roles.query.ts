@@ -2,7 +2,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 
 import type { UserRoleRow } from '@iconicedu/shared-types';
 
-import { ROLE_SELECT } from '../constants/selects';
+import { ROLE_SELECT } from '@iconicedu/web/lib/profile/constants/selects';
 
 export async function getUserRoles(
   supabase: SupabaseClient,

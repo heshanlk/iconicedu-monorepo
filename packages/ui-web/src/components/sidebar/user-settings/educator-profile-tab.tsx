@@ -9,14 +9,14 @@ import type {
   EducatorProfileVM,
   GradeLevel,
 } from '@iconicedu/shared-types';
-import { Button } from '../../../ui/button';
-import { Checkbox } from '../../../ui/checkbox';
-import { Input } from '../../../ui/input';
-import { Textarea } from '../../../ui/textarea';
-import { Label } from '../../../ui/label';
-import { UserSettingsTabSection } from './components/user-settings-tab-section';
-import { BorderBeam } from '../../../ui/border-beam';
-import { useSequentialHighlight } from './hooks/use-sequential-highlight';
+import { Button } from '@iconicedu/ui-web/ui/button';
+import { Checkbox } from '@iconicedu/ui-web/ui/checkbox';
+import { Input } from '@iconicedu/ui-web/ui/input';
+import { Textarea } from '@iconicedu/ui-web/ui/textarea';
+import { Label } from '@iconicedu/ui-web/ui/label';
+import { UserSettingsTabSection } from '@iconicedu/ui-web/components/sidebar/user-settings/components/user-settings-tab-section';
+import { BorderBeam } from '@iconicedu/ui-web/ui/border-beam';
+import { useSequentialHighlight } from '@iconicedu/ui-web/components/sidebar/user-settings/hooks/use-sequential-highlight';
 import {
   GRADE_META,
   gradeLabel,

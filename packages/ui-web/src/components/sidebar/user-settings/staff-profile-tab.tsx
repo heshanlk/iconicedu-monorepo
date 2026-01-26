@@ -7,13 +7,13 @@ import {
   type StaffProfileSaveInput,
   type StaffProfileVM,
 } from '@iconicedu/shared-types';
-import { Button } from '../../../ui/button';
-import { Input } from '../../../ui/input';
-import { Label } from '../../../ui/label';
-import { UserSettingsTabSection } from './components/user-settings-tab-section';
-import { AvailabilityScheduler } from '../../shared/availability-scheduler';
-import { BorderBeam } from '../../../ui/border-beam';
-import { useSequentialHighlight } from './hooks/use-sequential-highlight';
+import { Button } from '@iconicedu/ui-web/ui/button';
+import { Input } from '@iconicedu/ui-web/ui/input';
+import { Label } from '@iconicedu/ui-web/ui/label';
+import { UserSettingsTabSection } from '@iconicedu/ui-web/components/sidebar/user-settings/components/user-settings-tab-section';
+import { AvailabilityScheduler } from '@iconicedu/ui-web/components/shared/availability-scheduler';
+import { BorderBeam } from '@iconicedu/ui-web/ui/border-beam';
+import { useSequentialHighlight } from '@iconicedu/ui-web/components/sidebar/user-settings/hooks/use-sequential-highlight';
 
 const SPECIALTY_OPTIONS = [
   'Scheduling',

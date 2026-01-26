@@ -17,26 +17,26 @@ import {
   MessageCircle,
 } from 'lucide-react';
 import type { LearningSpaceVM, MessagesRightPanelIntent } from '@iconicedu/shared-types';
-import { Badge } from '../../../ui/badge';
-import { Button } from '../../../ui/button';
-import { ButtonGroup } from '../../../ui/button-group';
-import { Separator } from '../../../ui/separator';
-import { AvatarWithStatus } from '../../shared/avatar-with-status';
-import { ThemedIconBadge } from '../../shared/themed-icon';
-import { MediaFilesPanel } from '../shared/media-files-panel';
-import { useMessagesState } from '../context/messages-state-provider';
-import { formatEventTime } from '../../../lib/class-schedule-utils';
-import { useIsMobile } from '../../../hooks/use-mobile';
-import { cn } from '../../../lib/utils';
-import { getProfileDisplayName } from '../../../lib/display-name';
+import { Badge } from '@iconicedu/ui-web/ui/badge';
+import { Button } from '@iconicedu/ui-web/ui/button';
+import { ButtonGroup } from '@iconicedu/ui-web/ui/button-group';
+import { Separator } from '@iconicedu/ui-web/ui/separator';
+import { AvatarWithStatus } from '@iconicedu/ui-web/components/shared/avatar-with-status';
+import { ThemedIconBadge } from '@iconicedu/ui-web/components/shared/themed-icon';
+import { MediaFilesPanel } from '@iconicedu/ui-web/components/messages/shared/media-files-panel';
+import { useMessagesState } from '@iconicedu/ui-web/components/messages/context/messages-state-provider';
+import { formatEventTime } from '@iconicedu/ui-web/lib/class-schedule-utils';
+import { useIsMobile } from '@iconicedu/ui-web/hooks/use-mobile';
+import { cn } from '@iconicedu/ui-web/lib/utils';
+import { getProfileDisplayName } from '@iconicedu/ui-web/lib/display-name';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '../../../ui/dropdown-menu';
-import { getLearningSpaceIcon } from '../../../lib/icons';
+} from '@iconicedu/ui-web/ui/dropdown-menu';
+import { getLearningSpaceIcon } from '@iconicedu/ui-web/lib/icons';
 
 interface LearningSpaceInfoPanelProps {
   intent: MessagesRightPanelIntent;

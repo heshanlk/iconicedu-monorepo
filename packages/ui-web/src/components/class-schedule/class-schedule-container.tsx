@@ -5,15 +5,15 @@ import type {
   ClassScheduleVM,
   ClassScheduleViewVM,
 } from '@iconicedu/shared-types';
-import { ClassScheduleHeader } from './class-schedule-header';
-import { WeekView } from './week-view';
-import { DayView } from './day-view';
+import { ClassScheduleHeader } from '@iconicedu/ui-web/components/class-schedule/class-schedule-header';
+import { WeekView } from '@iconicedu/ui-web/components/class-schedule/week-view';
+import { DayView } from '@iconicedu/ui-web/components/class-schedule/day-view';
 import {
   getClassScheduleEventsForMonthRange,
   getClassScheduleEventsForView,
   getEventDate,
   timeToMinutes,
-} from '../../lib/class-schedule-utils';
+} from '@iconicedu/ui-web/lib/class-schedule-utils';
 
 interface ClassScheduleContainerProps {
   currentDate: Date;

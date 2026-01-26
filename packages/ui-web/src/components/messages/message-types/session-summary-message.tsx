@@ -2,9 +2,9 @@
 
 import { memo } from 'react';
 import { ClipboardList, Clock, Calendar } from 'lucide-react';
-import { Badge } from '../../../ui/badge';
+import { Badge } from '@iconicedu/ui-web/ui/badge';
 import type { SessionSummaryMessageVM as SessionSummaryMessageType } from '@iconicedu/shared-types';
-import { MessageBase, type MessageBaseProps } from '../message-base';
+import { MessageBase, type MessageBaseProps } from '@iconicedu/ui-web/components/messages/message-base';
 
 interface SessionSummaryMessageProps extends Omit<
   MessageBaseProps,

@@ -1,4 +1,4 @@
-import { Badge } from '../../ui/badge';
+import { Badge } from '@iconicedu/ui-web/ui/badge';
 
 export function EventLiveIndicator() {
   return (

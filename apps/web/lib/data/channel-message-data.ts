@@ -1,5 +1,5 @@
 import type { ChannelVM } from '@iconicedu/shared-types';
-import { CHANNEL_IDS, LEARNING_SPACE_IDS, ORG_ID } from './ids';
+import { CHANNEL_IDS, LEARNING_SPACE_IDS, ORG_ID } from '@iconicedu/web/lib/data/ids';
 import {
   CHILD_MAYA_PROFILE,
   CHILD_TEHARA_PROFILE,
@@ -11,7 +11,7 @@ import {
   EDUCATOR_PRIYA_PROFILE,
   GUARDIAN_RILEY_PROFILE,
   STAFF_SUPPORT_PROFILE,
-} from './profiles';
+} from '@iconicedu/web/lib/data/profiles';
 import {
   CHESS_CHANNEL_MESSAGES,
   DM_AVA_MESSAGES,
@@ -23,15 +23,15 @@ import {
   MATH_CHANNEL_MESSAGES,
   SCIENCE_CHANNEL_MESSAGES,
   SUPPORT_CHANNEL_MESSAGES,
-} from './channel-messages';
+} from '@iconicedu/web/lib/data/channel-messages';
 import {
   DM_PRIYA_FILES,
   DM_ELENA_FILES,
   ELA_CHANNEL_FILES,
   MATH_CHANNEL_FILES,
   SCIENCE_CHANNEL_FILES,
-} from './channel-files';
-import { DM_PRIYA_MEDIA, MATH_CHANNEL_MEDIA } from './channel-media';
+} from '@iconicedu/web/lib/data/channel-files';
+import { DM_PRIYA_MEDIA, MATH_CHANNEL_MEDIA } from '@iconicedu/web/lib/data/channel-media';
 
 const mathChannel: ChannelVM = {
   ids: { id: CHANNEL_IDS.mathSpace, orgId: ORG_ID },

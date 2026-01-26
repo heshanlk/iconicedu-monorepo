@@ -2,8 +2,8 @@
 
 import { memo } from 'react';
 import { Phone, MessageCircle, Calendar, Share2, Flag } from 'lucide-react';
-import { Button } from '../../ui/button';
-import { cn } from '../../lib/utils';
+import { Button } from '@iconicedu/ui-web/ui/button';
+import { cn } from '@iconicedu/ui-web/lib/utils';
 
 interface ProfileActionsProps {
   onCallClick?: () => void;

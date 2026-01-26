@@ -2,14 +2,14 @@
 
 import { revalidatePath } from 'next/cache';
 
-import { createAuthAdminService } from './admin';
-import { createSupabaseServerClient } from '../supabase/server';
+import { createAuthAdminService } from '@iconicedu/web/lib/auth/admin';
+import { createSupabaseServerClient } from '@iconicedu/web/lib/supabase/server';
 import {
   deleteAccountById,
   getAccountByAuthUserId,
-} from '../accounts/queries/accounts.query';
-import { deleteProfilesByAccountId } from '../profile/queries/profiles.query';
-import { deleteFamilyLinksByGuardianAccountId } from '../family/queries/families.query';
+} from '@iconicedu/web/lib/accounts/queries/accounts.query';
+import { deleteProfilesByAccountId } from '@iconicedu/web/lib/profile/queries/profiles.query';
+import { deleteFamilyLinksByGuardianAccountId } from '@iconicedu/web/lib/family/queries/families.query';
 
 import type {
   AdminUserAttributes,

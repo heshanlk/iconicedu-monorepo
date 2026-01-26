@@ -1,1 +1,1 @@
-export * from './components/Button';
+export * from '@iconicedu/ui-native/components/Button';

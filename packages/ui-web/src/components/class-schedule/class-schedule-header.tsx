@@ -1,7 +1,7 @@
 'use client';
 
-import { Button } from '../../ui/button';
-import { ButtonGroup } from '../../ui/button-group';
+import { Button } from '@iconicedu/ui-web/ui/button';
+import { ButtonGroup } from '@iconicedu/ui-web/ui/button-group';
 import { ChevronLeft, ChevronRight, Columns4, Columns } from 'lucide-react';
 import type { ClassScheduleViewVM } from '@iconicedu/shared-types';
 

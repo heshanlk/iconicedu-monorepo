@@ -1,10 +1,10 @@
-import { createSupabaseServerClient } from '../supabase/server';
-import { ORG } from '../data/org';
+import { createSupabaseServerClient } from '@iconicedu/web/lib/supabase/server';
+import { ORG } from '@iconicedu/web/lib/data/org';
 import {
   mapLearningSpaceRow,
   type LearningSpaceRow,
-} from '../spaces/mappers/learning-space.mapper';
-import { getLearningSpacesByOrg } from '../spaces/queries/learning-spaces.query';
+} from '@iconicedu/web/lib/spaces/mappers/learning-space.mapper';
+import { getLearningSpacesByOrg } from '@iconicedu/web/lib/spaces/queries/learning-spaces.query';
 
 export async function getAdminLearningSpaceRows(): Promise<LearningSpaceRow[]> {
   const supabase = await createSupabaseServerClient();

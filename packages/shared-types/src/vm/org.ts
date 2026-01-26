@@ -1,4 +1,4 @@
-import { UUID } from '../shared/shared';
+import { UUID } from '@iconicedu/shared-types/shared/shared';
 
 export interface OrgVM {
   id: UUID;

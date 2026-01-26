@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { SidebarProvider } from '@iconicedu/ui-web';
 import { cookies, headers } from 'next/headers';
 
-import { SidebarShell } from './sidebar-shell';
+import { SidebarShell } from '@iconicedu/web/app/(app)/d/sidebar-shell';
 import { createSupabaseServerClient } from '@iconicedu/web/lib/supabase/server';
 import { ORG } from '@iconicedu/web/lib/data/org';
 import { SIDEBAR_LEFT_DATA } from '@iconicedu/web/lib/data/sidebar-left';

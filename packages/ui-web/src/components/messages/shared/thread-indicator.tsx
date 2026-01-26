@@ -1,11 +1,11 @@
 import { memo } from 'react';
-import { Button } from '../../../ui/button';
-import { AvatarWithStatus } from '../../shared/avatar-with-status';
-import { Badge } from '../../../ui/badge';
+import { Button } from '@iconicedu/ui-web/ui/button';
+import { AvatarWithStatus } from '@iconicedu/ui-web/components/shared/avatar-with-status';
+import { Badge } from '@iconicedu/ui-web/ui/badge';
 import { MessageCircle } from 'lucide-react';
 import type { ThreadVM } from '@iconicedu/shared-types';
-import { formatThreadTime } from '../../../lib/message-utils';
-import { getProfileDisplayName } from '../../../lib/display-name';
+import { formatThreadTime } from '@iconicedu/ui-web/lib/message-utils';
+import { getProfileDisplayName } from '@iconicedu/ui-web/lib/display-name';
 
 interface ThreadIndicatorProps {
   thread: ThreadVM;

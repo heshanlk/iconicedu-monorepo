@@ -2,12 +2,12 @@
 
 import type React from 'react';
 
-import { Separator } from '../../ui/separator';
+import { Separator } from '@iconicedu/ui-web/ui/separator';
 import type { ClassScheduleVM } from '@iconicedu/shared-types';
-import { EventDetailsHeader } from './event-details-header';
-import { EventDetailsInfo } from './event-details-info';
-import { EventActions } from './event-actions';
-import { ResponsiveDialog } from '../shared/responsive-dialog';
+import { EventDetailsHeader } from '@iconicedu/ui-web/components/class-schedule/event-details-header';
+import { EventDetailsInfo } from '@iconicedu/ui-web/components/class-schedule/event-details-info';
+import { EventActions } from '@iconicedu/ui-web/components/class-schedule/event-actions';
+import { ResponsiveDialog } from '@iconicedu/ui-web/components/shared/responsive-dialog';
 
 interface EventDialogProps {
   event: ClassScheduleVM;

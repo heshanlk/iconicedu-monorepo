@@ -5,22 +5,22 @@ import { format, parseISO } from 'date-fns';
 import { Plus, Pencil, Trash2, CalendarDays, Clock, MapPin } from 'lucide-react';
 
 import { cn } from '@iconicedu/ui-web/lib/utils';
-import { RecurrenceForm } from './recurrence-form';
+import { RecurrenceForm } from '@iconicedu/ui-web/components/recurrence-form';
 import {
   RecurrenceFormData,
   WEEKDAYS,
   FREQUENCIES,
 } from '@iconicedu/ui-web/lib/recurrence-types';
-import { Button } from '../ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
-import { Badge } from '../ui/badge';
+import { Button } from '@iconicedu/ui-web/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@iconicedu/ui-web/ui/card';
+import { Badge } from '@iconicedu/ui-web/ui/badge';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '../ui/dialog';
+} from '@iconicedu/ui-web/ui/dialog';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,7 +31,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '../ui/alert-dialog';
+} from '@iconicedu/ui-web/ui/alert-dialog';
 
 interface RecurrenceSchedulerProps {
   schedules?: RecurrenceFormData[];

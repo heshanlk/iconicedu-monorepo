@@ -1,10 +1,10 @@
 import { memo, useMemo, useState } from 'react';
 import { Star } from 'lucide-react';
-import { Button } from '../../../ui/button';
-import { Textarea } from '../../../ui/textarea';
+import { Button } from '@iconicedu/ui-web/ui/button';
+import { Textarea } from '@iconicedu/ui-web/ui/textarea';
 import type { FeedbackRequestMessageVM as FeedbackRequestMessageType } from '@iconicedu/shared-types';
-import { MessageBase, type MessageBaseProps } from '../message-base';
-import { cn } from '../../../lib/utils';
+import { MessageBase, type MessageBaseProps } from '@iconicedu/ui-web/components/messages/message-base';
+import { cn } from '@iconicedu/ui-web/lib/utils';
 
 interface FeedbackRequestMessageProps
   extends Omit<MessageBaseProps, 'message' | 'children'> {

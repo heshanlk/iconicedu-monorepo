@@ -1,5 +1,5 @@
 import type { UserAccountVM } from '@iconicedu/shared-types';
-import { ACCOUNT_IDS, ORG_ID } from './ids';
+import { ACCOUNT_IDS, ORG_ID } from '@iconicedu/web/lib/data/ids';
 import {
   CHILD_MAYA_ROLE,
   CHILD_TEHARA_ROLE,
@@ -11,7 +11,7 @@ import {
   EDUCATOR_PRIYA_ROLE,
   GUARDIAN_ROLE,
   STAFF_SUPPORT_ROLE,
-} from './roles';
+} from '@iconicedu/web/lib/data/roles';
 
 export const GUARDIAN_ACCOUNT: UserAccountVM = {
   ids: { id: ACCOUNT_IDS.guardianRiley, orgId: ORG_ID },

@@ -4,7 +4,7 @@ import type {
   ISODateTime,
   ThemeKey,
   UUID,
-} from '../shared/shared';
+} from '@iconicedu/shared-types/shared/shared';
 
 export type WeekdayVM = 'MO' | 'TU' | 'WE' | 'TH' | 'FR' | 'SA' | 'SU';
 export type ClassScheduleViewVM = 'week' | 'day' | 'month' | 'agenda';

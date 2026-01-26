@@ -1,9 +1,9 @@
 import type { AccountRow, ProfileRow } from '@iconicedu/shared-types';
 
-import { createSupabaseServerClient } from '../supabase/server';
-import { ORG } from '../data/org';
-import { getAccountsByOrgId } from '../accounts/queries/accounts.query';
-import { getProfileSummariesByAccountIds } from '../profile/queries/profiles.query';
+import { createSupabaseServerClient } from '@iconicedu/web/lib/supabase/server';
+import { ORG } from '@iconicedu/web/lib/data/org';
+import { getAccountsByOrgId } from '@iconicedu/web/lib/accounts/queries/accounts.query';
+import { getProfileSummariesByAccountIds } from '@iconicedu/web/lib/profile/queries/profiles.query';
 
 export type AdminUserRow = {
   id: string;

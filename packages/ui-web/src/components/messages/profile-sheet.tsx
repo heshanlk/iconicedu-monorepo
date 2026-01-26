@@ -8,18 +8,18 @@ import {
   FileText,
   Megaphone,
 } from 'lucide-react';
-import { AvatarWithStatus } from '../shared/avatar-with-status';
-import { getProfileDisplayName } from '../../lib/display-name';
-import { Badge } from '../../ui/badge';
-import { Separator } from '../../ui/separator';
-import { ProfileActions } from './profile-actions';
+import { AvatarWithStatus } from '@iconicedu/ui-web/components/shared/avatar-with-status';
+import { getProfileDisplayName } from '@iconicedu/ui-web/lib/display-name';
+import { Badge } from '@iconicedu/ui-web/ui/badge';
+import { Separator } from '@iconicedu/ui-web/ui/separator';
+import { ProfileActions } from '@iconicedu/ui-web/components/messages/profile-actions';
 import type {
   ChannelFileItemVM,
   ChannelMediaItemVM,
   GradeLevel,
   UserProfileVM,
 } from '@iconicedu/shared-types';
-import { MediaFilesPanel } from './shared/media-files-panel';
+import { MediaFilesPanel } from '@iconicedu/ui-web/components/messages/shared/media-files-panel';
 import { gradeLabel, normalizeCountryCode } from '@iconicedu/shared-types';
 
 export type ProfileDetailsUser = UserProfileVM & {

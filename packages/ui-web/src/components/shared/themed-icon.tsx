@@ -1,6 +1,6 @@
 import type { ThemeKey } from '@iconicedu/shared-types';
 import type { LucideIcon } from 'lucide-react';
-import { cn } from '../../lib/utils';
+import { cn } from '@iconicedu/ui-web/lib/utils';
 
 type ThemedIconBadgeProps = {
   icon: LucideIcon;

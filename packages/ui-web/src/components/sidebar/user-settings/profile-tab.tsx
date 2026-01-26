@@ -7,8 +7,8 @@ import type {
   StaffProfileVM,
   UserProfileVM,
 } from '@iconicedu/shared-types';
-import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
-import { BorderBeam } from '../../../ui/border-beam';
+import { Avatar, AvatarFallback, AvatarImage } from '@iconicedu/ui-web/ui/avatar';
+import { BorderBeam } from '@iconicedu/ui-web/ui/border-beam';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,24 +19,24 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '../../../ui/alert-dialog';
+} from '@iconicedu/ui-web/ui/alert-dialog';
 import { cn } from '@iconicedu/ui-web/lib/utils';
-import { Button } from '../../../ui/button';
-import { Input } from '../../../ui/input';
-import { Label } from '../../../ui/label';
-import { Separator } from '../../../ui/separator';
-import { Textarea } from '../../../ui/textarea';
-import { Tooltip, TooltipContent, TooltipTrigger } from '../../../ui/tooltip';
-import { UserSettingsTabSection } from './components/user-settings-tab-section';
+import { Button } from '@iconicedu/ui-web/ui/button';
+import { Input } from '@iconicedu/ui-web/ui/input';
+import { Label } from '@iconicedu/ui-web/ui/label';
+import { Separator } from '@iconicedu/ui-web/ui/separator';
+import { Textarea } from '@iconicedu/ui-web/ui/textarea';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@iconicedu/ui-web/ui/tooltip';
+import { UserSettingsTabSection } from '@iconicedu/ui-web/components/sidebar/user-settings/components/user-settings-tab-section';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../../../ui/select';
-import { ChevronIcon } from './components/chevron-icon';
-import { useSequentialHighlight } from './hooks/use-sequential-highlight';
+} from '@iconicedu/ui-web/ui/select';
+import { ChevronIcon } from '@iconicedu/ui-web/components/sidebar/user-settings/components/chevron-icon';
+import { useSequentialHighlight } from '@iconicedu/ui-web/components/sidebar/user-settings/hooks/use-sequential-highlight';
 
 type ProfileTabProps = {
   profile: UserProfileVM;

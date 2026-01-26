@@ -1,6 +1,6 @@
 import { Controller, Get, Req, UseGuards } from '@nestjs/common';
-import { ChannelsService } from './channels.service';
-import { AuthGuard } from '../auth/auth.guard';
+import { ChannelsService } from '@iconicedu/api/modules/channels/channels.service';
+import { AuthGuard } from '@iconicedu/api/modules/auth/auth.guard';
 
 @Controller('channels')
 export class ChannelsController {

@@ -3,7 +3,7 @@ import type {
   UUID,
   FamilyLinkInviteRole,
   FamilyLinkInviteStatus,
-} from '../shared/shared';
+} from '@iconicedu/shared-types/shared/shared';
 
 export interface FamilyLinkInviteVM {
   id: UUID;

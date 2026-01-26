@@ -1,5 +1,5 @@
-import type { FamilyLinkVM } from './family';
-import type { IdsBaseVM, ISODateTime, UUID } from '../shared/shared';
+import type { FamilyLinkVM } from '@iconicedu/shared-types/vm/family';
+import type { IdsBaseVM, ISODateTime, UUID } from '@iconicedu/shared-types/shared/shared';
 
 export type RoleKey = 'owner' | 'admin' | 'educator' | 'guardian' | 'child' | 'staff';
 

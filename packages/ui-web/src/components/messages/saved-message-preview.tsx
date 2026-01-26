@@ -1,10 +1,10 @@
 'use client';
 
-import { AvatarWithStatus } from '../shared/avatar-with-status';
-import { getProfileDisplayName } from '../../lib/display-name';
+import { AvatarWithStatus } from '@iconicedu/ui-web/components/shared/avatar-with-status';
+import { getProfileDisplayName } from '@iconicedu/ui-web/lib/display-name';
 import { formatDistanceToNow } from 'date-fns';
 import type { MessageVM } from '@iconicedu/shared-types';
-import { cn } from '../../lib/utils';
+import { cn } from '@iconicedu/ui-web/lib/utils';
 import {
   isTextMessage,
   isImageMessage,
@@ -21,7 +21,7 @@ import {
   isSessionCompleteMessage,
   isSessionSummaryMessage,
   isHomeworkSubmissionMessage,
-} from '../../lib/message-guards';
+} from '@iconicedu/ui-web/lib/message-guards';
 
 interface SavedMessagePreviewProps {
   message: MessageVM;

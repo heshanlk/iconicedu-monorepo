@@ -12,20 +12,20 @@ import {
 
 import { getAllTimezones } from 'countries-and-timezones';
 import type { ThemeKey, UserProfileVM } from '@iconicedu/shared-types';
-import { Button } from '../../../ui/button';
-import { Input } from '../../../ui/input';
-import { Label } from '../../../ui/label';
+import { Button } from '@iconicedu/ui-web/ui/button';
+import { Input } from '@iconicedu/ui-web/ui/input';
+import { Label } from '@iconicedu/ui-web/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../../../ui/select';
-import { UserSettingsTabSection } from './components/user-settings-tab-section';
-import { languageOptions, localeOptions } from './constants';
-import { useSequentialHighlight } from './hooks/use-sequential-highlight';
-import { BorderBeam } from '../../../ui/border-beam';
+} from '@iconicedu/ui-web/ui/select';
+import { UserSettingsTabSection } from '@iconicedu/ui-web/components/sidebar/user-settings/components/user-settings-tab-section';
+import { languageOptions, localeOptions } from '@iconicedu/ui-web/components/sidebar/user-settings/constants';
+import { useSequentialHighlight } from '@iconicedu/ui-web/components/sidebar/user-settings/hooks/use-sequential-highlight';
+import { BorderBeam } from '@iconicedu/ui-web/ui/border-beam';
 
 const DEFAULT_TIMEZONE = 'UTC';
 const normalizeTimezone = (value?: string | null) => {

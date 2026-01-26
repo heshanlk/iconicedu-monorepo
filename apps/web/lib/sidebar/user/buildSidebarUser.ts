@@ -8,34 +8,34 @@ import type {
 import type { AccountRow, ProfileRow } from '@iconicedu/shared-types';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
-import { mapAccountRowToVM, mapUserRoles } from '../../accounts/mappers/account.mapper';
-import { mapBaseProfile } from '../../profile/mappers/base-profile.mapper';
+import { mapAccountRowToVM, mapUserRoles } from '@iconicedu/web/lib/accounts/mappers/account.mapper';
+import { mapBaseProfile } from '@iconicedu/web/lib/profile/mappers/base-profile.mapper';
 import {
   deriveProfileKind,
   resolveAvatarSource,
   resolveExternalAvatarUrl,
-} from '../../profile/derive';
-import { createSignedAvatarUrl } from '../../profile/queries/avatar.query';
-import { getAccountById } from '../../accounts/queries/accounts.query';
-import { getNotificationDefaults } from '../../profile/queries/notification-defaults.query';
-import { getPresence } from '../../profile/queries/presence.query';
+} from '@iconicedu/web/lib/profile/derive';
+import { createSignedAvatarUrl } from '@iconicedu/web/lib/profile/queries/avatar.query';
+import { getAccountById } from '@iconicedu/web/lib/accounts/queries/accounts.query';
+import { getNotificationDefaults } from '@iconicedu/web/lib/profile/queries/notification-defaults.query';
+import { getPresence } from '@iconicedu/web/lib/profile/queries/presence.query';
 import {
   getProfileByAccountId,
   insertProfileForAccount,
   updateProfileAvatar,
   upsertProfileForAccount,
-} from '../../profile/queries/profiles.query';
-import { getUserRoles } from '../../profile/queries/roles.query';
-import { buildChildProfile } from '../../profile/builders/child.builder';
-import { buildEducatorProfile } from '../../profile/builders/educator.builder';
-import { buildGuardianProfile } from '../../profile/builders/guardian.builder';
-import { buildStaffProfile } from '../../profile/builders/staff.builder';
-import { getGuardianFamilyInvites } from '../../profile/queries/family-link-invites.query';
+} from '@iconicedu/web/lib/profile/queries/profiles.query';
+import { getUserRoles } from '@iconicedu/web/lib/profile/queries/roles.query';
+import { buildChildProfile } from '@iconicedu/web/lib/profile/builders/child.builder';
+import { buildEducatorProfile } from '@iconicedu/web/lib/profile/builders/educator.builder';
+import { buildGuardianProfile } from '@iconicedu/web/lib/profile/builders/guardian.builder';
+import { buildStaffProfile } from '@iconicedu/web/lib/profile/builders/staff.builder';
+import { getGuardianFamilyInvites } from '@iconicedu/web/lib/profile/queries/family-link-invites.query';
 import {
   findFamilyInviteForAccount,
   mapFamilyLinkInviteRowToVM,
   type FamilyLinkInviteRow,
-} from '../../family/queries/invite.query';
+} from '@iconicedu/web/lib/family/queries/invite.query';
 
 export async function buildSidebarUser(
   supabase: SupabaseClient,

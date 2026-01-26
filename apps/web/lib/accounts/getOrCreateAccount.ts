@@ -8,8 +8,8 @@ import {
   insertAccountForAuthUser,
   updateAccountAuthUserId,
   getAccountById,
-} from '../accounts/queries/accounts.query';
-import { findFamilyInviteForAccount, type FamilyLinkInviteRow } from '../family/queries/invite.query';
+} from '@iconicedu/web/lib/accounts/queries/accounts.query';
+import { findFamilyInviteForAccount, type FamilyLinkInviteRow } from '@iconicedu/web/lib/family/queries/invite.query';
 
 export async function getOrCreateAccount(
   supabase: SupabaseClient,

@@ -1,12 +1,12 @@
 'use client';
 
-import { Button } from '../../ui/button';
+import { Button } from '@iconicedu/ui-web/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { getDaysInMonth, getEventDate, isSameDay } from '../../lib/class-schedule-utils';
-import { cn } from '../../lib/utils';
+import { getDaysInMonth, getEventDate, isSameDay } from '@iconicedu/ui-web/lib/class-schedule-utils';
+import { cn } from '@iconicedu/ui-web/lib/utils';
 import type { ClassScheduleVM } from '@iconicedu/shared-types';
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader } from '../../ui/card';
+import { Card, CardContent, CardHeader } from '@iconicedu/ui-web/ui/card';
 
 interface MiniClassScheduleProps {
   currentDate: Date;

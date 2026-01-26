@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Button } from '@iconicedu/ui-web';
 import { LoginForm } from '@iconicedu/ui-web';
 import { createSupabaseBrowserClient } from '@iconicedu/web/lib/supabase/client';
-import { educatorSignupAction } from './actions/educator-signup';
+import { educatorSignupAction } from '@iconicedu/web/app/(auth)/login/tutor/actions/educator-signup';
 
 export default function EducatorAuthClient() {
   const supabase = React.useMemo(() => createSupabaseBrowserClient(), []);

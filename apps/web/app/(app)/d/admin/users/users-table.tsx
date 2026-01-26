@@ -52,7 +52,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@iconicedu/ui-web/lib/utils';
 
-import { InviteUserDialog } from './invite-dialog';
+import { InviteUserDialog } from '@iconicedu/web/app/(app)/d/admin/users/invite-dialog';
 import type { AdminUserRow } from '@iconicedu/web/lib/admin/users';
 
 export type UserRow = AdminUserRow;

@@ -2,7 +2,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 
 import type { AccountRow, AccountStatus } from '@iconicedu/shared-types';
 
-import { ACCOUNT_SELECT } from '../constants/selects';
+import { ACCOUNT_SELECT } from '@iconicedu/web/lib/accounts/constants/selects';
 
 type AccountInsertPayload = {
   orgId: string;

@@ -1,5 +1,5 @@
 import type { UserRoleVM } from '@iconicedu/shared-types';
-import { ACCOUNT_IDS, ORG_ID } from './ids';
+import { ACCOUNT_IDS, ORG_ID } from '@iconicedu/web/lib/data/ids';
 
 export const ROLE_IDS = {
   guardian: '0b1c2d3e-4f50-41a2-9b3c-4d5e6f7a8b90',

@@ -2,11 +2,11 @@
 
 import { memo } from 'react';
 import { CreditCard, Clock, CheckCircle2, AlertCircle } from 'lucide-react';
-import { Button } from '../../../ui/button';
-import { Badge } from '../../../ui/badge';
+import { Button } from '@iconicedu/ui-web/ui/button';
+import { Badge } from '@iconicedu/ui-web/ui/badge';
 import type { PaymentReminderMessageVM as PaymentReminderMessageType } from '@iconicedu/shared-types';
-import { MessageBase, type MessageBaseProps } from '../message-base';
-import { cn } from '../../../lib/utils';
+import { MessageBase, type MessageBaseProps } from '@iconicedu/ui-web/components/messages/message-base';
+import { cn } from '@iconicedu/ui-web/lib/utils';
 
 interface PaymentReminderMessageProps extends Omit<
   MessageBaseProps,

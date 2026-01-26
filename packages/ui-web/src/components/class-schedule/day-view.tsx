@@ -8,13 +8,13 @@ import {
   getTimeSlots,
   timeToMinutes,
   getEventLayout,
-} from '../../lib/class-schedule-utils';
-import { EventCard } from './event-card';
-import { MiniClassSchedule } from './mini-class-schedule';
-import { ScrollArea } from '../../ui/scroll-area';
-import { Button } from '../../ui/button';
+} from '@iconicedu/ui-web/lib/class-schedule-utils';
+import { EventCard } from '@iconicedu/ui-web/components/class-schedule/event-card';
+import { MiniClassSchedule } from '@iconicedu/ui-web/components/class-schedule/mini-class-schedule';
+import { ScrollArea } from '@iconicedu/ui-web/ui/scroll-area';
+import { Button } from '@iconicedu/ui-web/ui/button';
 import { ArrowRight, MessageSquarePlus, UserPlus } from 'lucide-react';
-import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
+import { Popover, PopoverContent, PopoverTrigger } from '@iconicedu/ui-web/ui/popover';
 import { useEffect, useRef } from 'react';
 
 interface DayViewProps {

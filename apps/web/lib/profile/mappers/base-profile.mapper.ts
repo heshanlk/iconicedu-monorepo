@@ -5,7 +5,7 @@ import type {
 } from '@iconicedu/shared-types';
 import type { ProfileRow } from '@iconicedu/shared-types';
 
-import { resolveAvatarSource, resolveThemeKey } from '../derive';
+import { resolveAvatarSource, resolveThemeKey } from '@iconicedu/web/lib/profile/derive';
 
 export function mapBaseProfile(
   profileRow: ProfileRow,

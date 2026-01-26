@@ -1,4 +1,4 @@
-import type { AccountStatus, ISODateTime, UUID } from '../shared/shared';
+import type { AccountStatus, ISODateTime, UUID } from '@iconicedu/shared-types/shared/shared';
 
 export interface AccountRow {
   id: UUID;

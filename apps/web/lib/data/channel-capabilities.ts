@@ -1,5 +1,5 @@
 import type { ChannelCapabilityRecordVM } from '@iconicedu/shared-types';
-import { CHANNEL_IDS, ORG_ID } from './ids';
+import { CHANNEL_IDS, ORG_ID } from '@iconicedu/web/lib/data/ids';
 
 export const CHANNEL_CAPABILITY_RECORDS: ChannelCapabilityRecordVM[] = [
   {

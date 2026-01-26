@@ -2,12 +2,12 @@ import type { ChildProfileVM, GradeLevel, UserProfileVM } from '@iconicedu/share
 import type { ChildProfileGradeLevelRow, ChildProfileRow, ProfileRow } from '@iconicedu/shared-types';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
-import { mapBaseProfile } from '../mappers/base-profile.mapper';
-import { resolveAvatarSource } from '../derive';
-import { createSignedAvatarUrl } from '../queries/avatar.query';
-import { getChildProfilesDetails } from '../queries/child.query';
-import { getChildProfilesByAccountIds } from '../queries/profiles.query';
-import { getAccountsByIds } from '../../accounts/queries/accounts.query';
+import { mapBaseProfile } from '@iconicedu/web/lib/profile/mappers/base-profile.mapper';
+import { resolveAvatarSource } from '@iconicedu/web/lib/profile/derive';
+import { createSignedAvatarUrl } from '@iconicedu/web/lib/profile/queries/avatar.query';
+import { getChildProfilesDetails } from '@iconicedu/web/lib/profile/queries/child.query';
+import { getChildProfilesByAccountIds } from '@iconicedu/web/lib/profile/queries/profiles.query';
+import { getAccountsByIds } from '@iconicedu/web/lib/accounts/queries/accounts.query';
 import { parseGradeLevel } from '@iconicedu/shared-types';
 
 async function resolveAvatarUrl(

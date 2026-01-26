@@ -3,9 +3,9 @@
 import { memo } from 'react';
 import type { CSSProperties } from 'react';
 import { Bookmark, Info, LifeBuoy } from 'lucide-react';
-import { Button } from '../../ui/button';
-import { cn } from '../../lib/utils';
-import { useMessagesState } from './context/messages-state-provider';
+import { Button } from '@iconicedu/ui-web/ui/button';
+import { cn } from '@iconicedu/ui-web/lib/utils';
+import { useMessagesState } from '@iconicedu/ui-web/components/messages/context/messages-state-provider';
 import type { ChannelHeaderActionVM } from '@iconicedu/shared-types';
 
 const ActionButton = memo(function ActionButton({

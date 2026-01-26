@@ -9,15 +9,15 @@ import type {
 } from '@iconicedu/shared-types';
 import type { FamilyLinkInviteRow } from '@iconicedu/shared-types';
 
-import { acceptFamilyInvite } from '../family/queries/invite.query';
-import { buildSidebarUser } from './user/buildSidebarUser';
-import { getAccountById } from '../accounts/queries/accounts.query';
-import { determineOnboardingStep } from '../onboarding/determineOnboardingStep';
+import { acceptFamilyInvite } from '@iconicedu/web/lib/family/queries/invite.query';
+import { buildSidebarUser } from '@iconicedu/web/lib/sidebar/user/buildSidebarUser';
+import { getAccountById } from '@iconicedu/web/lib/accounts/queries/accounts.query';
+import { determineOnboardingStep } from '@iconicedu/web/lib/onboarding/determineOnboardingStep';
 import {
   getUserOnboardingStatusByProfileId,
   upsertUserOnboardingStatus,
-} from '../onboarding/queries/status.query';
-import { mapUserOnboardingStatusRowToVM } from '../onboarding/mappers';
+} from '@iconicedu/web/lib/onboarding/queries/status.query';
+import { mapUserOnboardingStatusRowToVM } from '@iconicedu/web/lib/onboarding/mappers';
 
 export async function loadSidebarContext(
   supabase: SupabaseClient,

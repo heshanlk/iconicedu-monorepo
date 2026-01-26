@@ -1,6 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 
-import { LEARNING_SPACE_SELECT } from '../constants/selects';
+import { LEARNING_SPACE_SELECT } from '@iconicedu/web/lib/spaces/constants/selects';
 
 export type LearningSpaceDbRow = {
   id: string;

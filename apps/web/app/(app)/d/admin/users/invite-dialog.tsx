@@ -23,7 +23,7 @@ import {
   SelectValue,
 } from '@iconicedu/ui-web';
 
-import { inviteAdminUserAction } from './actions/invite-user';
+import { inviteAdminUserAction } from '@iconicedu/web/app/(app)/d/admin/users/actions/invite-user';
 
 export function InviteUserDialog({ className }: { className?: string }) {
   const router = useRouter();

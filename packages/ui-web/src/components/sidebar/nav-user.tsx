@@ -15,7 +15,7 @@ import {
   Users,
 } from 'lucide-react';
 
-import { AvatarWithStatus } from '../shared/avatar-with-status';
+import { AvatarWithStatus } from '@iconicedu/ui-web/components/shared/avatar-with-status';
 import type {
   ChildProfileSaveInput,
   ChildProfileVM,
@@ -29,7 +29,7 @@ import type {
   UserAccountVM,
   UserProfileVM,
 } from '@iconicedu/shared-types';
-import { getProfileDisplayName } from '../../lib/display-name';
+import { getProfileDisplayName } from '@iconicedu/ui-web/lib/display-name';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -38,23 +38,23 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '../../ui/dropdown-menu';
+} from '@iconicedu/ui-web/ui/dropdown-menu';
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from '../../ui/sidebar';
+} from '@iconicedu/ui-web/ui/sidebar';
 import {
   ONBOARDING_STEP_TO_TAB,
   UserSettingsDialog,
   type UserSettingsTab,
-} from './user-settings-dialog';
+} from '@iconicedu/ui-web/components/sidebar/user-settings-dialog';
 import type {
   ProfileAvatarInput,
   ProfileAvatarRemoveInput,
   ProfileSaveInput,
-} from './user-settings/profile-tab';
+} from '@iconicedu/ui-web/components/sidebar/user-settings/profile-tab';
 
 export function NavUser({
   profile,
@@ -176,7 +176,8 @@ export function NavUser({
   }, [onLogout]);
 
   React.useEffect(() => {
-    const step = onboardingStatus?.currentStep;
+    const step =
+      onboardingStatus?.currentStep as keyof typeof ONBOARDING_STEP_TO_TAB | undefined;
     if (!step) {
       return;
     }

@@ -1,9 +1,9 @@
 'use client';
-import { useIsMobile } from '../hooks/use-mobile';
-import { Separator } from '../ui/separator';
-import { SidebarTrigger } from '../ui/sidebar';
-import { SiteLogo } from './site-logo';
-import { ThemeToggle } from './theme-toggle';
+import { useIsMobile } from '@iconicedu/ui-web/hooks/use-mobile';
+import { Separator } from '@iconicedu/ui-web/ui/separator';
+import { SidebarTrigger } from '@iconicedu/ui-web/ui/sidebar';
+import { SiteLogo } from '@iconicedu/ui-web/components/site-logo';
+import { ThemeToggle } from '@iconicedu/ui-web/components/theme-toggle';
 
 export function DashboardHeader({ className, ...props }: React.ComponentProps<'div'>) {
   const isMobile = useIsMobile();

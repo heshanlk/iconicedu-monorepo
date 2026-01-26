@@ -1,4 +1,4 @@
-import type { AvatarVM, UserProfileVM } from './profile';
+import type { AvatarVM, UserProfileVM } from '@iconicedu/shared-types/vm/profile';
 import type {
   ConnectionVM,
   EntityRefVM,
@@ -6,7 +6,7 @@ import type {
   ISODateTime,
   ThemeKey,
   UUID,
-} from '../shared/shared';
+} from '@iconicedu/shared-types/shared/shared';
 
 export type ActivityGroupKeyVM =
   | 'homework'

@@ -1,17 +1,17 @@
 'use client';
 
 import * as React from 'react';
-import { cn } from '../lib/utils';
-import { Button } from '../ui/button';
+import { cn } from '@iconicedu/ui-web/lib/utils';
+import { Button } from '@iconicedu/ui-web/ui/button';
 import {
   Field,
   FieldDescription,
   FieldGroup,
   FieldLabel,
   FieldSeparator,
-} from '../ui/field';
-import { Input } from '../ui/input';
-import { SiteLogo } from './site-logo';
+} from '@iconicedu/ui-web/ui/field';
+import { Input } from '@iconicedu/ui-web/ui/input';
+import { SiteLogo } from '@iconicedu/ui-web/components/site-logo';
 
 type OAuthProvider = 'apple' | 'google';
 

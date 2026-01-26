@@ -7,7 +7,7 @@ import {
   CHILD_GRADE_LEVEL_SELECT,
   CHILD_PROFILE_ROWS_SELECT,
   CHILD_PROFILE_SELECT,
-} from '../constants/selects';
+} from '@iconicedu/web/lib/profile/constants/selects';
 
 export async function getChildProfile(supabase: SupabaseClient, profileId: string) {
   return supabase

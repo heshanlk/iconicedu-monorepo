@@ -1,10 +1,10 @@
 import type { ClassScheduleVM } from '@iconicedu/shared-types';
 import { CalendarDays } from 'lucide-react';
-import { cn } from '../../lib/utils';
-import { AvatarGroup, AvatarGroupCount } from '../../ui/avatar';
-import { AvatarWithStatus } from '../shared/avatar-with-status';
-import { formatEventTime } from '../../lib/class-schedule-utils';
-import { ThemedIconBadge } from '../shared/themed-icon';
+import { cn } from '@iconicedu/ui-web/lib/utils';
+import { AvatarGroup, AvatarGroupCount } from '@iconicedu/ui-web/ui/avatar';
+import { AvatarWithStatus } from '@iconicedu/ui-web/components/shared/avatar-with-status';
+import { formatEventTime } from '@iconicedu/ui-web/lib/class-schedule-utils';
+import { ThemedIconBadge } from '@iconicedu/ui-web/components/shared/themed-icon';
 
 interface EventDetailsHeaderProps {
   event: ClassScheduleVM;

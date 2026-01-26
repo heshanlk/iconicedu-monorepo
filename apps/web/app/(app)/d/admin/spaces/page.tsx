@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { DashboardHeader } from '@iconicedu/ui-web';
 
 import { getAdminLearningSpaceRows } from '@iconicedu/web/lib/admin/learning-spaces';
-import { LearningSpacesDashboard } from './learning-spaces-dashboard';
+import { LearningSpacesDashboard } from '@iconicedu/web/app/(app)/d/admin/spaces/learning-spaces-dashboard';
 
 export const metadata: Metadata = {
   title: 'Admin · Learning spaces',

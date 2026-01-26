@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, Text, PressableProps, TextProps } from 'react-native';
-import { cn } from '../utils/cn';
+import { cn } from '@iconicedu/ui-native/utils/cn';
 
 type Variant = 'primary' | 'secondary' | 'ghost';
 

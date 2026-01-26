@@ -4,9 +4,9 @@ import * as React from 'react';
 import { UserPlus, X } from 'lucide-react';
 
 import { cn } from '@iconicedu/ui-web/lib/utils';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { Badge } from '../ui/badge';
-import { Button } from '../ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@iconicedu/ui-web/ui/avatar';
+import { Badge } from '@iconicedu/ui-web/ui/badge';
+import { Button } from '@iconicedu/ui-web/ui/button';
 import {
   Command,
   CommandEmpty,
@@ -14,8 +14,8 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '../ui/command';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+} from '@iconicedu/ui-web/ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '@iconicedu/ui-web/ui/popover';
 import type { UserProfileVM } from '@iconicedu/shared-types';
 
 const ROLE_LABELS: Record<UserProfileVM['kind'], string> = {

@@ -1,9 +1,9 @@
 'use client';
 
 import type { MessagesRightPanelIntent, UserProfileVM } from '@iconicedu/shared-types';
-import { ProfileContent, ProfileSheet } from '../profile-sheet';
-import { useMessagesState } from '../context/messages-state-provider';
-import { useIsMobile } from '../../../hooks/use-mobile';
+import { ProfileContent, ProfileSheet } from '@iconicedu/ui-web/components/messages/profile-sheet';
+import { useMessagesState } from '@iconicedu/ui-web/components/messages/context/messages-state-provider';
+import { useIsMobile } from '@iconicedu/ui-web/hooks/use-mobile';
 
 interface ProfilePanelProps {
   intent: MessagesRightPanelIntent;

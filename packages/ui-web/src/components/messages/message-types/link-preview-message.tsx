@@ -3,7 +3,7 @@
 import { memo } from 'react';
 import { ExternalLink } from 'lucide-react';
 import type { LinkPreviewMessageVM as LinkPreviewMessageType } from '@iconicedu/shared-types';
-import { MessageBase, type MessageBaseProps } from '../message-base';
+import { MessageBase, type MessageBaseProps } from '@iconicedu/ui-web/components/messages/message-base';
 
 interface LinkPreviewMessageProps extends Omit<MessageBaseProps, 'message' | 'children'> {
   message: LinkPreviewMessageType;

@@ -1,7 +1,7 @@
 'use client';
 
-import { Button } from '../../ui/button';
-import { cn } from '../../lib/utils';
+import { Button } from '@iconicedu/ui-web/ui/button';
+import { cn } from '@iconicedu/ui-web/lib/utils';
 import type { ActivityFeedItemVM } from '@iconicedu/shared-types';
 
 export function ActivityWithButton({

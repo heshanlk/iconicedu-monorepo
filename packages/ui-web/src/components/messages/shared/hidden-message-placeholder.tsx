@@ -1,7 +1,7 @@
 'use client';
 
 import { memo, useCallback } from 'react';
-import { Button } from '../../../ui/button';
+import { Button } from '@iconicedu/ui-web/ui/button';
 import { EyeOff } from 'lucide-react';
 
 interface HiddenMessagePlaceholderProps {

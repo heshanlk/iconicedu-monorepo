@@ -2,8 +2,8 @@ import type { ConnectionVM, ChildProfileVM, UserProfileVM } from '@iconicedu/sha
 import type { ProfileRow } from '@iconicedu/shared-types';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
-import { getGuardianFamilyLinks, getGuardianProfile } from '../queries/guardian.query';
-import { loadChildProfiles } from './load-child-profiles';
+import { getGuardianFamilyLinks, getGuardianProfile } from '@iconicedu/web/lib/profile/queries/guardian.query';
+import { loadChildProfiles } from '@iconicedu/web/lib/profile/builders/load-child-profiles';
 
 export async function buildGuardianProfile(
   supabase: SupabaseClient,

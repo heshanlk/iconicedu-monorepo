@@ -1,5 +1,5 @@
-import type { ISODateTime, UUID } from '../shared/shared';
-import type { RoleKey } from '../vm/roles';
+import type { ISODateTime, UUID } from '@iconicedu/shared-types/shared/shared';
+import type { RoleKey } from '@iconicedu/shared-types/vm/roles';
 
 export interface UserRoleRow {
   id: UUID;

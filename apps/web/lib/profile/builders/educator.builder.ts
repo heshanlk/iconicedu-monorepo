@@ -9,7 +9,7 @@ import {
   getEducatorGradeLevels,
   getEducatorProfile,
   getEducatorSubjects,
-} from '../queries/educator.query';
+} from '@iconicedu/web/lib/profile/queries/educator.query';
 import { parseGradeLevel } from '@iconicedu/shared-types';
 
 export async function buildEducatorProfile(

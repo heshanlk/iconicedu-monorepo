@@ -1,5 +1,5 @@
-import type { FamilyRelation } from '../shared/shared';
-import type { IdsBaseVM, UUID } from '../shared/shared';
+import type { FamilyRelation } from '@iconicedu/shared-types/shared/shared';
+import type { IdsBaseVM, UUID } from '@iconicedu/shared-types/shared/shared';
 
 export type FamilyRelationVM = FamilyRelation;
 

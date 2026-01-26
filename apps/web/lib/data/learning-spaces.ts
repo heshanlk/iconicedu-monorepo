@@ -1,5 +1,5 @@
 import type { LearningSpaceVM } from '@iconicedu/shared-types';
-import { CHANNEL_IDS, LEARNING_SPACE_IDS, ORG_ID } from './ids';
+import { CHANNEL_IDS, LEARNING_SPACE_IDS, ORG_ID } from '@iconicedu/web/lib/data/ids';
 import {
   CHILD_MAYA_PROFILE,
   CHILD_TEHARA_PROFILE,
@@ -9,14 +9,14 @@ import {
   EDUCATOR_MISHAN_PROFILE,
   EDUCATOR_PRIYA_PROFILE,
   GUARDIAN_RILEY_PROFILE,
-} from './profiles';
+} from '@iconicedu/web/lib/data/profiles';
 import {
   CHESS_SCHEDULE_EVENT,
   ELA_SCHEDULE_EVENT,
   MATH_SCHEDULE_EVENT,
   SCIENCE_SCHEDULE_EVENT,
-} from './class-schedule-events';
-import { LEARNING_SPACE_CHANNELS_BY_ID } from './channel-message-data';
+} from '@iconicedu/web/lib/data/class-schedule-events';
+import { LEARNING_SPACE_CHANNELS_BY_ID } from '@iconicedu/web/lib/data/channel-message-data';
 
 export const LEARNING_SPACES: LearningSpaceVM[] = [
   {

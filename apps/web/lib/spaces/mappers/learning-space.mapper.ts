@@ -1,4 +1,4 @@
-import type { LearningSpaceDbRow } from '../queries/learning-spaces.query';
+import type { LearningSpaceDbRow } from '@iconicedu/web/lib/spaces/queries/learning-spaces.query';
 
 export type LearningSpaceRow = {
   id: string;

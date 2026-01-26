@@ -1,10 +1,10 @@
 'use client';
 
-import { AvatarWithStatus } from '../shared/avatar-with-status';
-import { cn } from '../../lib/utils';
-import { AvatarGroup, AvatarGroupCount } from '../../ui/avatar';
+import { AvatarWithStatus } from '@iconicedu/ui-web/components/shared/avatar-with-status';
+import { cn } from '@iconicedu/ui-web/lib/utils';
+import { AvatarGroup, AvatarGroupCount } from '@iconicedu/ui-web/ui/avatar';
 import type { ActivityFeedItemVM } from '@iconicedu/shared-types';
-import { getProfileDisplayName } from '../../lib/display-name';
+import { getProfileDisplayName } from '@iconicedu/ui-web/lib/display-name';
 
 type ActivityBadgeProps = {
   activity: ActivityFeedItemVM;

@@ -2,7 +2,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 
 import type { StaffProfileRow, StaffProfileSpecialtyRow } from '@iconicedu/shared-types';
 
-import { STAFF_PROFILE_SELECT, STAFF_SPECIALTIES_SELECT } from '../constants/selects';
+import { STAFF_PROFILE_SELECT, STAFF_SPECIALTIES_SELECT } from '@iconicedu/web/lib/profile/constants/selects';
 
 export async function getStaffProfile(supabase: SupabaseClient, profileId: string) {
   return supabase

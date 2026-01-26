@@ -3,7 +3,7 @@
 import { memo, useMemo } from 'react';
 import { FileText } from 'lucide-react';
 import type { ChannelFileItemVM, ChannelMediaItemVM } from '@iconicedu/shared-types';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../ui/tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@iconicedu/ui-web/ui/tabs';
 
 type MediaFilesPanelProps = {
   media: ChannelMediaItemVM[];

@@ -1,9 +1,9 @@
 import type React from 'react';
-import type { ChildProfileVM, UserProfileVM } from './profile';
-import type { ChannelVM } from './channel';
-import type { UserAccountVM } from './account';
-import type { LearningSpaceVM } from './learning-space';
-import type { FamilyLinkVM, FamilyVM } from './family';
+import type { ChildProfileVM, UserProfileVM } from '@iconicedu/shared-types/vm/profile';
+import type { ChannelVM } from '@iconicedu/shared-types/vm/channel';
+import type { UserAccountVM } from '@iconicedu/shared-types/vm/account';
+import type { LearningSpaceVM } from '@iconicedu/shared-types/vm/learning-space';
+import type { FamilyLinkVM, FamilyVM } from '@iconicedu/shared-types/vm/family';
 
 export type SidebarIconKey =
   | 'home'

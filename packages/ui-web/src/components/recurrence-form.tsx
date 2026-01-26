@@ -16,29 +16,29 @@ import {
   FREQUENCIES,
   COMMON_TIMEZONES,
 } from '@iconicedu/ui-web/lib/recurrence-types';
-import { Button } from '../ui/button';
-import { Calendar } from '../ui/calendar';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import { Button } from '@iconicedu/ui-web/ui/button';
+import { Calendar } from '@iconicedu/ui-web/ui/calendar';
+import { Input } from '@iconicedu/ui-web/ui/input';
+import { Label } from '@iconicedu/ui-web/ui/label';
+import { Popover, PopoverContent, PopoverTrigger } from '@iconicedu/ui-web/ui/popover';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../ui/select';
-import { ToggleGroup, ToggleGroupItem } from '../ui/toggle-group';
-import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
-import { ScrollArea } from '../ui/scroll-area';
+} from '@iconicedu/ui-web/ui/select';
+import { ToggleGroup, ToggleGroupItem } from '@iconicedu/ui-web/ui/toggle-group';
+import { RadioGroup, RadioGroupItem } from '@iconicedu/ui-web/ui/radio-group';
+import { ScrollArea } from '@iconicedu/ui-web/ui/scroll-area';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '../ui/accordion';
-import { Badge } from '../ui/badge';
-import { Separator } from '../ui/separator';
+} from '@iconicedu/ui-web/ui/accordion';
+import { Badge } from '@iconicedu/ui-web/ui/badge';
+import { Separator } from '@iconicedu/ui-web/ui/separator';
 
 interface RecurrenceFormProps {
   defaultValues?: Partial<RecurrenceFormData>;

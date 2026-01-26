@@ -1,10 +1,10 @@
 import type { SidebarLeftDataVM } from '@iconicedu/shared-types';
-import { GUARDIAN_ACCOUNT } from './accounts';
-import { FAMILIES, FAMILY_LINKS } from './families';
-import { LEARNING_SPACES } from './learning-spaces';
-import { DIRECT_MESSAGE_CHANNELS_WITH_MESSAGES } from './channel-message-data';
-import { CHANNEL_IDS } from './ids';
-import { GUARDIAN_RILEY_PROFILE } from './profiles';
+import { GUARDIAN_ACCOUNT } from '@iconicedu/web/lib/data/accounts';
+import { FAMILIES, FAMILY_LINKS } from '@iconicedu/web/lib/data/families';
+import { LEARNING_SPACES } from '@iconicedu/web/lib/data/learning-spaces';
+import { DIRECT_MESSAGE_CHANNELS_WITH_MESSAGES } from '@iconicedu/web/lib/data/channel-message-data';
+import { CHANNEL_IDS } from '@iconicedu/web/lib/data/ids';
+import { GUARDIAN_RILEY_PROFILE } from '@iconicedu/web/lib/data/profiles';
 
 export const SIDEBAR_LEFT_DATA: SidebarLeftDataVM = {
   user: {

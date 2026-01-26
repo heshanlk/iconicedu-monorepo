@@ -2,11 +2,11 @@
 
 import { memo, useState, useRef, useEffect, useCallback } from 'react';
 import { Play, Pause } from 'lucide-react';
-import { Button } from '../../../ui/button';
-import { Slider } from '../../../ui/slider';
+import { Button } from '@iconicedu/ui-web/ui/button';
+import { Slider } from '@iconicedu/ui-web/ui/slider';
 import type { AudioRecordingMessageVM } from '@iconicedu/shared-types';
-import { MessageBase, type MessageBaseProps } from '../message-base';
-import { cn } from '../../../lib/utils';
+import { MessageBase, type MessageBaseProps } from '@iconicedu/ui-web/components/messages/message-base';
+import { cn } from '@iconicedu/ui-web/lib/utils';
 
 interface AudioMessageProps extends Omit<MessageBaseProps, 'message' | 'children'> {
   message: AudioRecordingMessageVM;

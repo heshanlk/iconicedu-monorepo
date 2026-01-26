@@ -2,7 +2,7 @@ import type { ChildProfileVM, GradeLevel, UserProfileVM } from '@iconicedu/share
 import type { ProfileRow } from '@iconicedu/shared-types';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
-import { getChildGradeLevel, getChildProfile } from '../queries/child.query';
+import { getChildGradeLevel, getChildProfile } from '@iconicedu/web/lib/profile/queries/child.query';
 import { parseGradeLevel } from '@iconicedu/shared-types';
 
 export async function buildChildProfile(

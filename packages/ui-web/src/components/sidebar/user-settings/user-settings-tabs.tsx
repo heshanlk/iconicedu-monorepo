@@ -13,34 +13,34 @@ import type {
   UserAccountVM,
   UserProfileVM,
 } from '@iconicedu/shared-types';
-import { ScrollArea } from '../../../ui/scroll-area';
-import { Separator } from '../../../ui/separator';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../ui/tabs';
-import { useSidebar } from '../../../ui/sidebar';
+import { ScrollArea } from '@iconicedu/ui-web/ui/scroll-area';
+import { Separator } from '@iconicedu/ui-web/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@iconicedu/ui-web/ui/tabs';
+import { useSidebar } from '@iconicedu/ui-web/ui/sidebar';
 import { cn } from '@iconicedu/ui-web/lib/utils';
-import { getProfileDisplayName } from '../../../lib/display-name';
-import { AccountTab, type AccountSectionKey } from './account-tab';
-import { Button } from '../../../ui/button';
-import { FamilyTab } from './family-tab';
-import { LocationTab } from './location-tab';
-import { NotificationsTab } from './notifications-tab';
-import { PreferencesTab, type PreferencesSectionKey } from './preferences-tab';
+import { getProfileDisplayName } from '@iconicedu/ui-web/lib/display-name';
+import { AccountTab, type AccountSectionKey } from '@iconicedu/ui-web/components/sidebar/user-settings/account-tab';
+import { Button } from '@iconicedu/ui-web/ui/button';
+import { FamilyTab } from '@iconicedu/ui-web/components/sidebar/user-settings/family-tab';
+import { LocationTab } from '@iconicedu/ui-web/components/sidebar/user-settings/location-tab';
+import { NotificationsTab } from '@iconicedu/ui-web/components/sidebar/user-settings/notifications-tab';
+import { PreferencesTab, type PreferencesSectionKey } from '@iconicedu/ui-web/components/sidebar/user-settings/preferences-tab';
 import {
   ProfileTab,
   type ProfileAvatarInput,
   type ProfileAvatarRemoveInput,
   type ProfileSaveInput,
-} from './profile-tab';
-import { StaffProfileTab } from './staff-profile-tab';
-import { StudentProfileTab } from './student-profile-tab';
-import { EducatorProfileTab } from './educator-profile-tab';
-import { EducatorAvailabilityTab } from './educator-availability-tab';
+} from '@iconicedu/ui-web/components/sidebar/user-settings/profile-tab';
+import { StaffProfileTab } from '@iconicedu/ui-web/components/sidebar/user-settings/staff-profile-tab';
+import { StudentProfileTab } from '@iconicedu/ui-web/components/sidebar/user-settings/student-profile-tab';
+import { EducatorProfileTab } from '@iconicedu/ui-web/components/sidebar/user-settings/educator-profile-tab';
+import { EducatorAvailabilityTab } from '@iconicedu/ui-web/components/sidebar/user-settings/educator-availability-tab';
 import {
   OnboardingStep,
   PROFILE_THEME_OPTIONS,
   SETTINGS_TABS,
   type UserSettingsTab,
-} from './constants';
+} from '@iconicedu/ui-web/components/sidebar/user-settings/constants';
 
 export type UserSettingsTabsProps = {
   value: UserSettingsTab;
@@ -234,7 +234,7 @@ export function UserSettingsTabs({
       ]),
     );
   });
-  const guardianChildren =
+  const guardianChildren: ChildProfileVM[] =
     profile.kind === 'guardian' ? (profile.children?.items ?? []) : [];
   const familyMembers = React.useMemo(() => {
     const members: Array<{

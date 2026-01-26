@@ -19,7 +19,7 @@ import {
   isLinkPreviewMessage,
   isAudioRecordingMessage,
   isMessageVisibleToUser,
-} from '../../lib/message-guards';
+} from '@iconicedu/ui-web/lib/message-guards';
 import {
   TextMessage,
   ImageMessage,
@@ -36,7 +36,7 @@ import {
   HomeworkSubmissionMessage,
   AudioMessage,
   LinkPreviewMessage,
-} from './message-types';
+} from '@iconicedu/ui-web/components/messages/message-types';
 
 interface MessageItemProps {
   message: MessageVM;

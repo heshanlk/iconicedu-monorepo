@@ -11,26 +11,26 @@ import {
   normalizeCountryCode,
   optionsForCountry,
 } from '@iconicedu/shared-types';
-import { Button } from '../../../ui/button';
-import { BorderBeam } from '../../../ui/border-beam';
+import { Button } from '@iconicedu/ui-web/ui/button';
+import { BorderBeam } from '@iconicedu/ui-web/ui/border-beam';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '../../../ui/collapsible';
-import { Input } from '../../../ui/input';
-import { Label } from '../../../ui/label';
+} from '@iconicedu/ui-web/ui/collapsible';
+import { Input } from '@iconicedu/ui-web/ui/input';
+import { Label } from '@iconicedu/ui-web/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../../../ui/select';
-import { Separator } from '../../../ui/separator';
-import { Checkbox } from '../../../ui/checkbox';
-import { ChevronIcon } from './components/chevron-icon';
-import { useSequentialHighlight } from './hooks/use-sequential-highlight';
+} from '@iconicedu/ui-web/ui/select';
+import { Separator } from '@iconicedu/ui-web/ui/separator';
+import { Checkbox } from '@iconicedu/ui-web/ui/checkbox';
+import { ChevronIcon } from '@iconicedu/ui-web/components/sidebar/user-settings/components/chevron-icon';
+import { useSequentialHighlight } from '@iconicedu/ui-web/components/sidebar/user-settings/hooks/use-sequential-highlight';
 
 export const BIRTH_YEAR_OPTIONS = (() => {
   const currentYear = new Date().getFullYear();

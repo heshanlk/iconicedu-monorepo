@@ -1,12 +1,12 @@
 import * as React from 'react';
 
-import { Input } from '../../../../ui/input';
+import { Input } from '@iconicedu/ui-web/ui/input';
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
-} from '../../../../ui/input-group';
-import { Label } from '../../../../ui/label';
+} from '@iconicedu/ui-web/ui/input-group';
+import { Label } from '@iconicedu/ui-web/ui/label';
 
 type ContactFieldProps = {
   id: string;

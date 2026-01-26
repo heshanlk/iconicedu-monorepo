@@ -1,15 +1,15 @@
 import type { AccountRow, FamilyLinkInviteRow } from '@iconicedu/shared-types';
 
-import { createSupabaseServerClient } from '../supabase/server';
-import { ORG } from '../data/org';
-import { getAccountsByIds } from '../accounts/queries/accounts.query';
+import { createSupabaseServerClient } from '@iconicedu/web/lib/supabase/server';
+import { ORG } from '@iconicedu/web/lib/data/org';
+import { getAccountsByIds } from '@iconicedu/web/lib/accounts/queries/accounts.query';
 import {
   getFamiliesByOrg,
   getFamilyInvitesByFamilyIds,
   getFamilyLinksByFamilyIds,
   type FamilyRow,
   type FamilyLinkRow,
-} from '../family/queries/families.query';
+} from '@iconicedu/web/lib/family/queries/families.query';
 
 export type AdminFamilyParticipant = {
   id: string;

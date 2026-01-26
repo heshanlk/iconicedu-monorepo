@@ -1,13 +1,13 @@
-import { cn } from '../lib/utils';
-import { Button } from '../ui/button';
-import { Field, FieldDescription, FieldGroup, FieldLabel } from '../ui/field';
+import { cn } from '@iconicedu/ui-web/lib/utils';
+import { Button } from '@iconicedu/ui-web/ui/button';
+import { Field, FieldDescription, FieldGroup, FieldLabel } from '@iconicedu/ui-web/ui/field';
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSeparator,
   InputOTPSlot,
-} from '../ui/input-otp';
-import { SiteLogo } from './site-logo';
+} from '@iconicedu/ui-web/ui/input-otp';
+import { SiteLogo } from '@iconicedu/ui-web/components/site-logo';
 
 export function OTPForm({ className, ...props }: React.ComponentProps<'div'>) {
   return (

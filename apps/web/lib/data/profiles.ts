@@ -9,7 +9,7 @@ const STAFF_SUPPORT_WEEKLY_AVAILABILITY = {
   Sat: [],
   Sun: [],
 };
-import { ACCOUNT_IDS, ORG_ID, PROFILE_IDS } from './ids';
+import { ACCOUNT_IDS, ORG_ID, PROFILE_IDS } from '@iconicedu/web/lib/data/ids';
 
 export const SYSTEM_PROFILE: UserProfileVM = {
   kind: 'system',

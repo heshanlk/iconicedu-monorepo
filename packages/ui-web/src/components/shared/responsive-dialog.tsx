@@ -10,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '../../ui/dialog';
+} from '@iconicedu/ui-web/ui/dialog';
 import {
   Drawer,
   DrawerContent,
@@ -18,8 +18,8 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from '../../ui/drawer';
-import { useIsMobile } from '../../hooks/use-mobile';
+} from '@iconicedu/ui-web/ui/drawer';
+import { useIsMobile } from '@iconicedu/ui-web/hooks/use-mobile';
 
 type ResponsiveDialogProps = {
   open: boolean;

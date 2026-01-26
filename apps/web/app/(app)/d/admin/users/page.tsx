@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { DashboardHeader } from '@iconicedu/ui-web';
 
 import { getAdminUserRows } from '@iconicedu/web/lib/admin/users';
-import { UsersTable } from './users-table';
+import { UsersTable } from '@iconicedu/web/app/(app)/d/admin/users/users-table';
 
 export const metadata: Metadata = {
   title: 'Admin · Users',

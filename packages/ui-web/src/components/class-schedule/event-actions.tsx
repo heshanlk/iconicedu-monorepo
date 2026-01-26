@@ -1,9 +1,9 @@
 'use client';
 
 import type { ClassScheduleVM } from '@iconicedu/shared-types';
-import { Button } from '../../ui/button';
+import { Button } from '@iconicedu/ui-web/ui/button';
 import { MessageSquare, Video, X } from 'lucide-react';
-import { cn } from '../../lib/utils';
+import { cn } from '@iconicedu/ui-web/lib/utils';
 
 interface EventActionsProps {
   event: ClassScheduleVM;

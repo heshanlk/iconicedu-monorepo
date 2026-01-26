@@ -1,15 +1,15 @@
 'use client';
 
 import { memo, useCallback } from 'react';
-import { Button } from '../../../ui/button';
+import { Button } from '@iconicedu/ui-web/ui/button';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '../../../ui/tooltip';
+} from '@iconicedu/ui-web/ui/tooltip';
 import type { ReactionVM } from '@iconicedu/shared-types';
-import { ANIMATION_DELAYS } from '../../../constants/message-constants';
+import { ANIMATION_DELAYS } from '@iconicedu/ui-web/constants/message-constants';
 
 interface ReactionBarProps {
   reactions: ReactionVM[];

@@ -1,8 +1,8 @@
 import { memo, useState } from 'react';
 import { CheckCircle2, AlertTriangle } from 'lucide-react';
-import { Button } from '../../../ui/button';
+import { Button } from '@iconicedu/ui-web/ui/button';
 import type { SessionCompleteMessageVM as SessionCompleteMessageType } from '@iconicedu/shared-types';
-import { MessageBase, type MessageBaseProps } from '../message-base';
+import { MessageBase, type MessageBaseProps } from '@iconicedu/ui-web/components/messages/message-base';
 
 interface SessionCompleteMessageProps
   extends Omit<MessageBaseProps, 'message' | 'children'> {

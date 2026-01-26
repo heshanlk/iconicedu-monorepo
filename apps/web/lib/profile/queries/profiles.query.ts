@@ -2,7 +2,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 
 import type { ProfileRow } from '@iconicedu/shared-types';
 
-import { PROFILE_SELECT, PROFILE_SUMMARY_SELECT } from '../constants/selects';
+import { PROFILE_SELECT, PROFILE_SUMMARY_SELECT } from '@iconicedu/web/lib/profile/constants/selects';
 
 type ProfileInsertPayload = {
   orgId: string;

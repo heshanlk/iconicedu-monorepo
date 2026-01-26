@@ -11,7 +11,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from '../../ui/sidebar';
+} from '@iconicedu/ui-web/ui/sidebar';
 import {
   Activity,
   CalendarCheck,
@@ -22,7 +22,7 @@ import {
   Users,
   ChevronDown,
 } from 'lucide-react';
-import { cn } from '../../lib/utils';
+import { cn } from '@iconicedu/ui-web/lib/utils';
 import type {
   AdminMenuIconKey,
   AdminMenuLinkVM,

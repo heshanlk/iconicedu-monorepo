@@ -13,16 +13,16 @@ import type {
   UserAccountVM,
   UserProfileVM,
 } from '@iconicedu/shared-types';
-import { useSidebar } from '../../ui/sidebar';
+import { useSidebar } from '@iconicedu/ui-web/ui/sidebar';
 import { cn } from '@iconicedu/ui-web/lib/utils';
 import type {
   ProfileAvatarInput,
   ProfileAvatarRemoveInput,
   ProfileSaveInput,
-} from './user-settings/profile-tab';
-import { ResponsiveDialog } from '../shared/responsive-dialog';
-import { UserSettingsTabs } from './user-settings/user-settings-tabs';
-import { OnboardingStep, type UserSettingsTab } from './user-settings/constants';
+} from '@iconicedu/ui-web/components/sidebar/user-settings/profile-tab';
+import { ResponsiveDialog } from '@iconicedu/ui-web/components/shared/responsive-dialog';
+import { UserSettingsTabs } from '@iconicedu/ui-web/components/sidebar/user-settings/user-settings-tabs';
+import { OnboardingStep, type UserSettingsTab } from '@iconicedu/ui-web/components/sidebar/user-settings/constants';
 
 export const ONBOARDING_STEP_TO_TAB: Record<OnboardingStep, UserSettingsTab> = {
   'account-phone': 'account',
@@ -35,7 +35,7 @@ export const ONBOARDING_STEP_TO_TAB: Record<OnboardingStep, UserSettingsTab> = {
   'staff-profile': 'staff-profile',
   'educator-availability': 'educator-availability',
 };
-export type { UserSettingsTab } from './user-settings/constants';
+export type { UserSettingsTab } from '@iconicedu/ui-web/components/sidebar/user-settings/constants';
 
 type UserSettingsDialogProps = {
   open: boolean;

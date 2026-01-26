@@ -1,5 +1,5 @@
 import type { MessageVM, ThreadVM } from '@iconicedu/shared-types';
-import { CHANNEL_IDS, MESSAGE_IDS, ORG_ID, THREAD_IDS } from './ids';
+import { CHANNEL_IDS, MESSAGE_IDS, ORG_ID, THREAD_IDS } from '@iconicedu/web/lib/data/ids';
 import {
   CHILD_MAYA_PROFILE,
   CHILD_TEHARA_PROFILE,
@@ -12,7 +12,7 @@ import {
   GUARDIAN_RILEY_PROFILE,
   SYSTEM_PROFILE,
   STAFF_SUPPORT_PROFILE,
-} from './profiles';
+} from '@iconicedu/web/lib/data/profiles';
 
 const THREAD_MATH_FEEDBACK: ThreadVM = {
   ids: { id: THREAD_IDS.mathFeedback, orgId: ORG_ID },

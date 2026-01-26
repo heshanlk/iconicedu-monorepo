@@ -1,10 +1,10 @@
 import { memo } from 'react';
 import { Calendar, Clock, MapPin, Video, Users } from 'lucide-react';
-import { Button } from '../../../ui/button';
-import { AvatarWithStatus } from '../../shared/avatar-with-status';
+import { Button } from '@iconicedu/ui-web/ui/button';
+import { AvatarWithStatus } from '@iconicedu/ui-web/components/shared/avatar-with-status';
 import type { EventReminderMessageVM as EventReminderMessageType } from '@iconicedu/shared-types';
-import { MessageBase, type MessageBaseProps } from '../message-base';
-import { getProfileDisplayName } from '../../../lib/display-name';
+import { MessageBase, type MessageBaseProps } from '@iconicedu/ui-web/components/messages/message-base';
+import { getProfileDisplayName } from '@iconicedu/ui-web/lib/display-name';
 
 interface EventReminderMessageProps extends Omit<
   MessageBaseProps,

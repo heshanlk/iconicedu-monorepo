@@ -1,6 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 
-import { AVATAR_BUCKET, AVATAR_SIGNED_URL_TTL } from '../constants/theme';
+import { AVATAR_BUCKET, AVATAR_SIGNED_URL_TTL } from '@iconicedu/web/lib/profile/constants/theme';
 
 export async function createSignedAvatarUrl(
   supabase: SupabaseClient,

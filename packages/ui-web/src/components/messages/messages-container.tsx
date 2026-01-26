@@ -1,11 +1,11 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef } from 'react';
-import { MessageList, type MessageListRef } from './message-list';
-import { MessageInput } from './message-input';
-import { useMessages } from '../../hooks/use-messages';
-import { getProfileDisplayName } from '../../lib/display-name';
-import { useMessagesState } from './context/messages-state-provider';
+import { MessageList, type MessageListRef } from '@iconicedu/ui-web/components/messages/message-list';
+import { MessageInput } from '@iconicedu/ui-web/components/messages/message-input';
+import { useMessages } from '@iconicedu/ui-web/hooks/use-messages';
+import { getProfileDisplayName } from '@iconicedu/ui-web/lib/display-name';
+import { useMessagesState } from '@iconicedu/ui-web/components/messages/context/messages-state-provider';
 import type {
   ChannelVM,
   EducatorProfileVM,

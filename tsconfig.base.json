@@ -16,8 +16,8 @@
     "paths": {
       "@iconicedu/web/*": ["apps/web/*"],
       "@iconicedu/web": ["apps/web"],
-      "@iconicedu/api/*": ["apps/api/*"],
-      "@iconicedu/api": ["apps/api"],
+      "@iconicedu/api/*": ["apps/api/src/*"],
+      "@iconicedu/api": ["apps/api/src"],
       "@iconicedu/mobile/*": ["apps/mobile/*"],
       "@iconicedu/mobile": ["apps/mobile"],
       "@iconicedu/ui-web/*": ["packages/ui-web/src/*"],

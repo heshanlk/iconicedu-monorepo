@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { Button } from '../../ui/button';
+import { Button } from '@iconicedu/ui-web/ui/button';
 import { Check, Moon, Sun } from 'lucide-react';
 import { cn } from '@iconicedu/ui-web/lib/utils';
 import {

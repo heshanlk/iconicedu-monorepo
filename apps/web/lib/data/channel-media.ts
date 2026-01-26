@@ -1,9 +1,9 @@
 import type { ChannelMediaItemVM } from '@iconicedu/shared-types';
-import { CHANNEL_IDS, MEDIA_IDS, MESSAGE_IDS, ORG_ID } from './ids';
+import { CHANNEL_IDS, MEDIA_IDS, MESSAGE_IDS, ORG_ID } from '@iconicedu/web/lib/data/ids';
 import {
   CHILD_TEVIN_PROFILE,
   EDUCATOR_PRIYA_PROFILE,
-} from './profiles';
+} from '@iconicedu/web/lib/data/profiles';
 
 export const MATH_CHANNEL_MEDIA: ChannelMediaItemVM[] = [
   {

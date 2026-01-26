@@ -2,10 +2,10 @@
 
 import type React from 'react';
 import { useState } from 'react';
-import { cn } from '../../lib/utils';
-import { ActivityBasicWithActionButton } from './activity-basic-with-action-button';
-import { ActivityBasicWithExpandedContent } from './activity-basic-with-expanded-content';
-import { ActivityItemBase } from './activity-item-base';
+import { cn } from '@iconicedu/ui-web/lib/utils';
+import { ActivityBasicWithActionButton } from '@iconicedu/ui-web/components/notification/activity-basic-with-action-button';
+import { ActivityBasicWithExpandedContent } from '@iconicedu/ui-web/components/notification/activity-basic-with-expanded-content';
+import { ActivityItemBase } from '@iconicedu/ui-web/components/notification/activity-item-base';
 import type {
   ActivityFeedGroupItemVM,
   ActivityFeedLeafItemVM,

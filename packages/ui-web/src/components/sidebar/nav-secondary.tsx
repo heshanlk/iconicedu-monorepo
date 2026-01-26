@@ -7,7 +7,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from '../../ui/sidebar';
+} from '@iconicedu/ui-web/ui/sidebar';
 
 export function NavSecondary({
   items,

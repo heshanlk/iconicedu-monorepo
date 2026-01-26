@@ -8,8 +8,8 @@
     "paths": {
       "@iconicedu/web/*": ["../web/*"],
       "@iconicedu/web": ["../web"],
-      "@iconicedu/api/*": ["../api/*"],
-      "@iconicedu/api": ["../api"],
+      "@iconicedu/api/*": ["../api/src/*"],
+      "@iconicedu/api": ["../api/src"],
       "@iconicedu/mobile/*": ["./*"],
       "@iconicedu/mobile": ["."],
       "@iconicedu/ui-web/*": ["../../packages/ui-web/src/*"],

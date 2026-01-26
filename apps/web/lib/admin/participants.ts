@@ -1,14 +1,14 @@
 import type { UserProfileVM, ProfileRow } from '@iconicedu/shared-types';
 
-import { createSupabaseServerClient } from '../supabase/server';
-import { ORG } from '../data/org';
-import { mapBaseProfile } from '../profile/mappers/base-profile.mapper';
-import { getAccountsByOrgId } from '../accounts/queries/accounts.query';
+import { createSupabaseServerClient } from '@iconicedu/web/lib/supabase/server';
+import { ORG } from '@iconicedu/web/lib/data/org';
+import { mapBaseProfile } from '@iconicedu/web/lib/profile/mappers/base-profile.mapper';
+import { getAccountsByOrgId } from '@iconicedu/web/lib/accounts/queries/accounts.query';
 import {
   getProfilesByAccountIds,
   getProfilesByKind,
-} from '../profile/queries/profiles.query';
-import { getFamilyLinksByOrg } from '../family/queries/families.query';
+} from '@iconicedu/web/lib/profile/queries/profiles.query';
+import { getFamilyLinksByOrg } from '@iconicedu/web/lib/family/queries/families.query';
 
 type GuardianNameMap = Map<string, string[]>;
 

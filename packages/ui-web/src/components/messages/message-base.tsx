@@ -2,22 +2,22 @@
 
 import type { ReactNode } from 'react';
 import { useState, useCallback, memo } from 'react';
-import { AvatarWithStatus } from '../shared/avatar-with-status';
+import { AvatarWithStatus } from '@iconicedu/ui-web/components/shared/avatar-with-status';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '../../ui/tooltip';
+} from '@iconicedu/ui-web/ui/tooltip';
 import type { MessageVM, ThreadVM, UUID } from '@iconicedu/shared-types';
-import { cn } from '../../lib/utils';
-import { formatTime, formatFullDate } from '../../lib/message-utils';
-import { ReactionBar } from './shared/reaction-bar';
-import { ThreadIndicator } from './shared/thread-indicator';
-import { VisibilityBadge } from './shared/visibility-badge';
-import { HiddenMessagePlaceholder } from './shared/hidden-message-placeholder';
-import { MessageActions } from './message-actions';
-import { getProfileDisplayName } from '../../lib/display-name';
+import { cn } from '@iconicedu/ui-web/lib/utils';
+import { formatTime, formatFullDate } from '@iconicedu/ui-web/lib/message-utils';
+import { ReactionBar } from '@iconicedu/ui-web/components/messages/shared/reaction-bar';
+import { ThreadIndicator } from '@iconicedu/ui-web/components/messages/shared/thread-indicator';
+import { VisibilityBadge } from '@iconicedu/ui-web/components/messages/shared/visibility-badge';
+import { HiddenMessagePlaceholder } from '@iconicedu/ui-web/components/messages/shared/hidden-message-placeholder';
+import { MessageActions } from '@iconicedu/ui-web/components/messages/message-actions';
+import { getProfileDisplayName } from '@iconicedu/ui-web/lib/display-name';
 
 export interface MessageBaseProps {
   message: MessageVM;

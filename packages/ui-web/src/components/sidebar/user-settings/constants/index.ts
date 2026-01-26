@@ -64,6 +64,6 @@ export const PROFILE_THEME_OPTIONS = [
   { value: 'rose', label: 'Rose' },
 ];
 
-export { localeOptions, languageOptions } from './preferences';
-export { notificationChannelOptions } from './notifications';
-export { postalExamples } from './location';
+export { localeOptions, languageOptions } from '@iconicedu/ui-web/components/sidebar/user-settings/constants/preferences';
+export { notificationChannelOptions } from '@iconicedu/ui-web/components/sidebar/user-settings/constants/notifications';
+export { postalExamples } from '@iconicedu/ui-web/components/sidebar/user-settings/constants/location';

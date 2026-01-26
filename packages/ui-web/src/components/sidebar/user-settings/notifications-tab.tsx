@@ -13,17 +13,17 @@ import {
   Wallet,
 } from 'lucide-react';
 
-import { Button } from '../../../ui/button';
-import { UserSettingsTabSection } from './components/user-settings-tab-section';
+import { Button } from '@iconicedu/ui-web/ui/button';
+import { UserSettingsTabSection } from '@iconicedu/ui-web/components/sidebar/user-settings/components/user-settings-tab-section';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '../../../ui/dropdown-menu';
-import { Switch } from '../../../ui/switch';
+} from '@iconicedu/ui-web/ui/dropdown-menu';
+import { Switch } from '@iconicedu/ui-web/ui/switch';
 import { toast } from 'sonner';
-import { notificationChannelOptions } from './constants';
+import { notificationChannelOptions } from '@iconicedu/ui-web/components/sidebar/user-settings/constants';
 
 type NotificationSectionItem = {
   key: string;

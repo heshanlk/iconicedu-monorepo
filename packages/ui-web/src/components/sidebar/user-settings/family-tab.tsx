@@ -5,10 +5,10 @@ import { Plus, ShieldAlert, UserPlus } from 'lucide-react';
 
 import type { ChildProfileVM, ThemeKey, UserProfileVM } from '@iconicedu/shared-types';
 import { normalizeCountryCode, optionsForCountry } from '@iconicedu/shared-types';
-import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
-import { Badge } from '../../../ui/badge';
-import { BorderBeam } from '../../../ui/border-beam';
-import { Button } from '../../../ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@iconicedu/ui-web/ui/avatar';
+import { Badge } from '@iconicedu/ui-web/ui/badge';
+import { BorderBeam } from '@iconicedu/ui-web/ui/border-beam';
+import { Button } from '@iconicedu/ui-web/ui/button';
 import {
   Dialog,
   DialogClose,
@@ -18,25 +18,25 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '../../../ui/dialog';
-import { UserSettingsTabSection } from './components/user-settings-tab-section';
-import { useSequentialHighlight } from './hooks/use-sequential-highlight';
-import { Input } from '../../../ui/input';
-import { Label } from '../../../ui/label';
+} from '@iconicedu/ui-web/ui/dialog';
+import { UserSettingsTabSection } from '@iconicedu/ui-web/components/sidebar/user-settings/components/user-settings-tab-section';
+import { useSequentialHighlight } from '@iconicedu/ui-web/components/sidebar/user-settings/hooks/use-sequential-highlight';
+import { Input } from '@iconicedu/ui-web/ui/input';
+import { Label } from '@iconicedu/ui-web/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../../../ui/select';
-import { Separator } from '../../../ui/separator';
+} from '@iconicedu/ui-web/ui/select';
+import { Separator } from '@iconicedu/ui-web/ui/separator';
 import { toast } from 'sonner';
-import { Tooltip, TooltipContent, TooltipTrigger } from '../../../ui/tooltip';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@iconicedu/ui-web/ui/tooltip';
 
 import type { FamilyLinkInviteRole, FamilyLinkInviteVM } from '@iconicedu/shared-types';
-import type { ProfileSaveInput } from './profile-tab';
-import { BIRTH_YEAR_OPTIONS } from './student-profile-tab';
+import type { ProfileSaveInput } from '@iconicedu/ui-web/components/sidebar/user-settings/profile-tab';
+import { BIRTH_YEAR_OPTIONS } from '@iconicedu/ui-web/components/sidebar/user-settings/student-profile-tab';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -46,7 +46,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '../../../ui/alert-dialog';
+} from '@iconicedu/ui-web/ui/alert-dialog';
 
 type FamilyMemberItem = {
   id: string;

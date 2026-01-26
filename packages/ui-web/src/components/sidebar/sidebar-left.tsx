@@ -17,14 +17,14 @@ import {
   UserPlus,
 } from 'lucide-react';
 
-import { NavLearningSpaces } from './nav-learning-spaces';
-import { NavSecondary } from './nav-secondary';
-import { NavUser } from './nav-user';
+import { NavLearningSpaces } from '@iconicedu/ui-web/components/sidebar/nav-learning-spaces';
+import { NavSecondary } from '@iconicedu/ui-web/components/sidebar/nav-secondary';
+import { NavUser } from '@iconicedu/ui-web/components/sidebar/nav-user';
 import type {
   ProfileAvatarInput,
   ProfileAvatarRemoveInput,
   ProfileSaveInput,
-} from './user-settings/profile-tab';
+} from '@iconicedu/ui-web/components/sidebar/user-settings/profile-tab';
 import {
   Sidebar,
   SidebarContent,
@@ -42,22 +42,22 @@ import {
   SidebarMenuSubItem,
   SidebarSeparator,
   useSidebar,
-} from '../../ui/sidebar';
-import { Button } from '../../ui/button';
+} from '@iconicedu/ui-web/ui/sidebar';
+import { Button } from '@iconicedu/ui-web/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '../../ui/dropdown-menu';
-import { NavMain } from './nav-main';
-import { NavDirectMessages } from './nav-direct-messages';
-import { NavAdmin } from './nav-admin';
+} from '@iconicedu/ui-web/ui/dropdown-menu';
+import { NavMain } from '@iconicedu/ui-web/components/sidebar/nav-main';
+import { NavDirectMessages } from '@iconicedu/ui-web/components/sidebar/nav-direct-messages';
+import { NavAdmin } from '@iconicedu/ui-web/components/sidebar/nav-admin';
 import type { AdminMenuSection } from '@iconicedu/shared-types';
-import { SiteLogoWithName } from '../site-logo-wt-name';
-import { Empty } from '../../ui/empty';
-import { EmptyContent } from '../../ui/empty';
+import { SiteLogoWithName } from '@iconicedu/ui-web/components/site-logo-wt-name';
+import { Empty } from '@iconicedu/ui-web/ui/empty';
+import { EmptyContent } from '@iconicedu/ui-web/ui/empty';
 import type {
   ChildProfileSaveInput,
   ChildProfileVM,
@@ -65,14 +65,16 @@ import type {
   EducatorProfileSaveInput,
   FamilyLinkInviteRole,
   FamilyLinkInviteVM,
+  LearningSpaceVM,
   SidebarLeftDataVM,
   SidebarNavItem,
   SidebarSecondaryItem,
   StaffProfileSaveInput,
   ThemeKey,
   UserOnboardingStatusVM,
+  UserProfileVM,
 } from '@iconicedu/shared-types';
-import { getProfileDisplayName } from '../../lib/display-name';
+import { getProfileDisplayName } from '@iconicedu/ui-web/lib/display-name';
 
 const ICONS = {
   home: Home,
@@ -199,13 +201,17 @@ export function SidebarLeft({
     }),
   );
   const userProfile = data.user.profile;
-  const children =
+  const children: ChildProfileVM[] =
     userProfile.kind === 'guardian' ? (userProfile.children?.items ?? []) : [];
-  const learningSpacesByChild = children.map((child) => ({
+  const learningSpacesByChild: Array<{
+    child: ChildProfileVM;
+    learningSpaces: LearningSpaceVM[];
+  }> = children.map((child) => ({
     child,
     learningSpaces: data.collections.learningSpaces.filter((space) =>
       space.channels.primaryChannel.collections.participants.some(
-        (participant) => participant.ids.accountId === child.ids.accountId,
+        (participant: UserProfileVM) =>
+          participant.ids.accountId === child.ids.accountId,
       ),
     ),
   }));

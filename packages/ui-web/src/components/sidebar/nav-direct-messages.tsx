@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '../../ui/dropdown-menu';
+} from '@iconicedu/ui-web/ui/dropdown-menu';
 import {
   SidebarGroup,
   SidebarGroupAction,
@@ -18,12 +18,12 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from '../../ui/sidebar';
-import { Badge } from '../../ui/badge';
-import { Separator } from '../../ui/separator';
-import { AvatarWithStatus } from '../shared/avatar-with-status';
+} from '@iconicedu/ui-web/ui/sidebar';
+import { Badge } from '@iconicedu/ui-web/ui/badge';
+import { Separator } from '@iconicedu/ui-web/ui/separator';
+import { AvatarWithStatus } from '@iconicedu/ui-web/components/shared/avatar-with-status';
 import type { ChannelVM } from '@iconicedu/shared-types';
-import { getProfileDisplayName } from '../../lib/display-name';
+import { getProfileDisplayName } from '@iconicedu/ui-web/lib/display-name';
 
 export function NavDirectMessages({
   dms,

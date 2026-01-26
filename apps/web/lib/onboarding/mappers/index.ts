@@ -1,1 +1,1 @@
-export * from './onboarding.mapper';
+export * from '@iconicedu/web/lib/onboarding/mappers/onboarding.mapper';

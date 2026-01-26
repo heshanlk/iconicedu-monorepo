@@ -6,11 +6,11 @@ import type {
   ISODateTime,
   ThemeKey,
   UUID,
-} from '../shared/shared';
-import type { GradeLevel } from '../shared/grades';
-import type { DayAvailability } from '../shared/availability';
-import type { EducatorAvailabilityVM } from './availability';
-import type { FamilyLinkInviteVM } from './family-link-invite';
+} from '@iconicedu/shared-types/shared/shared';
+import type { GradeLevel } from '@iconicedu/shared-types/shared/grades';
+import type { DayAvailability } from '@iconicedu/shared-types/shared/availability';
+import type { EducatorAvailabilityVM } from '@iconicedu/shared-types/vm/availability';
+import type { FamilyLinkInviteVM } from '@iconicedu/shared-types/vm/family-link-invite';
 
 export interface AvatarVM {
   source: AvatarSource;

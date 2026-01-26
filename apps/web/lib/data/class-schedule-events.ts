@@ -5,7 +5,7 @@ import {
   LEARNING_SPACE_IDS,
   ORG_ID,
   RECURRENCE_IDS,
-} from './ids';
+} from '@iconicedu/web/lib/data/ids';
 import {
   CHILD_MAYA_PROFILE,
   CHILD_TEHARA_PROFILE,
@@ -14,7 +14,7 @@ import {
   EDUCATOR_LUCAS_PROFILE,
   EDUCATOR_MISHAN_PROFILE,
   EDUCATOR_PRIYA_PROFILE,
-} from './profiles';
+} from '@iconicedu/web/lib/data/profiles';
 
 export const MATH_SCHEDULE_EVENT: ClassScheduleVM = {
   ids: { id: CLASS_SCHEDULE_IDS.math, orgId: ORG_ID },

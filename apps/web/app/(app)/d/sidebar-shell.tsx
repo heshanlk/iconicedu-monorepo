@@ -22,11 +22,11 @@ import { createSupabaseBrowserClient } from '@iconicedu/web/lib/supabase/client'
 import {
   revokeFamilyInviteAction,
   sendFamilyInviteAction,
-} from '../../actions/family-invite';
-import { removeFamilyMemberAction } from '../../actions/remove-family-member';
-import { createChildProfileAction } from '../../actions/create-child-profile';
-import { saveEducatorAvailabilityAction } from '../../actions/educator-availability';
-import { upsertUserOnboardingStatusAction } from '../../actions/onboarding-status';
+} from '@iconicedu/web/app/actions/family-invite';
+import { removeFamilyMemberAction } from '@iconicedu/web/app/actions/remove-family-member';
+import { createChildProfileAction } from '@iconicedu/web/app/actions/create-child-profile';
+import { saveEducatorAvailabilityAction } from '@iconicedu/web/app/actions/educator-availability';
+import { upsertUserOnboardingStatusAction } from '@iconicedu/web/app/actions/onboarding-status';
 import { determineOnboardingStep } from '@iconicedu/web/lib/onboarding/determineOnboardingStep';
 
 const AVATAR_BUCKET = 'public-avatars';

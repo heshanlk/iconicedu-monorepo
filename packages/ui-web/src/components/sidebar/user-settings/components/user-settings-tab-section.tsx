@@ -6,8 +6,8 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '../../../../ui/collapsible';
-import { Separator } from '../../../../ui/separator';
+} from '@iconicedu/ui-web/ui/collapsible';
+import { Separator } from '@iconicedu/ui-web/ui/separator';
 
 type UserSettingsTabSectionProps = {
   title: React.ReactNode;

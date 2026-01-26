@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import { cn } from '../lib/utils';
+import { cn } from '@iconicedu/ui-web/lib/utils';
 
 export type SiteLogoProps = React.SVGProps<SVGSVGElement>;
 

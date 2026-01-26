@@ -6,7 +6,7 @@ import {
   FAMILY_INVITE_SELECT,
   FAMILY_LINK_SELECT,
   FAMILY_SELECT,
-} from '../constants/selects';
+} from '@iconicedu/web/lib/family/constants/selects';
 
 export type FamilyRow = {
   id: string;

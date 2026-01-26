@@ -1,10 +1,10 @@
 import { memo } from 'react';
 import { FileText, Clock, Download, Award, Send, AlertCircle } from 'lucide-react';
-import { Button } from '../../../ui/button';
-import { Badge } from '../../../ui/badge';
+import { Button } from '@iconicedu/ui-web/ui/button';
+import { Badge } from '@iconicedu/ui-web/ui/badge';
 import type { HomeworkSubmissionMessageVM as HomeworkSubmissionMessageType } from '@iconicedu/shared-types';
-import { MessageBase, type MessageBaseProps } from '../message-base';
-import { cn } from '../../../lib/utils';
+import { MessageBase, type MessageBaseProps } from '@iconicedu/ui-web/components/messages/message-base';
+import { cn } from '@iconicedu/ui-web/lib/utils';
 
 interface HomeworkSubmissionMessageProps extends Omit<
   MessageBaseProps,

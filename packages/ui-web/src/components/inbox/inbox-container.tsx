@@ -2,15 +2,16 @@
 
 import type React from 'react';
 import { useState } from 'react';
-import { Badge } from '../../ui/badge';
-import { ScrollArea } from '../../ui/scroll-area';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '../../ui/tabs';
-import { ActivityBasic } from '../notification/activity-basic';
-import { ActivityBasicWithActionButton } from '../notification/activity-basic-with-action-button';
-import { ActivityBasicWithExpandedContent } from '../notification/activity-basic-with-expanded-content';
-import { ActivityWithSubitems } from '../notification/activity-with-subitems';
+import { Badge } from '@iconicedu/ui-web/ui/badge';
+import { ScrollArea } from '@iconicedu/ui-web/ui/scroll-area';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@iconicedu/ui-web/ui/tabs';
+import { ActivityBasic } from '@iconicedu/ui-web/components/notification/activity-basic';
+import { ActivityBasicWithActionButton } from '@iconicedu/ui-web/components/notification/activity-basic-with-action-button';
+import { ActivityBasicWithExpandedContent } from '@iconicedu/ui-web/components/notification/activity-basic-with-expanded-content';
+import { ActivityWithSubitems } from '@iconicedu/ui-web/components/notification/activity-with-subitems';
 import type {
   ActivityFeedItemVM,
+  ActivityFeedLeafItemVM,
   ActivityFeedVM,
   InboxTabKeyVM,
 } from '@iconicedu/shared-types';
@@ -67,7 +68,7 @@ export function InboxContainer({ feed }: { feed: ActivityFeedVM }) {
               ...item,
               subActivities: {
                 ...item.subActivities,
-                items: item.subActivities.items.map((sub) =>
+                items: item.subActivities.items.map((sub: ActivityFeedLeafItemVM) =>
                   sub.ids.id === id
                     ? {
                         ...sub,

@@ -15,8 +15,8 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '../../ui/collapsible';
-import { Button } from '../../ui/button';
+} from '@iconicedu/ui-web/ui/collapsible';
+import { Button } from '@iconicedu/ui-web/ui/button';
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -24,20 +24,20 @@ import {
   SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
-} from '../../ui/sidebar';
+} from '@iconicedu/ui-web/ui/sidebar';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '../../ui/dropdown-menu';
-import { cn } from '../../lib/utils';
-import { Empty, EmptyContent } from '../../ui/empty';
-import { AvatarWithStatus } from '../shared/avatar-with-status';
-import { getProfileDisplayName } from '../../lib/display-name';
-import { ThemedIconBadge } from '../shared/themed-icon';
-import { getLearningSpaceIcon } from '../../lib/icons';
+} from '@iconicedu/ui-web/ui/dropdown-menu';
+import { cn } from '@iconicedu/ui-web/lib/utils';
+import { Empty, EmptyContent } from '@iconicedu/ui-web/ui/empty';
+import { AvatarWithStatus } from '@iconicedu/ui-web/components/shared/avatar-with-status';
+import { getProfileDisplayName } from '@iconicedu/ui-web/lib/display-name';
+import { ThemedIconBadge } from '@iconicedu/ui-web/components/shared/themed-icon';
+import { getLearningSpaceIcon } from '@iconicedu/ui-web/lib/icons';
 
 export function NavLearningSpaces({
   learningSpaces,

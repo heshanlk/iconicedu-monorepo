@@ -5,20 +5,20 @@ import { ArrowRight, MapPin } from 'lucide-react';
 
 import { Country, State } from 'country-state-city';
 import type { UserProfileVM } from '@iconicedu/shared-types';
-import { Button } from '../../../ui/button';
-import { Input } from '../../../ui/input';
-import { Label } from '../../../ui/label';
+import { Button } from '@iconicedu/ui-web/ui/button';
+import { Input } from '@iconicedu/ui-web/ui/input';
+import { Label } from '@iconicedu/ui-web/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../../../ui/select';
-import { UserSettingsTabSection } from './components/user-settings-tab-section';
-import { postalExamples } from './constants';
-import { BorderBeam } from '../../../ui/border-beam';
-import { useSequentialHighlight } from './hooks/use-sequential-highlight';
+} from '@iconicedu/ui-web/ui/select';
+import { UserSettingsTabSection } from '@iconicedu/ui-web/components/sidebar/user-settings/components/user-settings-tab-section';
+import { postalExamples } from '@iconicedu/ui-web/components/sidebar/user-settings/constants';
+import { BorderBeam } from '@iconicedu/ui-web/ui/border-beam';
+import { useSequentialHighlight } from '@iconicedu/ui-web/components/sidebar/user-settings/hooks/use-sequential-highlight';
 
 type LocationRequiredField = 'city' | 'region' | 'postal';
 const LOCATION_REQUIRED_FIELDS: LocationRequiredField[] = ['city', 'region', 'postal'];

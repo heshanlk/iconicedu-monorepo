@@ -1,8 +1,8 @@
 import { memo } from 'react';
 import { FileText, Download } from 'lucide-react';
-import { Button } from '../../../ui/button';
+import { Button } from '@iconicedu/ui-web/ui/button';
 import type { FileMessageVM as FileMessageType } from '@iconicedu/shared-types';
-import { MessageBase, type MessageBaseProps } from '../message-base';
+import { MessageBase, type MessageBaseProps } from '@iconicedu/ui-web/components/messages/message-base';
 
 interface FileMessageProps extends Omit<MessageBaseProps, 'message' | 'children'> {
   message: FileMessageType;

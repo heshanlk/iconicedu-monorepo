@@ -2,25 +2,25 @@
 
 import { memo, useMemo, useEffect, useRef } from 'react';
 import type { ComponentType } from 'react';
-import type { MessagesContainerProps } from './messages-container';
-import { MessagesContainer } from './messages-container';
-import { MessagesContainerHeader } from './messages-container-header';
-import { MessagesContainerHeaderActions } from './messages-container-header-actions';
+import type { MessagesContainerProps } from '@iconicedu/ui-web/components/messages/messages-container';
+import { MessagesContainer } from '@iconicedu/ui-web/components/messages/messages-container';
+import { MessagesContainerHeader } from '@iconicedu/ui-web/components/messages/messages-container-header';
+import { MessagesContainerHeaderActions } from '@iconicedu/ui-web/components/messages/messages-container-header-actions';
 import {
   MessagesStateProvider,
   useMessagesState,
-} from './context/messages-state-provider';
-import { MessagesRightSidebarRegion } from './messages-right-sidebar-region';
-import { ChannelInfoPanel } from './panels/channel-info-panel';
-import { ProfilePanel } from './panels/profile-panel';
-import { SavedPanel } from './panels/saved-panel';
-import { ThreadPanel } from './panels/thread-panel';
+} from '@iconicedu/ui-web/components/messages/context/messages-state-provider';
+import { MessagesRightSidebarRegion } from '@iconicedu/ui-web/components/messages/messages-right-sidebar-region';
+import { ChannelInfoPanel } from '@iconicedu/ui-web/components/messages/panels/channel-info-panel';
+import { ProfilePanel } from '@iconicedu/ui-web/components/messages/panels/profile-panel';
+import { SavedPanel } from '@iconicedu/ui-web/components/messages/panels/saved-panel';
+import { ThreadPanel } from '@iconicedu/ui-web/components/messages/panels/thread-panel';
 import type {
   MessagesRightPanelRegistry,
   MessagesRightPanelIntent,
 } from '@iconicedu/shared-types';
-import { useHasHydrated, useIsMobile } from '../../hooks/use-mobile';
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '../../ui/resizable';
+import { useHasHydrated, useIsMobile } from '@iconicedu/ui-web/hooks/use-mobile';
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@iconicedu/ui-web/ui/resizable';
 
 interface MessagesRightPanelProps {
   intent: MessagesRightPanelIntent;

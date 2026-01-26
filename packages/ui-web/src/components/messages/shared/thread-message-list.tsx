@@ -2,7 +2,7 @@
 
 import { memo } from 'react';
 import type { MessageVM } from '@iconicedu/shared-types';
-import { MessageItem } from '../message-item';
+import { MessageItem } from '@iconicedu/ui-web/components/messages/message-item';
 
 interface ThreadMessageListProps {
   messages: MessageVM[];

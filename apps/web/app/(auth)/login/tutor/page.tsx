@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import EducatorAuthClient from './educator-client';
+import EducatorAuthClient from '@iconicedu/web/app/(auth)/login/tutor/educator-client';
 import { createSupabaseServerClient } from '@iconicedu/web/lib/supabase/server';
 
 export default async function EducatorPage() {

@@ -1,8 +1,8 @@
 import { useRef, useEffect } from 'react';
-import { MessageInput } from './message-input';
+import { MessageInput } from '@iconicedu/ui-web/components/messages/message-input';
 import type { ThreadPanelPropsVM } from '@iconicedu/shared-types';
-import { ScrollArea } from '../../ui/scroll-area';
-import { ThreadMessageList } from './shared/thread-message-list';
+import { ScrollArea } from '@iconicedu/ui-web/ui/scroll-area';
+import { ThreadMessageList } from '@iconicedu/ui-web/components/messages/shared/thread-message-list';
 
 export function ThreadSheet({
   replies,

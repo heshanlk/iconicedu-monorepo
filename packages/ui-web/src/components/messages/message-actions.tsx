@@ -1,18 +1,18 @@
 import { useState, useCallback, memo } from 'react';
-import { Button } from '../../ui/button';
+import { Button } from '@iconicedu/ui-web/ui/button';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '../../ui/tooltip';
+} from '@iconicedu/ui-web/ui/tooltip';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuSeparator,
-} from '../../ui/dropdown-menu';
+} from '@iconicedu/ui-web/ui/dropdown-menu';
 import {
   MessageCircle,
   MoreHorizontal,
@@ -24,9 +24,9 @@ import {
   Pin,
   SmilePlus,
 } from 'lucide-react';
-import { EmojiPicker } from './emoji-picker';
-import { cn } from '../../lib/utils';
-import { getProfileDisplayName } from '../../lib/display-name';
+import { EmojiPicker } from '@iconicedu/ui-web/components/messages/emoji-picker';
+import { cn } from '@iconicedu/ui-web/lib/utils';
+import { getProfileDisplayName } from '@iconicedu/ui-web/lib/display-name';
 import type { MessageVM, ThreadVM } from '@iconicedu/shared-types';
 
 interface MessageActionsProps {

@@ -1,9 +1,9 @@
 import type React from 'react';
 import { useState, useEffect, useCallback, memo } from 'react';
-import { Button } from '../../ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
-import { ScrollArea } from '../../ui/scroll-area';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../ui/tabs';
+import { Button } from '@iconicedu/ui-web/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@iconicedu/ui-web/ui/popover';
+import { ScrollArea } from '@iconicedu/ui-web/ui/scroll-area';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@iconicedu/ui-web/ui/tabs';
 import { Clock } from 'lucide-react';
 
 interface EmojiPickerProps {

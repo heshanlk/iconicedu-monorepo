@@ -1,5 +1,5 @@
-import type { ConnectionVM, IdsBaseVM, ISODateTime, UUID } from '../shared/shared';
-import type { UserProfileVM } from './profile';
+import type { ConnectionVM, IdsBaseVM, ISODateTime, UUID } from '@iconicedu/shared-types/shared/shared';
+import type { UserProfileVM } from '@iconicedu/shared-types/vm/profile';
 
 export interface ReactionVM {
   emoji: string;

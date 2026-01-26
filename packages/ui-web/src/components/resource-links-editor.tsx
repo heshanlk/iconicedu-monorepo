@@ -2,7 +2,7 @@
 'use client';
 
 import * as React from 'react';
-import { Button } from '../ui/button';
+import { Button } from '@iconicedu/ui-web/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -11,17 +11,17 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '../ui/dialog';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
+} from '@iconicedu/ui-web/ui/dialog';
+import { Input } from '@iconicedu/ui-web/ui/input';
+import { Label } from '@iconicedu/ui-web/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../ui/select';
-import { Switch } from '../ui/switch';
+} from '@iconicedu/ui-web/ui/select';
+import { Switch } from '@iconicedu/ui-web/ui/switch';
 import {
   Video,
   Folder,

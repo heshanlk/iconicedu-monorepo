@@ -3,14 +3,14 @@
 import * as React from 'react';
 import { CalendarDays, Check, SlidersHorizontal, User, Users, X } from 'lucide-react';
 
-import { BorderBeam } from '../../../ui/border-beam';
-import { Button } from '../../../ui/button';
-import { Input } from '../../../ui/input';
-import { Slider } from '../../../ui/slider';
-import { Label } from '../../../ui/label';
-import { UserSettingsTabSection } from './components/user-settings-tab-section';
+import { BorderBeam } from '@iconicedu/ui-web/ui/border-beam';
+import { Button } from '@iconicedu/ui-web/ui/button';
+import { Input } from '@iconicedu/ui-web/ui/input';
+import { Slider } from '@iconicedu/ui-web/ui/slider';
+import { Label } from '@iconicedu/ui-web/ui/label';
+import { UserSettingsTabSection } from '@iconicedu/ui-web/components/sidebar/user-settings/components/user-settings-tab-section';
 import { cn } from '@iconicedu/ui-web/lib/utils';
-import { AvailabilityScheduler } from '../../shared/availability-scheduler';
+import { AvailabilityScheduler } from '@iconicedu/ui-web/components/shared/availability-scheduler';
 import {
   DAY_KEYS,
   EMPTY_DAY_AVAILABILITY,
@@ -18,7 +18,7 @@ import {
   type EducatorAvailabilityInput,
   type EducatorAvailabilityVM,
 } from '@iconicedu/shared-types';
-import { useSequentialHighlight } from './hooks/use-sequential-highlight';
+import { useSequentialHighlight } from '@iconicedu/ui-web/components/sidebar/user-settings/hooks/use-sequential-highlight';
 
 const CLASS_TYPE_OPTIONS = [
   { value: 'one-one', label: 'One-on-one', icon: User },

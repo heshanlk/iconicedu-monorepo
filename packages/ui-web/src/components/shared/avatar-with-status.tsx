@@ -7,9 +7,9 @@ import type {
   PresenceVM,
   ThemeKey,
 } from '@iconicedu/shared-types';
-import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
-import { cn } from '../../lib/utils';
-import { Tooltip, TooltipContent, TooltipTrigger } from '../../ui/tooltip';
+import { Avatar, AvatarFallback, AvatarImage } from '@iconicedu/ui-web/ui/avatar';
+import { cn } from '@iconicedu/ui-web/lib/utils';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@iconicedu/ui-web/ui/tooltip';
 
 const STATUS_COLORS: Record<PresenceDisplayStatusVM, string> = {
   online: 'bg-green-500',

@@ -5,14 +5,14 @@ import {
   FILE_IDS,
   LEARNING_SPACE_IDS,
   ORG_ID,
-} from './ids';
+} from '@iconicedu/web/lib/data/ids';
 import {
   EDUCATOR_ELENA_PROFILE,
   EDUCATOR_LUCAS_PROFILE,
   EDUCATOR_PRIYA_PROFILE,
   GUARDIAN_RILEY_PROFILE,
   SYSTEM_PROFILE,
-} from './profiles';
+} from '@iconicedu/web/lib/data/profiles';
 
 const MATH_HOMEWORK_ACTIVITY: ActivityFeedItemVM = {
   kind: 'leaf',

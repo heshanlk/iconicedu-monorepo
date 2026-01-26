@@ -1,7 +1,7 @@
-import type { AccountStatus, FamilyRelation, ISODateTime, UUID } from '../shared/shared';
-import type { GradeLevel } from '../shared/grades';
-import type { DayAvailability } from '../shared/availability';
-import type { WorkingHoursSchedule } from '../shared/working-hours';
+import type { AccountStatus, FamilyRelation, ISODateTime, UUID } from '@iconicedu/shared-types/shared/shared';
+import type { GradeLevel } from '@iconicedu/shared-types/shared/grades';
+import type { DayAvailability } from '@iconicedu/shared-types/shared/availability';
+import type { WorkingHoursSchedule } from '@iconicedu/shared-types/shared/working-hours';
 
 export type ProfileKindRow = 'educator' | 'guardian' | 'child' | 'staff' | 'system';
 

@@ -5,12 +5,12 @@ import type {
   MessagesRightPanelIntent,
   ThreadPanelPropsVM,
 } from '@iconicedu/shared-types';
-import { ThreadSheet } from '../thread-sheet';
-import { useMessagesState } from '../context/messages-state-provider';
-import { useIsMobile } from '../../../hooks/use-mobile';
-import { MessageInput } from '../message-input';
-import { ScrollArea } from '../../../ui/scroll-area';
-import { ThreadMessageList } from '../shared/thread-message-list';
+import { ThreadSheet } from '@iconicedu/ui-web/components/messages/thread-sheet';
+import { useMessagesState } from '@iconicedu/ui-web/components/messages/context/messages-state-provider';
+import { useIsMobile } from '@iconicedu/ui-web/hooks/use-mobile';
+import { MessageInput } from '@iconicedu/ui-web/components/messages/message-input';
+import { ScrollArea } from '@iconicedu/ui-web/ui/scroll-area';
+import { ThreadMessageList } from '@iconicedu/ui-web/components/messages/shared/thread-message-list';
 
 interface ThreadPanelProps {
   intent: MessagesRightPanelIntent;

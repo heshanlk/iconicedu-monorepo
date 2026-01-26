@@ -13,13 +13,13 @@ import {
   Users,
 } from 'lucide-react';
 import type { MessagesRightPanelIntent } from '@iconicedu/shared-types';
-import { Badge } from '../../../ui/badge';
-import { Separator } from '../../../ui/separator';
-import { AvatarWithStatus } from '../../shared/avatar-with-status';
-import { getProfileDisplayName } from '../../../lib/display-name';
-import { ThemedIconBadge } from '../../shared/themed-icon';
-import { MediaFilesPanel } from '../shared/media-files-panel';
-import { useMessagesState } from '../context/messages-state-provider';
+import { Badge } from '@iconicedu/ui-web/ui/badge';
+import { Separator } from '@iconicedu/ui-web/ui/separator';
+import { AvatarWithStatus } from '@iconicedu/ui-web/components/shared/avatar-with-status';
+import { getProfileDisplayName } from '@iconicedu/ui-web/lib/display-name';
+import { ThemedIconBadge } from '@iconicedu/ui-web/components/shared/themed-icon';
+import { MediaFilesPanel } from '@iconicedu/ui-web/components/messages/shared/media-files-panel';
+import { useMessagesState } from '@iconicedu/ui-web/components/messages/context/messages-state-provider';
 
 interface ChannelInfoPanelProps {
   intent: MessagesRightPanelIntent;

@@ -1,8 +1,8 @@
 import { useRef, useEffect, useImperativeHandle, forwardRef, useMemo } from 'react';
-import { MessageItem } from './message-item';
+import { MessageItem } from '@iconicedu/ui-web/components/messages/message-item';
 import type { MessageVM, ThreadVM } from '@iconicedu/shared-types';
-import { ScrollArea } from '../../ui/scroll-area';
-import { formatDateHeader } from '../../lib/message-utils';
+import { ScrollArea } from '@iconicedu/ui-web/ui/scroll-area';
+import { formatDateHeader } from '@iconicedu/ui-web/lib/message-utils';
 
 interface MessageListProps {
   messages: MessageVM[];

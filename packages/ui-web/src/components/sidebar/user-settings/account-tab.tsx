@@ -3,17 +3,17 @@ import { AsYouType, parsePhoneNumberFromString } from 'libphonenumber-js';
 import { BadgeCheck, Info, Mail, MessageCircle, Phone, X } from 'lucide-react';
 
 import type { UserAccountVM } from '@iconicedu/shared-types';
-import { Badge } from '../../../ui/badge';
-import { Button } from '../../../ui/button';
-import { Input } from '../../../ui/input';
-import { InputGroup, InputGroupAddon, InputGroupInput } from '../../../ui/input-group';
-import { Label } from '../../../ui/label';
-import { Switch } from '../../../ui/switch';
-import { Tooltip, TooltipContent, TooltipTrigger } from '../../../ui/tooltip';
-import { UserSettingsTabSection } from './components/user-settings-tab-section';
-import { Checkbox } from '../../../ui/checkbox';
-import { BorderBeam } from '../../../ui/border-beam';
-import { useSequentialHighlight } from './hooks/use-sequential-highlight';
+import { Badge } from '@iconicedu/ui-web/ui/badge';
+import { Button } from '@iconicedu/ui-web/ui/button';
+import { Input } from '@iconicedu/ui-web/ui/input';
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@iconicedu/ui-web/ui/input-group';
+import { Label } from '@iconicedu/ui-web/ui/label';
+import { Switch } from '@iconicedu/ui-web/ui/switch';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@iconicedu/ui-web/ui/tooltip';
+import { UserSettingsTabSection } from '@iconicedu/ui-web/components/sidebar/user-settings/components/user-settings-tab-section';
+import { Checkbox } from '@iconicedu/ui-web/ui/checkbox';
+import { BorderBeam } from '@iconicedu/ui-web/ui/border-beam';
+import { useSequentialHighlight } from '@iconicedu/ui-web/components/sidebar/user-settings/hooks/use-sequential-highlight';
 
 export type AccountSectionKey = 'email' | 'phone' | 'whatsapp';
 

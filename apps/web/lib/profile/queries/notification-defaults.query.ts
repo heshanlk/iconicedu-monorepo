@@ -2,7 +2,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 
 import type { NotificationPreferenceRow } from '@iconicedu/shared-types';
 
-import { NOTIFICATION_DEFAULTS_SELECT } from '../constants/selects';
+import { NOTIFICATION_DEFAULTS_SELECT } from '@iconicedu/web/lib/profile/constants/selects';
 
 export async function getNotificationDefaults(
   supabase: SupabaseClient,

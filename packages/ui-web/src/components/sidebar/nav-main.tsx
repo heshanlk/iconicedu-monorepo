@@ -8,8 +8,8 @@ import {
   SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
-} from '../../ui/sidebar';
-import { cn } from '../../lib/utils';
+} from '@iconicedu/ui-web/ui/sidebar';
+import { cn } from '@iconicedu/ui-web/lib/utils';
 
 export function NavMain({ items }: { items: SidebarNavItem[] }) {
   return (

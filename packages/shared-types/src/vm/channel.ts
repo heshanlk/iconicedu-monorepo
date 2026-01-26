@@ -5,10 +5,10 @@ import type {
   ThemeKey,
   UUID,
   IdsBaseVM,
-} from '../shared/shared';
-import type { UserProfileVM } from './profile';
-import type { ChannelReadStateVM, MessageVM } from './message';
-import type { MessagesRightPanelIntentKey } from './message';
+} from '@iconicedu/shared-types/shared/shared';
+import type { UserProfileVM } from '@iconicedu/shared-types/vm/profile';
+import type { ChannelReadStateVM, MessageVM } from '@iconicedu/shared-types/vm/message';
+import type { MessagesRightPanelIntentKey } from '@iconicedu/shared-types/vm/message';
 
 export type ChannelKind = 'channel' | 'dm' | 'group_dm';
 export type ChannelPurpose = 'learning-space' | 'general' | 'support' | 'announcements';

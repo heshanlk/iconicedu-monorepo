@@ -1,15 +1,15 @@
 'use client';
 
 import { useState, useRef, useCallback, memo, type KeyboardEvent } from 'react';
-import { Button } from '../../ui/button';
-import { Textarea } from '../../ui/textarea';
+import { Button } from '@iconicedu/ui-web/ui/button';
+import { Textarea } from '@iconicedu/ui-web/ui/textarea';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '../../ui/tooltip';
-import { EmojiPicker } from './emoji-picker';
+} from '@iconicedu/ui-web/ui/tooltip';
+import { EmojiPicker } from '@iconicedu/ui-web/components/messages/emoji-picker';
 import {
   Bold,
   Italic,

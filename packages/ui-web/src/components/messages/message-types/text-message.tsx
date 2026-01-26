@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import type { TextMessageVM as TextMessageType } from '@iconicedu/shared-types';
-import { MessageBase, type MessageBaseProps } from '../message-base';
+import { MessageBase, type MessageBaseProps } from '@iconicedu/ui-web/components/messages/message-base';
 
 interface TextMessageProps extends Omit<MessageBaseProps, 'message' | 'children'> {
   message: TextMessageType;

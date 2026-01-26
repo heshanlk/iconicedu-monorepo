@@ -9,11 +9,11 @@ import {
   getTimeSlots,
   timeToMinutes,
   getEventLayout,
-} from '../../lib/class-schedule-utils';
-import { EventCard } from './event-card';
+} from '@iconicedu/ui-web/lib/class-schedule-utils';
+import { EventCard } from '@iconicedu/ui-web/components/class-schedule/event-card';
 import { cn } from '@iconicedu/ui-web/lib/utils';
 import { useEffect, useRef } from 'react';
-import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
+import { Popover, PopoverContent, PopoverTrigger } from '@iconicedu/ui-web/ui/popover';
 
 interface WeekViewProps {
   currentDate: Date;

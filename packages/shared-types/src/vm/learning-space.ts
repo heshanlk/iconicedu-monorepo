@@ -1,7 +1,7 @@
-import type { IdsBaseVM, ISODateTime, UUID } from '../shared/shared';
-import type { ChannelVM } from './channel';
-import type { ClassScheduleVM } from './class-schedule';
-import type { UserProfileVM } from './profile';
+import type { IdsBaseVM, ISODateTime, UUID } from '@iconicedu/shared-types/shared/shared';
+import type { ChannelVM } from '@iconicedu/shared-types/vm/channel';
+import type { ClassScheduleVM } from '@iconicedu/shared-types/vm/class-schedule';
+import type { UserProfileVM } from '@iconicedu/shared-types/vm/profile';
 
 export type LearningSpaceKindVM = 'one_on_one' | 'small_group' | 'large_class';
 export type LearningSpaceStatusVM = 'active' | 'archived' | 'completed' | 'paused';

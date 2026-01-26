@@ -2,12 +2,12 @@
 
 import type { ReactNode } from 'react';
 import { X } from 'lucide-react';
-import { useIsMobile } from '../../hooks/use-mobile';
-import { Button } from '../../ui/button';
-import { Card, CardContent, CardHeader } from '../../ui/card';
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '../../ui/drawer';
-import { ScrollArea } from '../../ui/scroll-area';
-import { cn } from '../../lib/utils';
+import { useIsMobile } from '@iconicedu/ui-web/hooks/use-mobile';
+import { Button } from '@iconicedu/ui-web/ui/button';
+import { Card, CardContent, CardHeader } from '@iconicedu/ui-web/ui/card';
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@iconicedu/ui-web/ui/drawer';
+import { ScrollArea } from '@iconicedu/ui-web/ui/scroll-area';
+import { cn } from '@iconicedu/ui-web/lib/utils';
 
 interface MessagesSidebarProps {
   title: string;

@@ -17,7 +17,7 @@ import {
   EDUCATOR_GRADE_LEVELS_SELECT,
   EDUCATOR_PROFILE_SELECT,
   EDUCATOR_SUBJECTS_SELECT,
-} from '../constants/selects';
+} from '@iconicedu/web/lib/profile/constants/selects';
 
 export async function getEducatorProfile(
   supabase: SupabaseClient,

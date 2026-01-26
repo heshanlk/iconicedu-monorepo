@@ -1,7 +1,7 @@
 'use client';
 
 import { memo } from 'react';
-import { Badge } from '../../../ui/badge';
+import { Badge } from '@iconicedu/ui-web/ui/badge';
 import { EyeOff } from 'lucide-react';
 import type { MessageVM } from '@iconicedu/shared-types';
 

@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { ClassesService } from './classes.service';
+import { ClassesService } from '@iconicedu/api/modules/classes/classes.service';
 
 @Controller('classes')
 export class ClassesController {

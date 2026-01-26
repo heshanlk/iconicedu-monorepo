@@ -6,9 +6,9 @@ import { cn } from '@iconicedu/ui-web/lib/utils';
 import {
   formatEventTime,
   isEventLive,
-} from '../../lib/class-schedule-utils';
-import { EventDialog } from './event-dialog';
-import { EventLiveIndicator } from './event-live-indicator';
+} from '@iconicedu/ui-web/lib/class-schedule-utils';
+import { EventDialog } from '@iconicedu/ui-web/components/class-schedule/event-dialog';
+import { EventLiveIndicator } from '@iconicedu/ui-web/components/class-schedule/event-live-indicator';
 
 interface EventCardProps {
   event: ClassScheduleVM;

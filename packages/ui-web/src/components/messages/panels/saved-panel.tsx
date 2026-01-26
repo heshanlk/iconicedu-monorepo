@@ -1,11 +1,11 @@
 'use client';
 
 import { useMemo, memo } from 'react';
-import { ScrollArea } from '../../../ui/scroll-area';
-import { SavedMessagePreview } from '../saved-message-preview';
+import { ScrollArea } from '@iconicedu/ui-web/ui/scroll-area';
+import { SavedMessagePreview } from '@iconicedu/ui-web/components/messages/saved-message-preview';
 import { Bookmark } from 'lucide-react';
 import type { MessageVM, MessagesRightPanelIntent } from '@iconicedu/shared-types';
-import { useMessagesState } from '../context/messages-state-provider';
+import { useMessagesState } from '@iconicedu/ui-web/components/messages/context/messages-state-provider';
 
 interface SavedPanelProps {
   intent: MessagesRightPanelIntent;

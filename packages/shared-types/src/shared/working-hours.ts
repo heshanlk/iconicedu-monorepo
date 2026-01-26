@@ -1,5 +1,5 @@
-import type { DayAvailability, DayKey } from './availability';
-import { EMPTY_DAY_AVAILABILITY } from './availability';
+import type { DayAvailability, DayKey } from '@iconicedu/shared-types/shared/availability';
+import { EMPTY_DAY_AVAILABILITY } from '@iconicedu/shared-types/shared/availability';
 
 export type Weekday =
   | 'monday'

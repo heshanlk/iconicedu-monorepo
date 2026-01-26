@@ -2,7 +2,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 
 import type { ProfilePresenceRow } from '@iconicedu/shared-types';
 
-import { PRESENCE_SELECT } from '../constants/selects';
+import { PRESENCE_SELECT } from '@iconicedu/web/lib/profile/constants/selects';
 
 export async function getPresence(
   supabase: SupabaseClient,
