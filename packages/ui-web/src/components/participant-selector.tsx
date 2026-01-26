@@ -94,13 +94,16 @@ export function ParticipantSelector({
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="h-12 w-full justify-start gap-2 border-2 border-primary/50 bg-background px-4 hover:bg-background"
+            className="h-10 w-full justify-start gap-2 border-2 bg-background px-4 hover:bg-background"
           >
             <UserPlus className="size-5 text-muted-foreground" />
             <span className="text-muted-foreground">{placeholder}</span>
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+        <PopoverContent
+          className="w-[var(--radix-popover-trigger-width)] p-0"
+          align="start"
+        >
           <Command>
             <CommandInput placeholder="Search by name" />
             <CommandList>

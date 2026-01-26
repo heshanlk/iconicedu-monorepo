@@ -191,7 +191,7 @@ export function LearningSpaceFormDialog() {
                 className="flex w-full flex-1 flex-col gap-4 px-6 pb-6 pt-2 min-h-0"
               >
                 <FieldSet>
-                  <FieldLegend variant="label">Basics</FieldLegend>
+                  <FieldLegend>Basics</FieldLegend>
                   <FieldDescription>
                     Define the core details, subject, icon, and kind for this learning
                     space.
@@ -323,7 +323,7 @@ export function LearningSpaceFormDialog() {
                 </FieldSet>
                 <FieldSeparator />
                 <FieldSet>
-                  <FieldLegend variant="label">Participants</FieldLegend>
+                  <FieldLegend>Participants</FieldLegend>
                   <FieldDescription>
                     Select families and educators with grouped chips for quick selection.
                   </FieldDescription>
@@ -349,7 +349,7 @@ export function LearningSpaceFormDialog() {
                 </FieldSet>
                 <FieldSeparator />
                 <FieldSet>
-                  <FieldLegend variant="label">Channels</FieldLegend>
+                  <FieldLegend>Channels</FieldLegend>
                   <FieldDescription>
                     Connect the learning space to existing channels.
                   </FieldDescription>
@@ -381,7 +381,7 @@ export function LearningSpaceFormDialog() {
                 </FieldSet>
                 <FieldSeparator />
                 <FieldSet>
-                  <FieldLegend variant="label">Schedule</FieldLegend>
+                  <FieldLegend>Schedule</FieldLegend>
                   <FieldDescription>
                     Configure the recurring schedule for this learning space.
                   </FieldDescription>
