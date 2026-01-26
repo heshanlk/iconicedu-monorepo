@@ -16,6 +16,7 @@ import {
   CommandList,
 } from '../ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import { ScrollArea } from '../ui/scroll-area';
 import type { UserProfileVM } from '@iconicedu/shared-types';
 
 const ROLE_LABELS: Record<UserProfileVM['kind'], string> = {
@@ -106,50 +107,53 @@ export function ParticipantSelector({
         >
           <Command>
             <CommandInput placeholder="Search by name" />
-            <CommandList>
-              <CommandEmpty>No users found.</CommandEmpty>
-              {groupedUsers.map((group) => (
-                <CommandGroup key={group.kind} heading={ROLE_LABELS[group.kind]}>
-                  {group.users.map((user) => {
-                    const displayName = getDisplayName(user);
-                    const avatarUrl = user.profile.avatar?.url ?? undefined;
-                    const secondaryText = user.profile.bio || ROLE_LABELS[user.kind];
-                    return (
-                      <CommandItem
-                        key={user.ids.id}
-                        value={`${displayName} ${secondaryText}`}
-                        onSelect={() => {
-                          onUserAdd(user);
-                          setOpen(false);
-                        }}
-                        className="flex items-center gap-3 py-3"
-                      >
-                        <Avatar className="size-10">
-                          <AvatarImage src={avatarUrl} alt={displayName} />
-                          <AvatarFallback className="text-sm">
-                            {getInitials(displayName)}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex min-w-0 flex-1 flex-col">
-                          <span className="truncate font-medium text-foreground">
-                            {displayName}
-                          </span>
-                          <span className="truncate text-sm text-muted-foreground">
-                            {secondaryText}
-                          </span>
-                        </div>
-                        <Badge
-                          variant="outline"
-                          className={cn('ml-auto text-xs', ROLE_STYLES[user.kind])}
+            <ScrollArea className="h-72">
+              <CommandList className="max-h-none overflow-visible">
+                <CommandEmpty>No users found.</CommandEmpty>
+                {groupedUsers.map((group) => (
+                  <CommandGroup key={group.kind} heading={ROLE_LABELS[group.kind]}>
+                    {group.users.map((user) => {
+                      const displayName = getDisplayName(user);
+                      const avatarUrl = user.profile.avatar?.url ?? undefined;
+                      const secondaryText =
+                        user.profile.bio || ROLE_LABELS[user.kind];
+                      return (
+                        <CommandItem
+                          key={user.ids.id}
+                          value={`${displayName} ${secondaryText}`}
+                          onSelect={() => {
+                            onUserAdd(user);
+                            setOpen(false);
+                          }}
+                          className="flex items-center gap-3 py-3"
                         >
-                          {ROLE_LABELS[user.kind]}
-                        </Badge>
-                      </CommandItem>
-                    );
-                  })}
-                </CommandGroup>
-              ))}
-            </CommandList>
+                          <Avatar className="size-10">
+                            <AvatarImage src={avatarUrl} alt={displayName} />
+                            <AvatarFallback className="text-sm">
+                              {getInitials(displayName)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex min-w-0 flex-1 flex-col">
+                            <span className="truncate font-medium text-foreground">
+                              {displayName}
+                            </span>
+                            <span className="truncate text-sm text-muted-foreground">
+                              {secondaryText}
+                            </span>
+                          </div>
+                          <Badge
+                            variant="outline"
+                            className={cn('ml-auto text-xs', ROLE_STYLES[user.kind])}
+                          >
+                            {ROLE_LABELS[user.kind]}
+                          </Badge>
+                        </CommandItem>
+                      );
+                    })}
+                  </CommandGroup>
+                ))}
+              </CommandList>
+            </ScrollArea>
           </Command>
         </PopoverContent>
       </Popover>

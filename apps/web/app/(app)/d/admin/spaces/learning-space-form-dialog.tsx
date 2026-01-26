@@ -51,90 +51,13 @@ const KIND_OPTIONS = [
 
 const SUBJECT_OPTIONS = ['MATH', 'SCIENCE', 'ELA', 'CHESS'];
 
-const PARTICIPANT_USERS: UserProfileVM[] = [
-  {
-    kind: 'guardian',
-    ids: {
-      id: 'profile-guardian-1',
-      orgId: 'org-1',
-      accountId: 'account-guardian-1',
-    },
-    profile: {
-      displayName: 'Jordan Rivera',
-      firstName: 'Jordan',
-      lastName: 'Rivera',
-      bio: 'Parent of Leila Rivera',
-      avatar: {
-        source: 'seed',
-        seed: 'jordan-rivera',
-        url: null,
-        updatedAt: '2025-01-01T00:00:00.000Z',
-      },
-    },
-    prefs: {},
-    meta: {
-      createdAt: '2025-01-01T00:00:00.000Z',
-      updatedAt: '2025-01-01T00:00:00.000Z',
-    },
-    status: 'active',
-    joinedDate: '2025-01-01T00:00:00.000Z',
-  },
-  {
-    kind: 'child',
-    ids: {
-      id: 'profile-child-1',
-      orgId: 'org-1',
-      accountId: 'account-child-1',
-    },
-    profile: {
-      displayName: 'Leila Rivera',
-      firstName: 'Leila',
-      lastName: 'Rivera',
-      bio: 'Grade 4',
-      avatar: {
-        source: 'seed',
-        seed: 'leila-rivera',
-        url: null,
-        updatedAt: '2025-01-01T00:00:00.000Z',
-      },
-    },
-    prefs: {},
-    meta: {
-      createdAt: '2025-01-01T00:00:00.000Z',
-      updatedAt: '2025-01-01T00:00:00.000Z',
-    },
-    status: 'active',
-  },
-  {
-    kind: 'educator',
-    ids: {
-      id: 'profile-educator-1',
-      orgId: 'org-1',
-      accountId: 'account-educator-1',
-    },
-    profile: {
-      displayName: 'Sophie Lee',
-      firstName: 'Sophie',
-      lastName: 'Lee',
-      bio: 'Math educator',
-      avatar: {
-        source: 'seed',
-        seed: 'sophie-lee',
-        url: null,
-        updatedAt: '2025-01-01T00:00:00.000Z',
-      },
-    },
-    prefs: {},
-    meta: {
-      createdAt: '2025-01-01T00:00:00.000Z',
-      updatedAt: '2025-01-01T00:00:00.000Z',
-    },
-    status: 'active',
-    joinedDate: '2025-01-01T00:00:00.000Z',
-  },
-] as const;
+type LearningSpaceFormDialogProps = {
+  participantOptions?: UserProfileVM[];
+};
 
-export function LearningSpaceFormDialog() {
+export function LearningSpaceFormDialog({
+  participantOptions = [],
+}: LearningSpaceFormDialogProps) {
   const [open, setOpen] = React.useState(false);
   const [kind, setKind] = React.useState(KIND_OPTIONS[0].value);
   const [title, setTitle] = React.useState('');
@@ -328,7 +251,7 @@ export function LearningSpaceFormDialog() {
                   </FieldDescription>
                   <FieldGroup>
                     <ParticipantSelector
-                      users={PARTICIPANT_USERS}
+                      users={participantOptions}
                       selectedUsers={participants}
                       onUserAdd={(user) =>
                         setParticipants((prev) =>

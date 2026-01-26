@@ -17,6 +17,7 @@ import { Loader2, RotateCw } from 'lucide-react';
 import type { LearningSpaceRow } from '../../../../lib/admin/learning-spaces';
 import { LearningSpacesTable } from './learning-spaces-table';
 import { LearningSpaceFormDialog } from './learning-space-form-dialog';
+import type { UserProfileVM } from '@iconicedu/shared-types';
 
 const PAGE_SIZES = [10, 25, 50];
 
@@ -31,11 +32,33 @@ export function LearningSpacesDashboard({ rows }: LearningSpacesDashboardProps) 
   const [pageIndex, setPageIndex] = React.useState(1);
   const [pageSize, setPageSize] = React.useState(PAGE_SIZES[0]);
   const [isPending, startTransition] = React.useTransition();
+  const [participantOptions, setParticipantOptions] = React.useState<UserProfileVM[]>([]);
   const refreshing = isPending;
+
+  const loadParticipants = React.useCallback(async () => {
+    try {
+      const response = await fetch('/d/admin/spaces/actions/participants', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      if (!response.ok) {
+        setParticipantOptions([]);
+        return;
+      }
+      const payload = (await response.json()) as { data?: UserProfileVM[] };
+      setParticipantOptions(payload.data ?? []);
+    } catch {
+      setParticipantOptions([]);
+    }
+  }, []);
 
   React.useEffect(() => {
     setPageIndex(1);
   }, [search, statusFilter, pageSize]);
+
+  React.useEffect(() => {
+    void loadParticipants();
+  }, [loadParticipants]);
 
   const normalizedSearch = search.trim().toLowerCase();
 
@@ -71,12 +94,15 @@ export function LearningSpacesDashboard({ rows }: LearningSpacesDashboardProps) 
 
   const handleRefresh = () => {
     startTransition(() => router.refresh());
+    void loadParticipants();
   };
 
   return (
     <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-4">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <LearningSpaceFormDialog />
+        <LearningSpaceFormDialog
+          participantOptions={participantOptions}
+        />
         <div className="flex flex-wrap items-center gap-3">
           <Input
             placeholder="Search title or subject"
