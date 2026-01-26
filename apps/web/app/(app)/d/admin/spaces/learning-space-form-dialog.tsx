@@ -32,6 +32,7 @@ import {
   toast,
   ResourceLinksEditor,
   ParticipantSelector,
+  RecurrenceForm,
 } from '@iconicedu/ui-web';
 import { Textarea } from '@iconicedu/ui-web/ui/textarea';
 import {
@@ -142,7 +143,6 @@ export function LearningSpaceFormDialog() {
   const [iconKey, setIconKey] = React.useState<LearningSpaceIconKey>(
     DEFAULT_LEARNING_SPACE_ICON_KEY,
   );
-  const [scheduleSeries, setScheduleSeries] = React.useState('');
   const [participants, setParticipants] = React.useState<UserProfileVM[]>([]);
   const [resources, setResources] = React.useState<LearningSpaceLinkVM[]>([]);
   const [isSubmitted, setIsSubmitted] = React.useState(false);
@@ -351,14 +351,7 @@ export function LearningSpaceFormDialog() {
                   <FieldDescription>
                     Configure the recurring schedule for this learning space.
                   </FieldDescription>
-                  <Field>
-                    <FieldLabel htmlFor="ls-schedule">Schedule series</FieldLabel>
-                    <Input
-                      id="ls-schedule"
-                      value={scheduleSeries}
-                      onChange={(event) => setScheduleSeries(event.target.value)}
-                    />
-                  </Field>
+                  <RecurrenceForm className="max-w-none" />
                 </FieldSet>
               </form>
               <ScrollBar orientation="vertical" className="right-2" />
