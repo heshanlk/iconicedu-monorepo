@@ -175,17 +175,19 @@ export function LearningSpacesTable({ rows, onEdit }: LearningSpacesTableProps) 
                     {row.participantDetails.map((participant) => (
                       <Tooltip key={participant.id}>
                         <TooltipTrigger asChild>
-                          <AvatarWithStatus
-                            name={participant.displayName}
-                            avatar={{
-                              source: participant.avatarUrl ? 'upload' : 'seed',
-                              url: participant.avatarUrl ?? null,
-                            }}
-                            themeKey={participant.themeKey ?? null}
-                            showStatus={false}
-                            sizeClassName="size-8"
-                            initialsLength={2}
-                          />
+                          <span className="inline-flex">
+                            <AvatarWithStatus
+                              name={participant.displayName}
+                              avatar={{
+                                source: participant.avatarUrl ? 'upload' : 'seed',
+                                url: participant.avatarUrl ?? null,
+                              }}
+                              themeKey={participant.themeKey ?? null}
+                              showStatus={false}
+                              sizeClassName="size-8"
+                              initialsLength={2}
+                            />
+                          </span>
                         </TooltipTrigger>
                         <TooltipContent>
                           <p className="text-xs font-medium">{participant.displayName}</p>
