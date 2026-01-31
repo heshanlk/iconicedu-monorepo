@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 import { replaceLearningSpaceLinks } from '@iconicedu/web/lib/admin/learning-space-links';
-import type { LearningSpaceResourcePayload } from '@iconicedu/web/lib/admin/learning-space-create';
+import type { LearningSpaceResourcePayload } from '@iconicedu/shared-types';
 
 type LearningSpaceLinksRequest = {
   learningSpaceId?: string;

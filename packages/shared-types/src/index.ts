@@ -18,3 +18,4 @@ export * from './vm/onboarding';
 export * from './vm/availability';
 export * from './rows';
 export * from './shared/grades';
+export * from './payloads/learning-space';

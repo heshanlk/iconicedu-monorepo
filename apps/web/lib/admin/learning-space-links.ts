@@ -4,7 +4,7 @@ import { createSupabaseServerClient } from '@iconicedu/web/lib/supabase/server';
 import { createSupabaseServiceClient } from '@iconicedu/web/lib/supabase/service';
 import { getAccountByAuthUserId } from '@iconicedu/web/lib/accounts/queries/accounts.query';
 import { getProfileByAccountId } from '@iconicedu/web/lib/profile/queries/profiles.query';
-import type { LearningSpaceResourcePayload } from '@iconicedu/web/lib/admin/learning-space-create';
+import type { LearningSpaceResourcePayload } from '@iconicedu/shared-types';
 
 export async function replaceLearningSpaceLinks(
   learningSpaceId: string,

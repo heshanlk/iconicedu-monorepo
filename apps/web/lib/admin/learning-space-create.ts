@@ -5,6 +5,16 @@ import { createSupabaseServerClient } from '@iconicedu/web/lib/supabase/server';
 import { createSupabaseServiceClient } from '@iconicedu/web/lib/supabase/service';
 import { getAccountByAuthUserId } from '@iconicedu/web/lib/accounts/queries/accounts.query';
 import { getProfileByAccountId } from '@iconicedu/web/lib/profile/queries/profiles.query';
+import type {
+  LearningSpaceCreatePayload,
+  LearningSpaceParticipantPayload,
+  LearningSpaceResourcePayload,
+  LearningSpaceScheduleExceptionPayload,
+  LearningSpaceScheduleOverridePayload,
+  LearningSpaceSchedulePayload,
+  LearningSpaceScheduleRulePayload,
+  LearningSpaceScheduleWeekdayTimePayload,
+} from '@iconicedu/shared-types';
 
 const DEFAULT_DURATION_MINUTES = 60;
 const DEFAULT_START_TIME = '09:00';
@@ -24,71 +34,7 @@ const WEEKDAY_INDEX: Record<WeekdayValue, number> = {
   SA: 6,
 };
 
-export type WeekdayValue = 'MO' | 'TU' | 'WE' | 'TH' | 'FR' | 'SA' | 'SU';
-
-export type ScheduleWeekdayTime = {
-  day: WeekdayValue;
-  time: string;
-};
-
-export type ScheduleRulePayload = {
-  frequency: string;
-  interval?: number | null;
-  byWeekday?: WeekdayValue[] | null;
-  weekdayTimes?: ScheduleWeekdayTime[] | null;
-  count?: number | null;
-  until?: string | null;
-  timezone?: string | null;
-};
-
-export type ScheduleExceptionPayload = {
-  date: string;
-  reason?: string | null;
-};
-
-export type ScheduleOverridePayload = {
-  originalDate: string;
-  newDate: string;
-  newTime?: string | null;
-  reason?: string | null;
-};
-
-export type SchedulePayload = {
-  startDate: string;
-  timezone: string;
-  rule: ScheduleRulePayload;
-  exceptions?: ScheduleExceptionPayload[] | null;
-  overrides?: ScheduleOverridePayload[] | null;
-};
-
-export type LearningSpaceParticipantPayload = {
-  profileId: string;
-  kind: string;
-  displayName: string;
-  avatarUrl?: string | null;
-  themeKey?: string | null;
-};
-
-export type LearningSpaceResourcePayload = {
-  label: string;
-  iconKey?: string | null;
-  url?: string | null;
-  status?: string | null;
-  hidden?: boolean | null;
-};
-
-export type LearningSpaceCreatePayload = {
-  basics: {
-    title: string;
-    kind: string;
-    iconKey?: string | null;
-    subject?: string | null;
-    description?: string | null;
-  };
-  participants: LearningSpaceParticipantPayload[];
-  resources?: LearningSpaceResourcePayload[] | null;
-  schedules?: SchedulePayload[] | null;
-};
+type WeekdayValue = LearningSpaceScheduleWeekdayTimePayload['day'];
 
 type CreateLearningSpaceResult = {
   learningSpaceId: string;
@@ -466,7 +412,7 @@ type ClassScheduleInsertPayload = {
   title: string;
   description: string | null;
   participants: LearningSpaceParticipantPayload[];
-  schedules: SchedulePayload[];
+  schedules: LearningSpaceSchedulePayload[];
 };
 
 type ExpandedSchedule = {
@@ -610,7 +556,7 @@ type ClassScheduleRecurrenceInsertPayload = {
   scheduleId: string;
   createdBy: string;
   createdAt: string;
-  rule: ScheduleRulePayload;
+  rule: LearningSpaceScheduleRulePayload;
   timezone: string;
   weekday?: WeekdayValue;
 };
@@ -650,7 +596,7 @@ async function insertClassScheduleRecurrence(
 type ClassScheduleRecurrenceExceptionsInsertPayload = {
   orgId: string;
   recurrenceId: string;
-  exceptions: ScheduleExceptionPayload[];
+  exceptions: LearningSpaceScheduleExceptionPayload[];
   time: string;
   createdBy: string;
   createdAt: string;
@@ -688,7 +634,7 @@ async function insertClassScheduleRecurrenceExceptions(
 type ClassScheduleRecurrenceOverridesInsertPayload = {
   orgId: string;
   recurrenceId: string;
-  overrides: ScheduleOverridePayload[];
+  overrides: LearningSpaceScheduleOverridePayload[];
   time: string;
   createdBy: string;
   createdAt: string;
@@ -734,7 +680,7 @@ async function insertClassScheduleRecurrenceOverrides(
   }
 }
 
-function expandSchedules(schedule: SchedulePayload): ExpandedSchedule[] {
+function expandSchedules(schedule: LearningSpaceSchedulePayload): ExpandedSchedule[] {
   const startDate = new Date(schedule.startDate);
   startDate.setHours(0, 0, 0, 0);
 
@@ -751,7 +697,9 @@ function expandSchedules(schedule: SchedulePayload): ExpandedSchedule[] {
   });
 }
 
-function normalizeWeekdayTimes(schedule: SchedulePayload): ScheduleWeekdayTime[] {
+function normalizeWeekdayTimes(
+  schedule: LearningSpaceSchedulePayload,
+): LearningSpaceScheduleWeekdayTimePayload[] {
   if (schedule.rule.weekdayTimes?.length) {
     return schedule.rule.weekdayTimes;
   }

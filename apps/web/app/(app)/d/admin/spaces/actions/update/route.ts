@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import {
   updateLearningSpaceFromPayload,
 } from '@iconicedu/web/lib/admin/learning-space-update';
-import type { LearningSpaceCreatePayload } from '@iconicedu/web/lib/admin/learning-space-create';
+import type { LearningSpaceCreatePayload } from '@iconicedu/shared-types';
 
 type UpdateLearningSpaceRequest = {
   learningSpaceId?: string;

@@ -43,8 +43,11 @@ import {
   type LearningSpaceIconKey,
 } from '@iconicedu/ui-web/lib/icons';
 import type { RecurrenceFormData } from '@iconicedu/ui-web/lib/recurrence-types';
-import type { LearningSpaceLinkVM, UserProfileVM } from '@iconicedu/shared-types';
-import type { LearningSpaceCreatePayload } from '@iconicedu/web/lib/admin/learning-space-create';
+import type {
+  LearningSpaceCreatePayload,
+  LearningSpaceLinkVM,
+  UserProfileVM,
+} from '@iconicedu/shared-types';
 
 const KIND_OPTIONS = [
   { value: 'one_on_one', label: 'One on one' },

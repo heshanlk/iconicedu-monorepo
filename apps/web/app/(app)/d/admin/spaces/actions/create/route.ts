@@ -1,9 +1,7 @@
 import { NextResponse } from 'next/server';
 
-import {
-  createLearningSpaceFromPayload,
-  type LearningSpaceCreatePayload,
-} from '@iconicedu/web/lib/admin/learning-space-create';
+import { createLearningSpaceFromPayload } from '@iconicedu/web/lib/admin/learning-space-create';
+import type { LearningSpaceCreatePayload } from '@iconicedu/shared-types';
 
 function isValidPayload(payload: LearningSpaceCreatePayload) {
   if (!payload.basics?.title?.trim()) return false;

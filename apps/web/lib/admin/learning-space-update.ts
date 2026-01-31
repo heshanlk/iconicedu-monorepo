@@ -5,12 +5,12 @@ import { createSupabaseServerClient } from '@iconicedu/web/lib/supabase/server';
 import { createSupabaseServiceClient } from '@iconicedu/web/lib/supabase/service';
 import { getAccountByAuthUserId } from '@iconicedu/web/lib/accounts/queries/accounts.query';
 import { getProfileByAccountId } from '@iconicedu/web/lib/profile/queries/profiles.query';
-import {
-  type LearningSpaceCreatePayload,
-  type LearningSpaceParticipantPayload,
-  type LearningSpaceResourcePayload,
-  insertClassSchedules,
-} from '@iconicedu/web/lib/admin/learning-space-create';
+import { insertClassSchedules } from '@iconicedu/web/lib/admin/learning-space-create';
+import type {
+  LearningSpaceCreatePayload,
+  LearningSpaceParticipantPayload,
+  LearningSpaceResourcePayload,
+} from '@iconicedu/shared-types';
 
 export async function updateLearningSpaceFromPayload(
   learningSpaceId: string,
