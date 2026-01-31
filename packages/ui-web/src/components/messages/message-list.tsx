@@ -154,21 +154,52 @@ MessageList.displayName = 'MessageList';
 function EmptyMessagesState() {
   return (
     <div className="relative flex min-h-[70vh] w-full flex-col items-center justify-center gap-4 px-6 text-center">
-      <div className="relative flex h-44 w-44 items-center justify-center">
-        <div className="absolute inset-0 rounded-full border border-border/50" />
-        <div className="absolute inset-[18px] rounded-full border border-border/40" />
-        <div className="absolute inset-[36px] rounded-full border border-border/30" />
-        <div className="absolute inset-[54px] rounded-full border border-border/20" />
-        <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl border border-border bg-card shadow-sm">
+      <div className="relative flex h-56 w-[360px] items-center justify-center">
+        <div className="absolute inset-0 rounded-full border border-border/35" />
+        <div className="absolute inset-[26px] rounded-full border border-border/30" />
+        <div className="absolute inset-[56px] rounded-full border border-border/25" />
+        <div className="absolute inset-[86px] rounded-full border border-border/20" />
+        <div className="absolute inset-[114px] rounded-full border border-border/15" />
+        <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl border border-border/70 bg-card shadow-sm">
           <Search className="h-6 w-6 text-muted-foreground" aria-hidden="true" />
         </div>
 
-        <OrbIcon className="-left-2 top-5" icon={Trophy} />
-        <OrbIcon className="right-2 top-4" icon={Medal} />
-        <OrbIcon className="-left-6 bottom-8" icon={BookOpenCheck} />
-        <OrbIcon className="right-1 bottom-4" icon={GraduationCap} />
-        <OrbIcon className="left-10 bottom-2" icon={Pencil} />
-        <OrbIcon className="right-12 bottom-12" icon={BookOpen} />
+        <OrbIcon
+          className="left-[36px] top-[18px]"
+          icon={Trophy}
+          tintClass="text-amber-400"
+          bgClass="bg-amber-50"
+        />
+        <OrbIcon
+          className="left-[20px] top-[110px]"
+          icon={BookOpenCheck}
+          tintClass="text-emerald-400"
+          bgClass="bg-emerald-50"
+        />
+        <OrbIcon
+          className="left-[92px] top-[86px]"
+          icon={Pencil}
+          tintClass="text-rose-400"
+          bgClass="bg-rose-50"
+        />
+        <OrbIcon
+          className="right-[86px] top-[24px]"
+          icon={Medal}
+          tintClass="text-indigo-400"
+          bgClass="bg-indigo-50"
+        />
+        <OrbIcon
+          className="right-[22px] top-[64px]"
+          icon={GraduationCap}
+          tintClass="text-sky-400"
+          bgClass="bg-sky-50"
+        />
+        <OrbIcon
+          className="right-[90px] top-[104px]"
+          icon={BookOpen}
+          tintClass="text-violet-400"
+          bgClass="bg-violet-50"
+        />
       </div>
 
       <div className="space-y-1">
@@ -184,15 +215,22 @@ function EmptyMessagesState() {
 function OrbIcon({
   className,
   icon: Icon,
+  tintClass,
+  bgClass,
 }: {
   className: string;
   icon: typeof Search;
+  tintClass?: string;
+  bgClass?: string;
 }) {
   return (
     <span
-      className={`absolute flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-card shadow-sm ${className}`}
+      className={`absolute flex h-10 w-10 items-center justify-center rounded-xl border border-border/70 shadow-sm ${bgClass ?? 'bg-card'} ${className}`}
     >
-      <Icon className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+      <Icon
+        className={tintClass ? `h-4 w-4 ${tintClass}` : 'h-4 w-4 text-muted-foreground'}
+        aria-hidden="true"
+      />
     </span>
   );
 }
