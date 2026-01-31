@@ -18,6 +18,7 @@ import {
   upsertProfileForAccount,
 } from '@iconicedu/web/lib/profile/queries/profiles.query';
 import { getFamilyInviteAdminClient } from '@iconicedu/web/lib/family/queries/invite.query';
+import { pickRandomThemeKey } from '@iconicedu/web/lib/profile/constants/theme';
 
 const INVITE_SCHEMA = z.object({
   email: z.string().trim().email(),
@@ -133,7 +134,7 @@ export async function inviteAdminUserAction(
     timezone: 'UTC',
     locale: 'en-US',
     status: 'invited',
-    uiThemeKey: 'teal',
+    uiThemeKey: parsed.profileKind === 'guardian' ? pickRandomThemeKey() : 'teal',
   });
 
   if (upsertError?.code === '42P10') {
@@ -147,7 +148,7 @@ export async function inviteAdminUserAction(
       timezone: 'UTC',
       locale: 'en-US',
       status: 'invited',
-      uiThemeKey: 'teal',
+      uiThemeKey: parsed.profileKind === 'guardian' ? pickRandomThemeKey() : 'teal',
     });
     if (insertError && insertError.code !== '23505') {
       throw insertError;

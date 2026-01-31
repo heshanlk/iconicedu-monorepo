@@ -3,6 +3,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { getFamilyInviteAdminClient } from '@iconicedu/web/lib/family/queries/invite.query';
 import { ORG_ID } from '@iconicedu/web/lib/data/ids';
+import { pickRandomThemeKey } from '@iconicedu/web/lib/profile/constants/theme';
 
 type EducatorSignupInput = {
   email: string;
@@ -56,6 +57,7 @@ export async function educatorSignupAction(input: EducatorSignupInput) {
     avatar_source: 'seed',
     avatar_url: null,
     avatar_seed: account.id,
+    ui_theme_key: pickRandomThemeKey(),
     timezone: 'UTC',
     locale: 'en-US',
     status: 'active',

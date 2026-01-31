@@ -9,6 +9,7 @@ import type {
   FamilyRelation,
 } from '@iconicedu/shared-types';
 import { getProfileByAccountId, upsertProfileForAccount } from '@iconicedu/web/lib/profile/queries/profiles.query';
+import { pickRandomThemeKey } from '@iconicedu/web/lib/profile/constants/theme';
 import {
   getAccountByEmail,
   insertInvitedAccount,
@@ -73,6 +74,7 @@ async function ensureInvitedAccountForRole(options: {
   );
   const displayName =
     options.kind === 'child' ? 'Invited child' : 'Invited guardian';
+  const uiThemeKey = options.kind === 'guardian' ? pickRandomThemeKey() : 'teal';
   if (existingAccount) {
     await upsertProfileForAccount(options.adminClient, {
       orgId: options.orgId,
@@ -85,7 +87,7 @@ async function ensureInvitedAccountForRole(options: {
       timezone: 'UTC',
       locale: 'en-US',
       status: 'invited',
-      uiThemeKey: 'teal',
+      uiThemeKey,
     });
     return existingAccount;
   }
@@ -114,7 +116,7 @@ async function ensureInvitedAccountForRole(options: {
     timezone: 'UTC',
     locale: 'en-US',
     status: 'invited',
-    uiThemeKey: 'teal',
+    uiThemeKey,
   });
 
   return insertedAccount;
