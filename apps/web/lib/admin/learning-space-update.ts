@@ -2,6 +2,7 @@ import { randomUUID } from 'crypto';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 import { createSupabaseServerClient } from '@iconicedu/web/lib/supabase/server';
+import { createSupabaseServiceClient } from '@iconicedu/web/lib/supabase/service';
 import { getAccountByAuthUserId } from '@iconicedu/web/lib/accounts/queries/accounts.query';
 import { getProfileByAccountId } from '@iconicedu/web/lib/profile/queries/profiles.query';
 import {
@@ -292,8 +293,10 @@ async function replaceLearningSpaceLinks(
   supabase: SupabaseClient,
   payload: ReplaceLinksPayload,
 ) {
+  const serviceClient = createSupabaseServiceClient();
+
   await ensureDeleted(
-    supabase
+    serviceClient
       .from('learning_space_links')
       .delete()
       .eq('org_id', payload.orgId)
@@ -329,9 +332,15 @@ async function replaceLearningSpaceLinks(
     updated_by: payload.createdBy,
   }));
 
-  const { error } = await supabase.from('learning_space_links').insert(rows);
+  const { data, error } = await serviceClient
+    .from('learning_space_links')
+    .insert(rows)
+    .select('id');
   if (error) {
     throw new Error(error.message);
+  }
+  if (!data?.length) {
+    throw new Error('Unable to insert learning space links.');
   }
 }
 

@@ -1,12 +1,21 @@
 import { createSupabaseServerClient } from '@iconicedu/web/lib/supabase/server';
 import { ORG_ID } from '@iconicedu/web/lib/data/ids';
-import type { LearningSpaceParticipantRow, LearningSpaceRow, ProfileRow } from '@iconicedu/shared-types';
+import type {
+  LearningSpaceChannelRow,
+  LearningSpaceParticipantRow,
+  LearningSpaceRow,
+  ProfileRow,
+} from '@iconicedu/shared-types';
 import { getLearningSpacesByOrg } from '@iconicedu/web/lib/spaces/queries/learning-spaces.query';
-import { getLearningSpaceParticipantsByLearningSpaceIds } from '@iconicedu/web/lib/spaces/queries/learning-space-relations.query';
+import {
+  getLearningSpaceChannelsByLearningSpaceIds,
+  getLearningSpaceParticipantsByLearningSpaceIds,
+} from '@iconicedu/web/lib/spaces/queries/learning-space-relations.query';
 import { getProfilesByIds } from '@iconicedu/web/lib/profile/queries/profiles.query';
 
 export type AdminLearningSpaceRow = LearningSpaceRow & {
   participantNames: string[];
+  primaryChannelId?: string | null;
 };
 
 function getProfileDisplayName(profile: ProfileRow) {
@@ -25,22 +34,28 @@ export async function getAdminLearningSpaceRows(): Promise<AdminLearningSpaceRow
   }
 
   const learningSpaceIds = data.map((row) => row.id);
-  const { data: participants } = await getLearningSpaceParticipantsByLearningSpaceIds(
-    supabase,
-    ORG_ID,
-    learningSpaceIds,
-  );
+  const [participantsResponse, channelsResponse] = await Promise.all([
+    getLearningSpaceParticipantsByLearningSpaceIds(supabase, ORG_ID, learningSpaceIds),
+    getLearningSpaceChannelsByLearningSpaceIds(supabase, ORG_ID, learningSpaceIds),
+  ]);
+  const participants = participantsResponse.data ?? [];
+  const channels = channelsResponse.data ?? [];
 
   const participantsBySpace = new Map<string, LearningSpaceParticipantRow[]>();
-  (participants ?? []).forEach((row) => {
+  participants.forEach((row) => {
     const bucket = participantsBySpace.get(row.learning_space_id) ?? [];
     bucket.push(row);
     participantsBySpace.set(row.learning_space_id, bucket);
   });
 
-  const profileIds = Array.from(
-    new Set((participants ?? []).map((row) => row.profile_id)),
-  );
+  const channelsBySpace = new Map<string, LearningSpaceChannelRow[]>();
+  channels.forEach((row) => {
+    const bucket = channelsBySpace.get(row.learning_space_id) ?? [];
+    bucket.push(row);
+    channelsBySpace.set(row.learning_space_id, bucket);
+  });
+
+  const profileIds = Array.from(new Set(participants.map((row) => row.profile_id)));
   const { data: profiles } = await getProfilesByIds(supabase, ORG_ID, profileIds);
   const profilesById = new Map(
     (profiles ?? []).map((profile) => [profile.id, profile]),
@@ -52,5 +67,7 @@ export async function getAdminLearningSpaceRows(): Promise<AdminLearningSpaceRow
       .map((participant) => profilesById.get(participant.profile_id))
       .filter((profile): profile is ProfileRow => Boolean(profile))
       .map(getProfileDisplayName),
+    primaryChannelId: (channelsBySpace.get(row.id) ?? []).find((item) => item.is_primary)
+      ?.channel_id ?? null,
   }));
 }

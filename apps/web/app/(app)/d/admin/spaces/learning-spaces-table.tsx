@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -135,7 +136,16 @@ export function LearningSpacesTable({ rows, onEdit }: LearningSpacesTableProps) 
                 className="border-b border-border/60 last:border-b-0"
               >
                 <TableCell>
-                  <p className="text-sm font-semibold">{row.title}</p>
+                  {row.primaryChannelId ? (
+                    <Link
+                      href={`/d/spaces/${row.primaryChannelId}`}
+                      className="text-sm font-semibold hover:underline"
+                    >
+                      {row.title}
+                    </Link>
+                  ) : (
+                    <p className="text-sm font-semibold">{row.title}</p>
+                  )}
                   {row.description && (
                     <p className="text-xs text-muted-foreground">{row.description}</p>
                   )}

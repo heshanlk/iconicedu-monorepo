@@ -218,6 +218,7 @@ export function RecurrenceForm({
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+    event.stopPropagation();
     setIsSubmitted(true);
     if (!startDate || !timezone || (frequency === 'weekly' && byWeekday.length === 0)) {
       return;

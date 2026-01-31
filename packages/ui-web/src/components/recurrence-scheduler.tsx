@@ -145,7 +145,7 @@ export function RecurrenceScheduler({
               <p className="mt-1 text-sm text-muted-foreground">
                 Create your first recurring schedule to get started.
               </p>
-              <Button className="mt-4" onClick={handleOpenCreate}>
+              <Button className="mt-4" onClick={handleOpenCreate} type="button">
                 <Plus className="mr-2 h-4 w-4" />
                 Create Schedule
               </Button>
@@ -204,7 +204,13 @@ function ScheduleCard({
             </CardDescription>
           </div>
           <div className="flex gap-1">
-            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onEdit}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8"
+              onClick={onEdit}
+              type="button"
+            >
               <Pencil className="h-4 w-4" />
               <span className="sr-only">Edit</span>
             </Button>
@@ -214,6 +220,7 @@ function ScheduleCard({
                   variant="ghost"
                   size="icon"
                   className="h-8 w-8 text-destructive hover:text-destructive"
+                  type="button"
                 >
                   <Trash2 className="h-4 w-4" />
                   <span className="sr-only">Delete</span>

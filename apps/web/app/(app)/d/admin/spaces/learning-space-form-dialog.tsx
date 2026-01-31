@@ -54,6 +54,35 @@ const KIND_OPTIONS = [
 
 const SUBJECT_OPTIONS = ['MATH', 'SCIENCE', 'ELA', 'CHESS'];
 
+const mapLinksToPayload = (links: LearningSpaceLinkVM[]) =>
+  links.map((resource) => ({
+    label: resource.label,
+    iconKey: resource.iconKey ?? null,
+    url: resource.url ?? null,
+    status: resource.status ?? null,
+    hidden: resource.hidden ?? null,
+  }));
+
+const mapParticipantsToPayload = (selected: UserProfileVM[]) =>
+  selected.map((participant) => ({
+    profileId: participant.ids.id,
+    kind: participant.kind,
+    displayName: participant.profile.displayName,
+    avatarUrl: participant.profile.avatar.url ?? null,
+    themeKey: participant.ui?.themeKey ?? null,
+  }));
+
+const mapSchedulesToPayload = (items: RecurrenceFormData[]) =>
+  items
+    .filter((schedule) => schedule.startDate)
+    .map((schedule) => ({
+      startDate: schedule.startDate?.toISOString() ?? '',
+      timezone: schedule.timezone,
+      rule: schedule.rule,
+      exceptions: schedule.exceptions,
+      overrides: schedule.overrides,
+    }));
+
 type LearningSpaceFormDialogProps = {
   participantOptions?: UserProfileVM[];
   mode?: 'create' | 'edit';
@@ -73,6 +102,17 @@ type LearningSpaceFormDialogProps = {
     schedules: RecurrenceFormData[];
   } | null;
   onSuccess?: () => void;
+};
+
+type LearningSpaceFormState = {
+  kind: string;
+  title: string;
+  subject: string;
+  description: string;
+  iconKey: LearningSpaceIconKey;
+  participants: UserProfileVM[];
+  resources: LearningSpaceLinkVM[];
+  schedules: RecurrenceFormData[];
 };
 
 export function LearningSpaceFormDialog({
@@ -97,23 +137,27 @@ export function LearningSpaceFormDialog({
     },
     [isControlled, onOpenChange],
   );
-  const [kind, setKind] = React.useState(KIND_OPTIONS[0].value);
-  const [title, setTitle] = React.useState('');
-  const [subject, setSubject] = React.useState('');
-  const [description, setDescription] = React.useState('');
-  const [iconKey, setIconKey] = React.useState<LearningSpaceIconKey>(
-    DEFAULT_LEARNING_SPACE_ICON_KEY,
+  const initialState = React.useMemo<LearningSpaceFormState>(
+    () => ({
+      kind: KIND_OPTIONS[0].value,
+      title: '',
+      subject: '',
+      description: '',
+      iconKey: DEFAULT_LEARNING_SPACE_ICON_KEY,
+      participants: [],
+      resources: [],
+      schedules: [],
+    }),
+    [],
   );
-  const [participants, setParticipants] = React.useState<UserProfileVM[]>([]);
-  const [resources, setResources] = React.useState<LearningSpaceLinkVM[]>([]);
-  const [schedules, setSchedules] = React.useState<RecurrenceFormData[]>([]);
+  const [formState, setFormState] = React.useState<LearningSpaceFormState>(initialState);
   const [editingId, setEditingId] = React.useState<string | null>(null);
   const [isSubmitted, setIsSubmitted] = React.useState(false);
   const [isSaving, setIsSaving] = React.useState(false);
-  const iconInvalid = isSubmitted && !iconKey;
-  const titleInvalid = isSubmitted && !title.trim();
-  const kindInvalid = isSubmitted && !kind;
-  const participantsInvalid = isSubmitted && participants.length === 0;
+  const iconInvalid = isSubmitted && !formState.iconKey;
+  const titleInvalid = isSubmitted && !formState.title.trim();
+  const kindInvalid = isSubmitted && !formState.kind;
+  const participantsInvalid = isSubmitted && formState.participants.length === 0;
 
   React.useEffect(() => {
     if (!dialogOpen) {
@@ -121,72 +165,61 @@ export function LearningSpaceFormDialog({
     }
     if (mode === 'edit' && initialData) {
       setEditingId(initialData.ids.id);
-      setKind(initialData.basics.kind);
-      setTitle(initialData.basics.title);
-      setSubject(initialData.basics.subject ?? '');
-      setDescription(initialData.basics.description ?? '');
-      setIconKey(
-        (initialData.basics.iconKey ?? DEFAULT_LEARNING_SPACE_ICON_KEY) as LearningSpaceIconKey,
-      );
-      setParticipants(initialData.participants ?? []);
-      setResources(initialData.resources ?? []);
-      setSchedules(initialData.schedules ?? []);
+      setFormState({
+        kind: initialData.basics.kind,
+        title: initialData.basics.title,
+        subject: initialData.basics.subject ?? '',
+        description: initialData.basics.description ?? '',
+        iconKey:
+          (initialData.basics.iconKey ?? DEFAULT_LEARNING_SPACE_ICON_KEY) as LearningSpaceIconKey,
+        participants: initialData.participants ?? [],
+        resources: initialData.resources ?? [],
+        schedules: initialData.schedules ?? [],
+      });
+      setIsSubmitted(false);
+      return;
+    }
+    if (mode === 'create' && dialogOpen) {
+      setFormState(initialState);
+      setEditingId(null);
       setIsSubmitted(false);
     }
-  }, [dialogOpen, initialData, mode]);
+  }, [dialogOpen, initialData, mode, initialState]);
 
   const resetForm = () => {
-    setKind(KIND_OPTIONS[0].value);
-    setTitle('');
-    setSubject('');
-    setDescription('');
-    setIconKey(DEFAULT_LEARNING_SPACE_ICON_KEY);
-    setParticipants([]);
-    setResources([]);
-    setSchedules([]);
+    setFormState(initialState);
     setEditingId(null);
     setIsSubmitted(false);
+  };
+
+  const updateFormState = (updates: Partial<LearningSpaceFormState>) => {
+    setFormState((prev) => ({ ...prev, ...updates }));
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsSubmitted(true);
-    if (!iconKey || !title.trim() || !kind || participants.length === 0) {
+    if (
+      !formState.iconKey ||
+      !formState.title.trim() ||
+      !formState.kind ||
+      formState.participants.length === 0
+    ) {
       toast.error('Please fill in all required fields.');
       return;
     }
 
     const payload: LearningSpaceCreatePayload = {
       basics: {
-        title: title.trim(),
-        kind,
-        iconKey,
-        subject: subject || null,
-        description: description.trim() || null,
+        title: formState.title.trim(),
+        kind: formState.kind,
+        iconKey: formState.iconKey,
+        subject: formState.subject || null,
+        description: formState.description.trim() || null,
       },
-      participants: participants.map((participant) => ({
-        profileId: participant.ids.id,
-        kind: participant.kind,
-        displayName: participant.profile.displayName,
-        avatarUrl: participant.profile.avatar.url ?? null,
-        themeKey: participant.ui?.themeKey ?? null,
-      })),
-      resources: resources.map((resource) => ({
-        label: resource.label,
-        iconKey: resource.iconKey ?? null,
-        url: resource.url ?? null,
-        status: resource.status ?? null,
-        hidden: resource.hidden ?? null,
-      })),
-      schedules: schedules
-        .filter((schedule) => schedule.startDate)
-        .map((schedule) => ({
-          startDate: schedule.startDate?.toISOString() ?? '',
-          timezone: schedule.timezone,
-          rule: schedule.rule,
-          exceptions: schedule.exceptions,
-          overrides: schedule.overrides,
-        })),
+      participants: mapParticipantsToPayload(formState.participants),
+      resources: mapLinksToPayload(formState.resources),
+      schedules: mapSchedulesToPayload(formState.schedules),
     };
 
     setIsSaving(true);
@@ -202,7 +235,11 @@ export function LearningSpaceFormDialog({
         headers: { 'Content-Type': 'application/json' },
         body,
       });
-      const result = (await response.json()) as { success?: boolean; message?: string };
+      const result = (await response.json()) as {
+        success?: boolean;
+        message?: string;
+        data?: { learningSpaceId?: string };
+      };
       if (!response.ok || !result.success) {
         toast.error(
           result.message ??
@@ -270,9 +307,9 @@ export function LearningSpaceFormDialog({
                       </FieldLabel>
                       <Select
                         id="ls-icon"
-                        value={iconKey}
+                        value={formState.iconKey}
                         onValueChange={(value) =>
-                          setIconKey(value as LearningSpaceIconKey)
+                          updateFormState({ iconKey: value as LearningSpaceIconKey })
                         }
                       >
                         <SelectTrigger
@@ -309,8 +346,8 @@ export function LearningSpaceFormDialog({
                       </FieldLabel>
                       <Input
                         id="ls-title"
-                        value={title}
-                        onChange={(event) => setTitle(event.target.value)}
+                        value={formState.title}
+                        onChange={(event) => updateFormState({ title: event.target.value })}
                         required
                         aria-invalid={titleInvalid}
                       />
@@ -326,8 +363,8 @@ export function LearningSpaceFormDialog({
                       <FieldLabel htmlFor="ls-subject">Subject</FieldLabel>
                       <Select
                         id="ls-subject"
-                        value={subject}
-                        onValueChange={(value) => setSubject(value)}
+                        value={formState.subject}
+                        onValueChange={(value) => updateFormState({ subject: value })}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Select subject" />
@@ -350,8 +387,8 @@ export function LearningSpaceFormDialog({
                       </FieldLabel>
                       <Select
                         id="ls-kind"
-                        value={kind}
-                        onValueChange={(value) => setKind(value)}
+                        value={formState.kind}
+                        onValueChange={(value) => updateFormState({ kind: value })}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Select kind" />
@@ -378,15 +415,18 @@ export function LearningSpaceFormDialog({
                     <FieldLabel htmlFor="ls-description">Description</FieldLabel>
                     <Textarea
                       id="ls-description"
-                      value={description}
-                      onChange={(event) => setDescription(event.target.value)}
+                      value={formState.description}
+                      onChange={(event) => updateFormState({ description: event.target.value })}
                       rows={3}
                     />
                   </Field>
                 </FieldSet>
                 <FieldSeparator />
                 <FieldSet>
-                  <ResourceLinksEditor links={resources} onLinksChange={setResources} />
+                  <ResourceLinksEditor
+                    links={formState.resources}
+                    onLinksChange={(nextLinks) => updateFormState({ resources: nextLinks })}
+                  />
                 </FieldSet>
                 <FieldSeparator />
                 <FieldSet data-invalid={participantsInvalid}>
@@ -399,18 +439,22 @@ export function LearningSpaceFormDialog({
                   <FieldGroup>
                     <ParticipantSelector
                       users={participantOptions}
-                      selectedUsers={participants}
+                      selectedUsers={formState.participants}
                       onUserAdd={(user) =>
-                        setParticipants((prev) =>
-                          prev.some((item) => item.ids.id === user.ids.id)
-                            ? prev
-                            : [...prev, user],
-                        )
+                        updateFormState({
+                          participants: formState.participants.some(
+                            (item) => item.ids.id === user.ids.id,
+                          )
+                            ? formState.participants
+                            : [...formState.participants, user],
+                        })
                       }
                       onUserRemove={(user) =>
-                        setParticipants((prev) =>
-                          prev.filter((item) => item.ids.id !== user.ids.id),
-                        )
+                        updateFormState({
+                          participants: formState.participants.filter(
+                            (item) => item.ids.id !== user.ids.id,
+                          ),
+                        })
                       }
                       placeholder="Add participant"
                     />
@@ -426,8 +470,10 @@ export function LearningSpaceFormDialog({
                   <FieldLegend>Schedule</FieldLegend>
                   <RecurrenceScheduler
                     className="max-w-none"
-                    schedules={schedules}
-                    onSchedulesChange={setSchedules}
+                    schedules={formState.schedules}
+                    onSchedulesChange={(nextSchedules) =>
+                      updateFormState({ schedules: nextSchedules })
+                    }
                   />
                 </FieldSet>
               </form>

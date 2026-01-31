@@ -2,6 +2,7 @@ import { randomUUID } from 'crypto';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 import { createSupabaseServerClient } from '@iconicedu/web/lib/supabase/server';
+import { createSupabaseServiceClient } from '@iconicedu/web/lib/supabase/service';
 import { getAccountByAuthUserId } from '@iconicedu/web/lib/accounts/queries/accounts.query';
 import { getProfileByAccountId } from '@iconicedu/web/lib/profile/queries/profiles.query';
 
@@ -443,9 +444,16 @@ async function insertLearningSpaceLinks(
     updated_by: payload.createdBy,
   }));
 
-  const { error } = await supabase.from('learning_space_links').insert(rows);
+  const serviceClient = createSupabaseServiceClient();
+  const { data, error } = await serviceClient
+    .from('learning_space_links')
+    .insert(rows)
+    .select('id');
   if (error) {
     throw new Error(error.message);
+  }
+  if (!data?.length) {
+    throw new Error('Unable to insert learning space links.');
   }
 }
 
