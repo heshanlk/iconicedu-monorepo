@@ -37,6 +37,11 @@ export const PROFILE_SUMMARY_SELECT = [
   'display_name',
   'first_name',
   'last_name',
+  'avatar_source',
+  'avatar_url',
+  'avatar_seed',
+  'avatar_updated_at',
+  'ui_theme_key',
 ].join(',');
 
 export const NOTIFICATION_DEFAULTS_SELECT = 'pref_key, channels, muted';

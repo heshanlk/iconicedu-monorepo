@@ -12,6 +12,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  AvatarGroup,
   Badge,
   Button,
   DropdownMenu,
@@ -27,6 +28,12 @@ import {
   toast,
 } from '@iconicedu/ui-web';
 import { Archive, MoreHorizontal, Pencil, Trash2, ArchiveRestore } from 'lucide-react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@iconicedu/ui-web/ui/tooltip';
+import { AvatarWithStatus } from '@iconicedu/ui-web/components/shared/avatar-with-status';
 
 import type { AdminLearningSpaceRow } from '@iconicedu/web/lib/admin/learning-spaces';
 
@@ -152,11 +159,37 @@ export function LearningSpacesTable({ rows, onEdit }: LearningSpacesTableProps) 
                   )}
                 </TableCell>
                 <TableCell>
-                  <p className="text-sm text-muted-foreground">
-                    {row.participantNames.length
-                      ? row.participantNames.join(', ')
-                      : '—'}
-                  </p>
+                  {row.participantDetails.length ? (
+                    <AvatarGroup className="justify-start">
+                      {row.participantDetails.map((participant) => (
+                        <Tooltip key={participant.id}>
+                          <TooltipTrigger asChild>
+                            <AvatarWithStatus
+                              name={participant.displayName}
+                              avatar={{
+                                source: participant.avatarUrl ? 'upload' : 'seed',
+                                url: participant.avatarUrl ?? null,
+                              }}
+                              themeKey={participant.themeKey ?? null}
+                              showStatus={false}
+                              sizeClassName="size-8"
+                              initialsLength={2}
+                            />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p className="text-xs font-medium">
+                              {participant.displayName}
+                            </p>
+                            <p className="text-xs text-muted-foreground capitalize">
+                              {participant.kind}
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
+                      ))}
+                    </AvatarGroup>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">—</p>
+                  )}
                 </TableCell>
                 <TableCell>
                   {row.scheduleItems?.length ? (

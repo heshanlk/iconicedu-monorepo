@@ -17,6 +17,13 @@ import { getProfilesByIds } from '@iconicedu/web/lib/profile/queries/profiles.qu
 
 export type AdminLearningSpaceRow = LearningSpaceRow & {
   participantNames: string[];
+  participantDetails: {
+    id: string;
+    displayName: string;
+    kind: string;
+    avatarUrl?: string | null;
+    themeKey?: string | null;
+  }[];
   primaryChannelId?: string | null;
   scheduleSummary?: string | null;
   scheduleItems?: string[] | null;
@@ -104,6 +111,16 @@ export async function getAdminLearningSpaceRows(): Promise<AdminLearningSpaceRow
       .map((participant) => profilesById.get(participant.profile_id))
       .filter((profile): profile is ProfileRow => Boolean(profile))
       .map(getProfileDisplayName),
+    participantDetails: (participantsBySpace.get(row.id) ?? [])
+      .map((participant) => profilesById.get(participant.profile_id))
+      .filter((profile): profile is ProfileRow => Boolean(profile))
+      .map((profile) => ({
+        id: profile.id,
+        displayName: getProfileDisplayName(profile),
+        kind: profile.kind,
+        avatarUrl: profile.avatar_url ?? null,
+        themeKey: profile.ui_theme_key ?? null,
+      })),
     primaryChannelId: (channelsBySpace.get(row.id) ?? []).find((item) => item.is_primary)
       ?.channel_id ?? null,
     scheduleSummary: (() => {

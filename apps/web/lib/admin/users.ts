@@ -14,6 +14,9 @@ export type AdminUserRow = {
   lastSignInAt: string;
   displayName?: string | null;
   profileKind?: string | null;
+  avatarUrl?: string | null;
+  avatarSource?: string | null;
+  themeKey?: string | null;
 };
 
 function mapAccountToRow(account: AccountRow, profile?: ProfileRow | null): AdminUserRow {
@@ -42,6 +45,9 @@ function mapAccountToRow(account: AccountRow, profile?: ProfileRow | null): Admi
     lastSignInAt: account.updated_at,
     displayName: profileName ?? account.email,
     profileKind,
+    avatarUrl: profile?.avatar_url ?? null,
+    avatarSource: profile?.avatar_source ?? null,
+    themeKey: profile?.ui_theme_key ?? null,
   };
 }
 

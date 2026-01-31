@@ -38,6 +38,7 @@ import {
   TableRow,
 } from '@iconicedu/ui-web';
 import { toast } from 'sonner';
+import { AvatarWithStatus } from '@iconicedu/ui-web/components/shared/avatar-with-status';
 import {
   Briefcase,
   Copy,
@@ -367,10 +368,26 @@ export function UsersTable({ rows }: UsersTableProps) {
                 data-deleting={deletingId === row.id ? 'true' : 'false'}
               >
                 <TableCell>
-                  <p className="text-sm font-semibold capitalize">{displayName}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {row.phone ?? row.email ?? '—'}
-                  </p>
+                  <div className="flex items-center gap-3">
+                    <AvatarWithStatus
+                      name={displayName}
+                      avatar={{
+                        source: row.avatarSource ? row.avatarSource : 'seed',
+                        url: row.avatarUrl ?? null,
+                        seed: row.avatarSource ? undefined : row.email ?? undefined,
+                      }}
+                      themeKey={row.themeKey ?? null}
+                      showStatus={false}
+                      sizeClassName="size-8"
+                      initialsLength={2}
+                    />
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold capitalize">{displayName}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {row.phone ?? row.email ?? '—'}
+                      </p>
+                    </div>
+                  </div>
                 </TableCell>
                 <TableCell>
                   <p className="text-sm">{row.email ?? '—'}</p>
