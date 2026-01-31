@@ -1,5 +1,14 @@
 import { useRef, useEffect, useImperativeHandle, forwardRef, useMemo } from 'react';
 import { MessageItem } from '@iconicedu/ui-web/components/messages/message-item';
+import {
+  Search,
+  Trophy,
+  BookOpen,
+  GraduationCap,
+  Pencil,
+  Medal,
+  BookOpenCheck,
+} from 'lucide-react';
 import type { MessageVM, ThreadVM } from '@iconicedu/shared-types';
 import { ScrollArea } from '@iconicedu/ui-web/ui/scroll-area';
 import { formatDateHeader } from '@iconicedu/ui-web/lib/message-utils';
@@ -82,6 +91,9 @@ export const MessageList = forwardRef<MessageListRef, MessageListProps>(
 
     return (
       <ScrollArea className="flex-1 min-h-0">
+        {messages.length === 0 ? (
+          <EmptyMessagesState />
+        ) : null}
         {groupedMessages.map((group) => (
           <div key={group.date}>
             <div className="relative my-4 flex items-center">
@@ -138,3 +150,49 @@ export const MessageList = forwardRef<MessageListRef, MessageListProps>(
 );
 
 MessageList.displayName = 'MessageList';
+
+function EmptyMessagesState() {
+  return (
+    <div className="relative flex min-h-[70vh] w-full flex-col items-center justify-center gap-4 px-6 text-center">
+      <div className="relative flex h-44 w-44 items-center justify-center">
+        <div className="absolute inset-0 rounded-full border border-border/50" />
+        <div className="absolute inset-[18px] rounded-full border border-border/40" />
+        <div className="absolute inset-[36px] rounded-full border border-border/30" />
+        <div className="absolute inset-[54px] rounded-full border border-border/20" />
+        <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl border border-border bg-card shadow-sm">
+          <Search className="h-6 w-6 text-muted-foreground" aria-hidden="true" />
+        </div>
+
+        <OrbIcon className="-left-2 top-5" icon={Trophy} />
+        <OrbIcon className="right-2 top-4" icon={Medal} />
+        <OrbIcon className="-left-6 bottom-8" icon={BookOpenCheck} />
+        <OrbIcon className="right-1 bottom-4" icon={GraduationCap} />
+        <OrbIcon className="left-10 bottom-2" icon={Pencil} />
+        <OrbIcon className="right-12 bottom-12" icon={BookOpen} />
+      </div>
+
+      <div className="space-y-1">
+        <p className="text-lg font-semibold text-foreground">Sorry, no results!</p>
+        <p className="text-sm text-muted-foreground">
+          We could not find any messages yet. Start a conversation to see updates here.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function OrbIcon({
+  className,
+  icon: Icon,
+}: {
+  className: string;
+  icon: typeof Search;
+}) {
+  return (
+    <span
+      className={`absolute flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-card shadow-sm ${className}`}
+    >
+      <Icon className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+    </span>
+  );
+}
