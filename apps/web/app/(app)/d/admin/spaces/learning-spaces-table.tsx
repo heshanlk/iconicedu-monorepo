@@ -28,12 +28,9 @@ import {
   toast,
 } from '@iconicedu/ui-web';
 import { Archive, MoreHorizontal, Pencil, Trash2, ArchiveRestore } from 'lucide-react';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@iconicedu/ui-web/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@iconicedu/ui-web/ui/tooltip';
 import { AvatarWithStatus } from '@iconicedu/ui-web/components/shared/avatar-with-status';
+import { getLearningSpaceIcon } from '@iconicedu/ui-web/lib/icons';
 
 import type { AdminLearningSpaceRow } from '@iconicedu/web/lib/admin/learning-spaces';
 
@@ -44,9 +41,8 @@ type LearningSpacesTableProps = {
 
 export function LearningSpacesTable({ rows, onEdit }: LearningSpacesTableProps) {
   const router = useRouter();
-  const [confirmDeleteRow, setConfirmDeleteRow] = React.useState<AdminLearningSpaceRow | null>(
-    null,
-  );
+  const [confirmDeleteRow, setConfirmDeleteRow] =
+    React.useState<AdminLearningSpaceRow | null>(null);
   const [deletingId, setDeletingId] = React.useState<string | null>(null);
   const [archivingId, setArchivingId] = React.useState<string | null>(null);
   const [unarchivingId, setUnarchivingId] = React.useState<string | null>(null);
@@ -67,7 +63,9 @@ export function LearningSpacesTable({ rows, onEdit }: LearningSpacesTableProps) 
       toast.success('Learning space deleted.');
       router.refresh();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Unable to delete learning space.');
+      toast.error(
+        error instanceof Error ? error.message : 'Unable to delete learning space.',
+      );
     } finally {
       setDeletingId(null);
       setConfirmDeleteRow(null);
@@ -90,7 +88,9 @@ export function LearningSpacesTable({ rows, onEdit }: LearningSpacesTableProps) 
       toast.success('Learning space archived.');
       router.refresh();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Unable to archive learning space.');
+      toast.error(
+        error instanceof Error ? error.message : 'Unable to archive learning space.',
+      );
     } finally {
       setArchivingId(null);
     }
@@ -139,135 +139,144 @@ export function LearningSpacesTable({ rows, onEdit }: LearningSpacesTableProps) 
         </TableHeader>
         <TableBody>
           {rows.map((row) => (
-              <TableRow
-                key={row.id}
-                className="border-b border-border/60 last:border-b-0"
-              >
-                <TableCell>
-                  {row.primaryChannelId ? (
-                    <Link
-                      href={`/d/spaces/${row.primaryChannelId}`}
-                      className="text-sm font-semibold hover:underline"
-                    >
-                      {row.title}
-                    </Link>
-                  ) : (
-                    <p className="text-sm font-semibold">{row.title}</p>
-                  )}
-                  {row.description && (
-                    <p className="text-xs text-muted-foreground">{row.description}</p>
-                  )}
-                </TableCell>
-                <TableCell>
-                  {row.participantDetails.length ? (
-                    <AvatarGroup className="justify-start">
-                      {row.participantDetails.map((participant) => (
-                        <Tooltip key={participant.id}>
-                          <TooltipTrigger asChild>
-                            <AvatarWithStatus
-                              name={participant.displayName}
-                              avatar={{
-                                source: participant.avatarUrl ? 'upload' : 'seed',
-                                url: participant.avatarUrl ?? null,
-                              }}
-                              themeKey={participant.themeKey ?? null}
-                              showStatus={false}
-                              sizeClassName="size-8"
-                              initialsLength={2}
-                            />
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p className="text-xs font-medium">
-                              {participant.displayName}
-                            </p>
-                            <p className="text-xs text-muted-foreground capitalize">
-                              {participant.kind}
-                            </p>
-                          </TooltipContent>
-                        </Tooltip>
-                      ))}
-                    </AvatarGroup>
-                  ) : (
-                    <p className="text-sm text-muted-foreground">—</p>
-                  )}
-                </TableCell>
-                <TableCell>
-                  {row.scheduleItems?.length ? (
-                    <div className="text-sm text-muted-foreground space-y-1">
-                      {row.scheduleSummary && (
-                        <p className="font-medium text-foreground">{row.scheduleSummary}</p>
-                      )}
-                      <ul className="list-disc pl-4 space-y-1">
+            <TableRow key={row.id} className="border-b border-border/60 last:border-b-0">
+              <TableCell>
+                {(() => {
+                  const TitleIcon = getLearningSpaceIcon(row.icon_key);
+                  return (
+                    <div className="flex items-center gap-3">
+                      <div className="flex size-8 items-center justify-center rounded-full border border-border bg-muted">
+                        <TitleIcon className="size-4 text-muted-foreground" />
+                      </div>
+                      <div className="min-w-0">
+                        {row.primaryChannelId ? (
+                          <Link
+                            href={`/d/spaces/${row.primaryChannelId}`}
+                            className="text-sm font-semibold hover:underline"
+                          >
+                            {row.title}
+                          </Link>
+                        ) : (
+                          <p className="text-sm font-semibold">{row.title}</p>
+                        )}
+                        {row.description && (
+                          <p className="text-xs text-muted-foreground">
+                            {row.description}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })()}
+              </TableCell>
+              <TableCell>
+                {row.participantDetails.length ? (
+                  <AvatarGroup className="justify-start">
+                    {row.participantDetails.map((participant) => (
+                      <Tooltip key={participant.id}>
+                        <TooltipTrigger asChild>
+                          <AvatarWithStatus
+                            name={participant.displayName}
+                            avatar={{
+                              source: participant.avatarUrl ? 'upload' : 'seed',
+                              url: participant.avatarUrl ?? null,
+                            }}
+                            themeKey={participant.themeKey ?? null}
+                            showStatus={false}
+                            sizeClassName="size-8"
+                            initialsLength={2}
+                          />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p className="text-xs font-medium">{participant.displayName}</p>
+                          <p className="text-xs text-muted-foreground capitalize">
+                            {participant.kind}
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    ))}
+                  </AvatarGroup>
+                ) : (
+                  <p className="text-sm text-muted-foreground">—</p>
+                )}
+              </TableCell>
+              <TableCell>
+                {row.scheduleItems?.length ? (
+                  <div className="text-sm text-muted-foreground space-y-1">
+                    {row.scheduleSummary && (
+                      <p className="font-medium text-foreground">{row.scheduleSummary}</p>
+                    )}
+                    <ul className="list-disc pl-4 space-y-1">
                       {row.scheduleItems.map((item) => (
                         <li key={item}>{item}</li>
                       ))}
-                      </ul>
-                    </div>
-                  ) : (
-                    <span className="text-sm text-muted-foreground">—</span>
-                  )}
-                </TableCell>
-                <TableCell>
-                  <Badge
-                    variant={
-                      row.status === 'active'
-                        ? 'secondary'
-                        : row.status === 'archived'
-                          ? 'outline'
-                          : 'ghost'
-                    }
-                    className="text-xs px-3"
-                  >
-                    {row.status}
-                  </Badge>
-                </TableCell>
-                <TableCell>
-                  <span className="text-sm">
-                    {new Date(row.created_at).toLocaleDateString()}
-                  </span>
-                </TableCell>
-                <TableCell className="text-right">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="outline" size="sm" className="px-2">
-                        <MoreHorizontal className="size-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => handleEdit(row)}>
-                        <Pencil className="mr-2 size-3" />
-                        Edit
-                      </DropdownMenuItem>
-                      {row.status === 'archived' ? (
-                        <DropdownMenuItem
-                          onClick={() => handleUnarchive(row)}
-                          disabled={unarchivingId === row.id}
-                        >
-                          <ArchiveRestore className="mr-2 size-3" />
-                          {unarchivingId === row.id ? 'Restoring…' : 'Unarchive'}
-                        </DropdownMenuItem>
-                      ) : (
-                        <DropdownMenuItem
-                          onClick={() => handleArchive(row)}
-                          disabled={archivingId === row.id}
-                        >
-                          <Archive className="mr-2 size-3" />
-                          {archivingId === row.id ? 'Archiving…' : 'Archive'}
-                        </DropdownMenuItem>
-                      )}
+                    </ul>
+                  </div>
+                ) : (
+                  <span className="text-sm text-muted-foreground">—</span>
+                )}
+              </TableCell>
+              <TableCell>
+                <Badge
+                  variant={
+                    row.status === 'active'
+                      ? 'secondary'
+                      : row.status === 'archived'
+                        ? 'outline'
+                        : 'ghost'
+                  }
+                  className="text-xs px-3"
+                >
+                  {row.status}
+                </Badge>
+              </TableCell>
+              <TableCell>
+                <span className="text-sm">
+                  {new Date(row.created_at).toLocaleDateString()}
+                </span>
+              </TableCell>
+              <TableCell className="text-right">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" className="px-2">
+                      <MoreHorizontal className="size-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => handleEdit(row)}>
+                      <Pencil className="mr-2 size-3" />
+                      Edit
+                    </DropdownMenuItem>
+                    {row.status === 'archived' ? (
                       <DropdownMenuItem
-                        onClick={() => setConfirmDeleteRow(row)}
-                        disabled={deletingId === row.id}
-                        className="text-destructive"
+                        onClick={() => handleUnarchive(row)}
+                        disabled={unarchivingId === row.id}
                       >
-                        <Trash2 className="mr-2 size-3" />
-                        {deletingId === row.id ? 'Deleting…' : 'Delete'}
+                        <ArchiveRestore className="mr-2 size-3" />
+                        {unarchivingId === row.id ? 'Restoring…' : 'Unarchive'}
                       </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
-              </TableRow>
-            ))}
+                    ) : (
+                      <DropdownMenuItem
+                        onClick={() => handleArchive(row)}
+                        disabled={archivingId === row.id}
+                      >
+                        <Archive className="mr-2 size-3" />
+                        {archivingId === row.id ? 'Archiving…' : 'Archive'}
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuItem
+                      onClick={() => setConfirmDeleteRow(row)}
+                      disabled={deletingId === row.id}
+                      className="text-destructive"
+                    >
+                      <Trash2 className="mr-2 size-3" />
+                      {deletingId === row.id ? 'Deleting…' : 'Delete'}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
       <AlertDialog
@@ -282,13 +291,12 @@ export function LearningSpacesTable({ rows, onEdit }: LearningSpacesTableProps) 
           <AlertDialogHeader>
             <AlertDialogTitle>Delete learning space?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently remove the learning space, its channels, and schedules.
+              This will permanently remove the learning space, its channels, and
+              schedules.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={Boolean(deletingId)}>
-              Cancel
-            </AlertDialogCancel>
+            <AlertDialogCancel disabled={Boolean(deletingId)}>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
                 if (confirmDeleteRow) {
