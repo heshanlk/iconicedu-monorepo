@@ -23,14 +23,14 @@ const WEEKDAY_INDEX: Record<WeekdayValue, number> = {
   SA: 6,
 };
 
-type WeekdayValue = 'MO' | 'TU' | 'WE' | 'TH' | 'FR' | 'SA' | 'SU';
+export type WeekdayValue = 'MO' | 'TU' | 'WE' | 'TH' | 'FR' | 'SA' | 'SU';
 
-type ScheduleWeekdayTime = {
+export type ScheduleWeekdayTime = {
   day: WeekdayValue;
   time: string;
 };
 
-type ScheduleRulePayload = {
+export type ScheduleRulePayload = {
   frequency: string;
   interval?: number | null;
   byWeekday?: WeekdayValue[] | null;
@@ -40,19 +40,19 @@ type ScheduleRulePayload = {
   timezone?: string | null;
 };
 
-type ScheduleExceptionPayload = {
+export type ScheduleExceptionPayload = {
   date: string;
   reason?: string | null;
 };
 
-type ScheduleOverridePayload = {
+export type ScheduleOverridePayload = {
   originalDate: string;
   newDate: string;
   newTime?: string | null;
   reason?: string | null;
 };
 
-type SchedulePayload = {
+export type SchedulePayload = {
   startDate: string;
   timezone: string;
   rule: ScheduleRulePayload;
@@ -60,7 +60,7 @@ type SchedulePayload = {
   overrides?: ScheduleOverridePayload[] | null;
 };
 
-type LearningSpaceParticipantPayload = {
+export type LearningSpaceParticipantPayload = {
   profileId: string;
   kind: string;
   displayName: string;
@@ -68,7 +68,7 @@ type LearningSpaceParticipantPayload = {
   themeKey?: string | null;
 };
 
-type LearningSpaceResourcePayload = {
+export type LearningSpaceResourcePayload = {
   label: string;
   iconKey?: string | null;
   url?: string | null;
@@ -468,7 +468,7 @@ type ExpandedSchedule = {
   time: string;
 };
 
-async function insertClassSchedules(
+export async function insertClassSchedules(
   supabase: SupabaseClient,
   payload: ClassScheduleInsertPayload,
 ): Promise<string[]> {

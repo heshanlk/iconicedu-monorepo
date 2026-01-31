@@ -56,13 +56,47 @@ const SUBJECT_OPTIONS = ['MATH', 'SCIENCE', 'ELA', 'CHESS'];
 
 type LearningSpaceFormDialogProps = {
   participantOptions?: UserProfileVM[];
+  mode?: 'create' | 'edit';
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  initialData?: {
+    ids: { id: string };
+    basics: {
+      kind: string;
+      title: string;
+      iconKey: string | null;
+      subject?: string | null;
+      description?: string | null;
+    };
+    participants: UserProfileVM[];
+    resources: LearningSpaceLinkVM[];
+    schedules: RecurrenceFormData[];
+  } | null;
+  onSuccess?: () => void;
 };
 
 export function LearningSpaceFormDialog({
   participantOptions = [],
+  mode = 'create',
+  open: openProp,
+  onOpenChange,
+  initialData,
+  onSuccess,
 }: LearningSpaceFormDialogProps) {
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
+  const isControlled = openProp !== undefined;
+  const dialogOpen = isControlled ? openProp : open;
+  const setDialogOpen = React.useCallback(
+    (nextOpen: boolean) => {
+      if (isControlled) {
+        onOpenChange?.(nextOpen);
+      } else {
+        setOpen(nextOpen);
+      }
+    },
+    [isControlled, onOpenChange],
+  );
   const [kind, setKind] = React.useState(KIND_OPTIONS[0].value);
   const [title, setTitle] = React.useState('');
   const [subject, setSubject] = React.useState('');
@@ -73,12 +107,33 @@ export function LearningSpaceFormDialog({
   const [participants, setParticipants] = React.useState<UserProfileVM[]>([]);
   const [resources, setResources] = React.useState<LearningSpaceLinkVM[]>([]);
   const [schedules, setSchedules] = React.useState<RecurrenceFormData[]>([]);
+  const [editingId, setEditingId] = React.useState<string | null>(null);
   const [isSubmitted, setIsSubmitted] = React.useState(false);
   const [isSaving, setIsSaving] = React.useState(false);
   const iconInvalid = isSubmitted && !iconKey;
   const titleInvalid = isSubmitted && !title.trim();
   const kindInvalid = isSubmitted && !kind;
   const participantsInvalid = isSubmitted && participants.length === 0;
+
+  React.useEffect(() => {
+    if (!dialogOpen) {
+      return;
+    }
+    if (mode === 'edit' && initialData) {
+      setEditingId(initialData.ids.id);
+      setKind(initialData.basics.kind);
+      setTitle(initialData.basics.title);
+      setSubject(initialData.basics.subject ?? '');
+      setDescription(initialData.basics.description ?? '');
+      setIconKey(
+        (initialData.basics.iconKey ?? DEFAULT_LEARNING_SPACE_ICON_KEY) as LearningSpaceIconKey,
+      );
+      setParticipants(initialData.participants ?? []);
+      setResources(initialData.resources ?? []);
+      setSchedules(initialData.schedules ?? []);
+      setIsSubmitted(false);
+    }
+  }, [dialogOpen, initialData, mode]);
 
   const resetForm = () => {
     setKind(KIND_OPTIONS[0].value);
@@ -89,6 +144,7 @@ export function LearningSpaceFormDialog({
     setParticipants([]);
     setResources([]);
     setSchedules([]);
+    setEditingId(null);
     setIsSubmitted(false);
   };
 
@@ -135,43 +191,66 @@ export function LearningSpaceFormDialog({
 
     setIsSaving(true);
     try {
-      const response = await fetch('/d/admin/spaces/actions/create', {
+      const endpoint =
+        mode === 'edit' ? '/d/admin/spaces/actions/update' : '/d/admin/spaces/actions/create';
+      const body =
+        mode === 'edit'
+          ? JSON.stringify({ learningSpaceId: editingId, payload })
+          : JSON.stringify(payload);
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body,
       });
       const result = (await response.json()) as { success?: boolean; message?: string };
       if (!response.ok || !result.success) {
-        toast.error(result.message ?? 'Unable to create learning space.');
+        toast.error(
+          result.message ??
+            (mode === 'edit'
+              ? 'Unable to update learning space.'
+              : 'Unable to create learning space.'),
+        );
         return;
       }
-      toast.success('Learning space created.');
-      setOpen(false);
+      toast.success(mode === 'edit' ? 'Learning space updated.' : 'Learning space created.');
+      setDialogOpen(false);
       resetForm();
       router.refresh();
+      onSuccess?.();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Unable to create learning space.');
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : mode === 'edit'
+            ? 'Unable to update learning space.'
+            : 'Unable to create learning space.',
+      );
     } finally {
       setIsSaving(false);
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="secondary" size="sm" className="flex items-center gap-2">
-          <Plus className="size-4" />
-          Add new
-        </Button>
-      </DialogTrigger>
+    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      {mode === 'create' && !isControlled && (
+        <DialogTrigger asChild>
+          <Button variant="secondary" size="sm" className="flex items-center gap-2">
+            <Plus className="size-4" />
+            Add new
+          </Button>
+        </DialogTrigger>
+      )}
       <DialogContent className="w-[min(95vw,60rem)] sm:max-w-[min(95vw,60rem)] max-w-none overflow-hidden p-0">
         <div className="flex max-h-[90vh] flex-col overflow-hidden rounded-2xl border border-border bg-card">
           <div className="px-6 py-5">
             <DialogHeader>
-              <DialogTitle>Create learning space</DialogTitle>
+              <DialogTitle>
+                {mode === 'edit' ? 'Edit learning space' : 'Create learning space'}
+              </DialogTitle>
               <DialogDescription>
-                Configure the basics, invite participants, and attach resources for the
-                learning space.
+                {mode === 'edit'
+                  ? 'Update the basics, participants, and resources for the learning space.'
+                  : 'Configure the basics, invite participants, and attach resources for the learning space.'}
               </DialogDescription>
             </DialogHeader>
           </div>
@@ -356,7 +435,7 @@ export function LearningSpaceFormDialog({
             </ScrollArea>
             <div className="border-t border-border bg-card px-6 py-4">
               <DialogFooter className="flex flex-col gap-3 sm:flex-row sm:justify-end">
-                <Button variant="ghost" onClick={() => setOpen(false)} type="button">
+                <Button variant="ghost" onClick={() => setDialogOpen(false)} type="button">
                   Cancel
                 </Button>
                 <Button
@@ -365,7 +444,13 @@ export function LearningSpaceFormDialog({
                   className="w-full sm:w-auto"
                   disabled={isSaving}
                 >
-                  {isSaving ? 'Creating...' : 'Create space'}
+                  {isSaving
+                    ? mode === 'edit'
+                      ? 'Saving...'
+                      : 'Creating...'
+                    : mode === 'edit'
+                      ? 'Save changes'
+                      : 'Create space'}
                 </Button>
               </DialogFooter>
             </div>

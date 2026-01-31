@@ -29,7 +29,12 @@ import { Archive, MoreHorizontal, Pencil, Trash2, ArchiveRestore } from 'lucide-
 
 import type { AdminLearningSpaceRow } from '@iconicedu/web/lib/admin/learning-spaces';
 
-export function LearningSpacesTable({ rows }: { rows: AdminLearningSpaceRow[] }) {
+type LearningSpacesTableProps = {
+  rows: AdminLearningSpaceRow[];
+  onEdit: (row: AdminLearningSpaceRow) => void;
+};
+
+export function LearningSpacesTable({ rows, onEdit }: LearningSpacesTableProps) {
   const router = useRouter();
   const [confirmDeleteRow, setConfirmDeleteRow] = React.useState<AdminLearningSpaceRow | null>(
     null,
@@ -108,7 +113,7 @@ export function LearningSpacesTable({ rows }: { rows: AdminLearningSpaceRow[] })
   };
 
   const handleEdit = (row: AdminLearningSpaceRow) => {
-    toast.info(`Edit ${row.title} (coming soon).`);
+    onEdit(row);
   };
 
   return (

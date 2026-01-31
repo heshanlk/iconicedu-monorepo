@@ -18,6 +18,7 @@ import type { AdminLearningSpaceRow } from '@iconicedu/web/lib/admin/learning-sp
 import { LearningSpacesTable } from '@iconicedu/web/app/(app)/d/admin/spaces/learning-spaces-table';
 import { LearningSpaceFormDialog } from '@iconicedu/web/app/(app)/d/admin/spaces/learning-space-form-dialog';
 import type { UserProfileVM } from '@iconicedu/shared-types';
+import type { LearningSpaceDetail } from '@iconicedu/web/lib/admin/learning-space-detail';
 
 const PAGE_SIZES = [10, 25, 50];
 
@@ -33,6 +34,8 @@ export function LearningSpacesDashboard({ rows }: LearningSpacesDashboardProps) 
   const [pageSize, setPageSize] = React.useState(PAGE_SIZES[0]);
   const [isPending, startTransition] = React.useTransition();
   const [participantOptions, setParticipantOptions] = React.useState<UserProfileVM[]>([]);
+  const [editOpen, setEditOpen] = React.useState(false);
+  const [editData, setEditData] = React.useState<LearningSpaceDetail | null>(null);
   const refreshing = isPending;
 
   const loadParticipants = React.useCallback(async () => {
@@ -97,11 +100,50 @@ export function LearningSpacesDashboard({ rows }: LearningSpacesDashboardProps) 
     void loadParticipants();
   };
 
+  const handleEdit = async (row: LearningSpacesDashboardProps['rows'][number]) => {
+    try {
+      const response = await fetch('/d/admin/spaces/actions/detail', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ learningSpaceId: row.id }),
+      });
+      const payload = (await response.json()) as {
+        success?: boolean;
+        message?: string;
+        data?: LearningSpaceDetail;
+      };
+      if (!response.ok || !payload.success || !payload.data) {
+        setEditData(null);
+        return;
+      }
+      setEditData(payload.data);
+      setEditOpen(true);
+    } finally {
+      // no-op
+    }
+  };
+
   return (
     <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-4">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <LearningSpaceFormDialog
           participantOptions={participantOptions}
+        />
+        <LearningSpaceFormDialog
+          mode="edit"
+          open={editOpen}
+          onOpenChange={(open) => {
+            setEditOpen(open);
+            if (!open) {
+              setEditData(null);
+            }
+          }}
+          participantOptions={participantOptions}
+          initialData={editData}
+          onSuccess={() => {
+            handleRefresh();
+            setEditData(null);
+          }}
         />
         <div className="flex flex-wrap items-center gap-3">
           <Input
@@ -149,7 +191,7 @@ export function LearningSpacesDashboard({ rows }: LearningSpacesDashboardProps) 
             <Loader2 className="size-5 animate-spin text-muted-foreground" />
           </div>
         )}
-        <LearningSpacesTable rows={visibleRows} />
+        <LearningSpacesTable rows={visibleRows} onEdit={handleEdit} />
       </div>
       <div className="flex flex-wrap items-center gap-3 border-t border-border pt-3 text-xs text-muted-foreground">
         <div className="flex items-center gap-2">
