@@ -124,6 +124,7 @@ export function LearningSpacesTable({ rows, onEdit }: LearningSpacesTableProps) 
           <TableRow>
             <TableHead>Title</TableHead>
             <TableHead>Participants</TableHead>
+            <TableHead>Schedule</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Created</TableHead>
             <TableHead className="text-right">Actions</TableHead>
@@ -156,6 +157,22 @@ export function LearningSpacesTable({ rows, onEdit }: LearningSpacesTableProps) 
                       ? row.participantNames.join(', ')
                       : '—'}
                   </p>
+                </TableCell>
+                <TableCell>
+                  {row.scheduleItems?.length ? (
+                    <div className="text-sm text-muted-foreground space-y-1">
+                      {row.scheduleSummary && (
+                        <p className="font-medium text-foreground">{row.scheduleSummary}</p>
+                      )}
+                      <ul className="list-disc pl-4 space-y-1">
+                      {row.scheduleItems.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                      </ul>
+                    </div>
+                  ) : (
+                    <span className="text-sm text-muted-foreground">—</span>
+                  )}
                 </TableCell>
                 <TableCell>
                   <Badge

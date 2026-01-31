@@ -79,12 +79,28 @@ const mapSchedulesToPayload = (items: RecurrenceFormData[]) =>
   items
     .filter((schedule) => schedule.startDate)
     .map((schedule) => ({
-      startDate: schedule.startDate?.toISOString() ?? '',
+      startDate:
+        schedule.startDate instanceof Date
+          ? schedule.startDate.toISOString()
+          : schedule.startDate
+            ? new Date(schedule.startDate as unknown as string).toISOString()
+            : '',
       timezone: schedule.timezone,
       rule: schedule.rule,
       exceptions: schedule.exceptions,
       overrides: schedule.overrides,
     }));
+
+const normalizeSchedules = (items: RecurrenceFormData[]) =>
+  items.map((schedule) => ({
+    ...schedule,
+    startDate:
+      schedule.startDate instanceof Date
+        ? schedule.startDate
+        : schedule.startDate
+          ? new Date(schedule.startDate as unknown as string)
+          : undefined,
+  }));
 
 type LearningSpaceFormDialogProps = {
   participantOptions?: UserProfileVM[];
@@ -177,7 +193,7 @@ export function LearningSpaceFormDialog({
           (initialData.basics.iconKey ?? DEFAULT_LEARNING_SPACE_ICON_KEY) as LearningSpaceIconKey,
         participants: initialData.participants ?? [],
         resources: initialData.resources ?? [],
-        schedules: initialData.schedules ?? [],
+        schedules: normalizeSchedules(initialData.schedules ?? []),
       });
       setIsSubmitted(false);
       return;

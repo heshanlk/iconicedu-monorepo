@@ -418,7 +418,6 @@ type ClassScheduleInsertPayload = {
 type ExpandedSchedule = {
   startAt: string;
   endAt: string;
-  weekday?: WeekdayValue;
   time: string;
 };
 
@@ -433,76 +432,73 @@ export async function insertClassSchedules(
   const scheduleIds: string[] = [];
 
   for (const schedule of payload.schedules) {
-    const expandedSchedules = expandSchedules(schedule);
+    const expanded = buildScheduleStart(schedule);
+    const scheduleId = randomUUID();
+    scheduleIds.push(scheduleId);
 
-    for (const expanded of expandedSchedules) {
-      const scheduleId = randomUUID();
-      scheduleIds.push(scheduleId);
+    const { error: scheduleError } = await supabase.from('class_schedules').insert({
+      id: scheduleId,
+      org_id: payload.orgId,
+      title: payload.title,
+      description: payload.description,
+      location: null,
+      meeting_link: null,
+      start_at: expanded.startAt,
+      end_at: expanded.endAt,
+      timezone: schedule.timezone,
+      status: 'scheduled',
+      visibility: 'class-members',
+      theme_key: null,
+      source_kind: 'class_session',
+      source_learning_space_id: payload.learningSpaceId,
+      source_channel_id: payload.channelId,
+      created_at: payload.createdAt,
+      created_by: payload.createdBy,
+      updated_at: payload.createdAt,
+      updated_by: payload.createdBy,
+    });
 
-      const { error: scheduleError } = await supabase.from('class_schedules').insert({
-        id: scheduleId,
-        org_id: payload.orgId,
-        title: payload.title,
-        description: payload.description,
-        location: null,
-        meeting_link: null,
-        start_at: expanded.startAt,
-        end_at: expanded.endAt,
-        timezone: schedule.timezone,
-        status: 'scheduled',
-        visibility: 'class-members',
-        theme_key: null,
-        source_kind: 'class_session',
-        source_learning_space_id: payload.learningSpaceId,
-        source_channel_id: payload.channelId,
-        created_at: payload.createdAt,
-        created_by: payload.createdBy,
-        updated_at: payload.createdAt,
-        updated_by: payload.createdBy,
-      });
-
-      if (scheduleError) {
-        throw new Error(scheduleError.message);
-      }
-
-      await insertClassScheduleParticipants(supabase, {
-        orgId: payload.orgId,
-        scheduleId,
-        createdBy: payload.createdBy,
-        createdAt: payload.createdAt,
-        participants: payload.participants,
-      });
-
-      const recurrenceId = randomUUID();
-      await insertClassScheduleRecurrence(supabase, {
-        id: recurrenceId,
-        orgId: payload.orgId,
-        scheduleId,
-        createdBy: payload.createdBy,
-        createdAt: payload.createdAt,
-        rule: schedule.rule,
-        timezone: schedule.timezone,
-        weekday: expanded.weekday,
-      });
-
-      await insertClassScheduleRecurrenceExceptions(supabase, {
-        orgId: payload.orgId,
-        recurrenceId,
-        createdBy: payload.createdBy,
-        createdAt: payload.createdAt,
-        exceptions: schedule.exceptions ?? [],
-        time: expanded.time,
-      });
-
-      await insertClassScheduleRecurrenceOverrides(supabase, {
-        orgId: payload.orgId,
-        recurrenceId,
-        createdBy: payload.createdBy,
-        createdAt: payload.createdAt,
-        overrides: schedule.overrides ?? [],
-        time: expanded.time,
-      });
+    if (scheduleError) {
+      throw new Error(scheduleError.message);
     }
+
+    await insertClassScheduleParticipants(supabase, {
+      orgId: payload.orgId,
+      scheduleId,
+      createdBy: payload.createdBy,
+      createdAt: payload.createdAt,
+      participants: payload.participants,
+    });
+
+    const recurrenceId = randomUUID();
+    await insertClassScheduleRecurrence(supabase, {
+      id: recurrenceId,
+      orgId: payload.orgId,
+      scheduleId,
+      createdBy: payload.createdBy,
+      createdAt: payload.createdAt,
+      rule: schedule.rule,
+      timezone: schedule.timezone,
+      startDate: schedule.startDate,
+    });
+
+    await insertClassScheduleRecurrenceExceptions(supabase, {
+      orgId: payload.orgId,
+      recurrenceId,
+      createdBy: payload.createdBy,
+      createdAt: payload.createdAt,
+      exceptions: schedule.exceptions ?? [],
+      time: expanded.time,
+    });
+
+    await insertClassScheduleRecurrenceOverrides(supabase, {
+      orgId: payload.orgId,
+      recurrenceId,
+      createdBy: payload.createdBy,
+      createdAt: payload.createdAt,
+      overrides: schedule.overrides ?? [],
+      time: expanded.time,
+    });
   }
 
   return scheduleIds;
@@ -558,19 +554,15 @@ type ClassScheduleRecurrenceInsertPayload = {
   createdAt: string;
   rule: LearningSpaceScheduleRulePayload;
   timezone: string;
-  weekday?: WeekdayValue;
+  startDate: string;
 };
 
 async function insertClassScheduleRecurrence(
   supabase: SupabaseClient,
   payload: ClassScheduleRecurrenceInsertPayload,
 ) {
-  const byWeekday =
-    payload.rule.frequency === 'weekly'
-      ? payload.weekday
-        ? [payload.weekday]
-        : payload.rule.byWeekday ?? null
-      : payload.rule.byWeekday ?? null;
+  const rruleFields = buildRRuleFields(payload.rule, payload.startDate);
+  const rawRRule = buildRawRRule(payload.rule, rruleFields);
 
   const { error } = await supabase.from('class_schedule_recurrence').insert({
     id: payload.id,
@@ -578,10 +570,21 @@ async function insertClassScheduleRecurrence(
     schedule_id: payload.scheduleId,
     frequency: payload.rule.frequency,
     interval: payload.rule.interval ?? null,
-    by_weekday: byWeekday,
+    byday: rruleFields.byday,
     count: payload.rule.count ?? null,
     until: payload.rule.until ?? null,
     timezone: payload.timezone ?? payload.rule.timezone ?? null,
+    raw_rrule: rawRRule,
+    bysecond: rruleFields.bysecond,
+    byminute: rruleFields.byminute,
+    byhour: rruleFields.byhour,
+    byday: rruleFields.byday,
+    bymonthday: rruleFields.bymonthday,
+    byyearday: rruleFields.byyearday,
+    byweekno: rruleFields.byweekno,
+    bymonth: rruleFields.bymonth,
+    bysetpos: rruleFields.bysetpos,
+    wkst: rruleFields.wkst,
     created_at: payload.createdAt,
     created_by: payload.createdBy,
     updated_at: payload.createdAt,
@@ -680,21 +683,25 @@ async function insertClassScheduleRecurrenceOverrides(
   }
 }
 
-function expandSchedules(schedule: LearningSpaceSchedulePayload): ExpandedSchedule[] {
+function buildScheduleStart(schedule: LearningSpaceSchedulePayload): ExpandedSchedule {
   const startDate = new Date(schedule.startDate);
   startDate.setHours(0, 0, 0, 0);
 
   const times = normalizeWeekdayTimes(schedule);
   if (!times.length) {
     const startAt = applyTime(startDate, DEFAULT_START_TIME);
-    return [buildExpandedSchedule(startAt, DEFAULT_START_TIME)];
+    return buildExpandedSchedule(startAt, DEFAULT_START_TIME);
   }
 
-  return times.map((entry) => {
+  const candidates = times.map((entry) => {
     const dateForWeekday = getNextWeekdayDate(startDate, entry.day);
     const startAt = applyTime(dateForWeekday, entry.time);
-    return buildExpandedSchedule(startAt, entry.time, entry.day);
+    return buildExpandedSchedule(startAt, entry.time);
   });
+
+  return candidates.reduce((earliest, candidate) =>
+    candidate.startAt < earliest.startAt ? candidate : earliest,
+  );
 }
 
 function normalizeWeekdayTimes(
@@ -710,6 +717,122 @@ function normalizeWeekdayTimes(
 
   const weekday = toWeekdayValue(new Date(schedule.startDate));
   return weekday ? [{ day: weekday, time: DEFAULT_START_TIME }] : [];
+}
+
+type RRuleFields = {
+  bysecond: number[] | null;
+  byminute: number[] | null;
+  byhour: number[] | null;
+  byday: WeekdayValue[] | null;
+  bymonthday: number[] | null;
+  byyearday: number[] | null;
+  byweekno: number[] | null;
+  bymonth: number[] | null;
+  bysetpos: number[] | null;
+  wkst: WeekdayValue;
+};
+
+function buildRRuleFields(
+  rule: LearningSpaceScheduleRulePayload,
+  startDate: string,
+): RRuleFields {
+  const weekdayTimes = rule.weekdayTimes ?? [];
+  const byday =
+    rule.byWeekday?.length
+      ? rule.byWeekday
+      : weekdayTimes.length
+        ? weekdayTimes.map((entry) => entry.day)
+        : null;
+
+  const times = weekdayTimes.length
+    ? weekdayTimes.map((entry) => entry.time)
+    : rule.frequency !== 'weekly'
+      ? [getTimeFromISO(startDate)]
+      : [];
+
+  const hours = new Set<number>();
+  const minutes = new Set<number>();
+  times.forEach((time) => {
+    const [hour, minute] = time.split(':').map((value) => Number(value));
+    if (!Number.isNaN(hour)) hours.add(hour);
+    if (!Number.isNaN(minute)) minutes.add(minute);
+  });
+
+  return {
+    bysecond: null,
+    byminute: minutes.size ? Array.from(minutes).sort((a, b) => a - b) : null,
+    byhour: hours.size ? Array.from(hours).sort((a, b) => a - b) : null,
+    byday: byday?.length ? (Array.from(new Set(byday)) as WeekdayValue[]) : null,
+    bymonthday: null,
+    byyearday: null,
+    byweekno: null,
+    bymonth: null,
+    bysetpos: null,
+    wkst: 'MO',
+  };
+}
+
+function buildRawRRule(rule: LearningSpaceScheduleRulePayload, fields: RRuleFields) {
+  const parts: string[] = [`FREQ=${rule.frequency.toUpperCase()}`];
+
+  if (rule.interval && rule.interval > 1) {
+    parts.push(`INTERVAL=${rule.interval}`);
+  }
+  if (fields.bysecond?.length) {
+    parts.push(`BYSECOND=${fields.bysecond.join(',')}`);
+  }
+  if (fields.byminute?.length) {
+    parts.push(`BYMINUTE=${fields.byminute.join(',')}`);
+  }
+  if (fields.byhour?.length) {
+    parts.push(`BYHOUR=${fields.byhour.join(',')}`);
+  }
+  if (fields.byday?.length) {
+    parts.push(`BYDAY=${fields.byday.join(',')}`);
+  }
+  if (fields.bymonthday?.length) {
+    parts.push(`BYMONTHDAY=${fields.bymonthday.join(',')}`);
+  }
+  if (fields.byyearday?.length) {
+    parts.push(`BYYEARDAY=${fields.byyearday.join(',')}`);
+  }
+  if (fields.byweekno?.length) {
+    parts.push(`BYWEEKNO=${fields.byweekno.join(',')}`);
+  }
+  if (fields.bymonth?.length) {
+    parts.push(`BYMONTH=${fields.bymonth.join(',')}`);
+  }
+  if (fields.bysetpos?.length) {
+    parts.push(`BYSETPOS=${fields.bysetpos.join(',')}`);
+  }
+  if (fields.wkst) {
+    parts.push(`WKST=${fields.wkst}`);
+  }
+  if (rule.count) {
+    parts.push(`COUNT=${rule.count}`);
+  }
+  if (rule.until) {
+    parts.push(`UNTIL=${formatUtcDateTime(new Date(rule.until))}`);
+  }
+
+  return parts.join(';');
+}
+
+function getTimeFromISO(isoDateTime: string) {
+  const date = new Date(isoDateTime);
+  return `${pad2(date.getHours())}:${pad2(date.getMinutes())}`;
+}
+
+function formatUtcDateTime(date: Date) {
+  return `${date.getUTCFullYear()}${pad2(date.getUTCMonth() + 1)}${pad2(
+    date.getUTCDate(),
+  )}T${pad2(date.getUTCHours())}${pad2(date.getUTCMinutes())}${pad2(
+    date.getUTCSeconds(),
+  )}Z`;
+}
+
+function pad2(value: number) {
+  return value.toString().padStart(2, '0');
 }
 
 function toWeekdayValue(date: Date): WeekdayValue | null {
@@ -737,13 +860,11 @@ function applyTime(date: Date, time: string) {
 function buildExpandedSchedule(
   startAtDate: Date,
   time: string,
-  weekday?: WeekdayValue,
 ): ExpandedSchedule {
   const startAt = startAtDate.toISOString();
   return {
     startAt,
     endAt: addMinutes(startAt, DEFAULT_DURATION_MINUTES),
-    weekday,
     time,
   };
 }

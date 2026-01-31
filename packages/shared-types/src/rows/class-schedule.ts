@@ -52,7 +52,17 @@ export interface ClassScheduleRecurrenceRow {
   schedule_id: UUID;
   frequency: string;
   interval?: number | null;
-  by_weekday?: string[] | null;
+  raw_rrule?: string | null;
+  bysecond?: number[] | null;
+  byminute?: number[] | null;
+  byhour?: number[] | null;
+  byday?: string[] | null;
+  bymonthday?: number[] | null;
+  byyearday?: number[] | null;
+  byweekno?: number[] | null;
+  bymonth?: number[] | null;
+  bysetpos?: number[] | null;
+  wkst?: string | null;
   count?: number | null;
   until?: ISODateTime | null;
   timezone?: string | null;

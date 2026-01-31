@@ -54,6 +54,18 @@ function generateId() {
   return Math.random().toString(36).substring(2, 9);
 }
 
+const DEFAULT_WEEKDAY_TIME = '09:00';
+
+function buildWeekdayTimes(values?: WeekdayTime[]) {
+  const base = WEEKDAYS.map((day) => ({ day: day.value, time: DEFAULT_WEEKDAY_TIME }));
+  if (!values?.length) return base;
+  const overrides = new Map(values.map((item) => [item.day, item.time]));
+  return base.map((entry) => ({
+    day: entry.day,
+    time: overrides.get(entry.day) ?? entry.time,
+  }));
+}
+
 export function RecurrenceForm({
   defaultValues,
   onSubmit,
@@ -78,8 +90,7 @@ export function RecurrenceForm({
     defaultValues?.rule?.byWeekday || [],
   );
   const [weekdayTimes, setWeekdayTimes] = React.useState<WeekdayTime[]>(
-    defaultValues?.rule?.weekdayTimes ||
-      WEEKDAYS.map((day) => ({ day: day.value, time: '09:00' })),
+    buildWeekdayTimes(defaultValues?.rule?.weekdayTimes),
   );
   const [endType, setEndType] = React.useState<EndType>(() => {
     if (defaultValues?.rule?.count) return 'count';
@@ -115,7 +126,12 @@ export function RecurrenceForm({
   const weekdayInvalid = isSubmitted && frequency === 'weekly' && byWeekday.length === 0;
 
   const updateWeekdayTime = (day: WeekdayVM, time: string) => {
-    setWeekdayTimes((prev) => prev.map((wt) => (wt.day === day ? { ...wt, time } : wt)));
+    setWeekdayTimes((prev) => {
+      if (prev.some((wt) => wt.day === day)) {
+        return prev.map((wt) => (wt.day === day ? { ...wt, time } : wt));
+      }
+      return [...prev, { day, time }];
+    });
   };
 
   const addException = () => {
@@ -226,7 +242,12 @@ export function RecurrenceForm({
 
     const selectedWeekdayTimes =
       frequency === 'weekly' && byWeekday.length > 0
-        ? weekdayTimes.filter((wt) => byWeekday.includes(wt.day))
+        ? byWeekday.map((day) => ({
+            day,
+            time:
+              weekdayTimes.find((weekdayTime) => weekdayTime.day === day)?.time ||
+              DEFAULT_WEEKDAY_TIME,
+          }))
         : undefined;
 
     const data: RecurrenceFormData = {
@@ -393,7 +414,7 @@ export function RecurrenceForm({
                         </span>
                         <Input
                           type="time"
-                          value={dayTime?.time || '09:00'}
+                          value={dayTime?.time || DEFAULT_WEEKDAY_TIME}
                           onChange={(event) =>
                             updateWeekdayTime(day.value, event.target.value)
                           }

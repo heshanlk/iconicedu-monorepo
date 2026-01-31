@@ -50,7 +50,7 @@ export function mapClassScheduleRecurrenceRow(
     rule: {
       frequency: row.frequency as RecurrenceRuleVM['frequency'],
       interval: row.interval ?? undefined,
-      byWeekday: row.by_weekday ?? undefined,
+      byWeekday: row.byday ?? undefined,
       count: row.count ?? undefined,
       until: row.until ?? undefined,
       timezone: row.timezone ?? undefined,

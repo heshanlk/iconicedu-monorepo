@@ -193,7 +193,7 @@ async function buildSchedulesForForm(
       } satisfies RecurrenceFormData;
     }
 
-    const byWeekday = recurrence.by_weekday ?? undefined;
+    const byWeekday = recurrence.byday ?? undefined;
     const weekdayTimes = byWeekday?.map((day) => ({
       day: day as 'MO' | 'TU' | 'WE' | 'TH' | 'FR' | 'SA' | 'SU',
       time: getTimeFromISO(schedule.start_at),

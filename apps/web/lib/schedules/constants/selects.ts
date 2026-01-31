@@ -50,7 +50,7 @@ export const CLASS_SCHEDULE_RECURRENCE_SELECT = [
   'schedule_id',
   'frequency',
   'interval',
-  'by_weekday',
+  'byday',
   'count',
   'until',
   'timezone',
