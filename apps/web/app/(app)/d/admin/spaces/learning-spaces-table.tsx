@@ -1,41 +1,130 @@
 'use client';
 
+import * as React from 'react';
+import { useRouter } from 'next/navigation';
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  Badge,
+  Button,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
-  Badge,
+  toast,
 } from '@iconicedu/ui-web';
-import { Shield, Users, User, Layers } from 'lucide-react';
+import { Archive, MoreHorizontal, Pencil, Trash2, ArchiveRestore } from 'lucide-react';
 
-import type { LearningSpaceRow } from '@iconicedu/web/lib/admin/learning-spaces';
+import type { AdminLearningSpaceRow } from '@iconicedu/web/lib/admin/learning-spaces';
 
-const KIND_ICON_MAP = {
-  one_on_one: User,
-  small_group: Users,
-  large_class: Layers,
-};
+export function LearningSpacesTable({ rows }: { rows: AdminLearningSpaceRow[] }) {
+  const router = useRouter();
+  const [confirmDeleteRow, setConfirmDeleteRow] = React.useState<AdminLearningSpaceRow | null>(
+    null,
+  );
+  const [deletingId, setDeletingId] = React.useState<string | null>(null);
+  const [archivingId, setArchivingId] = React.useState<string | null>(null);
+  const [unarchivingId, setUnarchivingId] = React.useState<string | null>(null);
 
-export function LearningSpacesTable({ rows }: { rows: LearningSpaceRow[] }) {
+  const handleDelete = async (row: AdminLearningSpaceRow) => {
+    setDeletingId(row.id);
+    try {
+      const response = await fetch('/d/admin/spaces/actions/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ learningSpaceId: row.id }),
+      });
+      const payload = (await response.json()) as { success?: boolean; message?: string };
+      if (!response.ok || !payload.success) {
+        toast.error(payload.message ?? 'Unable to delete learning space.');
+        return;
+      }
+      toast.success('Learning space deleted.');
+      router.refresh();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Unable to delete learning space.');
+    } finally {
+      setDeletingId(null);
+      setConfirmDeleteRow(null);
+    }
+  };
+
+  const handleArchive = async (row: AdminLearningSpaceRow) => {
+    setArchivingId(row.id);
+    try {
+      const response = await fetch('/d/admin/spaces/actions/archive', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ learningSpaceId: row.id }),
+      });
+      const payload = (await response.json()) as { success?: boolean; message?: string };
+      if (!response.ok || !payload.success) {
+        toast.error(payload.message ?? 'Unable to archive learning space.');
+        return;
+      }
+      toast.success('Learning space archived.');
+      router.refresh();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Unable to archive learning space.');
+    } finally {
+      setArchivingId(null);
+    }
+  };
+
+  const handleUnarchive = async (row: AdminLearningSpaceRow) => {
+    setUnarchivingId(row.id);
+    try {
+      const response = await fetch('/d/admin/spaces/actions/unarchive', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ learningSpaceId: row.id }),
+      });
+      const payload = (await response.json()) as { success?: boolean; message?: string };
+      if (!response.ok || !payload.success) {
+        toast.error(payload.message ?? 'Unable to unarchive learning space.');
+        return;
+      }
+      toast.success('Learning space restored.');
+      router.refresh();
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : 'Unable to unarchive learning space.',
+      );
+    } finally {
+      setUnarchivingId(null);
+    }
+  };
+
+  const handleEdit = (row: AdminLearningSpaceRow) => {
+    toast.info(`Edit ${row.title} (coming soon).`);
+  };
+
   return (
     <div className="w-full border-y border-border bg-card">
       <Table className="min-w-full">
         <TableHeader>
           <TableRow>
             <TableHead>Title</TableHead>
-            <TableHead>Subject</TableHead>
-            <TableHead>Kind</TableHead>
+            <TableHead>Participants</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Created</TableHead>
+            <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {rows.map((row) => {
-            const Icon = KIND_ICON_MAP[row.kind] ?? Shield;
-            return (
+          {rows.map((row) => (
               <TableRow
                 key={row.id}
                 className="border-b border-border/60 last:border-b-0"
@@ -47,11 +136,11 @@ export function LearningSpacesTable({ rows }: { rows: LearningSpaceRow[] }) {
                   )}
                 </TableCell>
                 <TableCell>
-                  <p className="text-sm">{row.subject ?? '—'}</p>
-                </TableCell>
-                <TableCell className="flex items-center gap-2">
-                  <Icon className="size-4 text-muted-foreground" />
-                  <span className="capitalize text-sm">{row.kind.replace('_', ' ')}</span>
+                  <p className="text-sm text-muted-foreground">
+                    {row.participantNames.length
+                      ? row.participantNames.join(', ')
+                      : '—'}
+                  </p>
                 </TableCell>
                 <TableCell>
                   <Badge
@@ -69,14 +158,85 @@ export function LearningSpacesTable({ rows }: { rows: LearningSpaceRow[] }) {
                 </TableCell>
                 <TableCell>
                   <span className="text-sm">
-                    {new Date(row.createdAt).toLocaleDateString()}
+                    {new Date(row.created_at).toLocaleDateString()}
                   </span>
                 </TableCell>
+                <TableCell className="text-right">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" size="sm" className="px-2">
+                        <MoreHorizontal className="size-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => handleEdit(row)}>
+                        <Pencil className="mr-2 size-3" />
+                        Edit
+                      </DropdownMenuItem>
+                      {row.status === 'archived' ? (
+                        <DropdownMenuItem
+                          onClick={() => handleUnarchive(row)}
+                          disabled={unarchivingId === row.id}
+                        >
+                          <ArchiveRestore className="mr-2 size-3" />
+                          {unarchivingId === row.id ? 'Restoring…' : 'Unarchive'}
+                        </DropdownMenuItem>
+                      ) : (
+                        <DropdownMenuItem
+                          onClick={() => handleArchive(row)}
+                          disabled={archivingId === row.id}
+                        >
+                          <Archive className="mr-2 size-3" />
+                          {archivingId === row.id ? 'Archiving…' : 'Archive'}
+                        </DropdownMenuItem>
+                      )}
+                      <DropdownMenuItem
+                        onClick={() => setConfirmDeleteRow(row)}
+                        disabled={deletingId === row.id}
+                        className="text-destructive"
+                      >
+                        <Trash2 className="mr-2 size-3" />
+                        {deletingId === row.id ? 'Deleting…' : 'Delete'}
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
               </TableRow>
-            );
-          })}
+            ))}
         </TableBody>
       </Table>
+      <AlertDialog
+        open={Boolean(confirmDeleteRow)}
+        onOpenChange={(open) => {
+          if (!open) {
+            setConfirmDeleteRow(null);
+          }
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete learning space?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently remove the learning space, its channels, and schedules.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={Boolean(deletingId)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (confirmDeleteRow) {
+                  void handleDelete(confirmDeleteRow);
+                }
+              }}
+              disabled={Boolean(deletingId)}
+            >
+              {deletingId ? 'Deleting…' : 'Delete'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

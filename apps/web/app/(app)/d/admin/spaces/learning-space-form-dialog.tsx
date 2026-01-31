@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useRouter } from 'next/navigation';
 
 import {
   Button,
@@ -41,7 +42,9 @@ import {
   LEARNING_SPACE_ICON_OPTIONS,
   type LearningSpaceIconKey,
 } from '@iconicedu/ui-web/lib/icons';
+import type { RecurrenceFormData } from '@iconicedu/ui-web/lib/recurrence-types';
 import type { LearningSpaceLinkVM, UserProfileVM } from '@iconicedu/shared-types';
+import type { LearningSpaceCreatePayload } from '@iconicedu/web/lib/admin/learning-space-create';
 
 const KIND_OPTIONS = [
   { value: 'one_on_one', label: 'One on one' },
@@ -58,6 +61,7 @@ type LearningSpaceFormDialogProps = {
 export function LearningSpaceFormDialog({
   participantOptions = [],
 }: LearningSpaceFormDialogProps) {
+  const router = useRouter();
   const [open, setOpen] = React.useState(false);
   const [kind, setKind] = React.useState(KIND_OPTIONS[0].value);
   const [title, setTitle] = React.useState('');
@@ -68,21 +72,88 @@ export function LearningSpaceFormDialog({
   );
   const [participants, setParticipants] = React.useState<UserProfileVM[]>([]);
   const [resources, setResources] = React.useState<LearningSpaceLinkVM[]>([]);
+  const [schedules, setSchedules] = React.useState<RecurrenceFormData[]>([]);
   const [isSubmitted, setIsSubmitted] = React.useState(false);
-  const SelectedIcon = LEARNING_SPACE_ICON_MAP[iconKey];
+  const [isSaving, setIsSaving] = React.useState(false);
   const iconInvalid = isSubmitted && !iconKey;
   const titleInvalid = isSubmitted && !title.trim();
   const kindInvalid = isSubmitted && !kind;
+  const participantsInvalid = isSubmitted && participants.length === 0;
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const resetForm = () => {
+    setKind(KIND_OPTIONS[0].value);
+    setTitle('');
+    setSubject('');
+    setDescription('');
+    setIconKey(DEFAULT_LEARNING_SPACE_ICON_KEY);
+    setParticipants([]);
+    setResources([]);
+    setSchedules([]);
+    setIsSubmitted(false);
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsSubmitted(true);
-    if (!iconKey || !title.trim() || !kind) {
+    if (!iconKey || !title.trim() || !kind || participants.length === 0) {
       toast.error('Please fill in all required fields.');
       return;
     }
-    toast.success('Learning space placeholder created');
-    setOpen(false);
+
+    const payload: LearningSpaceCreatePayload = {
+      basics: {
+        title: title.trim(),
+        kind,
+        iconKey,
+        subject: subject || null,
+        description: description.trim() || null,
+      },
+      participants: participants.map((participant) => ({
+        profileId: participant.ids.id,
+        kind: participant.kind,
+        displayName: participant.profile.displayName,
+        avatarUrl: participant.profile.avatar.url ?? null,
+        themeKey: participant.ui?.themeKey ?? null,
+      })),
+      resources: resources.map((resource) => ({
+        label: resource.label,
+        iconKey: resource.iconKey ?? null,
+        url: resource.url ?? null,
+        status: resource.status ?? null,
+        hidden: resource.hidden ?? null,
+      })),
+      schedules: schedules
+        .filter((schedule) => schedule.startDate)
+        .map((schedule) => ({
+          startDate: schedule.startDate?.toISOString() ?? '',
+          timezone: schedule.timezone,
+          rule: schedule.rule,
+          exceptions: schedule.exceptions,
+          overrides: schedule.overrides,
+        })),
+    };
+
+    setIsSaving(true);
+    try {
+      const response = await fetch('/d/admin/spaces/actions/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const result = (await response.json()) as { success?: boolean; message?: string };
+      if (!response.ok || !result.success) {
+        toast.error(result.message ?? 'Unable to create learning space.');
+        return;
+      }
+      toast.success('Learning space created.');
+      setOpen(false);
+      resetForm();
+      router.refresh();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Unable to create learning space.');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -93,7 +164,7 @@ export function LearningSpaceFormDialog({
           Add new
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[min(95vw,30rem)] sm:max-w-[min(95vw,30rem)] max-w-none overflow-hidden p-0">
+      <DialogContent className="w-[min(95vw,60rem)] sm:max-w-[min(95vw,60rem)] max-w-none overflow-hidden p-0">
         <div className="flex max-h-[90vh] flex-col overflow-hidden rounded-2xl border border-border bg-card">
           <div className="px-6 py-5">
             <DialogHeader>
@@ -239,13 +310,10 @@ export function LearningSpaceFormDialog({
                   <ResourceLinksEditor links={resources} onLinksChange={setResources} />
                 </FieldSet>
                 <FieldSeparator />
-                <FieldSet>
-                  <FieldLegend>Schedule</FieldLegend>
-                  <RecurrenceScheduler className="max-w-none" />
-                </FieldSet>
-                <FieldSeparator />
-                <FieldSet>
-                  <FieldLegend>Participants</FieldLegend>
+                <FieldSet data-invalid={participantsInvalid}>
+                  <FieldLegend>
+                    Participants <span className="text-destructive">*</span>
+                  </FieldLegend>
                   <FieldDescription>
                     Select families and educators with grouped chips for quick selection.
                   </FieldDescription>
@@ -268,6 +336,20 @@ export function LearningSpaceFormDialog({
                       placeholder="Add participant"
                     />
                   </FieldGroup>
+                  {participantsInvalid && (
+                    <FieldDescription className="text-destructive">
+                      At least one participant is required.
+                    </FieldDescription>
+                  )}
+                </FieldSet>
+                <FieldSeparator />
+                <FieldSet>
+                  <FieldLegend>Schedule</FieldLegend>
+                  <RecurrenceScheduler
+                    className="max-w-none"
+                    schedules={schedules}
+                    onSchedulesChange={setSchedules}
+                  />
                 </FieldSet>
               </form>
               <ScrollBar orientation="vertical" className="right-2" />
@@ -281,8 +363,9 @@ export function LearningSpaceFormDialog({
                   type="submit"
                   form="learning-space-form"
                   className="w-full sm:w-auto"
+                  disabled={isSaving}
                 >
-                  Create space
+                  {isSaving ? 'Creating...' : 'Create space'}
                 </Button>
               </DialogFooter>
             </div>
