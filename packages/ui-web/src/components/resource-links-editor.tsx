@@ -64,6 +64,7 @@ function getIconComponent(iconKey: string | null) {
 export function ResourceLinksEditor({ links, onLinksChange, className }: ResourceLinksEditorProps) {
   const [isOpen, setIsOpen] = React.useState(false);
   const [editingIndex, setEditingIndex] = React.useState<number | null>(null);
+  const [isSubmitted, setIsSubmitted] = React.useState(false);
   const [formData, setFormData] = React.useState({
     label: '',
     iconKey: 'link',
@@ -78,6 +79,7 @@ export function ResourceLinksEditor({ links, onLinksChange, className }: Resourc
       url: '',
       status: 'active',
     });
+    setIsSubmitted(false);
   };
 
   const handleOpenChange = (open: boolean) => {
@@ -88,8 +90,15 @@ export function ResourceLinksEditor({ links, onLinksChange, className }: Resourc
     }
   };
 
+  const openNewDialog = () => {
+    resetForm();
+    setEditingIndex(null);
+    setIsOpen(true);
+  };
+
   const handleEdit = (link: LearningSpaceLinkVM, index: number) => {
     setEditingIndex(index);
+    setIsSubmitted(false);
     setFormData({
       label: link.label ?? '',
       iconKey: link.iconKey ?? 'link',
@@ -103,9 +112,11 @@ export function ResourceLinksEditor({ links, onLinksChange, className }: Resourc
     onLinksChange(links.filter((_, idx) => idx !== index));
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    if (!formData.label.trim() || !formData.url.trim()) return;
+  const handleSave = () => {
+    setIsSubmitted(true);
+    if (!formData.label.trim() || !formData.url.trim()) {
+      return;
+    }
 
     if (editingIndex !== null) {
       onLinksChange(
@@ -119,13 +130,17 @@ export function ResourceLinksEditor({ links, onLinksChange, className }: Resourc
     handleOpenChange(false);
   };
 
+  const labelInvalid = isSubmitted && !formData.label.trim();
+  const urlInvalid = isSubmitted && !formData.url.trim();
+  const canSave = Boolean(formData.label.trim() && formData.url.trim());
+
   return (
     <div className={className}>
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-medium text-foreground">Resource Links</h3>
         <Dialog open={isOpen} onOpenChange={handleOpenChange}>
           <DialogTrigger asChild>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" type="button" onClick={openNewDialog}>
               <Plus className="size-4" />
               Add Link
             </Button>
@@ -141,7 +156,7 @@ export function ResourceLinksEditor({ links, onLinksChange, className }: Resourc
                   : 'Add a new resource link with a label, icon, and URL.'}
               </DialogDescription>
             </DialogHeader>
-            <form onSubmit={handleSubmit} className="grid gap-4 py-4">
+            <div className="grid gap-4 py-4">
               <div className="grid gap-2">
                 <Label htmlFor="resource-label">
                   Label <span className="text-destructive">*</span>
@@ -155,6 +170,9 @@ export function ResourceLinksEditor({ links, onLinksChange, className }: Resourc
                   }
                   required
                 />
+                {labelInvalid && (
+                  <p className="text-xs text-destructive">Label is required.</p>
+                )}
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="resource-url">
@@ -170,6 +188,9 @@ export function ResourceLinksEditor({ links, onLinksChange, className }: Resourc
                   }
                   required
                 />
+                {urlInvalid && (
+                  <p className="text-xs text-destructive">URL is required.</p>
+                )}
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
@@ -218,11 +239,11 @@ export function ResourceLinksEditor({ links, onLinksChange, className }: Resourc
                 <Button type="button" variant="outline" onClick={() => handleOpenChange(false)}>
                   Cancel
                 </Button>
-                <Button type="submit">
+                <Button type="button" onClick={handleSave} disabled={!canSave}>
                   {editingIndex !== null ? 'Save changes' : 'Add link'}
                 </Button>
               </DialogFooter>
-            </form>
+            </div>
           </DialogContent>
         </Dialog>
       </div>

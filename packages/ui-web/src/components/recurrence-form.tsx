@@ -75,7 +75,7 @@ export function RecurrenceForm({
 }: RecurrenceFormProps) {
   const [isSubmitted, setIsSubmitted] = React.useState(false);
   const [startDate, setStartDate] = React.useState<Date | undefined>(
-    defaultValues?.startDate,
+    defaultValues?.startDate ?? new Date(),
   );
   const [timezone, setTimezone] = React.useState<string>(
     defaultValues?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
