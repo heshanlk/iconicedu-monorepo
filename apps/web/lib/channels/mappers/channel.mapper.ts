@@ -53,6 +53,8 @@ export function mapChannelRowToVM(
     readState?: ChannelReadStateVM;
   },
 ): ChannelVM {
+  const isLearningSpace =
+    row.purpose === 'learning-space' || row.primary_entity_kind === 'learning_space';
   const context: ChannelContextVM | null =
     row.primary_entity_kind && row.primary_entity_id
       ? {
@@ -107,6 +109,12 @@ export function mapChannelRowToVM(
       },
       readState: input.readState,
     },
+    ui: isLearningSpace
+      ? {
+          defaultRightPanelOpen: true,
+          defaultRightPanelKey: 'channel_info',
+        }
+      : undefined,
   };
 }
 

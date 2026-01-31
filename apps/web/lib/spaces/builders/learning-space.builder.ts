@@ -81,6 +81,26 @@ async function resolveSchedule(
   return scheduleId ? buildClassScheduleById(supabase, orgId, scheduleId) : null;
 }
 
+async function resolveNextScheduleId(
+  supabase: SupabaseClient,
+  orgId: string,
+  learningSpaceId: string,
+): Promise<string | null> {
+  const nowIso = new Date().toISOString();
+  const { data } = await supabase
+    .from('class_schedules')
+    .select('id, start_at')
+    .eq('org_id', orgId)
+    .eq('source_learning_space_id', learningSpaceId)
+    .is('deleted_at', null)
+    .gte('start_at', nowIso)
+    .order('start_at', { ascending: true })
+    .limit(1)
+    .maybeSingle<{ id: string }>();
+
+  return data?.id ?? null;
+}
+
 export async function buildLearningSpaceFromRow(
   supabase: SupabaseClient,
   row: LearningSpaceRow,
@@ -204,7 +224,18 @@ export async function buildLearningSpaceByChannelId(
     return null;
   }
 
-  return buildLearningSpaceById(supabase, orgId, channelRow.learning_space_id);
+  const scheduleId = await resolveNextScheduleId(
+    supabase,
+    orgId,
+    channelRow.learning_space_id,
+  );
+
+  return buildLearningSpaceById(
+    supabase,
+    orgId,
+    channelRow.learning_space_id,
+    scheduleId,
+  );
 }
 
 function groupBy<T, K extends string>(
