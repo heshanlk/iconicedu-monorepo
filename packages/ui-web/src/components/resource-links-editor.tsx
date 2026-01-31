@@ -65,6 +65,7 @@ export function ResourceLinksEditor({ links, onLinksChange, className }: Resourc
   const [isOpen, setIsOpen] = React.useState(false);
   const [editingIndex, setEditingIndex] = React.useState<number | null>(null);
   const [isSubmitted, setIsSubmitted] = React.useState(false);
+  const contentRef = React.useRef<HTMLDivElement | null>(null);
   const [formData, setFormData] = React.useState({
     label: '',
     iconKey: 'link',
@@ -133,6 +134,25 @@ export function ResourceLinksEditor({ links, onLinksChange, className }: Resourc
   const labelInvalid = isSubmitted && !formData.label.trim();
   const urlInvalid = isSubmitted && !formData.url.trim();
   const canSave = Boolean(formData.label.trim() && formData.url.trim());
+  const handleDialogKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  };
+
+  React.useEffect(() => {
+    if (!isOpen) return;
+    const handler = (event: KeyboardEvent) => {
+      if (event.key !== 'Enter') return;
+      if (contentRef.current && contentRef.current.contains(event.target as Node)) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    };
+    document.addEventListener('keydown', handler, true);
+    return () => document.removeEventListener('keydown', handler, true);
+  }, [isOpen]);
 
   return (
     <div className={className}>
@@ -145,7 +165,8 @@ export function ResourceLinksEditor({ links, onLinksChange, className }: Resourc
               Add Link
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent onKeyDownCapture={handleDialogKeyDown}>
+            <div ref={contentRef}>
             <DialogHeader>
               <DialogTitle>
                 {editingIndex !== null ? 'Edit Resource Link' : 'Add Resource Link'}
@@ -156,7 +177,7 @@ export function ResourceLinksEditor({ links, onLinksChange, className }: Resourc
                   : 'Add a new resource link with a label, icon, and URL.'}
               </DialogDescription>
             </DialogHeader>
-            <div className="grid gap-4 py-4">
+              <div className="grid gap-4 py-4">
               <div className="grid gap-2">
                 <Label htmlFor="resource-label">
                   Label <span className="text-destructive">*</span>
@@ -168,6 +189,7 @@ export function ResourceLinksEditor({ links, onLinksChange, className }: Resourc
                   onChange={(event) =>
                     setFormData((prev) => ({ ...prev, label: event.target.value }))
                   }
+                  onKeyDown={handleDialogKeyDown}
                   required
                 />
                 {labelInvalid && (
@@ -186,6 +208,7 @@ export function ResourceLinksEditor({ links, onLinksChange, className }: Resourc
                   onChange={(event) =>
                     setFormData((prev) => ({ ...prev, url: event.target.value }))
                   }
+                  onKeyDown={handleDialogKeyDown}
                   required
                 />
                 {urlInvalid && (
@@ -243,6 +266,7 @@ export function ResourceLinksEditor({ links, onLinksChange, className }: Resourc
                   {editingIndex !== null ? 'Save changes' : 'Add link'}
                 </Button>
               </DialogFooter>
+              </div>
             </div>
           </DialogContent>
         </Dialog>
@@ -283,12 +307,18 @@ export function ResourceLinksEditor({ links, onLinksChange, className }: Resourc
                   >
                     {link.status ?? 'active'}
                   </span>
-                  <Button variant="ghost" size="icon-sm" onClick={() => handleEdit(link, index)}>
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    type="button"
+                    onClick={() => handleEdit(link, index)}
+                  >
                     <Pencil className="size-4" />
                   </Button>
                   <Button
                     variant="ghost"
                     size="icon-sm"
+                    type="button"
                     onClick={() => handleDelete(index)}
                   >
                     <Trash2 className="size-4 text-destructive" />
