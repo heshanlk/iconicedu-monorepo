@@ -49,6 +49,15 @@ export async function loadSidebarContext(
     input.profileKindOverride,
   );
 
+  const directMessages =
+    profileVM.kind === 'guardian'
+      ? input.baseSidebarData.collections.directMessages.filter((channel) =>
+          channel.collections.participants.some(
+            (participant) => participant.ids.id === profileVM.ids.id,
+          ),
+        )
+      : input.baseSidebarData.collections.directMessages;
+
   const computedStep = determineOnboardingStep(profileVM, accountVM);
   const statusResponse = await getUserOnboardingStatusByProfileId(
     supabase,
@@ -89,6 +98,10 @@ export async function loadSidebarContext(
       user: {
         profile: profileVM,
         account: accountVM,
+      },
+      collections: {
+        ...input.baseSidebarData.collections,
+        directMessages,
       },
     },
     accountVM,

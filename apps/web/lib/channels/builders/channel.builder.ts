@@ -42,8 +42,18 @@ export async function buildDirectMessageChannelsWithMessages(
   orgId: string,
   options: BuildChannelOptions = {},
 ): Promise<ChannelVM[]> {
-  return buildChannelsByFilter(supabase, orgId, options, (row) =>
+  const channels = await buildChannelsByFilter(supabase, orgId, options, (row) =>
     row.kind === 'dm' || row.kind === 'group_dm',
+  );
+
+  if (!options.accountId) {
+    return channels;
+  }
+
+  return channels.filter((channel) =>
+    channel.collections.participants.some(
+      (participant) => participant.ids.accountId === options.accountId,
+    ),
   );
 }
 
