@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@iconicedu/ui-web';
-import { Loader2, RotateCw } from 'lucide-react';
+import { Loader2, RotateCw } from '@iconicedu/ui-web';
 
 import type { AdminFamilyRow } from '@iconicedu/web/lib/admin/families';
 import { FamiliesTable } from '@iconicedu/web/app/(app)/d/admin/users/families/families-table';

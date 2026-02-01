@@ -19,15 +19,19 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  Archive,
+  ArchiveRestore,
+  MoreHorizontal,
+  Pencil,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
+  Trash2,
   toast,
 } from '@iconicedu/ui-web';
-import { Archive, MoreHorizontal, Pencil, Trash2, ArchiveRestore } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@iconicedu/ui-web/ui/tooltip';
 import { AvatarWithStatus } from '@iconicedu/ui-web/components/shared/avatar-with-status';
 import { getLearningSpaceIcon } from '@iconicedu/ui-web/lib/icons';

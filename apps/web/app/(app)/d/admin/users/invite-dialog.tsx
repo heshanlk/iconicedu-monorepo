@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { Copy } from 'lucide-react';
+import { Copy } from '@iconicedu/ui-web';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 

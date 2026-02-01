@@ -13,7 +13,7 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from '@iconicedu/ui-web/ui/input-group';
-import { SearchIcon } from 'lucide-react';
+import { SearchIcon } from '@iconicedu/ui-web';
 
 export const metadata: Metadata = {
   title: '404 · Not Found',

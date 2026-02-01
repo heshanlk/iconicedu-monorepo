@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@iconicedu/ui-web';
-import { Loader2, RotateCw } from 'lucide-react';
+import { Loader2, RotateCw } from '@iconicedu/ui-web';
 
 import type { AdminLearningSpaceRow } from '@iconicedu/web/lib/admin/learning-spaces';
 import { LearningSpacesTable } from '@iconicedu/web/app/(app)/d/admin/spaces/learning-spaces-table';

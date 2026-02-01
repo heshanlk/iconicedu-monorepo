@@ -50,7 +50,7 @@ import {
   MoreHorizontal,
   RotateCw,
   Loader2,
-} from 'lucide-react';
+} from '@iconicedu/ui-web';
 import { cn } from '@iconicedu/ui-web/lib/utils';
 
 import { InviteUserDialog } from '@iconicedu/web/app/(app)/d/admin/users/invite-dialog';

@@ -55,5 +55,18 @@ export { Toaster } from '@iconicedu/ui-web/ui/sonner';
 export { toast } from 'sonner';
 export * from '@iconicedu/ui-web/lib/icons';
 export * from '@iconicedu/ui-web/lib/recurrence-types';
-export { MoreHorizontal, Pencil, Trash2, UserCheck, Plus } from 'lucide-react';
+export {
+  Archive,
+  ArchiveRestore,
+  Copy,
+  Loader2,
+  MoreHorizontal,
+  Pencil,
+  Plus,
+  RotateCw,
+  SearchIcon,
+  Trash2,
+  UserCheck,
+  MessageCircle,
+} from 'lucide-react';
 export { Briefcase, GraduationCap, Shield, User, Users } from 'lucide-react';

@@ -65,3 +65,7 @@
 - Use pagination/cursors for message and thread lists.
 - Prefer server-side aggregation over client-side computation.
 - Keep UI lists virtualizable and avoid deep nesting in render loops.
+
+## 10. Testing Expectations
+- For every new file and any updated file, add unit tests that cover basic usage and edge cases.
+- Co-locate tests with the owning package/app conventions and keep them deterministic.
