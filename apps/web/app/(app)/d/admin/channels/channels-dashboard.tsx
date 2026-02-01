@@ -71,7 +71,7 @@ type CreateChannelFormState = {
 export function ChannelsDashboard({ rows }: ChannelsDashboardProps) {
   const router = useRouter();
   const [search, setSearch] = React.useState('');
-  const [statusFilter, setStatusFilter] = React.useState<'all' | string>('all');
+  const [typeFilter, setTypeFilter] = React.useState<'all' | string>('all');
   const [pageIndex, setPageIndex] = React.useState(1);
   const [pageSize, setPageSize] = React.useState(PAGE_SIZES[0]);
   const [isPending, startTransition] = React.useTransition();
@@ -115,7 +115,7 @@ export function ChannelsDashboard({ rows }: ChannelsDashboardProps) {
 
   React.useEffect(() => {
     setPageIndex(1);
-  }, [search, statusFilter, pageSize]);
+  }, [search, typeFilter, pageSize]);
 
   React.useEffect(() => {
     void loadParticipants();
@@ -125,7 +125,7 @@ export function ChannelsDashboard({ rows }: ChannelsDashboardProps) {
 
   const filteredRows = React.useMemo(() => {
     return rows.filter((row) => {
-      if (statusFilter !== 'all' && row.status !== statusFilter) {
+      if (typeFilter !== 'all' && row.kind !== typeFilter) {
         return false;
       }
       if (!normalizedSearch) {
@@ -142,7 +142,7 @@ export function ChannelsDashboard({ rows }: ChannelsDashboardProps) {
       }
       return false;
     });
-  }, [rows, normalizedSearch, statusFilter]);
+  }, [rows, normalizedSearch, typeFilter]);
 
   const sortedRows = React.useMemo(() => {
     const collator = new Intl.Collator('en', { sensitivity: 'base', numeric: true });
@@ -546,18 +546,19 @@ export function ChannelsDashboard({ rows }: ChannelsDashboardProps) {
             className="w-64"
           />
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <span>Status:</span>
+            <span>Type:</span>
             <Select
-              value={statusFilter}
-              onValueChange={(value) => setStatusFilter(value as 'all' | string)}
+              value={typeFilter}
+              onValueChange={(value) => setTypeFilter(value as 'all' | string)}
             >
               <SelectTrigger size="sm" className="w-28">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All</SelectItem>
-                <SelectItem value="active">Active</SelectItem>
-                <SelectItem value="archived">Archived</SelectItem>
+                <SelectItem value="channel">Channel</SelectItem>
+                <SelectItem value="dm">DM</SelectItem>
+                <SelectItem value="group_dm">Group DM</SelectItem>
               </SelectContent>
             </Select>
           </div>
