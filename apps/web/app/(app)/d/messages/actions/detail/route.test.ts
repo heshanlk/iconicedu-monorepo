@@ -1,0 +1,47 @@
+import { describe, expect, it, vi } from 'vitest';
+
+import { GET } from '@iconicedu/web/app/(app)/d/messages/actions/detail/route';
+
+const buildMessageById = vi.fn();
+
+vi.mock('@iconicedu/web/lib/supabase/server', () => ({
+  createSupabaseServerClient: vi.fn(() => ({})),
+}));
+
+vi.mock('@iconicedu/web/lib/auth/requireAuthedUser', () => ({
+  requireAuthedUser: vi.fn(async () => ({ id: 'auth-user' })),
+}));
+
+vi.mock('@iconicedu/web/lib/accounts/queries/accounts.query', () => ({
+  getAccountByAuthUserId: vi.fn(async () => ({ data: { id: 'account-1', org_id: 'org-1' } })),
+}));
+
+vi.mock('@iconicedu/web/lib/messages/builders/message.builder', () => ({
+  buildMessageById: (...args: unknown[]) => buildMessageById(...args),
+}));
+
+describe('GET /d/messages/actions/detail', () => {
+  it('returns 400 when messageId is missing', async () => {
+    const response = await GET(new Request('http://localhost/d/messages/actions/detail'));
+
+    expect(response.status).toBe(400);
+    const payload = await response.json();
+    expect(payload).toEqual({ success: false, message: 'messageId is required' });
+  });
+
+  it('returns message payload', async () => {
+    buildMessageById.mockResolvedValueOnce({ ids: { id: 'message-1', orgId: 'org-1' } });
+
+    const response = await GET(
+      new Request('http://localhost/d/messages/actions/detail?messageId=message-1'),
+    );
+
+    expect(buildMessageById).toHaveBeenCalledWith({}, 'org-1', 'message-1');
+    expect(response.status).toBe(200);
+    const payload = await response.json();
+    expect(payload).toEqual({
+      success: true,
+      message: { ids: { id: 'message-1', orgId: 'org-1' } },
+    });
+  });
+});

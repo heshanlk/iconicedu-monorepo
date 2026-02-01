@@ -1,21 +1,30 @@
 'use client';
 
-import type { ChannelVM, LearningSpaceVM, UserProfileVM } from '@iconicedu/shared-types';
-import { MessagesShell, LearningSpaceInfoPanel } from '@iconicedu/ui-web';
+import type {
+  ChannelVM,
+  LearningSpaceVM,
+  MessageSendTextInput,
+  MessageVM,
+  UserProfileVM,
+} from '@iconicedu/shared-types';
+import { LearningSpaceInfoPanel } from '@iconicedu/ui-web';
+import { MessagesShellClient } from '@iconicedu/web/app/(app)/d/messages/messages-shell-client';
 
 export function LearningSpaceShell({
   channel,
   learningSpace,
   currentUserId,
   currentUserProfile,
+  sendTextMessage,
 }: {
   channel: ChannelVM;
   learningSpace: LearningSpaceVM | null;
   currentUserId?: string;
   currentUserProfile?: UserProfileVM | null;
+  sendTextMessage: (input: MessageSendTextInput) => Promise<MessageVM>;
 }) {
   return (
-    <MessagesShell
+    <MessagesShellClient
       channel={channel}
       currentUserId={currentUserId}
       currentUserProfile={currentUserProfile}
@@ -24,6 +33,7 @@ export function LearningSpaceShell({
           <LearningSpaceInfoPanel {...props} learningSpace={learningSpace} />
         ),
       }}
+      sendTextMessage={sendTextMessage}
     />
   );
 }

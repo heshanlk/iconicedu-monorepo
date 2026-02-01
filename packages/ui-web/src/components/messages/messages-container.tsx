@@ -11,6 +11,8 @@ import type {
   EducatorProfileVM,
   GuardianProfileVM,
   MessageVM,
+  MessagesRealtimeClient,
+  MessageWriteClient,
   TextMessageVM,
   ThreadVM,
   UserProfileVM,
@@ -20,6 +22,8 @@ export interface MessagesContainerProps {
   channel: ChannelVM;
   currentUserId?: string;
   currentUserProfile?: UserProfileVM | null;
+  realtimeClient?: MessagesRealtimeClient | null;
+  messageWriteClient?: MessageWriteClient | null;
 }
 
 const isGuardianProfile = (profile: UserProfileVM): profile is GuardianProfileVM =>
@@ -32,8 +36,11 @@ export function MessagesContainer({
   channel,
   currentUserId: currentUserIdProp,
   currentUserProfile,
+  realtimeClient,
+  messageWriteClient,
 }: MessagesContainerProps) {
   const messageListRef = useRef<MessageListRef>(null);
+  const messagesRef = useRef<MessageVM[]>([]);
   const {
     toggle,
     setSavedCount,
@@ -43,6 +50,7 @@ export function MessagesContainer({
     setCurrentUserId,
     setMessages,
     setCreateTextMessage,
+    setSendTextMessage,
     setThreadHandlers,
     setScrollToMessage,
     messageFilter,
@@ -115,25 +123,52 @@ export function MessagesContainer({
       if (messageFilter) {
         toggleMessageFilter(messageFilter);
       }
-      const newMessage: TextMessageVM = {
-        ids: { id: `msg-${Date.now()}`, orgId: channel.ids.orgId },
-        core: {
-          type: 'text',
-          sender: senderProfile,
-          createdAt: new Date().toISOString(),
-          visibility: { type: 'all' },
-        },
-        social: {
-          reactions: [],
-        },
-        state: {
-          isSaved: false,
-        },
-        content: { text: content },
+      const sendMessage = async () => {
+        if (messageWriteClient && currentUserId) {
+          const created = await messageWriteClient.sendTextMessage({
+            orgId: channel.ids.orgId,
+            channelId: channel.ids.id,
+            senderProfileId: currentUserId,
+            content,
+          });
+          const exists = messagesRef.current.some(
+            (message) => message.ids.id === created.ids.id,
+          );
+          if (!exists) {
+            addMessage(created);
+          }
+          return;
+        }
+        const newMessage: TextMessageVM = {
+          ids: { id: `msg-${Date.now()}`, orgId: channel.ids.orgId },
+          core: {
+            type: 'text',
+            sender: senderProfile,
+            createdAt: new Date().toISOString(),
+            visibility: { type: 'all' },
+          },
+          social: {
+            reactions: [],
+          },
+          state: {
+            isSaved: false,
+          },
+          content: { text: content },
+        };
+        addMessage(newMessage);
       };
-      addMessage(newMessage);
+      void sendMessage();
     },
-    [addMessage, senderProfile, messageFilter, toggleMessageFilter, channel.ids.orgId],
+    [
+      addMessage,
+      senderProfile,
+      messageFilter,
+      toggleMessageFilter,
+      channel.ids.orgId,
+      channel.ids.id,
+      messageWriteClient,
+      currentUserId,
+    ],
   );
 
   const handleProfileClick = useCallback(
@@ -232,6 +267,64 @@ export function MessagesContainer({
   }, [messages, setMessages]);
 
   useEffect(() => {
+    messagesRef.current = messages;
+  }, [messages]);
+
+  useEffect(() => {
+    if (!realtimeClient) return;
+    let isActive = true;
+    let cleanup: (() => void) | undefined;
+
+    const subscribe = async () => {
+      const result = await realtimeClient.subscribe({
+        orgId: channel.ids.orgId,
+        channelId: channel.ids.id,
+        onEvent: (event) => {
+          if (!isActive) return;
+          if (event.type === 'message-added') {
+            const exists = messagesRef.current.some(
+              (message) => message.ids.id === event.message.ids.id,
+            );
+            if (exists) {
+              updateMessage(event.message.ids.id, event.message);
+              return;
+            }
+            addMessage(event.message);
+          }
+          if (event.type === 'message-updated') {
+            updateMessage(event.message.ids.id, event.message);
+          }
+          if (event.type === 'message-deleted') {
+            deleteMessage(event.messageId);
+          }
+        },
+      });
+
+      if (typeof result === 'function') {
+        cleanup = result;
+        return;
+      }
+      if (result && typeof result.unsubscribe === 'function') {
+        cleanup = () => result.unsubscribe();
+      }
+    };
+
+    void subscribe();
+
+    return () => {
+      isActive = false;
+      cleanup?.();
+    };
+  }, [
+    realtimeClient,
+    channel.ids.orgId,
+    channel.ids.id,
+    addMessage,
+    updateMessage,
+    deleteMessage,
+  ]);
+
+  useEffect(() => {
     if (!senderProfile) return;
     setCreateTextMessage(
       (content: string): TextMessageVM => ({
@@ -252,6 +345,53 @@ export function MessagesContainer({
       }),
     );
   }, [senderProfile, setCreateTextMessage, channel.ids.orgId]);
+
+  useEffect(() => {
+    if (!senderProfile) return;
+    setSendTextMessage(async ({ content, threadId, threadParentId }) => {
+      if (messageWriteClient && currentUserId) {
+        const created = await messageWriteClient.sendTextMessage({
+          orgId: channel.ids.orgId,
+          channelId: channel.ids.id,
+          senderProfileId: currentUserId,
+          content,
+          threadId,
+          threadParentId,
+        });
+        const exists = messagesRef.current.some(
+          (message) => message.ids.id === created.ids.id,
+        );
+        if (!exists) {
+          addMessage(created);
+        }
+        return created;
+      }
+      return {
+        ids: { id: `reply-${Date.now()}`, orgId: channel.ids.orgId },
+        core: {
+          type: 'text',
+          sender: senderProfile,
+          createdAt: new Date().toISOString(),
+          visibility: { type: 'all' },
+        },
+        social: {
+          reactions: [],
+        },
+        state: {
+          isSaved: false,
+        },
+        content: { text: content },
+      };
+    });
+  }, [
+    senderProfile,
+    setSendTextMessage,
+    channel.ids.orgId,
+    channel.ids.id,
+    messageWriteClient,
+    currentUserId,
+    addMessage,
+  ]);
 
   useEffect(() => {
     setThreadHandlers({

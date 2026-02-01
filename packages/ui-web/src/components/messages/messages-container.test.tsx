@@ -7,6 +7,7 @@ import type { ChannelVM, UserProfileVM } from '@iconicedu/shared-types';
 
 const setCurrentUserId = vi.fn();
 const setCreateTextMessage = vi.fn();
+const setSendTextMessage = vi.fn();
 
 vi.mock('../../hooks/use-messages', () => ({
   useMessages: () => ({
@@ -30,6 +31,7 @@ vi.mock('./context/messages-state-provider', () => ({
     setCurrentUserId,
     setMessages: vi.fn(),
     setCreateTextMessage,
+    setSendTextMessage,
     setThreadHandlers: vi.fn(),
     setScrollToMessage: vi.fn(),
     messageFilter: null,

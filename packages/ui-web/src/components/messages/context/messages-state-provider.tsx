@@ -28,6 +28,7 @@ interface MessagesStateContextValue {
   messages: MessageVM[];
   messageFilter: MessageFilterKey | null;
   createTextMessage: (content: string) => TextMessageVM | null;
+  sendTextMessage: SendTextMessageHandler;
   threadHandlers: ThreadActionHandlers;
   state: MessagesRightSidebarState;
   open: (intent: MessagesRightPanelIntent) => void;
@@ -43,6 +44,7 @@ interface MessagesStateContextValue {
   setSessionSummaryCount: (count: number) => void;
   setMessages: (messages: MessageVM[]) => void;
   setCreateTextMessage: (factory: (content: string) => TextMessageVM | null) => void;
+  setSendTextMessage: (handler: SendTextMessageHandler) => void;
   setThreadHandlers: (handlers: ThreadActionHandlers) => void;
   toggleMessageFilter: (key: MessageFilterKey) => void;
   appendThreadMessage: (threadId: UUID, message: MessageVM) => void;
@@ -63,6 +65,12 @@ type ThreadActionHandlers = {
   onToggleSaved?: (messageId: string) => void;
   onToggleHidden?: (messageId: string) => void;
 };
+
+export type SendTextMessageHandler = (input: {
+  content: string;
+  threadId?: string | null;
+  threadParentId?: string | null;
+}) => Promise<MessageVM | null>;
 
 export type MessageFilterKey = 'homework' | 'session-summary';
 
@@ -103,6 +111,9 @@ export function MessagesStateProvider({
   const [createTextMessage, setCreateTextMessage] = useState<
     (content: string) => TextMessageVM | null
   >(() => () => null);
+  const [sendTextMessage, setSendTextMessage] = useState<SendTextMessageHandler>(
+    async () => null,
+  );
   const [threadHandlers, setThreadHandlers] = useState<ThreadActionHandlers>({});
   const [threadData, setThreadDataState] = useState<Record<UUID, ThreadData>>({});
   const [scrollToMessage, setScrollToMessage] = useState<
@@ -188,6 +199,10 @@ export function MessagesStateProvider({
     [],
   );
 
+  const setSendTextMessageFactory = useCallback((handler: SendTextMessageHandler) => {
+    setSendTextMessage(() => handler);
+  }, []);
+
   const setThreadHandlersFactory = useCallback((handlers: ThreadActionHandlers) => {
     setThreadHandlers(handlers);
   }, []);
@@ -202,6 +217,7 @@ export function MessagesStateProvider({
       messages,
       messageFilter,
       createTextMessage,
+      sendTextMessage,
       threadHandlers,
       state,
       open,
@@ -214,6 +230,7 @@ export function MessagesStateProvider({
       setSessionSummaryCount,
       setMessages,
       setCreateTextMessage: setCreateTextMessageFactory,
+      setSendTextMessage: setSendTextMessageFactory,
       setThreadHandlers: setThreadHandlersFactory,
       toggleMessageFilter,
       appendThreadMessage,
@@ -231,6 +248,7 @@ export function MessagesStateProvider({
       messages,
       messageFilter,
       createTextMessage,
+      sendTextMessage,
       threadHandlers,
       state,
       open,
@@ -243,6 +261,7 @@ export function MessagesStateProvider({
       setSessionSummaryCount,
       setMessages,
       setCreateTextMessageFactory,
+      setSendTextMessageFactory,
       setThreadHandlersFactory,
       toggleMessageFilter,
       appendThreadMessage,

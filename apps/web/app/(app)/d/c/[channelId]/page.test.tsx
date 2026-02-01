@@ -7,8 +7,15 @@ import Page from '@iconicedu/web/app/(app)/d/c/[channelId]/page';
 const messagesShellMock = vi.fn(() => null);
 
 vi.mock('@iconicedu/ui-web', () => ({
-  MessagesShell: (props: unknown) => messagesShellMock(props),
   DashboardHeader: () => null,
+}));
+
+vi.mock('@iconicedu/web/app/(app)/d/messages/messages-shell-client', () => ({
+  MessagesShellClient: (props: unknown) => messagesShellMock(props),
+}));
+
+vi.mock('@iconicedu/web/app/actions/messages', () => ({
+  sendTextMessageAction: vi.fn(),
 }));
 
 vi.mock('@iconicedu/web/lib/supabase/server', () => ({

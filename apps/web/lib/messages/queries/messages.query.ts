@@ -65,6 +65,20 @@ export async function getMessagesByChannelId(
     .order('created_at', { ascending: true });
 }
 
+export async function getMessageById(
+  supabase: SupabaseClient,
+  orgId: string,
+  messageId: string,
+) {
+  return supabase
+    .from<MessageRow>('messages')
+    .select(MESSAGE_SELECT)
+    .eq('org_id', orgId)
+    .eq('id', messageId)
+    .is('deleted_at', null)
+    .maybeSingle();
+}
+
 export async function getMessagesByChannelIds(
   supabase: SupabaseClient,
   orgId: string,

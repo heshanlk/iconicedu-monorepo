@@ -14,6 +14,10 @@ vi.mock('@iconicedu/web/app/(app)/d/spaces/[channelId]/learning-space-shell', ()
   LearningSpaceShell: (props: unknown) => learningSpaceShellMock(props),
 }));
 
+vi.mock('@iconicedu/web/app/actions/messages', () => ({
+  sendTextMessageAction: vi.fn(),
+}));
+
 vi.mock('@iconicedu/web/lib/supabase/server', () => ({
   createSupabaseServerClient: vi.fn(() => ({})),
 }));

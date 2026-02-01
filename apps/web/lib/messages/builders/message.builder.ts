@@ -9,6 +9,7 @@ import type {
 
 import {
   getMessagesByChannelId,
+  getMessageById,
   getMessageTextByMessageIds,
   getMessageImagesByMessageIds,
   getMessageFilesByMessageIds,
@@ -65,6 +66,36 @@ export async function buildMessagesByChannelId(
       thread: row.thread_id ? options.threadsById?.get(row.thread_id) : undefined,
     });
   }).filter((message): message is MessageVM => Boolean(message));
+}
+
+export async function buildMessageById(
+  supabase: SupabaseClient,
+  orgId: string,
+  messageId: string,
+  options: MessageBuildOptions = {},
+): Promise<MessageVM | null> {
+  const messageResponse = await getMessageById(supabase, orgId, messageId);
+  const row = messageResponse.data ?? null;
+  if (!row) {
+    return null;
+  }
+
+  const [payloadsById, reactionsByMessageId, sender] = await Promise.all([
+    loadPayloadsByMessageIds(supabase, orgId, [row]),
+    loadReactionsByMessageIds(supabase, orgId, [row.id]),
+    buildUserProfileById(supabase, row.sender_profile_id),
+  ]);
+
+  if (!sender) {
+    return null;
+  }
+
+  return mapMessageRowToVM(row, {
+    sender,
+    payload: payloadsById.get(row.id) ?? null,
+    reactions: reactionsByMessageId.get(row.id) ?? [],
+    thread: row.thread_id ? options.threadsById?.get(row.thread_id) : undefined,
+  });
 }
 
 async function loadPayloadsByMessageIds(

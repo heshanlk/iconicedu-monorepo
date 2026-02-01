@@ -1,5 +1,7 @@
 import { notFound } from 'next/navigation';
-import { DashboardHeader, MessagesShell } from '@iconicedu/ui-web';
+import { DashboardHeader } from '@iconicedu/ui-web';
+import { sendTextMessageAction } from '@iconicedu/web/app/actions/messages';
+import { MessagesShellClient } from '@iconicedu/web/app/(app)/d/messages/messages-shell-client';
 import { createSupabaseServerClient } from '@iconicedu/web/lib/supabase/server';
 import { requireAuthedUser } from '@iconicedu/web/lib/auth/requireAuthedUser';
 import { getOrCreateAccount } from '@iconicedu/web/lib/accounts/getOrCreateAccount';
@@ -36,10 +38,11 @@ export default async function Page({
   return (
     <div className="flex h-[calc(100vh-1.0rem)] flex-col">
       <DashboardHeader />
-      <MessagesShell
+      <MessagesShellClient
         channel={channel}
         currentUserId={profileResponse.data?.id ?? ''}
         currentUserProfile={currentUserProfile}
+        sendTextMessage={sendTextMessageAction}
       />
     </div>
   );

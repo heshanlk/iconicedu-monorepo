@@ -16,8 +16,15 @@ vi.mock('next/navigation', () => ({
 }));
 
 vi.mock('@iconicedu/ui-web', () => ({
-  MessagesShell: (props: unknown) => messagesShellMock(props),
   DashboardHeader: () => null,
+}));
+
+vi.mock('@iconicedu/web/app/(app)/d/messages/messages-shell-client', () => ({
+  MessagesShellClient: (props: unknown) => messagesShellMock(props),
+}));
+
+vi.mock('@iconicedu/web/app/actions/messages', () => ({
+  sendTextMessageAction: vi.fn(),
 }));
 
 vi.mock('@iconicedu/web/lib/supabase/server', () => ({

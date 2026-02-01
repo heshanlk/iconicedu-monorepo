@@ -7,8 +7,11 @@ import { LearningSpaceShell } from '@iconicedu/web/app/(app)/d/spaces/[channelId
 const messagesShellMock = vi.fn(() => null);
 
 vi.mock('@iconicedu/ui-web', () => ({
-  MessagesShell: (props: unknown) => messagesShellMock(props),
   LearningSpaceInfoPanel: () => null,
+}));
+
+vi.mock('@iconicedu/web/app/(app)/d/messages/messages-shell-client', () => ({
+  MessagesShellClient: (props: unknown) => messagesShellMock(props),
 }));
 
 describe('LearningSpaceShell', () => {
@@ -19,6 +22,7 @@ describe('LearningSpaceShell', () => {
         learningSpace={null}
         currentUserId="profile-1"
         currentUserProfile={{ ids: { id: 'profile-1', orgId: 'org-1', accountId: 'account-1' } } as any}
+        sendTextMessage={vi.fn()}
       />,
     );
 

@@ -66,6 +66,7 @@ export function ThreadPanel({ intent }: ThreadPanelProps) {
   const {
     getThreadData,
     createTextMessage,
+    sendTextMessage,
     appendThreadMessage,
     toggle,
     currentUserId,
@@ -108,8 +109,13 @@ export function ThreadPanel({ intent }: ThreadPanelProps) {
     };
   }, [parentMessage?.ids.id, sortedThreadMessages]);
 
-  const onSendReply = (content: string) => {
-    const message = createTextMessage?.(content);
+  const onSendReply = async (content: string) => {
+    const message =
+      (await sendTextMessage({
+        content,
+        threadId: threadData.thread.ids.id,
+        threadParentId: threadData.thread.parent.messageId ?? parentMessage?.ids.id,
+      })) ?? createTextMessage?.(content);
     if (!message) return;
     const updatedThread = {
       ...threadData.thread,
