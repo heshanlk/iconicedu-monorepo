@@ -29,10 +29,12 @@ type MessagePayloadTable = (typeof MESSAGE_PAYLOAD_TABLES)[number];
 
 export function createSupabaseMessagesRealtimeClient(): MessagesRealtimeClient {
   const supabase = createSupabaseBrowserClient();
+  const channelsById = new Map<string, ReturnType<typeof supabase.channel>>();
 
   return {
     subscribe: ({ orgId, channelId, onEvent }) => {
       const channel = supabase.channel(`messages:${channelId}`);
+      channelsById.set(channelId, channel);
       const pending = new Map<string, Promise<void>>();
 
       const fetchMessage = async (messageId: string, type: 'added' | 'updated') => {
@@ -120,13 +122,36 @@ export function createSupabaseMessagesRealtimeClient(): MessagesRealtimeClient {
         );
       });
 
+      channel.on('broadcast', { event: 'typing' }, (payload) => {
+        const data = payload.payload as { profileId?: string; isTyping?: boolean } | undefined;
+        if (!data?.profileId) {
+          return;
+        }
+        onEvent({
+          type: data.isTyping ? 'typing-start' : 'typing-stop',
+          profileId: data.profileId,
+        });
+      });
+
       channel.subscribe();
 
       return {
         unsubscribe: () => {
           void channel.unsubscribe();
+          if (channelsById.get(channelId) === channel) {
+            channelsById.delete(channelId);
+          }
         },
       };
+    },
+    sendTyping: async ({ channelId, profileId, isTyping }) => {
+      const channel = channelsById.get(channelId);
+      if (!channel) return;
+      await channel.send({
+        type: 'broadcast',
+        event: 'typing',
+        payload: { profileId, isTyping },
+      });
     },
   };
 }

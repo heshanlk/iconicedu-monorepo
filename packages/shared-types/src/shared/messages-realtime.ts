@@ -3,7 +3,9 @@ import type { MessageVM } from '../vm/message';
 export type MessageRealtimeEvent =
   | { type: 'message-added'; message: MessageVM }
   | { type: 'message-updated'; message: MessageVM }
-  | { type: 'message-deleted'; messageId: string };
+  | { type: 'message-deleted'; messageId: string }
+  | { type: 'typing-start'; profileId: string }
+  | { type: 'typing-stop'; profileId: string };
 
 export type MessagesRealtimeSubscription = {
   unsubscribe: () => void;
@@ -19,6 +21,12 @@ export interface MessagesRealtimeClient {
     | MessagesRealtimeSubscription
     | (() => void)
     | void;
+  sendTyping?: (input: {
+    orgId: string;
+    channelId: string;
+    profileId: string;
+    isTyping: boolean;
+  }) => Promise<void> | void;
 }
 
 export type MessageSendTextInput = {

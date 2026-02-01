@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useCallback, memo, type KeyboardEvent } from 'react';
+import { useState, useRef, useCallback, useEffect, memo, type KeyboardEvent } from 'react';
 import { Button } from '@iconicedu/ui-web/ui/button';
 import { Textarea } from '@iconicedu/ui-web/ui/textarea';
 import {
@@ -26,6 +26,8 @@ interface MessageInputProps {
   onSend: (content: string) => void;
   placeholder?: string;
   sticky?: boolean;
+  onTypingStart?: () => void;
+  onTypingStop?: () => void;
 }
 
 const FormatButton = memo(function FormatButton({
@@ -55,17 +57,36 @@ export const MessageInput = memo(function MessageInput({
   onSend,
   placeholder = 'Write a message...',
   sticky = true,
+  onTypingStart,
+  onTypingStop,
 }: MessageInputProps) {
   const [content, setContent] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const typingTimeoutRef = useRef<number | null>(null);
+  const isTypingRef = useRef(false);
+
+  const clearTypingTimeout = useCallback(() => {
+    if (typingTimeoutRef.current) {
+      window.clearTimeout(typingTimeoutRef.current);
+      typingTimeoutRef.current = null;
+    }
+  }, []);
+
+  const notifyTypingStop = useCallback(() => {
+    if (!isTypingRef.current) return;
+    isTypingRef.current = false;
+    onTypingStop?.();
+  }, [onTypingStop]);
 
   const handleSend = useCallback(() => {
     if (content.trim()) {
       onSend(content.trim());
       setContent('');
+      clearTypingTimeout();
+      notifyTypingStop();
       textareaRef.current?.focus();
     }
-  }, [content, onSend]);
+  }, [clearTypingTimeout, content, notifyTypingStop, onSend]);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -96,6 +117,32 @@ export const MessageInput = memo(function MessageInput({
     [content],
   );
 
+  const handleTyping = useCallback(
+    (value: string) => {
+      if (!value.trim()) {
+        clearTypingTimeout();
+        notifyTypingStop();
+        return;
+      }
+      if (!isTypingRef.current) {
+        isTypingRef.current = true;
+        onTypingStart?.();
+      }
+      clearTypingTimeout();
+      typingTimeoutRef.current = window.setTimeout(() => {
+        notifyTypingStop();
+      }, 1800);
+    },
+    [clearTypingTimeout, notifyTypingStop, onTypingStart],
+  );
+
+  useEffect(() => {
+    return () => {
+      clearTypingTimeout();
+      notifyTypingStop();
+    };
+  }, [clearTypingTimeout, notifyTypingStop]);
+
   const formatButtons = [
     { icon: Bold, label: 'Bold' },
     { icon: Italic, label: 'Italic' },
@@ -114,7 +161,11 @@ export const MessageInput = memo(function MessageInput({
         <Textarea
           ref={textareaRef}
           value={content}
-          onChange={(e) => setContent(e.target.value)}
+          onChange={(e) => {
+            const nextValue = e.target.value;
+            setContent(nextValue);
+            handleTyping(nextValue);
+          }}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
           className="min-h-[80px] resize-none border-0 bg-transparent px-3 py-2 text-base sm:text-sm focus-visible:ring-0 focus-visible:ring-offset-0"

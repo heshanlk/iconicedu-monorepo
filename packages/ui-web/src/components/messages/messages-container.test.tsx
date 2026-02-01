@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, waitFor } from '@testing-library/react';
+import { render, waitFor, screen, act } from '@testing-library/react';
 import { vi } from 'vitest';
 
 import { MessagesContainer } from './messages-container';
@@ -104,5 +104,34 @@ describe('MessagesContainer', () => {
     const createFactory = setCreateTextMessage.mock.calls[0]?.[0];
     const message = createFactory?.('hello');
     expect(message.core.sender.ids.id).toBe('profile-2');
+  });
+
+  it('renders typing indicator for other participants', async () => {
+    const onEventHandlers: Array<(event: any) => void> = [];
+    const realtimeClient = {
+      subscribe: ({ onEvent }: { onEvent: (event: any) => void }) => {
+        onEventHandlers.push(onEvent);
+        return { unsubscribe: () => void 0 };
+      },
+      sendTyping: vi.fn(),
+    };
+
+    render(
+      <MessagesContainer
+        channel={channel}
+        currentUserId="profile-2"
+        realtimeClient={realtimeClient as any}
+      />,
+    );
+
+    act(() => {
+      onEventHandlers.forEach((handler) =>
+        handler({ type: 'typing-start', profileId: 'profile-1' }),
+      );
+    });
+
+    await waitFor(() => {
+      expect(screen.getAllByText(/User profile-1 is typing/i).length).toBeGreaterThan(0);
+    });
   });
 });

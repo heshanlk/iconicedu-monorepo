@@ -1,8 +1,9 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { MessageList, type MessageListRef } from '@iconicedu/ui-web/components/messages/message-list';
 import { MessageInput } from '@iconicedu/ui-web/components/messages/message-input';
+import { TypingIndicator } from '@iconicedu/ui-web/components/messages/typing-indicator';
 import { useMessages } from '@iconicedu/ui-web/hooks/use-messages';
 import { getProfileDisplayName } from '@iconicedu/ui-web/lib/display-name';
 import { useMessagesState } from '@iconicedu/ui-web/components/messages/context/messages-state-provider';
@@ -41,6 +42,8 @@ export function MessagesContainer({
 }: MessagesContainerProps) {
   const messageListRef = useRef<MessageListRef>(null);
   const messagesRef = useRef<MessageVM[]>([]);
+  const typingTimeoutsRef = useRef(new Map<string, number>());
+  const [typingIds, setTypingIds] = useState<Set<string>>(new Set());
   const {
     toggle,
     setSavedCount,
@@ -87,6 +90,34 @@ export function MessagesContainer({
   const senderProfile =
     resolvedCurrentUserProfile ?? guardian ?? educator ?? fallbackParticipant;
   const currentUserId = resolvedCurrentUserId;
+  const typingParticipants = useMemo(
+    () =>
+      participants.filter(
+        (participant) =>
+          typingIds.has(participant.ids.id) && participant.ids.id !== currentUserId,
+      ),
+    [participants, typingIds, currentUserId],
+  );
+
+  const upsertTypingProfile = useCallback((profileId: string, isTyping: boolean) => {
+    setTypingIds((prev) => {
+      const next = new Set(prev);
+      if (isTyping) {
+        next.add(profileId);
+      } else {
+        next.delete(profileId);
+      }
+      return next;
+    });
+  }, []);
+
+  const clearTypingTimeout = useCallback((profileId: string) => {
+    const existing = typingTimeoutsRef.current.get(profileId);
+    if (existing) {
+      window.clearTimeout(existing);
+      typingTimeoutsRef.current.delete(profileId);
+    }
+  }, []);
 
   const handleOpenThread = useCallback(
     (thread: ThreadVM, parentMessage: MessageVM) => {
@@ -177,6 +208,26 @@ export function MessagesContainer({
     },
     [toggle],
   );
+
+  const handleTypingStart = useCallback(() => {
+    if (!realtimeClient || !currentUserId) return;
+    realtimeClient.sendTyping?.({
+      orgId: channel.ids.orgId,
+      channelId: channel.ids.id,
+      profileId: currentUserId,
+      isTyping: true,
+    });
+  }, [realtimeClient, currentUserId, channel.ids.orgId, channel.ids.id]);
+
+  const handleTypingStop = useCallback(() => {
+    if (!realtimeClient || !currentUserId) return;
+    realtimeClient.sendTyping?.({
+      orgId: channel.ids.orgId,
+      channelId: channel.ids.id,
+      profileId: currentUserId,
+      isTyping: false,
+    });
+  }, [realtimeClient, currentUserId, channel.ids.orgId, channel.ids.id]);
 
   const handleToggleReaction = useCallback(
     (messageId: string, emoji: string) => {
@@ -285,6 +336,13 @@ export function MessagesContainer({
   }, [messages]);
 
   useEffect(() => {
+    return () => {
+      typingTimeoutsRef.current.forEach((timeoutId) => window.clearTimeout(timeoutId));
+      typingTimeoutsRef.current.clear();
+    };
+  }, []);
+
+  useEffect(() => {
     if (!realtimeClient) return;
     let isActive = true;
     let cleanup: (() => void) | undefined;
@@ -311,6 +369,20 @@ export function MessagesContainer({
           if (event.type === 'message-deleted') {
             deleteMessage(event.messageId);
           }
+          if (event.type === 'typing-start') {
+            if (event.profileId === currentUserId) return;
+            upsertTypingProfile(event.profileId, true);
+            clearTypingTimeout(event.profileId);
+            const timeoutId = window.setTimeout(() => {
+              upsertTypingProfile(event.profileId, false);
+              typingTimeoutsRef.current.delete(event.profileId);
+            }, 2600);
+            typingTimeoutsRef.current.set(event.profileId, timeoutId);
+          }
+          if (event.type === 'typing-stop') {
+            clearTypingTimeout(event.profileId);
+            upsertTypingProfile(event.profileId, false);
+          }
         },
       });
 
@@ -336,6 +408,9 @@ export function MessagesContainer({
     addMessage,
     updateMessage,
     deleteMessage,
+    currentUserId,
+    upsertTypingProfile,
+    clearTypingTimeout,
   ]);
 
   useEffect(() => {
@@ -458,12 +533,15 @@ export function MessagesContainer({
   return (
     <div className="flex h-full min-h-0 flex-1 min-w-0 flex-col">
       <MessageList ref={messageListRef} {...messageListProps} />
+      <TypingIndicator profiles={typingParticipants} />
       <MessageInput
         onSend={handleSendMessage}
         placeholder={`Message ${getProfileDisplayName(
           educator?.profile,
           channel.basics.topic ?? 'User',
         )}`}
+        onTypingStart={handleTypingStart}
+        onTypingStop={handleTypingStop}
       />
     </div>
   );
