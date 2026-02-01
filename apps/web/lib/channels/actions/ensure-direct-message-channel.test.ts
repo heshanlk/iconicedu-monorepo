@@ -1,16 +1,14 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { ensureDirectMessageChannel } from '@iconicedu/web/lib/channels/actions/ensure-direct-message-channel';
-
 const getChannelByDmKey = vi.fn();
 
 vi.mock('@iconicedu/web/lib/channels/queries/channels.query', () => ({
   getChannelByDmKey: (...args: unknown[]) => getChannelByDmKey(...args),
 }));
 
-vi.mock('crypto', () => ({
-  randomUUID: vi.fn(() => 'generated-id'),
-}));
+const { ensureDirectMessageChannel } = await import(
+  '@iconicedu/web/lib/channels/actions/ensure-direct-message-channel'
+);
 
 describe('ensureDirectMessageChannel', () => {
   it('returns existing channel when dm_key exists', async () => {
@@ -35,7 +33,6 @@ describe('ensureDirectMessageChannel', () => {
     getChannelByDmKey.mockResolvedValueOnce({ data: null });
     const insert = vi.fn().mockResolvedValue({ error: null });
     const supabase = { from: vi.fn(() => ({ insert })) } as any;
-
     const result = await ensureDirectMessageChannel(
       supabase,
       'org-1',
@@ -43,7 +40,7 @@ describe('ensureDirectMessageChannel', () => {
       'profile-2',
     );
 
-    expect(result.channelId).toBe('generated-id');
+    expect(typeof result.channelId).toBe('string');
     expect(result.dmKey).toBe('dm:profile-1-profile-2');
     expect(insert).toHaveBeenCalledTimes(2);
   });

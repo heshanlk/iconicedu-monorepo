@@ -1,5 +1,6 @@
 import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
+import { render } from '@testing-library/react';
 
 import Page from '@iconicedu/web/app/(app)/d/dm/[channelId]/page';
 
@@ -53,7 +54,8 @@ describe('d/dm/[channelId] page', () => {
   it('passes currentUserId to MessagesShell', async () => {
     buildChannelByIdMock.mockResolvedValueOnce({ ids: { id: 'channel-1', orgId: 'org-1' } });
     buildChannelByDmKeyMock.mockResolvedValueOnce(null);
-    await Page({ params: Promise.resolve({ channelId: 'channel-1' }) });
+    const element = await Page({ params: Promise.resolve({ channelId: 'channel-1' }) });
+    render(element as React.ReactElement);
     expect(messagesShellMock).toHaveBeenCalledWith(
       expect.objectContaining({ currentUserId: 'profile-1', currentUserProfile: { ids: { id: 'profile-1', orgId: 'org-1' } } }),
     );

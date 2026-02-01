@@ -2,33 +2,33 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
-import { MessagesShell } from '@iconicedu/ui-web/components/messages/messages-shell';
+import { MessagesShell } from './messages-shell';
 
 const messagesContainerMock = vi.fn();
 
-vi.mock('@iconicedu/ui-web/components/messages/messages-container', () => ({
+vi.mock('./messages-container', () => ({
   MessagesContainer: (props: unknown) => messagesContainerMock(props),
 }));
 
-vi.mock('@iconicedu/ui-web/components/messages/messages-container-header', () => ({
+vi.mock('./messages-container-header', () => ({
   MessagesContainerHeader: () => null,
 }));
 
-vi.mock('@iconicedu/ui-web/components/messages/messages-container-header-actions', () => ({
+vi.mock('./messages-container-header-actions', () => ({
   MessagesContainerHeaderActions: () => null,
 }));
 
-vi.mock('@iconicedu/ui-web/components/messages/messages-right-sidebar-region', () => ({
+vi.mock('./messages-right-sidebar-region', () => ({
   MessagesRightSidebarRegion: () => null,
 }));
 
-vi.mock('@iconicedu/ui-web/ui/resizable', () => ({
+vi.mock('../../ui/resizable', () => ({
   ResizableHandle: () => null,
   ResizablePanel: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   ResizablePanelGroup: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
-vi.mock('@iconicedu/ui-web/components/messages/context/messages-state-provider', () => ({
+vi.mock('./context/messages-state-provider', () => ({
   MessagesStateProvider: ({ children }: { children: React.ReactNode }) => (
     <div>{children}</div>
   ),

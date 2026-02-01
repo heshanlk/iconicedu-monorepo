@@ -55,7 +55,7 @@ describe('POST /d/admin/channels/actions/create', () => {
     expect(createAdminChannel).toHaveBeenCalledWith(payload);
 
     expect(response.status).toBe(200);
-    const payload = await response.json();
-    expect(payload).toEqual({ success: true, channelId: 'channel-1' });
+    const responsePayload = await response.json();
+    expect(responsePayload).toEqual({ success: true, channelId: 'channel-1' });
   });
 });

@@ -2,13 +2,13 @@ import React from 'react';
 import { render, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 
-import { MessagesContainer } from '@iconicedu/ui-web/components/messages/messages-container';
+import { MessagesContainer } from './messages-container';
 import type { ChannelVM, UserProfileVM } from '@iconicedu/shared-types';
 
 const setCurrentUserId = vi.fn();
 const setCreateTextMessage = vi.fn();
 
-vi.mock('@iconicedu/ui-web/hooks/use-messages', () => ({
+vi.mock('../../hooks/use-messages', () => ({
   useMessages: () => ({
     messages: [],
     addMessage: vi.fn(),
@@ -20,7 +20,7 @@ vi.mock('@iconicedu/ui-web/hooks/use-messages', () => ({
   }),
 }));
 
-vi.mock('@iconicedu/ui-web/components/messages/context/messages-state-provider', () => ({
+vi.mock('./context/messages-state-provider', () => ({
   useMessagesState: () => ({
     toggle: vi.fn(),
     setSavedCount: vi.fn(),
@@ -37,11 +37,11 @@ vi.mock('@iconicedu/ui-web/components/messages/context/messages-state-provider',
   }),
 }));
 
-vi.mock('@iconicedu/ui-web/components/messages/message-list', () => ({
+vi.mock('./message-list', () => ({
   MessageList: () => null,
 }));
 
-vi.mock('@iconicedu/ui-web/components/messages/message-input', () => ({
+vi.mock('./message-input', () => ({
   MessageInput: () => null,
 }));
 

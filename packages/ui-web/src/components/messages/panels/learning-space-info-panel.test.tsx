@@ -2,13 +2,13 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
-import { LearningSpaceInfoPanel } from '@iconicedu/ui-web/components/messages/panels/learning-space-info-panel';
+import { LearningSpaceInfoPanel } from './learning-space-info-panel';
 
-vi.mock('@iconicedu/ui-web/hooks/use-mobile', () => ({
+vi.mock('../../../hooks/use-mobile', () => ({
   useIsMobile: () => false,
 }));
 
-vi.mock('@iconicedu/ui-web/components/messages/context/messages-state-provider', () => ({
+vi.mock('../context/messages-state-provider', () => ({
   useMessagesState: () => ({
     channel: {
       ids: { id: 'channel-1', orgId: 'org-1' },

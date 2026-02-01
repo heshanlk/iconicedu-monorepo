@@ -2,9 +2,9 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
-import { ChannelInfoPanel } from '@iconicedu/ui-web/components/messages/panels/channel-info-panel';
+import { ChannelInfoPanel } from './channel-info-panel';
 
-vi.mock('@iconicedu/ui-web/components/messages/context/messages-state-provider', () => ({
+vi.mock('../context/messages-state-provider', () => ({
   useMessagesState: () => ({
     channel: {
       ids: { id: 'channel-1', orgId: 'org-1' },

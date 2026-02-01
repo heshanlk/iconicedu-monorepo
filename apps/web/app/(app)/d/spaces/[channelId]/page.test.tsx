@@ -1,5 +1,6 @@
 import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
+import { render } from '@testing-library/react';
 
 import Page from '@iconicedu/web/app/(app)/d/spaces/[channelId]/page';
 
@@ -43,7 +44,8 @@ vi.mock('@iconicedu/web/lib/spaces/builders/learning-space.builder', () => ({
 
 describe('d/spaces/[channelId] page', () => {
   it('passes currentUserId to LearningSpaceShell', async () => {
-    await Page({ params: Promise.resolve({ channelId: 'channel-1' }) });
+    const element = await Page({ params: Promise.resolve({ channelId: 'channel-1' }) });
+    render(element as React.ReactElement);
     expect(learningSpaceShellMock).toHaveBeenCalledWith(
       expect.objectContaining({ currentUserId: 'profile-1', currentUserProfile: { ids: { id: 'profile-1', orgId: 'org-1' } } }),
     );
