@@ -31,6 +31,7 @@ const makeRow = (overrides: Partial<AdminChannelRow>): AdminChannelRow => ({
   deleted_at: null,
   deleted_by: null,
   participantCount: 2,
+  participantDetails: [],
   ...overrides,
 });
 

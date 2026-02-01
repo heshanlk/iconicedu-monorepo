@@ -12,6 +12,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  AvatarGroup,
   Badge,
   Button,
   Archive,
@@ -33,6 +34,8 @@ import {
   toast,
 } from '@iconicedu/ui-web';
 import { getLearningSpaceIcon } from '@iconicedu/ui-web/lib/icons';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@iconicedu/ui-web/ui/tooltip';
+import { AvatarWithStatus } from '@iconicedu/ui-web/components/shared/avatar-with-status';
 
 import type { AdminChannelRow } from '@iconicedu/web/lib/admin/channels';
 
@@ -189,9 +192,45 @@ export function ChannelsTable({ rows, onEdit }: ChannelsTableProps) {
                   ) : null}
                 </TableCell>
                 <TableCell>
-                  <span className="text-sm text-muted-foreground">
-                    {row.participantCount}
-                  </span>
+                  {row.kind === 'dm' || row.kind === 'group_dm' ? (
+                    row.participantDetails?.length ? (
+                      <AvatarGroup className="justify-start">
+                        {row.participantDetails.map((participant) => (
+                          <Tooltip key={participant.id}>
+                            <TooltipTrigger asChild>
+                              <span className="inline-flex">
+                                <AvatarWithStatus
+                                  name={participant.displayName}
+                                  avatar={{
+                                    source: participant.avatarUrl ? 'upload' : 'seed',
+                                    url: participant.avatarUrl ?? null,
+                                  }}
+                                  themeKey={participant.themeKey ?? null}
+                                  showStatus={false}
+                                  sizeClassName="size-8"
+                                  initialsLength={2}
+                                />
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="text-xs font-medium">
+                                {participant.displayName}
+                              </p>
+                              <p className="text-xs text-muted-foreground capitalize">
+                                {participant.kind}
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        ))}
+                      </AvatarGroup>
+                    ) : (
+                      <span className="text-sm text-muted-foreground">—</span>
+                    )
+                  ) : (
+                    <span className="text-sm text-muted-foreground">
+                      {row.participantCount}
+                    </span>
+                  )}
                 </TableCell>
                 <TableCell>
                   <Badge

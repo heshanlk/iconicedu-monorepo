@@ -29,6 +29,7 @@ const baseRow: AdminChannelRow = {
   deleted_at: null,
   deleted_by: null,
   participantCount: 3,
+  participantDetails: [],
 };
 
 describe('ChannelsTable', () => {
