@@ -3,6 +3,7 @@ import type {
   ChannelFileItemVM,
   ChannelMediaItemVM,
   MessageVM,
+  ThreadVM,
 } from '@iconicedu/shared-types';
 
 import {
@@ -19,8 +20,11 @@ export async function buildChannelMessages(
   supabase: SupabaseClient,
   orgId: string,
   channelId: string,
+  options: { threadsById?: Map<string, ThreadVM> } = {},
 ): Promise<MessageVM[]> {
-  return buildMessagesByChannelId(supabase, orgId, channelId);
+  return buildMessagesByChannelId(supabase, orgId, channelId, {
+    threadsById: options.threadsById,
+  });
 }
 
 export async function buildChannelMedia(

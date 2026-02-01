@@ -18,19 +18,21 @@ vi.mock('@iconicedu/web/lib/messages/realtime/supabase-messages-realtime-client'
 describe('MessagesShellClient', () => {
   it('passes realtime and write clients to MessagesShell', () => {
     const sendTextMessage = vi.fn();
+    const toggleReaction = vi.fn();
 
     render(
       <MessagesShellClient
         channel={{ ids: { id: 'channel-1', orgId: 'org-1' } } as any}
         currentUserId="profile-1"
         sendTextMessage={sendTextMessage}
+        toggleReaction={toggleReaction}
       />,
     );
 
     expect(messagesShellMock).toHaveBeenCalledWith(
       expect.objectContaining({
         realtimeClient,
-        messageWriteClient: { sendTextMessage },
+        messageWriteClient: { sendTextMessage, toggleReaction },
         currentUserId: 'profile-1',
       }),
     );

@@ -24,8 +24,12 @@ vi.mock('@iconicedu/web/lib/messages/builders/channel-messages.builder', () => (
   buildChannelFiles: vi.fn(async () => []),
 }));
 
+vi.mock('@iconicedu/web/lib/messages/builders/thread.builder', () => ({
+  buildThreadsByChannelId: vi.fn(async () => []),
+}));
+
 vi.mock('@iconicedu/web/lib/profile/builders/user-profile.builder', () => ({
-  buildUserProfileFromRow: vi.fn(async (row: any) => {
+  buildUserProfileFromRow: vi.fn(async (_supabase: any, row: any) => {
     const resolvedAccountId =
       row.account_id ??
       row.accountId ??
@@ -52,7 +56,7 @@ vi.mock('@iconicedu/web/lib/profile/queries/profiles.query', () => ({
 }));
 
 describe('buildDirectMessageChannelsWithMessages', () => {
-  it('returns empty when no participants match the accountId', async () => {
+  it('returns only channels that match the accountId', async () => {
     getChannelsByOrg.mockResolvedValue({
       data: [
         { id: 'dm-1', org_id: 'org-1', kind: 'dm', topic: 'DM', purpose: 'general' },
@@ -85,6 +89,7 @@ describe('buildDirectMessageChannelsWithMessages', () => {
     );
     expect(buildUserProfileFromRow).toHaveBeenCalled();
 
-    expect(results).toHaveLength(0);
+    expect(results).toHaveLength(1);
+    expect(results[0]?.ids.id).toBe('dm-1');
   });
 });

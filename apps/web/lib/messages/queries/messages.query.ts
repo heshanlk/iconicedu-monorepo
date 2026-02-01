@@ -110,6 +110,20 @@ export async function getThreadsByChannelId(
     .is('deleted_at', null);
 }
 
+export async function getThreadById(
+  supabase: SupabaseClient,
+  orgId: string,
+  threadId: string,
+) {
+  return supabase
+    .from<ThreadRow>('threads')
+    .select(THREAD_SELECT)
+    .eq('org_id', orgId)
+    .eq('id', threadId)
+    .is('deleted_at', null)
+    .maybeSingle();
+}
+
 export async function getThreadParticipantsByThreadIds(
   supabase: SupabaseClient,
   orgId: string,

@@ -16,3 +16,6 @@ alter publication supabase_realtime add table public.message_link_preview;
 alter publication supabase_realtime add table public.message_audio_recording;
 alter publication supabase_realtime add table public.message_reactions;
 alter publication supabase_realtime add table public.message_reaction_counts;
+alter publication supabase_realtime add table public.threads;
+alter publication supabase_realtime add table public.thread_participants;
+alter publication supabase_realtime add table public.thread_read_state;

@@ -16,6 +16,7 @@ vi.mock('@iconicedu/web/app/(app)/d/spaces/[channelId]/learning-space-shell', ()
 
 vi.mock('@iconicedu/web/app/actions/messages', () => ({
   sendTextMessageAction: vi.fn(),
+  toggleMessageReactionAction: vi.fn(),
 }));
 
 vi.mock('@iconicedu/web/lib/supabase/server', () => ({

@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { DashboardHeader } from '@iconicedu/ui-web';
 import { LearningSpaceShell } from '@iconicedu/web/app/(app)/d/spaces/[channelId]/learning-space-shell';
-import { sendTextMessageAction } from '@iconicedu/web/app/actions/messages';
+import { sendTextMessageAction, toggleMessageReactionAction } from '@iconicedu/web/app/actions/messages';
 import { createSupabaseServerClient } from '@iconicedu/web/lib/supabase/server';
 import { requireAuthedUser } from '@iconicedu/web/lib/auth/requireAuthedUser';
 import { getOrCreateAccount } from '@iconicedu/web/lib/accounts/getOrCreateAccount';
@@ -50,6 +50,7 @@ export default async function Page({
         currentUserId={profileResponse.data?.id ?? ''}
         currentUserProfile={currentUserProfile}
         sendTextMessage={sendTextMessageAction}
+        toggleReaction={toggleMessageReactionAction}
       />
     </div>
   );

@@ -20,6 +20,7 @@ import {
   buildChannelMedia,
   buildChannelMessages,
 } from '@iconicedu/web/lib/messages/builders/channel-messages.builder';
+import { buildThreadsByChannelId } from '@iconicedu/web/lib/messages/builders/thread.builder';
 import { buildUserProfileFromRow } from '@iconicedu/web/lib/profile/builders/user-profile.builder';
 import { getProfilesByIds } from '@iconicedu/web/lib/profile/queries/profiles.query';
 
@@ -158,7 +159,13 @@ async function buildChannelsFromRows(
 
   const results = await Promise.all(
     rows.map(async (row) => {
-      const messages = await buildChannelMessages(supabase, orgId, row.id);
+      const threads = await buildThreadsByChannelId(supabase, orgId, row.id, {
+        accountId: options.accountId ?? undefined,
+      });
+      const threadsById = new Map(threads.map((thread) => [thread.ids.id, thread]));
+      const messages = await buildChannelMessages(supabase, orgId, row.id, {
+        threadsById,
+      });
       const [media, files] = await Promise.all([
         buildChannelMedia(supabase, orgId, row.id),
         buildChannelFiles(supabase, orgId, row.id),
@@ -201,7 +208,13 @@ async function buildChannelFromRow(
     orgId,
     membersResponse.data ?? [],
   );
-  const messages = await buildChannelMessages(supabase, orgId, row.id);
+  const threads = await buildThreadsByChannelId(supabase, orgId, row.id, {
+    accountId: options.accountId ?? undefined,
+  });
+  const threadsById = new Map(threads.map((thread) => [thread.ids.id, thread]));
+  const messages = await buildChannelMessages(supabase, orgId, row.id, {
+    threadsById,
+  });
   const [media, files] = await Promise.all([
     buildChannelMedia(supabase, orgId, row.id),
     buildChannelFiles(supabase, orgId, row.id),

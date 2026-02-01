@@ -1,7 +1,12 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { ThreadVM, UserProfileVM } from '@iconicedu/shared-types';
 
-import { getThreadsByChannelId, getThreadParticipantsByThreadIds, getThreadReadStatesByAccountId } from '@iconicedu/web/lib/messages/queries/messages.query';
+import {
+  getThreadById,
+  getThreadsByChannelId,
+  getThreadParticipantsByThreadIds,
+  getThreadReadStatesByAccountId,
+} from '@iconicedu/web/lib/messages/queries/messages.query';
 import { buildUserProfileById } from '@iconicedu/web/lib/profile/builders/user-profile.builder';
 import { mapThreadRowToVM } from '@iconicedu/web/lib/messages/mappers/thread.mapper';
 
@@ -50,6 +55,42 @@ export async function buildThreadsByChannelId(
       participants,
       readState: readStateByThread.get(row.id),
     });
+  });
+}
+
+export async function buildThreadById(
+  supabase: SupabaseClient,
+  orgId: string,
+  threadId: string,
+  options: ThreadBuildOptions = {},
+): Promise<ThreadVM | null> {
+  const threadResponse = await getThreadById(supabase, orgId, threadId);
+  const threadRow = threadResponse.data ?? null;
+  if (!threadRow) {
+    return null;
+  }
+
+  const [participantsResponse, readStateResponse] = await Promise.all([
+    getThreadParticipantsByThreadIds(supabase, orgId, [threadId]),
+    options.accountId
+      ? getThreadReadStatesByAccountId(supabase, orgId, options.accountId)
+      : Promise.resolve({ data: [] }),
+  ]);
+
+  const participants = (participantsResponse.data ?? [])
+    .map((row) => row.profile_id)
+    .filter(Boolean);
+  const profilesById = await resolveProfilesById(supabase, participants);
+  const participantVMs = (participantsResponse.data ?? [])
+    .map((row) => profilesById.get(row.profile_id))
+    .filter((profile): profile is UserProfileVM => Boolean(profile));
+
+  const readStateRow =
+    (readStateResponse.data ?? []).find((row) => row.thread_id === threadId) ?? null;
+
+  return mapThreadRowToVM(threadRow, {
+    participants: participantVMs,
+    readState: readStateRow,
   });
 }
 

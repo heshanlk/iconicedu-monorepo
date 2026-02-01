@@ -30,6 +30,13 @@ export type MessageSendTextInput = {
   threadId?: string | null;
 };
 
+export type MessageToggleReactionInput = {
+  orgId: string;
+  messageId: string;
+  emoji: string;
+};
+
 export interface MessageWriteClient {
   sendTextMessage: (input: MessageSendTextInput) => Promise<MessageVM>;
+  toggleReaction: (input: MessageToggleReactionInput) => Promise<void>;
 }

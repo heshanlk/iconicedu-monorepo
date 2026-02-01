@@ -23,6 +23,8 @@ const MESSAGE_PAYLOAD_TABLES = [
   'message_reaction_counts',
 ] as const;
 
+const THREAD_TABLES = ['threads'] as const;
+
 type MessagePayloadTable = (typeof MESSAGE_PAYLOAD_TABLES)[number];
 
 export function createSupabaseMessagesRealtimeClient(): MessagesRealtimeClient {
@@ -93,6 +95,26 @@ export function createSupabaseMessagesRealtimeClient(): MessagesRealtimeClient {
               (payload.old as { message_id?: string } | null)?.message_id;
             if (messageId) {
               void fetchMessage(messageId, 'updated');
+            }
+          },
+        );
+      });
+
+      THREAD_TABLES.forEach((tableName) => {
+        channel.on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: tableName,
+            filter: `org_id=eq.${orgId}`,
+          },
+          (payload) => {
+            const parentMessageId =
+              (payload.new as { parent_message_id?: string } | null)?.parent_message_id ??
+              (payload.old as { parent_message_id?: string } | null)?.parent_message_id;
+            if (parentMessageId) {
+              void fetchMessage(parentMessageId, 'updated');
             }
           },
         );

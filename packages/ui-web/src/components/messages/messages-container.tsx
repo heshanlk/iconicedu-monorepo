@@ -182,8 +182,22 @@ export function MessagesContainer({
     (messageId: string, emoji: string) => {
       if (!currentUserId) return;
       toggleReaction(messageId, emoji, currentUserId);
+      if (messageWriteClient) {
+        const persistReaction = async () => {
+          try {
+            await messageWriteClient.toggleReaction({
+              orgId: channel.ids.orgId,
+              messageId,
+              emoji,
+            });
+          } catch {
+            toggleReaction(messageId, emoji, currentUserId);
+          }
+        };
+        void persistReaction();
+      }
     },
-    [toggleReaction, currentUserId],
+    [toggleReaction, currentUserId, messageWriteClient, channel.ids.orgId],
   );
 
   const handleToggleSaved = useCallback(

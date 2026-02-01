@@ -23,6 +23,7 @@ describe('LearningSpaceShell', () => {
         currentUserId="profile-1"
         currentUserProfile={{ ids: { id: 'profile-1', orgId: 'org-1', accountId: 'account-1' } } as any}
         sendTextMessage={vi.fn()}
+        toggleReaction={vi.fn()}
       />,
     );
 

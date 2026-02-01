@@ -29,6 +29,7 @@ import {
 } from '@iconicedu/web/lib/messages/queries/messages.query';
 import { buildUserProfileById } from '@iconicedu/web/lib/profile/builders/user-profile.builder';
 import { mapMessageRowToVM } from '@iconicedu/web/lib/messages/mappers/message.mapper';
+import { buildThreadById } from '@iconicedu/web/lib/messages/builders/thread.builder';
 
 type MessageBuildOptions = {
   threadsById?: Map<string, ThreadVM>;
@@ -80,10 +81,11 @@ export async function buildMessageById(
     return null;
   }
 
-  const [payloadsById, reactionsByMessageId, sender] = await Promise.all([
+  const [payloadsById, reactionsByMessageId, sender, thread] = await Promise.all([
     loadPayloadsByMessageIds(supabase, orgId, [row]),
     loadReactionsByMessageIds(supabase, orgId, [row.id]),
     buildUserProfileById(supabase, row.sender_profile_id),
+    row.thread_id ? buildThreadById(supabase, orgId, row.thread_id) : Promise.resolve(null),
   ]);
 
   if (!sender) {
@@ -94,7 +96,7 @@ export async function buildMessageById(
     sender,
     payload: payloadsById.get(row.id) ?? null,
     reactions: reactionsByMessageId.get(row.id) ?? [],
-    thread: row.thread_id ? options.threadsById?.get(row.thread_id) : undefined,
+    thread: thread ?? (row.thread_id ? options.threadsById?.get(row.thread_id) : undefined),
   });
 }
 

@@ -35,6 +35,10 @@ vi.mock('@iconicedu/web/lib/messages/mappers/message.mapper', () => ({
   mapMessageRowToVM: (...args: unknown[]) => mapMessageRowToVM(...args),
 }));
 
+vi.mock('@iconicedu/web/lib/messages/builders/thread.builder', () => ({
+  buildThreadById: vi.fn(async () => null),
+}));
+
 describe('buildMessageById', () => {
   it('returns null when message does not exist', async () => {
     getMessageById.mockResolvedValueOnce({ data: null });
