@@ -40,7 +40,9 @@ vi.mock('./context/messages-state-provider', () => ({
 }));
 
 vi.mock('./message-list', () => ({
-  MessageList: () => null,
+  MessageList: ({ typingIndicator }: { typingIndicator?: React.ReactNode }) => (
+    <div>{typingIndicator}</div>
+  ),
 }));
 
 vi.mock('./message-input', () => ({
@@ -131,6 +133,7 @@ describe('MessagesContainer', () => {
     });
 
     await waitFor(() => {
+      expect(screen.getByText('User profile-1')).toBeInTheDocument();
       expect(screen.getAllByText(/User profile-1 is typing/i).length).toBeGreaterThan(0);
     });
   });

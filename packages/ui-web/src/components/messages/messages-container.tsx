@@ -532,8 +532,15 @@ export function MessagesContainer({
 
   return (
     <div className="flex h-full min-h-0 flex-1 min-w-0 flex-col">
-      <MessageList ref={messageListRef} {...messageListProps} />
-      <TypingIndicator profiles={typingParticipants} />
+      <MessageList
+        ref={messageListRef}
+        {...messageListProps}
+        typingIndicator={
+          typingParticipants.length ? (
+            <TypingIndicator profiles={typingParticipants} variant="message" />
+          ) : null
+        }
+      />
       <MessageInput
         onSend={handleSendMessage}
         placeholder={`Message ${getProfileDisplayName(

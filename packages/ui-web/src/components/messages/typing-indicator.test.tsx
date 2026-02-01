@@ -26,6 +26,7 @@ describe('TypingIndicator', () => {
 
   it('renders a single name', () => {
     render(<TypingIndicator profiles={[makeProfile('p1', 'Ava')]} />);
+    expect(screen.getByText('Ava')).toBeInTheDocument();
     expect(screen.getAllByText(/Ava is typing/i).length).toBeGreaterThan(0);
   });
 
@@ -39,6 +40,7 @@ describe('TypingIndicator', () => {
         ]}
       />,
     );
+    expect(screen.getByText('Ava and 2 others')).toBeInTheDocument();
     expect(
       screen.getAllByText(/Ava, Kai, and 1 others are typing/i).length,
     ).toBeGreaterThan(0);

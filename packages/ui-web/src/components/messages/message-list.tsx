@@ -1,4 +1,11 @@
-import { useRef, useEffect, useImperativeHandle, forwardRef, useMemo } from 'react';
+import {
+  useRef,
+  useEffect,
+  useImperativeHandle,
+  forwardRef,
+  useMemo,
+  type ReactNode,
+} from 'react';
 import { MessageItem } from '@iconicedu/ui-web/components/messages/message-item';
 import { EmptyMessagesState } from '@iconicedu/ui-web/components/messages/empty-state';
 import type { MessageVM, ThreadVM } from '@iconicedu/shared-types';
@@ -14,6 +21,7 @@ interface MessageListProps {
   onToggleHidden?: (messageId: string) => void;
   currentUserId?: string;
   lastReadMessageId?: string;
+  typingIndicator?: ReactNode;
 }
 
 export interface MessageListRef {
@@ -31,6 +39,7 @@ export const MessageList = forwardRef<MessageListRef, MessageListProps>(
       onToggleHidden,
       currentUserId,
       lastReadMessageId,
+      typingIndicator,
     },
     ref,
   ) => {
@@ -53,11 +62,12 @@ export const MessageList = forwardRef<MessageListRef, MessageListProps>(
     }));
 
     useEffect(() => {
-      if (messages.length > messageCountRef.current) {
+      const typingVisible = Boolean(typingIndicator);
+      if (messages.length > messageCountRef.current || typingVisible) {
         bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
       }
       messageCountRef.current = messages.length;
-    }, [messages]);
+    }, [messages, typingIndicator]);
 
     const groupedMessages = useMemo(() => {
       const groups: { date: string; messages: MessageVM[] }[] = [];
@@ -140,6 +150,7 @@ export const MessageList = forwardRef<MessageListRef, MessageListProps>(
           </div>
         ))}
 
+        {typingIndicator}
         <div ref={bottomRef} />
       </ScrollArea>
     );
