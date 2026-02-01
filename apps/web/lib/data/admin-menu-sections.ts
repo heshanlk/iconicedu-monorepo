@@ -23,8 +23,6 @@ export const ADMIN_MENU_SECTIONS: AdminMenuSectionVM[] = [
     links: [
       { title: 'All', url: '/d/admin/channels' },
       { title: 'Direct messages', url: '/d/admin/channels/direct-messages' },
-      { title: 'Announcements', url: '/d/admin/channels/announcements' },
-      { title: 'Support', url: '/d/admin/channels/support' },
     ],
   },
   {

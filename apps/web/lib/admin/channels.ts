@@ -10,6 +10,10 @@ export type AdminChannelRow = ChannelRow & {
   participantCount: number;
 };
 
+export function filterDirectMessageChannels(rows: AdminChannelRow[]) {
+  return rows.filter((row) => row.kind === 'dm' || row.kind === 'group_dm');
+}
+
 export async function getAdminChannelRows(): Promise<AdminChannelRow[]> {
   const supabase = await createSupabaseServerClient();
   const { data: channels } = await getChannelsByOrg(supabase, ORG_ID);
@@ -35,4 +39,9 @@ export async function getAdminChannelRows(): Promise<AdminChannelRow[]> {
     ...row,
     participantCount: countsByChannel.get(row.id) ?? 0,
   }));
+}
+
+export async function getAdminDirectMessageRows(): Promise<AdminChannelRow[]> {
+  const rows = await getAdminChannelRows();
+  return filterDirectMessageChannels(rows);
 }
