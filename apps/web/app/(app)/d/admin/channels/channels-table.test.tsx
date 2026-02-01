@@ -33,7 +33,7 @@ const baseRow: AdminChannelRow = {
 
 describe('ChannelsTable', () => {
   it('renders channel rows', () => {
-    render(<ChannelsTable rows={[baseRow]} />);
+    render(<ChannelsTable rows={[baseRow]} onEdit={() => undefined} />);
     expect(screen.getByText('General')).toBeInTheDocument();
     expect(screen.getByText('general')).toBeInTheDocument();
     expect(screen.getByText('3')).toBeInTheDocument();
@@ -48,7 +48,7 @@ describe('ChannelsTable', () => {
       primary_entity_kind: 'learning_space',
     };
 
-    render(<ChannelsTable rows={[baseRow, learningSpaceRow]} />);
+    render(<ChannelsTable rows={[baseRow, learningSpaceRow]} onEdit={() => undefined} />);
 
     const generalLink = screen.getByRole('link', { name: 'General' });
     expect(generalLink).toHaveAttribute('href', '/d/c/channel-1');

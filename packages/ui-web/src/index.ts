@@ -14,6 +14,8 @@ export * from '@iconicedu/ui-web/ui/command';
 export * from '@iconicedu/ui-web/ui/accordion';
 export * from '@iconicedu/ui-web/ui/field';
 export * from '@iconicedu/ui-web/ui/input';
+export * from '@iconicedu/ui-web/ui/textarea';
+export * from '@iconicedu/ui-web/ui/checkbox';
 export * from '@iconicedu/ui-web/ui/dialog';
 export * from '@iconicedu/ui-web/ui/calendar';
 export * from '@iconicedu/ui-web/ui/popover';

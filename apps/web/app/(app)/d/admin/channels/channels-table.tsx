@@ -16,6 +16,7 @@ import {
   Button,
   Archive,
   ArchiveRestore,
+  Pencil,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -37,6 +38,7 @@ import type { AdminChannelRow } from '@iconicedu/web/lib/admin/channels';
 
 type ChannelsTableProps = {
   rows: AdminChannelRow[];
+  onEdit: (row: AdminChannelRow) => void;
 };
 
 const STATUS_BADGE_VARIANTS: Record<string, 'secondary' | 'outline' | 'ghost'> = {
@@ -56,7 +58,7 @@ function formatType(row: AdminChannelRow) {
   return { primary, secondary };
 }
 
-export function ChannelsTable({ rows }: ChannelsTableProps) {
+export function ChannelsTable({ rows, onEdit }: ChannelsTableProps) {
   const router = useRouter();
   const [confirmDeleteRow, setConfirmDeleteRow] =
     React.useState<AdminChannelRow | null>(null);
@@ -212,8 +214,9 @@ export function ChannelsTable({ rows }: ChannelsTableProps) {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem asChild>
-                        <Link href={getChannelHref(row)}>Open</Link>
+                      <DropdownMenuItem onClick={() => onEdit(row)}>
+                        <Pencil className="mr-2 size-3" />
+                        Edit
                       </DropdownMenuItem>
                       {row.status === 'archived' ? (
                         <DropdownMenuItem

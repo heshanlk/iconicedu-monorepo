@@ -1,19 +1,12 @@
 import { NextResponse } from 'next/server';
 
+import type { ChannelCreatePayload } from '@iconicedu/shared-types';
 import { createAdminChannel } from '@iconicedu/web/lib/admin/channel-create';
 
-type CreateChannelRequest = {
-  topic?: string;
-  description?: string | null;
-  purpose?: string | null;
-  kind?: string | null;
-};
-
 export async function POST(request: Request) {
-  const { topic, description, purpose, kind } =
-    (await request.json()) as CreateChannelRequest;
+  const payload = (await request.json()) as ChannelCreatePayload;
 
-  if (!topic?.trim()) {
+  if (!payload?.basics?.topic?.trim()) {
     return NextResponse.json(
       { success: false, message: 'topic is required' },
       { status: 400 },
@@ -21,12 +14,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const channelId = await createAdminChannel({
-      topic: topic.trim(),
-      description: description ?? null,
-      purpose: purpose ?? null,
-      kind: kind ?? null,
-    });
+    const channelId = await createAdminChannel(payload);
     return NextResponse.json({ success: true, channelId });
   } catch (error) {
     return NextResponse.json(

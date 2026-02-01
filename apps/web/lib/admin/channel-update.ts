@@ -6,9 +6,10 @@ import { createSupabaseServerClient } from '@iconicedu/web/lib/supabase/server';
 import { getAccountByAuthUserId } from '@iconicedu/web/lib/accounts/queries/accounts.query';
 import { getProfileByAccountId } from '@iconicedu/web/lib/profile/queries/profiles.query';
 
-const DEFAULT_CAPABILITIES: ChannelCapabilityVM[] = [];
-
-export async function createAdminChannel(payload: ChannelCreatePayload) {
+export async function updateChannelFromPayload(
+  channelId: string,
+  payload: ChannelCreatePayload,
+) {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -28,54 +29,87 @@ export async function createAdminChannel(payload: ChannelCreatePayload) {
     throw new Error('Profile not found');
   }
 
+  const orgId = accountResponse.data.org_id;
   const now = new Date().toISOString();
-  const channelId = randomUUID();
-  const status = payload.lifecycle?.status ?? 'active';
 
-  const { error } = await supabase.from('channels').insert({
+  await updateChannel(supabase, {
     id: channelId,
-    org_id: accountResponse.data.org_id,
-    kind: payload.basics.kind,
-    topic: payload.basics.topic.trim(),
+    orgId,
+    topic: payload.basics.topic,
     description: payload.basics.description ?? null,
-    icon_key: payload.basics.iconKey ?? null,
+    iconKey: payload.basics.iconKey ?? null,
     visibility: payload.basics.visibility,
     purpose: payload.basics.purpose,
-    status,
-    posting_policy_kind: payload.postingPolicy.kind,
-    allow_threads: payload.postingPolicy.allowThreads ?? true,
-    allow_reactions: payload.postingPolicy.allowReactions ?? true,
-    created_by_profile_id: profileResponse.data.id,
-    created_at: now,
-    created_by: profileResponse.data.id,
-    updated_at: now,
-    updated_by: profileResponse.data.id,
+    kind: payload.basics.kind,
+    status: payload.lifecycle?.status ?? 'active',
+    postingPolicyKind: payload.postingPolicy.kind,
+    allowThreads: payload.postingPolicy.allowThreads ?? true,
+    allowReactions: payload.postingPolicy.allowReactions ?? true,
+    updatedBy: profileResponse.data.id,
+    updatedAt: now,
   });
+
+  await replaceChannelMembers(supabase, {
+    orgId,
+    channelId,
+    createdBy: profileResponse.data.id,
+    createdAt: now,
+    participants: payload.participants ?? [],
+  });
+
+  await replaceChannelCapabilities(supabase, {
+    orgId,
+    channelId,
+    createdBy: profileResponse.data.id,
+    createdAt: now,
+    capabilities: payload.capabilities ?? [],
+  });
+}
+
+type UpdateChannelPayload = {
+  id: string;
+  orgId: string;
+  topic: string;
+  description: string | null;
+  iconKey: string | null;
+  visibility: string;
+  purpose: string;
+  kind: string;
+  status: string;
+  postingPolicyKind: string;
+  allowThreads: boolean;
+  allowReactions: boolean;
+  updatedBy: string;
+  updatedAt: string;
+};
+
+async function updateChannel(supabase: SupabaseClient, payload: UpdateChannelPayload) {
+  const { error } = await supabase
+    .from('channels')
+    .update({
+      topic: payload.topic,
+      description: payload.description,
+      icon_key: payload.iconKey,
+      visibility: payload.visibility,
+      purpose: payload.purpose,
+      kind: payload.kind,
+      status: payload.status,
+      posting_policy_kind: payload.postingPolicyKind,
+      allow_threads: payload.allowThreads,
+      allow_reactions: payload.allowReactions,
+      updated_at: payload.updatedAt,
+      updated_by: payload.updatedBy,
+    })
+    .eq('org_id', payload.orgId)
+    .eq('id', payload.id)
+    .is('deleted_at', null);
 
   if (error) {
     throw new Error(error.message);
   }
-
-  await insertChannelMembers(supabase, {
-    orgId: accountResponse.data.org_id,
-    channelId,
-    createdBy: profileResponse.data.id,
-    createdAt: now,
-    participants: payload.participants,
-  });
-
-  await insertChannelCapabilities(supabase, {
-    orgId: accountResponse.data.org_id,
-    channelId,
-    createdBy: profileResponse.data.id,
-    createdAt: now,
-    capabilities: payload.capabilities ?? DEFAULT_CAPABILITIES,
-  });
-
-  return channelId;
 }
 
-type ChannelMembersInsertPayload = {
+type ReplaceChannelMembersPayload = {
   orgId: string;
   channelId: string;
   participants: ChannelCreatePayload['participants'];
@@ -83,10 +117,18 @@ type ChannelMembersInsertPayload = {
   createdAt: string;
 };
 
-async function insertChannelMembers(
+async function replaceChannelMembers(
   supabase: SupabaseClient,
-  payload: ChannelMembersInsertPayload,
+  payload: ReplaceChannelMembersPayload,
 ) {
+  await ensureDeleted(
+    supabase
+      .from('channel_members')
+      .delete()
+      .eq('org_id', payload.orgId)
+      .eq('channel_id', payload.channelId),
+  );
+
   if (!payload.participants.length) {
     return;
   }
@@ -110,18 +152,26 @@ async function insertChannelMembers(
   }
 }
 
-type ChannelCapabilitiesInsertPayload = {
+type ReplaceChannelCapabilitiesPayload = {
   orgId: string;
   channelId: string;
+  capabilities: ChannelCapabilityVM[];
   createdBy: string;
   createdAt: string;
-  capabilities: ChannelCapabilityVM[];
 };
 
-async function insertChannelCapabilities(
+async function replaceChannelCapabilities(
   supabase: SupabaseClient,
-  payload: ChannelCapabilitiesInsertPayload,
+  payload: ReplaceChannelCapabilitiesPayload,
 ) {
+  await ensureDeleted(
+    supabase
+      .from('channel_capabilities')
+      .delete()
+      .eq('org_id', payload.orgId)
+      .eq('channel_id', payload.channelId),
+  );
+
   const uniqueCapabilities = Array.from(new Set(payload.capabilities));
   if (!uniqueCapabilities.length) {
     return;
@@ -139,6 +189,15 @@ async function insertChannelCapabilities(
   }));
 
   const { error } = await supabase.from('channel_capabilities').insert(rows);
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
+async function ensureDeleted(
+  request: Promise<{ error: { message: string } | null }>,
+) {
+  const { error } = await request;
   if (error) {
     throw new Error(error.message);
   }

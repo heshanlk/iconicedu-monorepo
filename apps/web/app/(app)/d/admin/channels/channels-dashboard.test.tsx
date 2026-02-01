@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { vi } from 'vitest';
 
 import { ChannelsDashboard } from '@iconicedu/web/app/(app)/d/admin/channels/channels-dashboard';
 import type { AdminChannelRow } from '@iconicedu/web/lib/admin/channels';
@@ -34,7 +35,18 @@ const makeRow = (overrides: Partial<AdminChannelRow>): AdminChannelRow => ({
 });
 
 describe('ChannelsDashboard', () => {
+  const mockFetch = () =>
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue({
+      ok: true,
+      json: async () => ({ data: [] }),
+    } as Response);
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it('filters rows by search input', async () => {
+    mockFetch();
     const user = userEvent.setup();
     const rows = [makeRow({ topic: 'General' }), makeRow({ id: 'channel-2', topic: 'Algebra' })];
 
@@ -50,6 +62,7 @@ describe('ChannelsDashboard', () => {
   });
 
   it('shows all rows when search is cleared', async () => {
+    mockFetch();
     const user = userEvent.setup();
     const rows = [makeRow({ topic: 'General' }), makeRow({ id: 'channel-2', topic: 'Algebra' })];
 
