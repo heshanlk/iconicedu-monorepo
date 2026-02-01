@@ -18,11 +18,15 @@ describe('LearningSpaceShell', () => {
         channel={{ ids: { id: 'channel-1', orgId: 'org-1' } } as any}
         learningSpace={null}
         currentUserId="profile-1"
+        currentUserProfile={{ ids: { id: 'profile-1', orgId: 'org-1', accountId: 'account-1' } } as any}
       />,
     );
 
     expect(messagesShellMock).toHaveBeenCalledWith(
-      expect.objectContaining({ currentUserId: 'profile-1' }),
+      expect.objectContaining({
+        currentUserId: 'profile-1',
+        currentUserProfile: { ids: { id: 'profile-1', orgId: 'org-1', accountId: 'account-1' } },
+      }),
     );
   });
 });

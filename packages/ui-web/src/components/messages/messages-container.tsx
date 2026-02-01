@@ -19,6 +19,7 @@ import type {
 export interface MessagesContainerProps {
   channel: ChannelVM;
   currentUserId?: string;
+  currentUserProfile?: UserProfileVM | null;
 }
 
 const isGuardianProfile = (profile: UserProfileVM): profile is GuardianProfileVM =>
@@ -27,7 +28,11 @@ const isGuardianProfile = (profile: UserProfileVM): profile is GuardianProfileVM
 const isEducatorProfile = (profile: UserProfileVM): profile is EducatorProfileVM =>
   profile.kind === 'educator';
 
-export function MessagesContainer({ channel, currentUserId: currentUserIdProp }: MessagesContainerProps) {
+export function MessagesContainer({
+  channel,
+  currentUserId: currentUserIdProp,
+  currentUserProfile,
+}: MessagesContainerProps) {
   const messageListRef = useRef<MessageListRef>(null);
   const {
     toggle,
@@ -62,11 +67,17 @@ export function MessagesContainer({ channel, currentUserId: currentUserIdProp }:
     participants.find((participant) => participant.ids.id !== guardian?.ids.id) ??
     fallbackParticipant;
   const resolvedCurrentUserId =
-    currentUserIdProp ?? guardian?.ids.id ?? participants[0]?.ids.id ?? '';
-  const currentUserProfile = participants.find(
-    (participant) => participant.ids.id === resolvedCurrentUserId,
-  );
-  const senderProfile = currentUserProfile ?? guardian ?? educator ?? fallbackParticipant;
+    currentUserIdProp ??
+    currentUserProfile?.ids.id ??
+    guardian?.ids.id ??
+    participants[0]?.ids.id ??
+    '';
+  const resolvedCurrentUserProfile =
+    currentUserProfile ??
+    participants.find((participant) => participant.ids.id === resolvedCurrentUserId) ??
+    null;
+  const senderProfile =
+    resolvedCurrentUserProfile ?? guardian ?? educator ?? fallbackParticipant;
   const currentUserId = resolvedCurrentUserId;
 
   const handleOpenThread = useCallback(

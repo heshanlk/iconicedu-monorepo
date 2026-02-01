@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from '@iconicedu/web/lib/supabase/server';
 import { requireAuthedUser } from '@iconicedu/web/lib/auth/requireAuthedUser';
 import { getOrCreateAccount } from '@iconicedu/web/lib/accounts/getOrCreateAccount';
 import { getProfileByAccountId } from '@iconicedu/web/lib/profile/queries/profiles.query';
+import { buildUserProfileById } from '@iconicedu/web/lib/profile/builders/user-profile.builder';
 import { ORG_ID } from '@iconicedu/web/lib/data/ids';
 import { buildChannelById } from '@iconicedu/web/lib/channels/builders/channel.builder';
 
@@ -21,6 +22,9 @@ export default async function Page({
     authEmail: authUser.email ?? null,
   });
   const profileResponse = await getProfileByAccountId(supabase, account.id);
+  const currentUserProfile = profileResponse.data
+    ? await buildUserProfileById(supabase, profileResponse.data.id)
+    : null;
   const channel = await buildChannelById(supabase, account.org_id, channelId, {
     accountId: account.id,
   });
@@ -32,7 +36,11 @@ export default async function Page({
   return (
     <div className="flex h-[calc(100vh-1.0rem)] flex-col">
       <DashboardHeader />
-      <MessagesShell channel={channel} currentUserId={profileResponse.data?.id ?? ''} />
+      <MessagesShell
+        channel={channel}
+        currentUserId={profileResponse.data?.id ?? ''}
+        currentUserProfile={currentUserProfile}
+      />
     </div>
   );
 }

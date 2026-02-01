@@ -29,6 +29,10 @@ vi.mock('@iconicedu/web/lib/profile/queries/profiles.query', () => ({
   getProfileByAccountId: vi.fn(async () => ({ data: { id: 'profile-1' } })),
 }));
 
+vi.mock('@iconicedu/web/lib/profile/builders/user-profile.builder', () => ({
+  buildUserProfileById: vi.fn(async () => ({ ids: { id: 'profile-1', orgId: 'org-1' } })),
+}));
+
 vi.mock('@iconicedu/web/lib/channels/builders/channel.builder', () => ({
   buildChannelById: vi.fn(async () => ({ ids: { id: 'channel-1', orgId: 'org-1' } })),
 }));
@@ -41,7 +45,7 @@ describe('d/spaces/[channelId] page', () => {
   it('passes currentUserId to LearningSpaceShell', async () => {
     await Page({ params: Promise.resolve({ channelId: 'channel-1' }) });
     expect(learningSpaceShellMock).toHaveBeenCalledWith(
-      expect.objectContaining({ currentUserId: 'profile-1' }),
+      expect.objectContaining({ currentUserId: 'profile-1', currentUserProfile: { ids: { id: 'profile-1', orgId: 'org-1' } } }),
     );
   });
 });
