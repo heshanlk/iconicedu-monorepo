@@ -7,6 +7,7 @@ import {
   Earth,
   Languages,
   LifeBuoy,
+  MessageCircle,
   Sparkles,
   SquarePi,
   User,
@@ -14,6 +15,7 @@ import {
 } from 'lucide-react';
 import type { MessagesRightPanelIntent } from '@iconicedu/shared-types';
 import { Badge } from '@iconicedu/ui-web/ui/badge';
+import { Button } from '@iconicedu/ui-web/ui/button';
 import { Separator } from '@iconicedu/ui-web/ui/separator';
 import { AvatarWithStatus } from '@iconicedu/ui-web/components/shared/avatar-with-status';
 import { getProfileDisplayName } from '@iconicedu/ui-web/lib/display-name';
@@ -39,7 +41,7 @@ const CHANNEL_ICON_MAP = {
 } as const;
 
 const ChannelInfoPanelContent = memo(function ChannelInfoPanelContent() {
-  const { channel } = useMessagesState();
+  const { channel, currentUserId } = useMessagesState();
   const infoPanel = channel.ui?.infoPanel;
   const showMembers = infoPanel?.showMembers ?? true;
   const iconKey = channel.basics.iconKey ?? 'sparkles';
@@ -86,6 +88,8 @@ const ChannelInfoPanelContent = memo(function ChannelInfoPanelContent() {
             <div className="space-y-3 min-w-0">
               {channel.collections.participants.map((member) => {
                 const memberName = getProfileDisplayName(member.profile);
+                const dmTargetId =
+                  currentUserId && member.ids.id !== currentUserId ? member.ids.id : null;
                 return (
                   <div key={member.ids.id} className="flex items-center gap-3">
                     <AvatarWithStatus
@@ -113,6 +117,19 @@ const ChannelInfoPanelContent = memo(function ChannelInfoPanelContent() {
                         </div>
                       )}
                     </div>
+                    {dmTargetId ? (
+                      <Button
+                        asChild
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 shrink-0 text-muted-foreground hover:bg-primary/15 hover:text-primary"
+                        aria-label={`Message ${memberName}`}
+                      >
+                        <a href={`/d/dm/${dmTargetId}`}>
+                          <MessageCircle className="h-4 w-4" />
+                        </a>
+                      </Button>
+                    ) : null}
                   </div>
                 );
               })}

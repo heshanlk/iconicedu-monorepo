@@ -1,22 +1,13 @@
 import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
-import Page from '@iconicedu/web/app/(app)/d/dm/[channelId]/page';
+import Page from '@iconicedu/web/app/(app)/d/dm/page';
 
-const messagesShellMock = vi.fn(() => null);
 const redirectMock = vi.fn();
 const ensureDmMock = vi.fn();
-const buildChannelByIdMock = vi.fn();
-const buildChannelByDmKeyMock = vi.fn();
 
 vi.mock('next/navigation', () => ({
-  notFound: vi.fn(),
   redirect: (path: string) => redirectMock(path),
-}));
-
-vi.mock('@iconicedu/ui-web', () => ({
-  MessagesShell: (props: unknown) => messagesShellMock(props),
-  DashboardHeader: () => null,
 }));
 
 vi.mock('@iconicedu/web/lib/supabase/server', () => ({
@@ -36,36 +27,36 @@ vi.mock('@iconicedu/web/lib/profile/queries/profiles.query', () => ({
   getProfileById: vi.fn(async () => ({ data: { id: 'profile-2', org_id: 'org-1' } })),
 }));
 
-vi.mock('@iconicedu/web/lib/profile/builders/user-profile.builder', () => ({
-  buildUserProfileById: vi.fn(async () => ({ ids: { id: 'profile-1', orgId: 'org-1' } })),
-}));
-
-vi.mock('@iconicedu/web/lib/channels/builders/channel.builder', () => ({
-  buildChannelById: (...args: unknown[]) => buildChannelByIdMock(...args),
-  buildChannelByDmKey: (...args: unknown[]) => buildChannelByDmKeyMock(...args),
-}));
-
 vi.mock('@iconicedu/web/lib/channels/actions/ensure-direct-message-channel', () => ({
   ensureDirectMessageChannel: (...args: unknown[]) => ensureDmMock(...args),
 }));
 
-describe('d/dm/[channelId] page', () => {
-  it('passes currentUserId to MessagesShell', async () => {
-    buildChannelByIdMock.mockResolvedValueOnce({ ids: { id: 'channel-1', orgId: 'org-1' } });
-    buildChannelByDmKeyMock.mockResolvedValueOnce(null);
-    await Page({ params: Promise.resolve({ channelId: 'channel-1' }) });
-    expect(messagesShellMock).toHaveBeenCalledWith(
-      expect.objectContaining({ currentUserId: 'profile-1', currentUserProfile: { ids: { id: 'profile-1', orgId: 'org-1' } } }),
-    );
+const buildChannelByIdMock = vi.fn();
+const buildChannelByDmKeyMock = vi.fn();
+const buildDirectMessageChannelsWithMessagesMock = vi.fn();
+
+vi.mock('@iconicedu/web/lib/channels/builders/channel.builder', () => ({
+  buildChannelById: (...args: unknown[]) => buildChannelByIdMock(...args),
+  buildChannelByDmKey: (...args: unknown[]) => buildChannelByDmKeyMock(...args),
+  buildDirectMessageChannelsWithMessages: (...args: unknown[]) =>
+    buildDirectMessageChannelsWithMessagesMock(...args),
+}));
+
+describe('d/dm page', () => {
+  it('redirects to a provided dm channel id when it exists', async () => {
+    buildChannelByIdMock.mockResolvedValueOnce({
+      ids: { id: 'channel-9' },
+      basics: { kind: 'dm' },
+    });
+    await Page({ searchParams: { channelId: 'channel-9' } });
+    expect(redirectMock).toHaveBeenCalledWith('/d/dm/channel-9');
   });
 
-  it('redirects to a created dm channel when channelId is a user id', async () => {
+  it('creates a dm channel when given a user id', async () => {
     buildChannelByIdMock.mockResolvedValueOnce(null);
     buildChannelByDmKeyMock.mockResolvedValueOnce(null);
     ensureDmMock.mockResolvedValueOnce({ channelId: 'channel-new' });
-
-    await Page({ params: Promise.resolve({ channelId: 'profile-2' }) });
-
+    await Page({ searchParams: { userId: 'profile-2' } });
     expect(ensureDmMock).toHaveBeenCalled();
     expect(redirectMock).toHaveBeenCalledWith('/d/dm/channel-new');
   });

@@ -428,10 +428,8 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
             <div className="space-y-3 min-w-0">
               {learningSpace.participants.map((member) => {
                 const memberName = getProfileDisplayName(member.profile);
-                const dmKey =
-                  currentUserId && member.ids.id !== currentUserId
-                    ? `dm:${[currentUserId, member.ids.id].sort().join('-')}`
-                    : null;
+                const dmTargetId =
+                  currentUserId && member.ids.id !== currentUserId ? member.ids.id : null;
 
                 return (
                   <div key={member.ids.id} className="flex items-center gap-3">
@@ -463,7 +461,7 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
                         </div>
                       ) : null}
                     </div>
-                    {dmKey ? (
+                    {dmTargetId ? (
                       <Button
                         asChild
                         variant="ghost"
@@ -471,7 +469,7 @@ const LearningSpaceInfoPanelContent = memo(function LearningSpaceInfoPanelConten
                         className="h-8 w-8 shrink-0 text-muted-foreground hover:bg-primary/15 hover:text-primary"
                         aria-label={`Message ${memberName}`}
                       >
-                        <a href={`/d/dm/${dmKey}`}>
+                        <a href={`/d/dm/${dmTargetId}`}>
                           <MessageCircle className="h-4 w-4" />
                         </a>
                       </Button>

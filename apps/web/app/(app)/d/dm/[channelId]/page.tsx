@@ -1,11 +1,15 @@
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { MessagesShell, DashboardHeader } from '@iconicedu/ui-web';
 
 import { createSupabaseServerClient } from '@iconicedu/web/lib/supabase/server';
 import { requireAuthedUser } from '@iconicedu/web/lib/auth/requireAuthedUser';
 import { getOrCreateAccount } from '@iconicedu/web/lib/accounts/getOrCreateAccount';
-import { getProfileByAccountId } from '@iconicedu/web/lib/profile/queries/profiles.query';
+import {
+  getProfileByAccountId,
+  getProfileById,
+} from '@iconicedu/web/lib/profile/queries/profiles.query';
 import { buildUserProfileById } from '@iconicedu/web/lib/profile/builders/user-profile.builder';
+import { ensureDirectMessageChannel } from '@iconicedu/web/lib/channels/actions/ensure-direct-message-channel';
 import { ORG_ID } from '@iconicedu/web/lib/data/ids';
 import {
   buildChannelByDmKey,
@@ -26,6 +30,7 @@ export default async function Page({
     authEmail: authUser.email ?? null,
   });
   const profileResponse = await getProfileByAccountId(supabase, account.id);
+  const currentProfileId = profileResponse.data?.id ?? null;
   const currentUserProfile = profileResponse.data
     ? await buildUserProfileById(supabase, profileResponse.data.id)
     : null;
@@ -36,6 +41,20 @@ export default async function Page({
     (await buildChannelByDmKey(supabase, account.org_id, channelId, {
       accountId: account.id,
     }));
+
+  if (!channel && currentProfileId) {
+    const profileByIdResponse = await getProfileById(supabase, channelId);
+    const dmProfile = profileByIdResponse.data;
+    if (dmProfile && dmProfile.org_id === account.org_id) {
+      const { channelId: resolvedChannelId } = await ensureDirectMessageChannel(
+        supabase,
+        account.org_id,
+        currentProfileId,
+        dmProfile.id,
+      );
+      redirect(`/d/dm/${resolvedChannelId}`);
+    }
+  }
 
   if (!channel) {
     notFound();

@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { MessagesShell } from '@iconicedu/ui-web/components/messages/messages-shell';
 
-const messagesContainerMock = vi.fn(() => null);
+const messagesContainerMock = vi.fn();
 
 vi.mock('@iconicedu/ui-web/components/messages/messages-container', () => ({
   MessagesContainer: (props: unknown) => messagesContainerMock(props),

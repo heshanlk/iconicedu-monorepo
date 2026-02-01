@@ -70,3 +70,4 @@
 - For every new file and any updated file, add unit tests that cover basic usage and edge cases.
 - Co-locate tests with the owning package/app conventions and keep them deterministic.
 - Run relevant test suites for the changes and ensure they pass; if failures occur, fix them before finishing.
+- After every code change, run `pnpm turbo run test` and fix any failures before finishing.
