@@ -17,7 +17,7 @@ import type {
   AdminMenuSectionVM,
 } from '@iconicedu/shared-types';
 import { SidebarLeft, SidebarInset } from '@iconicedu/ui-web';
-import { toast } from 'sonner';
+import { toast } from '@iconicedu/ui-web';
 import { createSupabaseBrowserClient } from '@iconicedu/web/lib/supabase/client';
 import {
   revokeFamilyInviteAction,

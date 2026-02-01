@@ -38,9 +38,9 @@ export function NavDirectMessages({
   return (
     <SidebarGroup>
       <SidebarGroupLabel className="uppercase">Direct Messages</SidebarGroupLabel>
-      <SidebarGroupAction title="Add Project">
+      {/* <SidebarGroupAction title="Add Project">
         <Plus /> <span className="sr-only">Add Project</span>
-      </SidebarGroupAction>
+      </SidebarGroupAction> */}
       <SidebarMenu>
         {dms.map((item) => {
           const isActive = item.ids.id === activeChannelId;
@@ -107,18 +107,8 @@ export function NavDirectMessages({
                   align={isMobile ? 'end' : 'start'}
                 >
                   <DropdownMenuItem>
-                    <StarOff className="text-muted-foreground" />
-                    <span>Add to Favorites</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <Share className="text-muted-foreground" />
-                    <span>Share</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>
                     <Trash2 className="text-muted-foreground" />
-                    <span>Delete Project</span>
+                    <span>Remove</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

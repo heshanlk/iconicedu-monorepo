@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { Copy } from '@iconicedu/ui-web';
 import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
+import { toast } from '@iconicedu/ui-web';
 
 import {
   Button,

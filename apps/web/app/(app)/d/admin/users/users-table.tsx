@@ -37,7 +37,7 @@ import {
   TableHeader,
   TableRow,
 } from '@iconicedu/ui-web';
-import { toast } from 'sonner';
+import { toast } from '@iconicedu/ui-web';
 import { AvatarWithStatus } from '@iconicedu/ui-web/components/shared/avatar-with-status';
 import {
   Briefcase,
