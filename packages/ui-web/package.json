@@ -16,6 +16,8 @@
     "tailwind:build": "tailwindcss -c tailwind.config.ts -i ./src/styles/global.css -o ./dist/ui-web.css",
     "tailwind:watch": "node ./scripts/watch-tailwind.js",
     "dev": "tsc -p tsconfig.json --watch & pnpm run tailwind:watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "shadcn:add": "pnpm dlx shadcn@latest add",
     "shadcn:mcp": "pnpm dlx shadcn@latest mcp"
   },
